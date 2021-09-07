@@ -1,0 +1,111 @@
+---
+resource_types:
+  - name: slack-notification
+    type: docker-image
+    source:
+      repository: cfcommunity/slack-notification-resource
+      tag: latest
+      username: ((docker_hub_username))
+      password: ((docker_hub_authtoken))
+resources:
+  - name: git-main
+    type: git
+    icon: github-circle
+    source:
+      uri: https://github.com/alphagov/data-community-tech-docs.git
+      branch: main
+
+  - name: govuk-slack
+    type: slack-notification
+    source:
+      url: https://hooks.slack.com/((slack_webhook_url))
+
+jobs:
+  - name: update-pipeline
+    plan:
+      - get: git-main
+        trigger: true
+      - set_pipeline: data-community-tech-docs
+        file: git-main/concourse/pipeline.yml
+
+  - name: build-and-deploy
+    serial: true
+    plan:
+      - get: git-main
+        trigger: true
+      - task: build
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: ruby
+              tag: 2.7.1-buster
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
+          inputs:
+            - name: git-main
+              path: src
+          outputs:
+            - name: site
+              path: src/build
+          run:
+            dir: src
+            path: sh
+            args:
+              - "-exc"
+              - |
+                apt-get update --fix-missing && apt-get -y upgrade && apt-get install -y --no-install-recommends nodejs
+                bundle
+                bundle exec middleman build
+        on_failure:
+          put: govuk-slack
+          params:
+            channel: '#tech-docs-format'
+            username: 'Concourse (GOV.UK Data Community)'
+            icon_emoji: ':concourse:'
+            silent: true
+            text: |
+              :kaboom:
+              Build for the Data Community Tech Docs has failed
+              Failed build: http://cd.gds-reliability.engineering/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
+      - task: deploy
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: governmentpaas/cf-cli
+              tag: e1ffec0d1940706f157a8c1e0ab8131b7084fa1c
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
+          inputs:
+            - name: git-main
+              path: src
+            - name: site
+              path: src/build
+          params:
+            CF_API: https://api.london.cloud.service.gov.uk
+            CF_USERNAME: ((paas-username))
+            CF_PASSWORD: ((paas-password))
+          run:
+            dir: src
+            path: sh
+            args:
+              - "-exc"
+              - |
+                cf api "$CF_API"
+                cf auth
+                cf t -o gds-tech-writers -s sandbox
+                cf push
+        on_failure:
+          put: govuk-slack
+          params:
+            channel: '#tech-docs-format'
+            username: 'Concourse (GOV.UK Data Community)'
+            icon_emoji: ':concourse:'
+            silent: true
+            text: |
+              :kaboom:
+              Deployment for the Data Community Tech Docs has failed
+              Failed build: http://cd.gds-reliability.engineering/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
