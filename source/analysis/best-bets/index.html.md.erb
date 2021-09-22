@@ -7,28 +7,27 @@ review_in: 6 months
 
 # Change search results on GOV.UK (best bets)
 
-The following content is for performance analysts who want to change search results on GOV.UK. You use the Search Admin tool to manually change GOV.UK site search results.
+The following content is for performance analysts who want to change search results on GOV.UK. You use the [Search Admin tool](https://search-admin.publishing.service.gov.uk/) to manually change GOV.UK site search results.
 
 The Search Admin tool can:
 
-boost a page in search results for a specific search term, also known as creating a ‘best bet’
+- boost a page in search results for a specific search term, also known as creating a ‘best bet’
+- stop a page from appearing in search results for a specific search term, also known as creating a ‘worst bet’
 
-stop a page from appearing in search results for a specific search term, also known as creating a ‘worst bet’
+If you are a content designer and want to ask for a change to search results on GOV.UK, see the [guidance on requesting a change to search results on GOV.UK (best bets)](https://gov-uk.atlassian.net/wiki/spaces/CC/pages/122093585/Request+a+change+to+search+results+on+GOV.UK+best+bets).
 
-If you are a content designer and want to ask for a change to search results on GOV.UK, see the guidance on requesting a change to search results on GOV.UK (best bets).
+## When you should use a best bet
 
-When you should use a best bet
 You should use a best bet to:
 
-temporarily boost a topical page in search results, for example to make sure that searches for “budget” show results relating to the most recent budget
-
-make sure a page that is high value to users ranks highly in search results
-
-make sure a page that does not contain a certain term appears in search results for that term, because the page content is relevant to the user need for that term
+- temporarily boost a topical page in search results, for example to make sure that searches for “budget” show results relating to the most recent budget
+- make sure a page that is high value to users ranks highly in search results
+- make sure a page that does not contain a certain term appears in search results for that term, because the page content is relevant to the user need for that term
 
 Before using a best bet, consider whether it might affect any other results or user needs for that search term.
 
-Choose the type of best bet
+### Choose the type of best bet
+
 A best bet can be ‘exact' or 'stemmed'.
 
 An exact best bet only applies to the exact search term.
@@ -39,201 +38,169 @@ Consider using a stemmed best bet when there are many possible variations someon
 
 Before setting up a stemmed best bet, you should look at search data to make sure this best bet will not affect other searches.
 
-You can check whether words have the same stem using the Snowball demo tool. Enter the words into the left hand text field, and the Snowball demo returns the stems in the right hand field.
+You can check whether words have the same stem using the [Snowball demo tool](https://snowballstem.org/demo.html). Enter the words into the left hand text field, and the Snowball demo returns the stems in the right hand field.
 
-GOV.UK search uses some custom stemming overrides to:
+GOV.UK search uses some custom [stemming overrides](https://github.com/alphagov/search-api/blob/main/config/schema/stems.yml) to:
 
-separate words that have the same default stems but different meanings
+- separate words that have the same default stems but different meanings
+- connect word variations that have different default stems but similar meanings
 
-connect word variations that have different default stems but similar meanings
+## Create a best bet
 
-Create a best bet
-You must have access to the Search Admin tool to create a best or worst bet.
+You must have access to the [Search Admin tool](https://search-admin.publishing.service.gov.uk/) to create a best or worst bet.
 
 The Search Admin tool is an app in your Signon account.
 
-Create a Zendesk ticket and assign it to 3rd Line - GOV.UK Accounts and Training to request access to the Search Admin tool.
+[Create a Zendesk ticket](https://govuk.zendesk.com/agent/tickets/new/1) and assign it to 3rd Line - GOV.UK Accounts and Training to request access to the Search Admin tool.
 
 In the Zendesk ticket, say if you need access to one or both of the:
 
-Integration environment for training and testing
-
-live Production environment
+- [Integration environment](https://signon.integration.publishing.service.gov.uk/) for training and testing
+- live [Production environment](https://signon.publishing.service.gov.uk/)
 
 You can ask for the same access as another member of your team if you are not sure.
 
 To create a best bet, first specify the best bet search term and type (exact or stemmed).
 
-Go to the Search Admin tool.
+1. Go to the [Search Admin tool](https://search-admin.publishing.service.gov.uk/).
+1. Select the __Queries__ tab.
+1. Select __New query__.
+1. Enter the best bet search term into the __Query__ field.
+1. Select the __Match__ type.
+1. Select __Save__.
 
-Select the Queries tab.
+The __Add new bet__ window will appear.
 
-Select New query.
-
-Enter the best bet search term into the Query field.
-
-Select the Match type.
-
-Select Save.
-
-The Add new bet window will appear.
-
-Enter the URL of the best bet page into the Link field.
-
-Enter the search result rank you want for the best bet page in the Position field. You can set 1 or multiple search results for a single query, and rank those results as needed.
-
-If applicable, enter information on the Zendesk ticket into the Comment field.
-
-Set an expiry date. By default, best bets expire after 3 months. Users with admin-level permissions can set a custom expiry date.
-
-Select Save.
-
-Scroll down to preview the search results and check the best bet is appearing as expected. This is important as there is no peer review requirement before best bets go live.
+1. Enter the URL of the best bet page into the __Link__ field.
+1. Enter the search result rank you want for the best bet page in the __Position__ field. You can set 1 or multiple search results for a single query, and rank those results as needed.
+1. If applicable, enter information on the Zendesk ticket into the __Comment__ field.
+1. Set an expiry date. By default, best bets expire after 3 months. Users with admin-level permissions can set a custom expiry date.
+1. Select __Save__.
+1. Scroll down to preview the search results and check the best bet is appearing as expected. This is important as there is no peer review requirement before best bets go live.
 
 Your best bet will be live on site search within 5 minutes.
 
 Best bets will always appear above the other search results. If you want to add a best bet link in a lower position, you need to create best bet links for the results that will appear above that best bet. You must do this even if the higher results are already the top results without using best bets.
 
-Change a best bet
+## Change a best bet
+
 You can change a best bet in the following ways:
 
-the link or links for a best bet
+- the link or links for a best bet
+- the expiry date
+- the position of the best bet query in the list of search results
+- the search term used by a best bet
+- the best bet type
 
-the expiry date
+### Change the links for a best bet
 
-the position of the best bet query in the list of search results
-
-the search term used by a best bet
-
-the best bet type
-
-Change the links for a best bet
 To add or remove links for a best bet, edit the best bet in the Search Admin tool.
 
-Go to the Search Admin tool
+1. Go to the [Search Admin tool](https://search-admin.publishing.service.gov.uk/).
+1. Select the __Queries__ tab.
+1. Find and select the best bet query in the list. You can use the case sensitive __Filter queries__ field to narrow down the results.
+1. To add another link, follow the same process as for creating a new best bet.
+1. To remove a link, select the __Deactivate__ button.
 
-Select the Queries tab.
+### Change the expiry date
 
-Find and select the best bet query in the list. You can use the case sensitive Filter queries field to narrow down the results.
-
-To add another link, follow the same process as for creating a new best bet.
-
-To remove a link, select the Deactivate button.
-
-Change the expiry date
 To change the expiry date for a best bet, edit the best bet in the Search Admin tool.
 
-Go to the Search Admin tool.
+1. Go to the [Search Admin tool](https://search-admin.publishing.service.gov.uk/).
+1. Select the __Queries__ tab.
+1. Find and select the best bet query in the list. You can use the case sensitive __Filter queries__ field to narrow down the results.
+1. Select the link that you want to edit.
+1. Replace the existing date in the __Set an expiry date__ section, or select __Make permanent?__.
+1. Select __Save__.
+1. Best bets deactivate on the morning of the expiry date. expired best bets remain in the Search Admin tool temporarily for reference. Once a month, the tool automatically deletes expired best bets.
 
-Select the Queries tab.
+### Change the position of a best bet
 
-Find and select the best bet query in the list. You can use the case sensitive Filter queries field to narrow down the results.
-
-Select the link that you want to edit.
-
-Replace the existing date in the Set an expiry date section, or select Make permanent?.
-
-Select Save.
-
-Best bets deactivate on the morning of the expiry date. expired best bets remain in the Search Admin tool temporarily for reference. Once a month, the tool automatically deletes expired best bets.
-
-Change the position of a best bet
 To change the ranking order of best bets, edit the best bets in the Search Admin tool.
 
-Go to the Search Admin tool.
+1. Go to the [Search Admin tool](https://search-admin.publishing.service.gov.uk/).
+1. Select the __Queries__ tab.
+1. Find and select the best bet query in the list. You can use the case sensitive __Filter queries__ field to narrow down the results.
+1. Select the link that you want to edit.
+1. Specify what search result rank you would like for the page in the __Position__ field.
+1. Select __Save__.
+1. Scroll down to preview the search results and check that the best bets are appearing as expected. This is important as there is no peer review requirement before best bets go live.
 
-Select the Queries tab.
+### Change the best bet search term
 
-Find and select the best bet query in the list. You can use the case sensitive Filter queries field to narrow down the results.
-
-Select the link that you want to edit.
-
-Specify what search result rank you would like for the page in the Position field.
-
-Select Save.
-
-Scroll down to preview the search results and check that the best bets are appearing as expected. This is important as there is no peer review requirement before best bets go live.
-
-Change the best bet search term
 To change the search term used by a best bet, first remove the best bet in the Search Admin tool. Then, create a new one with the updated search term.
 
-Go to the Search Admin tool.
+1. Go to the [Search Admin tool](https://search-admin.publishing.service.gov.uk/).
+1. Select the __Queries__ tab.
+1. Find and select the best bet query in the list. You can use the case sensitive __Filter queries__ field to narrow down the results.
+1. Select the __Deactivate__ button for the link you want to remove.
+1. Create a new best bet by selecting __New query__.
 
-Select the Queries tab.
+## Change the best bet type
 
-Find and select the best bet query in the list. You can use the case sensitive Filter queries field to narrow down the results.
+To change the best bet type (exact or stemmed) for a search term, remove the best bet in the Search admin tool and create a new one with the updated type.
 
-Select the Deactivate button for the link you want to remove.
+This is more reliable than using the __Edit query__ function, which sometimes causes technical issues.
 
-Create a new best bet by selecting New query.
+1. Go to the [Search Admin tool](https://search-admin.publishing.service.gov.uk/).
+1. Select the __Queries__ tab.
+1. Find and select the best bet query in the list. You can use the case sensitive __Filter queries__ field to narrow down the results.
+1. Select the __Deactivate__ button for the link you want to remove.
+1. Create a new best bet by selecting __New query__.
 
-Change the best bet type
-To change the best bet type (exact or stemmed) for a search term, remove the best bet in the Search admin tool and create a new one with the updated type. This is more reliable than using the Edit query function, which sometimes causes technical issues.
+## Make your best bets effective
 
-Go to the Search Admin tool.
-
-Select the Queries tab.
-
-Find and select the best bet query in the list. You can use the case sensitive Filter queries field to narrow down the results.
-
-Select the Deactivate button for the link you want to remove.
-
-Create a new best bet by selecting New query.
-
-Make your best bets effective
 The following best bet examples will help you make your best bets more effective.
 
-Consider stemmed best bets with other user needs
-Stemmed best bets are a quick way to cover lots of variations in search terms. However, stemmed best bets can have unwanted effects on other searches that you or the requester might not have considered. You should look at search data to see how your stemmed best bet affects other search terms.
+### Consider stemmed best bets with other user needs
+
+Stemmed best bets are a quick way to cover lots of variations in search terms.
+
+However, stemmed best bets can have unwanted effects on other searches that you or the requester might not have considered.
+
+You should look at search data to see how your stemmed best bet affects other search terms.
 
 For example, the stemmed query “test” would match searches about the following:
 
-COVID-19 tests
-
-driving tests
-
-theory tests
-
-MOT tests
-
-the Life in the UK test
+- COVID-19 tests
+- driving tests
+- theory tests
+- MOT tests
+- the Life in the UK test
 
 So in this case, you should make the best bet query more specific.
 
-Use multi-word stemmed best bets
-A best bet query can be a phrase with more than one word. If the best bet is stemmed, it will apply to searches containing any variations of those words in that exact order. The best bet will not apply when there are any other words in between. The Search Admin tool does not support wildcards.
+### Use multi-word stemmed best bets
+
+A best bet query can be a phrase with more than one word.
+
+If the best bet is stemmed, it will apply to searches containing any variations of those words in that exact order.
+
+The best bet will not apply when there are any other words in between.
+
+The Search Admin tool does not support wildcards.
 
 For example, the stemmed query ‘get tested' will match the following searches:
 
-get tested
-
-getting tested
-
-get test
-
-getting tests
-
-get test kit
-
-getting tested for coronavirus
-
-coronavirus getting tested
-
-how do i get tested
-
-how to get tested for covid
+- get tested
+- getting tested
+- get test
+- getting tests
+- get test kit
+- getting tested for coronavirus
+- coronavirus getting tested
+- how do i get tested
+- how to get tested for covid
 
 However, this stemmed query will not match the following searches:
 
-get a test
+- get a test
+- getting a covid test
+- get lateral flow tests
+- how to get covid test results
 
-getting a covid test
+### Override stemmed best bets with exact best bets
 
-get lateral flow tests
-
-how to get covid test results
-
-Override stemmed best bets with exact best bets
 You can create an exact best bet and a stemmed best bet with the same search term (query). Or you can use a more specific search term for the exact best bet than the stemmed best bet. The exact best bet will apply when users search for the exact term, otherwise the stemmed best bet will apply.
 
 For example:
