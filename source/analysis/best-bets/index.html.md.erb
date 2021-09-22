@@ -51,7 +51,7 @@ You must have access to the [Search Admin tool](https://search-admin.publishing.
 
 The Search Admin tool is an app in your Signon account.
 
-[Create a Zendesk ticket](https://govuk.zendesk.com/agent/tickets/new/1) and assign it to 3rd Line - GOV.UK Accounts and Training to request access to the Search Admin tool.
+[Create a Zendesk ticket](https://govuk.zendesk.com/agent/tickets/new/1) and assign it to __3rd Line - GOV.UK Accounts and Training__ to request access to the Search Admin tool.
 
 In the Zendesk ticket, say if you need access to one or both of the:
 
@@ -60,7 +60,7 @@ In the Zendesk ticket, say if you need access to one or both of the:
 
 You can ask for the same access as another member of your team if you are not sure.
 
-To create a best bet, first specify the best bet search term and type (exact or stemmed).
+To create a best bet, first specify the best bet search term and type.
 
 1. Go to the [Search Admin tool](https://search-admin.publishing.service.gov.uk/).
 1. Select the __Queries__ tab.
@@ -72,7 +72,7 @@ To create a best bet, first specify the best bet search term and type (exact or 
 The __Add new bet__ window will appear.
 
 1. Enter the URL of the best bet page into the __Link__ field.
-1. Enter the search result rank you want for the best bet page in the __Position__ field. You can set 1 or multiple search results for a single query, and rank those results as needed.
+1. Enter the search result rank you want for the best bet page in the __Position__ field. You can set one or multiple search results for a single query, and rank those results as needed.
 1. If applicable, enter information on the Zendesk ticket into the __Comment__ field.
 1. Set an expiry date. By default, best bets expire after 3 months. Users with admin-level permissions can set a custom expiry date.
 1. Select __Save__.
@@ -201,97 +201,91 @@ However, this stemmed query will not match the following searches:
 
 ### Override stemmed best bets with exact best bets
 
-You can create an exact best bet and a stemmed best bet with the same search term (query). Or you can use a more specific search term for the exact best bet than the stemmed best bet. The exact best bet will apply when users search for the exact term, otherwise the stemmed best bet will apply.
+You can create an exact best bet and a stemmed best bet with the same search term (query).
+
+Or you can use a more specific search term for the exact best bet than the stemmed best bet.
+
+The exact best bet will apply when users search for the exact term, otherwise the stemmed best bet will apply.
 
 For example:
 
-stemmed query - import
+- stemmed query - import
+- exact queries - import, imports, importing
 
-exact queries - import, imports, importing
-
-To help users find out what they need to do after Brexit, GOV.UK set up a stemmed best bet for searches containing 'import' to return the Import goods into the UK: step by step page.
+To help users find out what they need to do after Brexit, GOV.UK set up a stemmed best bet for searches containing 'import' to return the [Import goods into the UK: step by step page](https://www.gov.uk/import-goods-into-uk).
 
 This matches searches such as:
 
-import goods
+- import goods
+- importing goods
+- import from eu
+- importing a vehicle
+- start to import
 
-importing goods
+When users search for the exact terms ‘import', ‘imports' or ‘importing', the exact best bets apply instead of the stemmed best bet. This means you can set additional or different links for the exact terms.
 
-import from eu
+Set the [Import goods into the UK: step by step page](https://www.gov.uk/import-goods-into-uk) in position 1 for each of the exact best bet queries.
 
-importing a vehicle
+Set the [Import, export and customs for businesses page](https://www.gov.uk/topic/business-tax/import-export) in position 2 for each of the exact best bet queries.
 
-start to import
+### Setting multiple links to the same position
 
-When users search for the exact terms ‘import', ‘imports' or ‘importing', the exact best bets apply instead of the stemmed best bet. This means we can set additional or different links for the exact terms.
+When there is more than one best bet link for a search term, you can do one of the following:
 
-We set the Import goods into the UK: step by step page in position 1 for each of the exact best bet queries.
-
-We set the Import, export and customs for businesses page in position 2 for each of the exact best bet queries.
-
-Setting multiple links to the same position
-When there is more than one best bet link for a search term, you can do one of the following
-
-rank the best bets in a specific order
-
-set some of the best bets to the same position and let the search algorithm determine the ranking
+- rank the best bets in a specific order
+- set some of the best bets to the same position and let the search algorithm determine the ranking
 
 You should let the search algorithm determine the ranking if:
 
-the user needs related to these best bets vary at different times of the year
+- the user needs related to these best bets vary at different times of the year
+- you’re not sure which of the results users will find most relevant
 
-you’re not sure which of the results users will find most relevant
+The algorithm adjusts the ranking based on multiple factors.
 
-The algorithm adjusts the ranking based on multiple factors. These factors include but are not limited to the number of recent page views and frequency of certain words in the content. See this blog post on how GOV.UK site search works for more information.
+These factors include but are not limited to the number of recent page views and frequency of certain words in the content.
+
+See this [blog post on how GOV.UK site search works](https://insidegovuk.blog.gov.uk/2014/06/13/how-gov-uk-site-search-works/) for more information.
 
 For example, the search term 'flooding' has several best bet links:
 
-Find out if you're at risk of flooding in England
-
-Sign up for flood warnings
-
-Prepare for flooding
-
-Get help during a flood
+- [Find out if you're at risk of flooding in England](https://www.gov.uk/check-flood-risk)
+- [Sign up for flood warnings](https://www.gov.uk/sign-up-for-flood-warnings)
+- [Prepare for flooding](https://www.gov.uk/prepare-for-flooding)
+- [Get help during a flood](https://www.gov.uk/help-during-flood)
 
 This makes sure these pages are always in the top results.
 
-The flood risk page is the most visited, so should always be in position 1. If GOV.UK set all the others to position 2, then when it floods in the UK, the ‘Get help during a flood' page will automatically rank higher if it’s viewed more often than 'Prepare for flooding'.
+The flood risk page is the most visited, so should always be in position 1.
 
-Setting positions for overlapping stemmed best bets
-If a user’s search term matches more than one stemmed best bet, then all those best bets will be applied at once. The links will be mixed together in the search results, with the order depending on the ranking positions selected in the best bets.
+If GOV.UK set all the others to position 2, then when it floods in the UK, the ‘Get help during a flood' page will automatically rank higher if it’s viewed more often than 'Prepare for flooding'.
+
+### Setting positions for overlapping stemmed best bets
+
+If a user’s search term matches more than one stemmed best bet, then all those best bets will be applied at once.
+
+The links will be mixed together in the search results, with the order depending on the ranking positions selected in the best bets.
 
 For example:
 
-stemmed query 1 - budget
+- stemmed query 1 - budget
+- stemmed query 2 - budgeting loan
 
-stemmed query 2 - budgeting loan
+The stemmed query for 'budget' will return the [Budget topical event page](https://www.gov.uk/government/topical-events/budget-2021) for searches such as:
 
-The stemmed query for 'budget' will return the Budget topical event page for searches such as:
+- budget
+- budget 2021
+- 2021 budget
+- the budget
+- budget statement
+- budget speech
+- budget documents
 
-budget
+The stemmed query for 'budgeting loan' will return the [Budgeting Loans guide](https://www.gov.uk/budgeting-help-benefits), as well as the Budget topical event page, for searches such as:
 
-budget 2021
-
-2021 budget
-
-the budget
-
-budget statement
-
-budget speech
-
-budget documents
-
-The stemmed query for 'budgeting loan' will return the Budgeting Loans guide, as well as the Budget topical event page, for searches such as:
-
-budgeting loan
-
-budgeting loans
-
-budgeting loan application
-
-apply for budgeting loan
+- budgeting loan
+- budgeting loans
+- budgeting loan application
+- apply for budgeting loan
 
 If both of these best bets were set to position 1, then the search algorithm would determine which of the 2 links to show first.
 
@@ -299,9 +293,10 @@ To make sure the Budgeting Loans guide comes first for searches containing 'budg
 
 This means that when a user’s search term only contains  'budget' without 'loan', there will not be any best bet links assigned to position 1. Therefore, the link with the next-highest position will be the top result.
 
-When to use a worst bet
+## When to use a worst bet
+
 You should use a worst bet when a non-relevant page is showing up highly in results for a search term.
 
 Worst bets exclude pages completely rather than lower their ranking. You must make sure that the excluded page is not relevant for any user searching for that term.
 
-To set a worst bet, follow the same process as setting a best bet, and select the Is worst bet? checkbox in the Add new bet window.
+To set a worst bet, follow the same process as setting a best bet, and select the __Is worst bet?__ checkbox in the __Add new bet window__.
