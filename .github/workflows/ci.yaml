@@ -1,26 +1,23 @@
 name: CI Workflow
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
     environment: production
     name: Deploy
     runs-on: ubuntu-latest
-    needs: build
     if: ${{ github.ref == 'refs/heads/main' }}
     env:
-      CF_API: "https://api.cloud.service.gov.uk"
+      CF_API: "https://api.london.cloud.service.gov.uk"
       CF_ORG: "gds-data-tech-docs"
       CF_SPACE: "sandbox"
 
     steps:
       - uses: actions/checkout@v2
-
-      - name: Download build artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: build
 
       - name: Install the CF CLI
         run: |
@@ -32,11 +29,14 @@ jobs:
           # We use an environment variable instead of passing the details as options using -u / -p to reduce the risk of them being recorded in logs
           # https://cli.cloudfoundry.org/en-US/v6/auth.html
           CF_USERNAME: "data-tech-docs@digital.cabinet-office.gov.uk"
-          CF_PASSWORD: ${{ secrets.CF_PASSWORD }}
+          CF_PASSWORD: "${{ secrets.CF_PASSWORD }}"
         run: |
           echo "Logging into $CF_ORG/$CF_SPACE..."
+          echo "1. running 'cf api'"
           cf api "${CF_API}"
+          echo "2. running 'cf auth'"
           cf auth
+          echo "3. running 'cf target'"
           cf target -o "${CF_ORG}" -s "${CF_SPACE}"
       # Parse app name from manifest to ensure it matches up
       - name: Fetch app name from manifest
