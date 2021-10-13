@@ -37,3 +37,48 @@ If you have questions, you can contact:
 
 - the [GOV.UK Data Labs team on Slack](https://gds.slack.com/archives/CHR4UQKU4)
 - [Esther Woods](mailto:esther.woods@digital.cabinet-office.gov.uk) in the content community
+
+## Use the preprocessed content store
+
+The preprocessed content store (PPCS) is a download of the GOV.UK website in `.csv` format. The PPCS contains data and metadata about every page on GOV.UK.
+
+The PPCS is used:
+
+- to build the structural network component in the [GOV.UK Knowledge Graph](https://docs.data-community.publishing.service.gov.uk/analysis/govgraph/#use-gov-uk-knowledge-graph), which shows each and every page (available in the content store) connects to any other via hyperlink
+- to generate [GOV.UK accessibility reports](https://github.com/alphagov/govuk-accessibility-reports)
+- by the [`govuk-entity-personalisation` app](https://github.com/alphagov/govuk-entity-personalisation) to generate a file that powers the auto-complete component of the personalisation feature
+
+### Access the PPCS
+
+The GOV.UK Knowledge Graph creates the PPCS automatically each day.
+
+To access the PPCS, you:
+
+- sign into AWS and select the correct AWS role
+- download a copy of the production version of the PPCS to your local machine
+
+#### Sign into AWS and select the correct AWS role
+
+1. Sign into AWS. See the [GOV.UK Developer Docs on getting AWS access](https://docs.publishing.service.gov.uk/manual/get-started.html#7-get-aws-access) for more information.
+
+1. Select your name in the top right of the screen and select __Switch roles__.
+
+1. Under __Account__, you can select select __govuk-infrastructure-integration__ or __210287912431__.
+
+1. Under __Role__, select __govuk-datascienceusers__.
+
+1. You can enter any text into __Display name__ or leave this field empty.
+
+1. You can select any colour in __Colour__. Best practice is to select green for integration, amber for staging and red for production.
+
+1. Select __Switch Role__.
+
+#### Download a copy of the PPCS to your local machine
+
+1. Go to [`govuk-data-infrastructure-integration` S3 bucket](https://s3.console.aws.amazon.com/s3/buckets/govuk-data-infrastructure-integration?region=eu-west-1&tab=objects)
+
+1. Go to the __knowledge-graph__ folder.
+
+1. Go to the latest date folder and select the `preprocessed_content_store_DDMMYY.csv.gz` file.
+
+1. Select __Download__ to download the file to your local machine.
