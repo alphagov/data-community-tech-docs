@@ -13,7 +13,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/main' }}
     env:
       CF_API: "https://api.london.cloud.service.gov.uk"
-      CF_ORG: "gds-data-tech-docs"
+      CF_ORG: "gds-data-community"
       CF_SPACE: "sandbox"
 
     steps:
