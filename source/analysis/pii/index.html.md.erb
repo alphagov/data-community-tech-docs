@@ -1,7 +1,7 @@
 ---
 title: Remove personally identifiable information (PII) from feedback data
 weight: 37
-last_reviewed_on: 2021-10-01
+last_reviewed_on: 2021-10-21
 review_in: 6 months
 ---
 
@@ -37,6 +37,8 @@ To remove PII from feedback data, you must have:
 - edit access to the BigQuery feedback data set - use the [DataAAA Slack channel](https://gds.slack.com/archives/C021V5Y6E3X) to ask the DataAAA team for this
 - access to the Python3 notebooks and spreadsheets used for reporting - use the [GOV.UK Insights team Slack channel](https://gds.slack.com/archives/C015XA8KC4F) to ask the GOV.UK Insights team for this
 
+
+
 ## Remove PII from a single line of feedback data
 
 There is a [Weekly PII removal from Feedback task](https://trello.com/c/wS8oRmKC/1020-weekly-pii-removal-from-feedback) in the GOV.UK Insights - Doing Trello board.
@@ -49,7 +51,7 @@ The GOV.UK Insights team assigns this task to a member of the team.
 1. Open the [Feedback PII cleansing Python notebook](https://colab.research.google.com/drive/1C7D5NVO9-UYPlm4_FoBS-RSuBrvjTeZE) that contains the code to remove the PII.
 1. In the notebook, select __Connect__ to start Python3.
 
-### Authenticate your access to the feedback data set ###
+<h3 id="Authenticate your access to the feedback data set">Authenticate your access to the feedback data set</h3>
 
 1. Hover your cursor over the __Set up__ cell in the Python notebook to show the run icon and select the run icon to start the authentication process.
 1. Select the authentication link in the text box and then select your Google account.
@@ -100,7 +102,7 @@ Every month, the GOV.UK Insights team removes or redacts PII from multiple lines
 1. Open the [Bulk Feedback PII cleansing Python notebook](https://colab.research.google.com/drive/1TlII81t3yMW0ReTXbokPD9wDC-DyZcyM?authuser=1#scrollTo=b2dSckR2DAtO) which contains the code to clean the data.
 1. In the notebook, select __Connect__ to start Python3 running.
 
-### Authenticate your access to the feedback data set ###
+<h3 id="Authenticate your access to the feedback data set">Authenticate your access to the feedback data set</h3>
 
 1. Hover your cursor over the __Set up__ cell in the Python notebook to show the run icon. Select the run icon to start the authentication process.
 1. Select the authentication link in the text box and then select your Google account.
