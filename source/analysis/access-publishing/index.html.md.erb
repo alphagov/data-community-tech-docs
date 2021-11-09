@@ -1,0 +1,43 @@
+---
+title: Access the publishing database
+weight: 39
+last_reviewed_on: 2021-11-04
+review_in: 6 months
+---
+
+# Access the GOV.UK publishing database
+
+The GOV.UK publishing database is a PostgreSQL database that keeps a copy of every version of every page published on GOV.UK.
+
+You can access the publishing database instead of [downloading the GOV.UK mirror to your local machine](/analysis/mirror/). You can use the publishing database to compute intents.
+
+The data community does not currently have access to the production environment of the publishing database, so we access the database using the integration environment.
+
+## Connect to the publishing database
+
+Before you start, you must:
+
+- have access to AWS
+- install the GDS command line tools
+- connect to the GDS VPN
+- get Secure Shell (SSH) access to the integration environment
+
+See the [Get started on GOV.UK developer documentation](https://docs.publishing.service.gov.uk/manual/get-started.html) for more information on how to do this.
+
+1. Run the following in the command line to connect to an AWS instance in the integration environment:
+
+    ```
+    USER=<FIRSTNAMELASTNAME>; govuk connect --environment integration ssh publishing_api
+    ```
+
+    `<FIRSTNAMELASTNAME>` must be the same user that you created to SSH into integration.
+
+    You do not need to include `USER=<FIRSTNAMELASTNAME>;` if your username for your machine is the same as the SSH integration user.
+
+1. Open a psql terminal to the `postgresql-primary` host as the `aws_db_admin` user, and connect to the publishing API database:
+
+    ```
+    sudo psql -U aws_db_admin -h postgresql-primary --no-password -d publishing_api_production
+    ```
+
+    This database is named `production`, but it is not in the production environment.
