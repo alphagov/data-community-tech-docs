@@ -45,26 +45,26 @@ To ask permission to join the [govuk-coronavirus-daily@digital.cabinet-office.go
 
 ## How the dashboard works
 
-The dashboard is built from both data sources and data blends. Data blends are data sources with some data processing.
+The dashboard is built from both data sources and data blends. The dashboard is built and distributed automatically each day.
 
 ### Data sources
 
 The dashboard has the following data sources:
 
-- the `1a. GOV.UK - Main Profile` Google Analytics view
-- the Google search console, site: www.gov.uk, table: URL Impression
-- the `GOV.UK user feedback - ZenDesk and UIS` data connection in Google DataStudio
-- the Google sheet - Coronavirus feedback keywords Google sheet
+- Google Analytics
+- Google Search Console
+- GOV.UK user feedback
+- a Google Sheets spreadsheet
 
 All data sources automatically update each day.
 
+For more information on these data sources, see the [Daily coronavirus insights report Google doc](https://docs.google.com/document/d/1_R3DkYQoj5J07aubwddWJY1j9nGbqcjQqdCfCAzcmvs/edit).
+
+You must have permission to access this document to see this information. To ask for access permission, contact the GOV.UK Insights team through the [Slack channel](https://gds.slack.com/archives/C015XA8KC4F) or [by email](mailto:govuk-insights@digital.cabinet-office.gov.uk).
+
 ### Data blends
 
-Go to __Resource > Manage blended data__ in the dashboard to see the data blends.
-
-You need edit access to the dashboard to get access to the data blends.
-
-Contact the GOV.UK Insights team through the [team Slack channel](https://gds.slack.com/archives/C015XA8KC4F) or [by email](mailto:govuk-insights@digital.cabinet-office.gov.uk) to request edit access.
+Data blends are data sources with some data processing.
 
 #### Pages blend - yesterday & day before
 
@@ -113,8 +113,4 @@ The data source for this data blend is Google Search Console.
 
 When a user does a Google search on a coronavirus-related topic, GOV.UK may come up in the results. If a user selects the GOV.UK result, that is a click.
 
-This blend returns the number of clicks for last 7 days and the previous 7 days.
-
-## Create the dashboard
-
-There is no action required to create this dashboard.
+This blend returns the number of clicks for the last 7 days and the previous 7 days.
