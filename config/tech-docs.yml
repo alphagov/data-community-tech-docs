@@ -36,3 +36,4 @@ prevent_indexing: false
 
 show_contribution_banner: true
 github_repo: alphagov/data-community-tech-docs
+github_branch: main
