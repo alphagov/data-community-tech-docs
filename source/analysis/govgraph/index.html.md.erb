@@ -464,3 +464,64 @@ If you have questions, you can contact the following groups on Slack:
 
 - the [GOV.UK Data Labs team](https://gds.slack.com/archives/CHR4UQKU4)
 - the [GOV.UK data champions](https://app.slack.com/client/T8GT9416G/C02CM46TD52)
+
+
+
+
+
+
+
+
+main knowledge graph made of
+
+sub graphs of nodes that are of following types:
+main 7
+- Cid (content ID)
+- organisation
+- person
+- taxon
+- role
+- step
+- chapter
+other 3
+- COVID 19
+- ExternalPage
+- Mainstream
+
+
+can combine these graphs in different ways to produce different overall knowledge graph outputs
+
+separate sub graphs, no direct link between entities in different sub graphs, the way you write your queries, you can pull info from combination of these sub graphs
+
+knowledge graph is open to including new nodes - if someone extracts new data in the future from gov.uk pages, then we can store that data as a node type and then use it with other sub graphs to get different outputs
+
+these sub graphs are created in the bash script named [provision_knowledge_graph bash script](https://github.com/alphagov/govuk-knowledge-graph/blob/master/provision_knowledge_graph)
+
+cid node type sub graph
+
+a knowledge graph is a list of node or things
+
+we've decided that the nodes of type x are nodes we are interested in
+
+a pirmary node type is content id, content item id'ed by content id
+
+those nodes are primarily connected by relationships of type hyperlink
+
+https://github.com/alphagov/govuk-knowledge-graph/tree/master/src/neo4j
+source code files that injest the csv files into the graph in terms of nodes and links
+
+these linked nodes make up the structural network
+
+this sub graph contains these attributes / information i.e. every gov.uk page that has a content id has the following information ["public_updated_at", "first_published_at", "publishing_app", "documentType", "updated_at", "text", "contentID", "name", "title", "description"]
+
+relationships that can exist between nodes of type content id
+
+HAS_ORGANISATIONS
+HAS_ORIGINAL_PRIMARY_PUBLISHING_ORGANISATION
+HAS_PRIMARY_PUBLISHING_ORGANISATION
+HYPERLINKS_TO
+HAS_SUGGESTED_ORDERED_RELATED_ITEMS
+
+what relationships there are to other sub graphs
+
+some content id nodes are classified as other types, external page, organisation, covid
