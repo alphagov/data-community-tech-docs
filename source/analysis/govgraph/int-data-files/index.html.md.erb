@@ -1,0 +1,388 @@
+---
+title: GOV.UK Knowledge Graph intermediate data files
+weight: 34
+last_reviewed_on: 2022-02-02
+review_in: 6 months
+---
+
+# GOV.UK Knowledge Graph intermediate data files
+
+The following intermediate data files are used to build the Knowledge Graph instance.
+
+### preprocessed_content_store_<DDMMYY>.csv.gz
+
+A data set of most GOV.UK content pages with multiple attributes for each page.
+
+This data set is made of Content Store data, but excludes:
+
+- excludes [document types that are blocked from the topic taxonomy](https://github.com/alphagov/govuk-knowledge-graph/blob/master/config/document_types_excluded_from_the_topic_taxonomy.yml)
+- only retrieves data for documents with a `Locale` field of `English`
+- only retrieves content items with a `Phase` field of `Live`
+
+The `ContentStore` Python class, defined in [`src.data.extract_contect_store.py`](https://github.com/alphagov/govuk-knowledge-graph/blob/master/src/data/extract_content_store.py) and instantiated in [`src.build_graph_data.py`](https://github.com/alphagov/govuk-knowledge-graph/blob/master/src/build_graph_data.py) retrieves the relevant Content Store data and saves it to a [pandas dataframe](https://pandas.pydata.org/docs/reference/frame.html).
+
+The [`build_knowledge_graph_data`](https://github.com/alphagov/govuk-knowledge-graph/blob/master/build_knowledge_graph_data) script exports a copy of this dataframe as the `preprocessed_content_store_<DDMMYY>.csv.gz` file to the `govuk-data-infrastructure-integration/knowldge_graph/` subdirectory in the AWS S3 bucket.
+
+The dataframe is also used to instantiate the [`CreateContentGraph` Python class](https://github.com/alphagov/govuk-knowledge-graph/blob/master/src/data/create_graph.py), which then generates other intermediate data files which are components of the Knowledge Graph.
+
+The `preprocessed_content_store_<DDMMYY>.csv.gz` file has the following data fields.
+
+| Field| Description| Example|
+| ---- | --- | --- |
+| base_path| URL of the page | /employment-tribunal-decisions/mrs-c-harris-v-worldaware-ltd-2206826-2018|
+| content_id | Content ID of the page | [00000700-262d-441f-8850-cbce15addfb4](https://www.gov.uk/employment-tribunal-decisions/mrs-c-harris-v-worldaware-ltd-2206826-2018) |
+| title | Title of the page | Mrs C Harris v Worldaware Ltd: 2206826/2018|
+| description | Page description| Employment Tribunal decision |
+| publishing_app | Application used to create the page | specialist-publisher |
+| document_type| Type of document| employment_tribunal_decision |
+| details | Content of the page (machine-readable)| {'body': \[{'content': 'Read the...|
+| text| Text on the page| Read the full decision in Mrs C Harris v Worldaware Ltd: 2206826/2018 - Judgement . |
+| organisations | Machine-readable list of organisations managing this page | {'organisations': \[('6f757605-ab8f-4b62-84e4-99f79cf085c2', 'HM Courts & Tribunals Service', 'EA73'), ('8bb37087-a5a7-4493-8afe-900b36ebc927', 'Employment Tribunal', 'CO1133')\], 'primary_publishing_organisation': \[('6f757605-ab8f-4b62-84e4-99f79cf085c2', 'HM Courts & Tribunals Service', 'EA73')\]}|
+| taxons| Machine-readable list of taxons (including their URL and content ID) for this page | \[\[{'title': 'Courts, sentencing and tribunals', 'content_id': '357110bb-cbc5-4708-9711-1b26e6c63e86', 'base_path': '/crime-justice-and-law/courts-sentencing-tribunals', 'document_type': 'taxon', 'level': 2}, {'title': 'Crime, justice and law', 'content_id': 'ba951b09-5146-43be-87af-44075eac3ae9', 'base_path': '/crime-justice-and-law', 'document_type': 'taxon', 'level': 1}\]\] |
+| step_by_steps | List of steps (only on step-by-step pages)||
+| details_parts| TBC||
+| first_published_at| Date first published||
+| public_updated_at |TBC ||
+| updated_at |TBC ||
+| finder| TBC ||
+| facet_values | TBC ||
+| facet_groups | TBC ||
+| has_brexit_no_deal_notice | If the page has a No Deal Brexit notice |True|
+| withdrawn | If the page was withdrawn |False|
+| withdrawn_at | If page was withdrawn, date of withdrawal ||
+| withdrawn_explanation| Why the page was withdrawn||
+
+### base_path_cid_mapping.json
+
+A lookup table to find the content ID of a page from its URL, or the URL of a page from its content ID.
+
+This file is created by the `src.data.extract_contect_store.py` Python script.
+
+An example data field is `"/coronavirus-health-worker-visa-extension": "59ecfc6d-cb9e-49b8-b013-fc368ebdf8ed"`.
+
+### cid_has_organisations_edgelist.csv
+
+A list of content pages with all organisations for those pages.
+
+Organisations are departments, agencies and public bodies.
+
+The `CreateContentGraph` Python class creates this file, which has the following data fields.
+
+| Field| Description| Example|
+| ---- | ---- | ---- |
+| content_id| Content ID of a page| [00000700-262d-441f-8850-cbce15addfb4](https://www.gov.uk/employment-tribunal-decisions/mrs-c-harris-v-worldaware-ltd-2206826-2018) |
+| orgid| Google Analytics code for the organisation | EA73 |
+| org_content_id | Content ID of the page describing an organisation | [6f757605-ab8f-4b62-84e4-99f79cf085c2](https://www.gov.uk/government/organisations/hm-courts-and-tribunals-service) |
+
+### cid_has_original_primary_publishing_organisation_edgelist.csv
+
+A list of content pages with all original, primary publishing organisations for those pages.
+
+Organisations are departments, agencies and public bodies.
+
+The `CreateContentGraph` Python class creates this file, which has the following data fields.
+
+| field | description| example|
+| ---- | --- | ---- |
+| content_id| Content ID of a page | [00004618-b50a-40d3-8401-27e70627d586](https://www.gov.uk/government/news/fully-vaccinated-arrivals-from-france-to-england-must-continue-to-quarantine) |
+| orgid| Google Analytics code for the organisation| D12|
+| org_content_id | Content ID of the page's primary publishing organisation | [7cd6bf12-bbe9-4118-8523-f927b0442156](https://www.gov.uk/government/organisations/department-of-health-and-social-care) |
+
+### cid_has_primary_publishing_organisation_edgelist.csv
+
+A list of content pages with all primary publishing organisations.
+
+Organisations are departments, agencies and public bodies.
+
+The `CreateContentGraph` Python class creates this file, which has the following data fields.
+
+| Field| Description| Example|
+| ---- | ---- | ---- |
+| content_id| Content ID of a page| [00000700-262d-441f-8850-cbce15addfb4](https://www.gov.uk/employment-tribunal-decisions/mrs-c-harris-v-worldaware-ltd-2206826-2018) |
+| orgid| Google Analytics code for a primary publishing organisation | EA73 |
+| org_content_id | Content ID of the page describing a primary publishing organisation | [6f757605-ab8f-4b62-84e4-99f79cf085c2](https://www.gov.uk/government/organisations/hm-courts-and-tribunals-service) |
+
+### cid_has_supporting_organisations_edgelist.csv
+
+A list of content pages with all supporting organisations.
+
+Organisations are departments, agencies and public bodies.
+
+The `CreateContentGraph` Python class creates this file, which has the following data fields.
+
+| Field| Description| Example|
+| ---- | ---- | ---- |
+| content_id| Content ID of a page| [00000700-262d-441f-8850-cbce15addfb4](https://www.gov.uk/employment-tribunal-decisions/mrs-c-harris-v-worldaware-ltd-2206826-2018) |
+| orgid| Google Analytics code for a supporting organisation | EA73 |
+| org_content_id | Content ID of the page describing a supporting organisation | [6f757605-ab8f-4b62-84e4-99f79cf085c2](https://www.gov.uk/government/organisations/hm-courts-and-tribunals-service) |
+
+### cid_has_taxon_id.csv
+
+This file links every content item to a [taxon](https://docs.publishing.service.gov.uk/apps/collections/taxonomy-pages.html) content item based on taxon attached to that content item.
+
+The `CreateContentGraph` Python class creates this file, which has the following data fields.
+
+| field | description| example|
+| ---- | --- | ---- |
+| content_id| Content ID of a page | [00022740-0ba7-4fd0-8ca8-f0c3d6156fec](https://www.gov.uk/research-for-development-outputs/information-sharing-credit-booms-and-financial-stability-lessons-for-developing-economies) |
+| taxon_content_id | Content ID of the page’s taxon | [9fb30a53-70fb-4f1c-878b-0064b202d1ba](https://www.gov.uk/international/international-aid-and-development) |
+
+### cid_has_chapterid_edgelist.csv
+
+Some GOV.UK pages are divided into chapters, for example the [GOV.UK page on Universal Credit](https://www.gov.uk/universal-credit).
+
+The Knowledge Graph’s build process extracts these chapters as separate data points and presents them as nodes in the Knowledge Graph.
+
+Unlike most entities on GOV.UK, chapters have their own URL but no specific content ID.
+
+The `CreateContentGraph` Python class creates this file, which has the following data fields.
+
+| Field| Description| Example|
+| --- | ---- | ---- |
+| content_id | Content ID of the page containing the chapter | [020d58a7-f069-4eb8-bdf2-9979e7196ba4](https://www.gov.uk/foreign-travel-advice/french-guiana) |
+| chapter_number | Index of the page’s chapter| 3|
+
+### chapterid_nodelist.csv
+
+Some GOV.UK pages are divided into chapters, for example the [GOV.UK page on Universal Credit](https://www.gov.uk/universal-credit).
+
+The Knowledge Graph’s build process extracts these chapters as separate data points and presents them as nodes in the Knowledge Graph.
+
+This file has more data fields than `cid_has_chapterid_edgelist.csv`.
+
+Unlike most entities on GOV.UK, chapters have their own URL but no specific content ID.
+
+The `CreateContentGraph` Python class creates this file, which has the following data fields.
+
+| Field| Description| Example|
+| --- | ---- | ---- |
+| content_id | Content ID of the page containing the chapter | [0160d483-38bf-42ea-a00d-e24aeb8bea0f](https://www.gov.uk/reduced-earnings-allowance) |
+| chapter_number | Index of the page’s chapter| 4|
+| url | URL of the chapter | /reduced-earnings-allowance/how-to-claim |
+| title |Title of the page| How to claim |
+| slug| Last part of the URL, which is appended to the URL of the page containing the chapter | how-to-claim |
+
+### content_id_nodelist.csv
+
+A subset of the preprocessed content store. This file lists all content items in the Content Store that have a unique content ID.
+
+This file excludes non-Content Store content items like browse pages, topics pages, search pages and search results pages.
+
+The `CreateContentGraph` Python class creates this file, which has the following data fields.
+
+| Field| Description| Example|
+| ---- | --- | --- |
+| base_path| URL of the page | /employment-tribunal-decisions/mrs-c-harris-v-worldaware-ltd-2206826-2018|
+| content_id | Content ID of the page | [00000700-262d-441f-8850-cbce15addfb4](https://www.gov.uk/employment-tribunal-decisions/mrs-c-harris-v-worldaware-ltd-2206826-2018) |
+| title | Title of the page | Mrs C Harris v Worldaware Ltd: 2206826/2018|
+| description | Page description| Employment Tribunal decision |
+| text| The text on the page| Read the full decision in Mrs C Harris v Worldaware Ltd: 2206826/2018 - Judgement |
+| document_type| Type of document| employment_tribunal_decision |
+| publishing_app | Application used to create the page | specialist-publisher |
+| first_published_at| Date first published||
+| public_updated_at | TBC||
+| updated_at |TBC ||
+| withdrawn | If the page was withdrawn |False|
+| withdrawn_at | If page was withdrawn, date of withdrawal ||
+| withdrawn_explanation| Why the page was withdrawn||
+
+### step_nodelist_cid_to_step_edgelist.csv
+
+A list of the steps on all the step-by-step pages. Steps are sections on step-by-step pages. Each step contains a task. Steps do not have a content ID.
+
+The Knowledge Graph’s build process extracts these steps and tasks as separate data points and presents them as nodes in the Knowledge Graph.
+
+The `CreateContentGraph` Python class creates this file, which has the following data fields.
+
+| Field| Description| Example|
+| ---- | ---- | ---- |
+| step_id | Number ID of the step | 19 |
+| step_title| Title of the step| After you've applied |
+| step_number | Index of the step on the page| 5|
+| content_id| Content ID of the step-by-step page that contains this step | [0c79b832-75de-4854-8154-d62774a8dfb8](https://www.gov.uk/eusettledstatus) |
+
+### task_cid_is_part_of_step_edgelist.csv
+
+Steps are sections on step-by-step pages. Steps contain a task. This file is a list of all tasks.
+
+The Knowledge Graph’s build process extracts these steps and tasks as separate data points and presents them as nodes in the Knowledge Graph.
+
+The `CreateContentGraph` Python class creates this file, which has the following data fields.
+
+| Field| Description| Example|
+| ---- | ---- | ---- |
+| step_number | Index of the step in the step-by-step page | 4|
+| step_title| Title of the step that links to this task| Register for tax |
+| task_base_path | URL of this task | [/apply-national-insurance-number](https://www.gov.uk/apply-national-insurance-number) |
+| task_cid| Content ID of this task | [b70531d4-e904-4a95-a480-2dad5c322ca4](https://www.gov.uk/apply-national-insurance-number) |
+| task_number | Index of the task in the list of steps | 1|
+| step_id | ID of the step that contains this task | 9|
+
+### organisations_nodelist.csv
+
+A list of all the organisations on GOV.UK.
+
+Organisations are departments, agencies and public bodies.
+
+This file is created by the `src/data/extract_organisation_api.py` Python script and has the following data fields.
+
+| Field| Description| Example|
+| --- | --- | ---- |
+| orgid | Google Analytics ID for the organisation | EA740|
+| content_id | Content ID of the organisation page| [b6849b69-fcd0-4ab0-83ea-dcb9d4e861ce](https://www.gov.uk/government/organisations/arts-council-of-northern-ireland) |
+| title | Title of the organisation | Arts Council of Northern Ireland |
+| abbreviation| Abbreviation| ACNI |
+| govuk_status | Status. Marked as "live" if this is the official organisation page, or "exempt" if the organisation also has its own page | exempt |
+
+### taxon_edgelist.csv
+
+The [topic taxonomy](https://docs.publishing.service.gov.uk/manual/taxonomy.html) is a classification scheme for organising and finding content on GOV.UK, based on the content subject area.
+
+This file is a list of pairs of taxons that are related to each other. For example, one taxon is the parent of the other taxon.
+
+The `CreateContentGraph` Python class creates this file, which has the following data fields.
+
+| Field| Description| Example|
+| --- | --- | ---- |
+| src_content_id| Content ID of the source taxon | [9fb30a53-70fb-4f1c-878b-0064b202d1ba](https://www.gov.uk/international/international-aid-and-development) |
+| target_content_id | Content ID of the target taxon | [37d0fa26-abed-4c74-8835-b3b51ae1c8b2](https://www.gov.uk/international) |
+
+### taxon_nodelist.csv
+
+The [topic taxonomy](https://docs.publishing.service.gov.uk/manual/taxonomy.html) is a classification scheme for organising and finding content on GOV.UK, based on the content subject area.
+
+This file is a list of all the taxons.
+
+The `CreateContentGraph` Python class creates this file, which has the following data fields.
+
+| Field| Description| Example|
+| ---- | ---- | ---- |
+| title| Name of the taxon| Aviation |
+| content_id| Content ID of the page for that taxon | [51efa3dd-e9bc-42b2-aa26-06bf5f543015](https://www.gov.uk/transport/aviation) |
+| base_path | URL of the page for the taxon| [/transport/aviation](https://www.gov.uk/transport/aviation)|
+| document_type | Type of document| taxon|
+| level| Level in the taxon hierarchy | 2|
+
+### org_has_child_org_edgelist.csv
+
+A list of pairs of organisations that have a parent-child relationship. The child organisation is part of the parent organisation. For example, the Environment Agency is part of the Department for Food, Environment and Rural Affairs (Defra).
+
+Organisations are departments, agencies and public bodies.
+
+This file is created by the `src/data/extract_organisation_api.py` Python script and has the following data fields.
+
+| Field| Description| Example|
+| --- | --- | --- |
+| src_orgid| Google Analytics ID of the parent organisation | D9|
+| src_title| Name of the parent organisation | Department for Transport|
+| target_orgid | Google Analytics ID of the child organisation| OT1323|
+| target_title | Name of the child organisation| Office for Zero Emission Vehicles |
+
+### org_has_parent_org_edgelist.csv
+
+A list of pairs of organisations that have a parent-child relationship. The parent organisation has other child organisations within it. For example, the Department for Food, Environment and Rural Affairs (Defra) has the Environment Agency within it.
+
+Organisations are departments, agencies and public bodies.
+
+This file is created by the `src/data/extract_organisation_api.py` Python script and has the following data fields.
+
+| Field| Description| Example|
+| --- | --- | --- |
+| src_orgid| Google Analytics ID of the child organisation| OT1323|
+| src_title| Name of the child organisation| Office for Zero Emission Vehicles |
+| target_orgid | Google Analytics ID of the parent organisation | D9|
+| target_title | Name of the parent organisation | Department for Transport|
+
+### org_has_superseded_org_edgelist.csv
+
+A list of superseded organisations and the organisations that superseded them.
+
+Organisations are departments, agencies and public bodies.
+
+This file is created by the `src/data/extract_organisation_api.py` Python script and has the following data fields.
+
+| Field| Description| Example|
+| --- | --- | ---- |
+| src_orgid| Google Analytics ID of the superseded organisation | OT563|
+| src_title| Name of the superseded organisation | CESG |
+| target_orgid | Google Analytics ID of the superseding organisations | OT1211 |
+| target_title | Name of the superseding organisation| National Cyber Security Centre |
+
+### org_has_superseding_org_edgelist.csv
+
+A list of superseding organisations that have superseded other organisations and the organisations that they have superseded.
+
+Organisations are departments, agencies and public bodies.
+
+This file is created by the `src/data/extract_organisation_api.py` Python script and has the following data fields.
+
+| Field| Description| Example|
+| --- | --- | ---- |
+| src_orgid| Google Analytics ID of the superseding organisations | OT1211 |
+| src_title| Name of the superseding organisation| National Cyber Security Centre |
+| target_orgid | Google Analytics ID of the superseded organisation | OT563|
+| target_title | Name of the superseded organisation | CESG |
+
+### people_nodelist.csv
+
+A list of GOV.UK pages about people.
+
+This file is created by the [`extract_publishing_api.py` Python script](https://github.com/alphagov/govuk-knowledge-graph/blob/master/src/data/extract_publishing_api.py) and has the following data fields.
+
+| Field| Description| Example|
+| --- | ---- | ---- |
+| person_content_id | Content ID of the page| [af634166-e296-43f2-95f8-ed4ad2d3565c](https://www.gov.uk/government/people/paul-latham) |
+| person_base_path| URL of the page| [/government/people/paul-latham](https://www.gov.uk/government/people/paul-latham) |
+| person_title | Person that this page is about | Paul Latham|
+
+### people_to_roles_edgelist.csv
+
+A list of person-role relationships.
+
+This file is created by the [`extract_publishing_api.py` Python script](https://github.com/alphagov/govuk-knowledge-graph/blob/master/src/data/extract_publishing_api.py) and has the following data fields.
+
+| Field| Description| Example|
+| ---- | --- | ---- |
+| person_content_id| Content ID of the person | [785681ef-0c24-4dc9-a279-6905538e169c](https://www.gov.uk/government/people/rena-lalgie) |
+| person_base_path | URL of the page about the person| [/government/people/rena-lalgie](https://www.gov.uk/government/people/rena-lalgie) |
+| person_title| Name of the person| Rena Lalgie|
+| role_appointment_content_id | Content ID of the appointment (does not have a corresponding page) | 9f0833ef-3faa-46e5-a7c5-f6ca841398c6 |
+| role_appointment_title | Name of the person and role | Rena Lalgie - Governor to Bermuda|
+| role_appointment_started_on | Date when role started| 2020-12-10T00:00:00+00:00|
+| role_appointment_ended_on | Date when role ended (if applicable)||
+| role_content_id| Content ID of the role (no corresponding page) | 847816b4-c0f1-11e4-8223-005056011aef |
+| role_title| Name of the role| Governor to Bermuda|
+
+### roles_nodelist.csv
+
+A list of all the roles that people on GOV.UK pages have.
+
+This file is created by the [`extract_publishing_api.py` Python script](https://github.com/alphagov/govuk-knowledge-graph/blob/master/src/data/extract_publishing_api.py) and has the following data fields.
+
+| Field| Description| Example|
+| --- | --- | ---- |
+| role_content_id | Content ID of the role (does not map to a page) | 5f35e375-7362-46a9-bb7a-abdfc64bb839 |
+| role_title | Name of the role| Pubs Code Adjudicator|
+
+### roles_to_organisations_edgelist.csv
+
+A list of all the role-organisation relationships.
+
+This file is created by the [`extract_publishing_api.py` Python script](https://github.com/alphagov/govuk-knowledge-graph/blob/master/src/data/extract_publishing_api.py) and has the following data fields.
+
+| field| description | example |
+| --- | ---- | --- |
+| role_content_id | Content ID of the role (does not map to a page) | 8472caef-c0f1-11e4-8223-005056011aef|
+| role_title | Name of the role | Chief Executive |
+| organisation_content_id | Content ID of the organisation| [d3ce4ba7-bc75-46b4-89d9-38cb3240376d](https://www.gov.uk/government/organisations/natural-england)|
+| organisation_base_path| URL of the organisation| [/government/organisations/natural-england](https://www.gov.uk/government/organisations/natural-england) |
+| organisation_title | Name of the organisation | Natural England |
+
+## Further information on the Knowledge Graph
+
+For more information, see the [blog post on the Knowledge Graph](https://insidegovuk.blog.gov.uk/2020/08/07/one-graph-to-rule-them-all/).
+
+If you have questions, you can contact the following groups on Slack:
+
+- the [GOV.UK Data Labs team](https://gds.slack.com/archives/CHR4UQKU4)
+- the [GOV.UK data champions](https://app.slack.com/client/T8GT9416G/C02CM46TD52)

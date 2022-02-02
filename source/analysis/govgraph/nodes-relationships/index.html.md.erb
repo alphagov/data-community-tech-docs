@@ -1,0 +1,47 @@
+---
+title: GOV.UK Knowledge Graph nodes and relationships
+weight: 35
+last_reviewed_on: 2022-02-02
+review_in: 6 months
+---
+
+# GOV.UK Knowledge Graph nodes and relationships
+
+All of the following nodes and relationships are created in/by `src/neo4j/import_edgelist.cypher`, except for `Cid - ExternalPage - HYPERLINKS_TO`.
+
+The `Cid - ExternalPage - HYPERLINKS_TO` node and relationship is created in/by `src/neo4j/import_external_links.cypher`.
+
+| Source node type<br>(relationship FROM) | Target node type<br>(relationship TO) | Relationships<br>(edges) | Description |
+| --------------------------------------- | ------------------------------------- | ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ContentID (Cid) | ContentID (Cid) | HYPERLINKS _TO | Is there a hyperlink from the source node to the target node |
+| ContentID (Cid) | ContentID (Cid) | USER _MOVEMENT | Using (weighted) functional edges, capture the number of user movements from the source node to the target node (content items) over the previous 3 weeks (ending 2 days prior to the current date). |
+| ContentID (Cid) | ContentID (Cid) | HAS _SUGGESTED _ORDERED _RELATED _ITEMS | The target node is an algorithmically-generated related link on the source node. |
+| ContentID (Cid) | ContentID (Cid) | HAS _SIMILAR _CONTENT | Based on old data.<br>Highlight that source and target Cid have similar content (not sure what method was used to identify “similar content”) |
+| Cid | Chapter | HAS _CHAPTER | Some pages (of type “guide”) are split into Chapters.<br>This indicates that a given Cid (the source node) contains the target content item as one of its chapters. |
+| Cid | ExternalPage | HYPERLINKS _TO | Expresses the fact that a page on www.gov.uk links to an external page (eg assets.digital.cabinet-office.gov.uk) |
+| Cid | Taxon | IS _TAGGED _TO | Some ContentIDs are linked to taxons (eg, “Benefits entitlement” or “Welfare”) |
+| Cid | Step | HAS _STEP | “Step-by-step” pages on gov.uk are divided in steps. |
+| Step | Cid | HAS _TASK | Each step in a step-by-step page includes a Task (a link to another page) |
+| Person | Role | HAS _ROLE | Links a person to their role in a government organisation |
+| Role | Organisation | BELONGS _TO | Expresses that a specific role (eg Deputy High Commissioner to Ghana”) belongs to a government organisation (eg, “FCDO”) |
+| Organisation | Organisation | HAS _CHILD | Expresses that a department is part of another department |
+| Organisation | Organisation | HAS _SUPERSEDED | Expresses that an organisation has been renamed or replaced by another one. Eg, NHS Digital has superseded the Health and Social Care Information Centre |
+| Cid | Organisation | HAS _ORIGINAL _PRIMARY _PUBLISHING _ORGANISATION | Each ContentID on gov.uk has this field and the 2 below that indicate what organisations are related to this ContentID |
+| Cid | Organisation | HAS _PRIMARY _PUBLISHING _ORGANISATION | |
+| Cid | Organisation | HAS _ORGANISATIONS | |
+| Taxon | Taxon | HAS _PARENT | Expresses that a taxon is part of another taxon. Eg, the parent of the “Sentencing reform” and “Byelaws” taxons is “Crime, justice and law” |
+| Taxon | Taxon | SHARES _COMMUNITY | This is an “inferred relationship” using a label-propagation algorithm that identifies “similar” taxons as taxons that are tagged from the same pages. |
+
+## Special non-mutually exclusive content-related labels
+
+Certain nodes of type `Cid` are also assigned a separate type (for example, Farming) or combination of separate types (for example Farming, Mainstream) if they meet certain criteria.
+
+|Node type / Label  | Criteria |
+| --- | --- |
+| COVID_19 | If the content items mentions ‘coronavirus’ or ‘covid-19’ in text, title, description or url (cypher) |
+| Farming | If the content item is tagged to the “Food and Farming” taxon (with a few exceptions) |
+| Mainstream | If the content item’s publishing app is Publisher |
+| Fisheries |	If the content item is tagged to any taxon including the terms “commercial fishing” or “fisheries” |
+| Hauliers |	If the content item is tagged to taxons including various haulage-related keywords |
+| Retail | If the content item is tagged to taxons including various retail-related keywords |
+| Chemicals | If the content item and its taxons include various chemical industry-related keywords |
