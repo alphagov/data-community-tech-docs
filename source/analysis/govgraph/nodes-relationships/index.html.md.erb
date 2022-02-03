@@ -17,11 +17,11 @@ The `Cid - ExternalPage - HYPERLINKS_TO` node and relationship is created in/by 
 | ContentID (Cid) | ContentID (Cid) | USER _MOVEMENT | Using (weighted) functional edges, captures the number of user movements from the source node to the target node (content items) over the previous 3 weeks (ending 2 days prior to the current date). |
 | ContentID (Cid) | ContentID (Cid) | HAS _SUGGESTED _ORDERED _RELATED _ITEMS | The target node is an algorithmically-generated related link on the source node. |
 | ContentID (Cid) | ContentID (Cid) | HAS _SIMILAR _CONTENT | Based on old data.<br>Highlight that source and target content ID have similar content. |
-| Cid | Chapter | HAS _CHAPTER | Some pages of type “guide” are split into chapters.<br>This indicates that a given content ID for the source node contains the target content item as one of its chapters. |
+| Cid | Chapter | HAS _CHAPTER | Some pages of type “guide” are split into chapters (for example, `www.gov.uk/universal-credit`).<br>This indicates that a given content ID for the source node contains the target content item as one of its chapters. |
 | Cid | ExternalPage | HYPERLINKS _TO | States that a page on `www.gov.uk` links to an external page (for example, `assets.digital.cabinet-office.gov.uk`). |
-| Cid | Taxon | IS _TAGGED _TO | Some content IDs are linked to taxons, for example, “Benefits entitlement” or “Welfare”. |
-| Cid | Step | HAS _STEP | Step-by-step pages on GOV.UK are divided in steps. |
-| Step | Cid | HAS _TASK | Each step in a step-by-step page includes a link to another page, also known as a task. |
+| Cid | Taxon | IS _TAGGED _TO | Content items that contain a link to a given Taxon page. For example, the page `www.gov.uk/child-tax-credit` contains a link to the Taxon page "Tax Credits" at `www.gov.uk/topic/benefits-credits/tax-credits`. |
+| Cid | Step | HAS _STEP | [Step-by-step pages](/analysis/govgraph/int-data-files/#step-nodelist-cid-to-step-edgelist-csv) on GOV.UK are divided in steps. |
+| Step | Cid | HAS _TASK | Each step in a step-by-step page includes a link to another page, also known as a [task](/analysis/govgraph/int-data-files/#task-cid-is-part-of-step-edgelist-csv). |
 | Person | Role | HAS _ROLE | Links a person to their role in a government organisation. |
 | Role | Organisation | BELONGS _TO | States that a specific role belongs to a government organisation. |
 | Organisation | Organisation | HAS _CHILD | States that a department is part of another department. |
