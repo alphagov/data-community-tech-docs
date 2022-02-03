@@ -65,26 +65,21 @@ This network visualises user movement between specified content items (pages), w
 
 There is one instance of the Knowledge Graph, the [user-facing Knowledge Graph](https://knowledge-graph.integration.govuk.digital:7473/browser/) that content designers use to answer common content questions.
 
-To create the Knowledge Graph instance, every day at 5am the following applications are automatically run in sequence:
+1. To create the Knowledge Graph instance, every day at 5am the following applications are automatically run in sequence:
+  - [`app-data-science`](https://github.com/alphagov/govuk-aws/tree/master/terraform/projects/app-data-science)
+  - [`app-knowledge-graph`](https://github.com/alphagov/govuk-aws/blob/master/terraform/projects/app-knowledge-graph)
 
-- [`app-data-science`](https://github.com/alphagov/govuk-aws/tree/master/terraform/projects/app-data-science)
-- [`app-knowledge-graph`](https://github.com/alphagov/govuk-aws/blob/master/terraform/projects/app-knowledge-graph)
+1. The `app-data-science` application runs the [`build_knowledge_graph_data` Python script](https://github.com/alphagov/govuk-knowledge-graph/blob/master/build_knowledge_graph_data). This script generates [intermediate data files](/analysis/govgraph/int-data-files/) from the 4 data sources and copies those files to these AWS S3 buckets:
+  - `govuk-data-infrastructure-integration` in these subdirectories:
+      - `knowldge_graph`
+      - `structural_network`
+      - `functional-network/DATE/`
+  - `govuk-related-links-integration`
 
-The `app-data-science` application runs the [`build_knowledge_graph_data` Python script](https://github.com/alphagov/govuk-knowledge-graph/blob/master/build_knowledge_graph_data). This script generates [intermediate data files](/analysis/govgraph/int-data-files/) from the 4 data sources and copies those files to these AWS S3 buckets:
-
-- `govuk-data-infrastructure-integration` in these subdirectories:
-    - `knowldge_graph`
-    - `structural_network`
-    - `functional-network/DATE/`
-- `govuk-related-links-integration`
-
-The `app-knowledge-graph` application runs the [`provision_knowledge_graph` bash script](https://github.com/alphagov/govuk-knowledge-graph/blob/master/provision_knowledge_graph) to build the user-facing Knowledge Graph instance from the intermediate data files.
-
-This bash script:
-
-- builds the Neo4J instance
-- downloads aggregated functional edges that are generated daily from the previous 3 weeks (2 days prior)
-- uses cypher queries to create nodes and add relationships between nodes and properties (if available) in `src/neo4j`
+1. The `app-knowledge-graph` application runs the [`provision_knowledge_graph` bash script](https://github.com/alphagov/govuk-knowledge-graph/blob/master/provision_knowledge_graph) to build the user-facing Knowledge Graph instance from the intermediate data files. This bash script:
+  - builds the Neo4J instance
+  - downloads aggregated functional edges that are generated daily from the previous 3 weeks (2 days prior)
+  - uses cypher queries to create nodes and add relationships between nodes and properties (if available) in `src/neo4j`
 
 The Knowledge Graph instance is password-protected. [Ask the GOV.UK Data Labs team on Slack](https://gds.slack.com/archives/CHR4UQKU4) for the username and password to view the Knowledge Graph instance.
 
