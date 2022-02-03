@@ -1,0 +1,47 @@
+---
+title: GOV.UK Knowledge Graph nodes and relationships
+weight: 35
+last_reviewed_on: 2022-02-02
+review_in: 6 months
+---
+
+# GOV.UK Knowledge Graph nodes and relationships
+
+All of the following nodes and relationships are created in/by `src/neo4j/import_edgelist.cypher`, except for `Cid - ExternalPage - HYPERLINKS_TO`.
+
+The `Cid - ExternalPage - HYPERLINKS_TO` node and relationship is created in/by `src/neo4j/import_external_links.cypher`.
+
+| Source node type<br>(relationship FROM) | Target node type<br>(relationship TO) | Relationships<br>(edges) | Description |
+| --------------------------------------- | ------------------------------------- | ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ContentID (Cid) | ContentID (Cid) | HYPERLINKS _TO | States if there is a hyperlink from the source node to the target node. |
+| ContentID (Cid) | ContentID (Cid) | USER _MOVEMENT | Using (weighted) functional edges, captures the number of user movements from the source node to the target node (content items) over the previous 3 weeks (ending 2 days prior to the current date). |
+| ContentID (Cid) | ContentID (Cid) | HAS _SUGGESTED _ORDERED _RELATED _ITEMS | The target node is an algorithmically-generated related link on the source node. |
+| ContentID (Cid) | ContentID (Cid) | HAS _SIMILAR _CONTENT | Based on old data.<br>Highlight that source and target content ID have similar content. |
+| Cid | Chapter | HAS _CHAPTER | Some pages of type “guide” are split into chapters (for example, `www.gov.uk/universal-credit`).<br>This indicates that a given content ID for the source node contains the target content item as one of its chapters. |
+| Cid | ExternalPage | HYPERLINKS _TO | States that a page on `www.gov.uk` links to an external page (for example, `assets.digital.cabinet-office.gov.uk`). |
+| Cid | Taxon | IS _TAGGED _TO | Content items that contain a link to a given Taxon page. For example, the page `www.gov.uk/child-tax-credit` contains a link to the Taxon page "Tax Credits" at `www.gov.uk/topic/benefits-credits/tax-credits`. |
+| Cid | Step | HAS _STEP | [Step-by-step pages](/analysis/govgraph/int-data-files/#step-nodelist-cid-to-step-edgelist-csv) on GOV.UK are divided in steps. |
+| Step | Cid | HAS _TASK | Each step in a step-by-step page includes a link to another page, also known as a [task](/analysis/govgraph/int-data-files/#task-cid-is-part-of-step-edgelist-csv). |
+| Person | Role | HAS _ROLE | Links a person to their role in a government organisation. |
+| Role | Organisation | BELONGS _TO | States that a specific role belongs to a government organisation. |
+| Organisation | Organisation | HAS _CHILD | States that a department is part of another department. |
+| Organisation | Organisation | HAS _SUPERSEDED | States that an organisation has been renamed or replaced by another organisation. |
+| Cid | Organisation | HAS _ORIGINAL _PRIMARY _PUBLISHING _ORGANISATION | How each content ID is related to an original primary publishing organisation. |
+| Cid | Organisation | HAS _PRIMARY _PUBLISHING _ORGANISATION | How each content ID is related to a primary publishing organisation. |
+| Cid | Organisation | HAS _ORGANISATIONS | How each content ID is related to an organisation. |
+| Taxon | Taxon | HAS _PARENT | States that a taxon is part of another taxon. For example, the parent of the “Sentencing reform” and “Byelaws” taxons is “Crime, justice and law”. |
+| Taxon | Taxon | SHARES _COMMUNITY | This is an “inferred relationship” using a label-propagation algorithm that identifies similar taxons as taxons that are tagged from the same pages. |
+
+## Special non-mutually exclusive content-related labels
+
+Certain nodes of type `Cid` are also assigned a separate type (for example, Farming) or combination of separate types (for example Farming, Mainstream) if they meet certain criteria.
+
+|Node type / Label | Criteria |
+| --- | --- |
+| COVID_19 | If the content items mentions ‘coronavirus’ or ‘covid-19’ in text, title, description or URL (cypher). |
+| Farming | If the content item is tagged to the “Food and Farming” taxon, with a few exceptions. |
+| Mainstream | If the content item’s publishing app is Publisher. |
+| Fisheries |	If the content item is tagged to any taxon including the terms “commercial fishing” or “fisheries”. |
+| Hauliers |	If the content item is tagged to taxons including various haulage-related keywords. |
+| Retail | If the content item is tagged to taxons including various retail-related keywords. |
+| Chemicals | If the content item and its taxons include various chemical industry-related keywords. |
