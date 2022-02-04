@@ -61,6 +61,14 @@ Google Analytics data from 2 days before is used to build a functional network.
 
 This network visualises user movement between specified content items (pages), which captures how users are navigating to and from these pages.
 
+## Knowledge graph limitation
+
+The Knowledge Graph does not fully represent the GOV.UK website because the graph uses the Content Store to create the content item network nodes.
+
+This means that the Knowledge Graph includes the GOV.UK content, but not dynamic elements or elements rendered by the rendering app.
+
+This also means that elements like `/browse` and `/topic` pages are not in the Knowledge Graph as source content ID or `Cid` nodes. A source `Cid` node is a node that has hyperlinks from it. You can however find these elements as target nodes. A target node is a node that has hyperlinks to it. This is because embedded links to these nodes are on content items.
+
 ## Create the Knowledge Graph
 
 There is one instance of the Knowledge Graph, the [user-facing Knowledge Graph](https://knowledge-graph.integration.govuk.digital:7473/browser/) that content designers use to answer common content questions.
