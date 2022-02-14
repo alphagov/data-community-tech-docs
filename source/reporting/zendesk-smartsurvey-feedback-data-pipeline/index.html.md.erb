@@ -1,7 +1,7 @@
 ---
 title: Zendesk and SmartSurvey feedback data pipeline
 weight: 41
-last_reviewed_on: 2021-09-09
+last_reviewed_on: 2022-02-14
 review_in: 6 months
 ---
 
@@ -14,17 +14,17 @@ There are 2 feedback questions. If the feedback question is:
 - “Is this page useful?”, the feedback data goes to SmartSurvey
 - “Is there something wrong with this page?”, the feedback data goes to Zendesk
 
-The Zendesk and SmartSurvey feedback data is routed to BigQuery so that GDS users can view and analyse that data.
+The Zendesk and SmartSurvey feedback data is routed to BigQuery through the [GOV.UK Feedback Pipeline tool](https://github.com/alphagov/govuk-feedback-pipeline), so that GDS users can view and analyse that data.
 
-The following content explains how this feedback data pipeline works.
+The following content explains how:
 
-## Copy and cleanse the feedback data
+- GDS copies the feedback data from SmartSurvey and Zendesk
+- the Feedback Pipeline tool cleanses the feedback data
+- the tool saves the feedback data in BigQuery
 
-SmartSurvey and Zendesk store their feedback data on their own servers.
+## Copy the feedback data
 
-As this feedback data is stored in two different servers, accessing and using the data is difficult.
-
-The following process allows GDS users to access this data more easily.
+SmartSurvey and Zendesk store their feedback data on 2 different servers.
 
 Every day at approximately 8:10am, an AWS Lambda function runs a collection of Python scripts to copy the feedback data from the SmartSurvey and Zendesk servers to BigQuery.
 
@@ -32,30 +32,97 @@ These Python scripts are located in the [govuk-user-journey-models GitHub repo o
 
 To get access to this repo, speak to the GDS Data Labs team on the [#govuk-data-labs Slack channel](https://app.slack.com/client/T8GT9416G/CHR4UQKU4).
 
-Whilst the data is being copied to BigQuery, the Python scripts process and cleanse the data to mask and remove personally identifiable information (PII). This is a 2 step process.
+## Cleanse the feedback data
 
-1. The scripts use regex matching to look for National Insurance, NHS and credit card numbers. The scripts then mask this PII. The regex patterns are as follows:
+A feedback submission by a single user of GOV.UK is a feedback record.
+
+The Feedback Pipeline tool cleanses the feedback records in the SmartSurvey and Zendesk data sets in BigQuery.
+
+### Data cleansing methods
+
+The tool uses 4 data cleansing methods:
+
+- pruning
+- masking
+- filtering
+- mark-up
+
+#### Pruning
+
+Pruning is removing a portion of nonsensical or irrelevant feedback text from a feedback record.
+
+Examples of pruning include trimming whitespace and removing URL parameters or code snippets.
+
+#### Masking
+
+Masking is replacing a portion of feedback text with a text mask indicating that the feedback text has been modified.
+
+An example of a text mask is `****`. Text can be masked because the portion is:
+
+- not relevant to the analysis
+- potentially sensitive
+- personally identifiable information (PII) or profanity
+
+#### Filtering
+
+Filtering is excluding a feedback record from the pipeline output data set because the feedback record has no relevant or legitimate feedback.
+
+Examples of feedback records that should be filtered are spam records or duplicate records.
+
+#### Mark-up
+
+When added to a feedback record, this shows that that feedback record has no relevant or legitimate feedback.
+
+Examples of feedback records that should be marked up in this way are spam records or duplicate records.
+
+### Data cleansing
+
+The Feedback Pipeline tool goes through the following steps to cleanse the SmartSurvey and Zendesk data sets.
+
+1. Reads the feedback data from the previous full day from SmartSurvey and Zendesk by submitting an API request.
+
+1. Prunes unnnecessary white space in feedback text to avoid issues in text analysis later in the process.
+
+1. Deletes duplicate feedback records to minimise processing cost. The tool identifies duplicate records using an internal identifier.
+
+1. Deletes verbose feedback records as verbose records cannot be processed and analysed later in the process. Verbose records are defined as having more than 2000 characters.
+
+1. Deletes records whose text patterns match known vulnerability exploits, such as javascript or SQL strings, or vulnerability scanning tools.
+
+1. Masks and removes PII in a 2 step process. First, the tool uses regex matching to look for National Insurance, NHS and credit card numbers, and then masks this PII. The regex patterns are as follows:
 
     ```
     [r'(?i)\b(?:[a-z]\W?){2}(?:\d\W?){6}\W?[a-z]\b', '[NI###]'],
     [r'(?i)nhs\s?(?:.{0,20})?(?:\d\D?){9}(?:\d)', '[NHS###]'],
     [r'(?:\d\D?){16}', '[CC###]']
     ```
-
-1. The scripts send the data to the [Google Cloud Data Loss Prevention service (DLP)](https://cloud.google.com/dlp). Google Cloud DLP looks for the following information types:
+    Second, the tool sends the data to the [Google Cloud Data Loss Prevention service (DLP)](https://cloud.google.com/dlp). Google Cloud DLP looks for the following information types:
 
     ```
     PERSON_NAME,
-    EMAIL_ADDRESS",
+    EMAIL_ADDRESS,
     DATE_OF_BIRTH,
     STREET_ADDRESS
     ```
+    Google Cloud DLP then cleanses the data of these information types and returns the cleansed data to the tool.
 
-Google Cloud DLP then cleanses the data of these information types and returns the cleansed data to BigQuery.
+1. Prunes code snippets in feedback records by replacing those snippets with the blank character '', as code snippets are not relevant to feedback data analysis.
+
+1. Masks instances of profanity in feedback records with `****`.
+
+The tool has finished cleansing the feedback data.
 
 ## Save the feedback data in BigQuery
 
-When the data cleansing is complete, the data is saved into the GOV.UK Analytics project in BigQuery, `govuk-bigquery-analytics`.
+The Feedback Pipeline tool saves the following to BigQuery:
+
+- cleansed data
+- pipeline metrics
+- PII metrics
+
+### Save the cleansed data
+
+When the data cleansing is complete, the tool saves the data into the GOV.UK Analytics project in BigQuery, `govuk-bigquery-analytics`.
 
 Within this project:
 
@@ -72,6 +139,14 @@ To request permission to view or edit these data tables in BigQuery, speak to th
 The Zendesk and SmartSurvey feedback data is now in BigQuery, ready for users to view and analyse.
 
 See the [documentation on presenting or extract feedback data from BigQuery](/manual/view-extract-feedback-data-bigquery.html) for more information on the next step of the process.
+
+### Save the pipeline and PII metrics
+
+The tool also saves pipeline and PII metrics to BigQuery.
+
+The pipeline metrics summarise the changes to the feedback records due to the data cleansing process.
+
+The PII metrics summarise what type of PII was removed and from which feedback records.
 
 ## Data field definitions
 
