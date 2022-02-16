@@ -12,9 +12,9 @@ GOV.UK users can select a feedback question at the bottom of a GOV.UK webpage to
 There are 2 feedback questions. If the feedback question is:
 
 - “Is this page useful?”, the feedback data goes to SmartSurvey
-- “Is there something wrong with this page?”, the feedback data goes to Zendesk
+- "Report a problem with this page”, the feedback data goes to Zendesk
 
-The Zendesk and SmartSurvey feedback data is routed to BigQuery through the [GOV.UK Feedback Pipeline tool](https://github.com/alphagov/govuk-feedback-pipeline).
+There is a requirement to route the Zendesk and SmartSurvey feedback data into BigQuery through the [GOV.UK Feedback Pipeline tool](https://github.com/alphagov/govuk-feedback-pipeline).
 
 The Feedback Pipeline tool consolidates, cleanses and standardises the feedback data to enable accurate analysis of the user feedback. This maximises the quality and reliability of the user feedback data, making it easier to identify both known and new meaningful insights and actions.
 
@@ -28,7 +28,7 @@ The following content explains how:
 
 SmartSurvey and Zendesk store their feedback data on 2 different servers.
 
-Every day at approximately 8:10am, an AWS Lambda function runs a collection of Python scripts to copy the feedback data from the SmartSurvey and Zendesk servers to BigQuery.
+Every day at approximately 8:10am, an [Apache Airflow process](https://airflow.apache.org/) runs a collection of Python scripts to copy the previous day's feedback data from the SmartSurvey and Zendesk servers to BigQuery.
 
 These Python scripts are located in the [govuk-user-journey-models GitHub repo on alphagov](https://github.com/alphagov/govuk-user-journey-models).
 
@@ -48,6 +48,10 @@ The tool uses 4 data cleansing methods:
 - masking
 - filtering
 - marking up
+
+The tool identifies data to cleanse using known text patterns, otherwise known as regular expressions.
+
+See the [Feedback Pipeline tool regular expressions documentation](/reporting/zendesk-smartsurvey-feedback-data-pipeline/regex/) for more information.
 
 #### Pruning
 
@@ -91,20 +95,18 @@ The Feedback Pipeline tool goes through the following steps to cleanse the Smart
 
 1. Deletes records whose text patterns match known vulnerability exploits, such as javascript or SQL strings, or vulnerability scanning tools.
 
-1. Masks and removes PII in a 2 step process. First, the tool uses regex matching to look for National Insurance, NHS and credit card numbers, and then masks this PII. The regex patterns are as follows:
+1. Masks and removes PII in a 2 step process. First, the tool compares the feedback records against PII regular expressions. The tool then masks any identified PII instances.
 
-    ```
-    [r'(?i)\b(?:[a-z]\W?){2}(?:\d\W?){6}\W?[a-z]\b', '[NI###]'],
-    [r'(?i)nhs\s?(?:.{0,20})?(?:\d\D?){9}(?:\d)', '[NHS###]'],
-    [r'(?:\d\D?){16}', '[CC###]']
-    ```
     Second, the tool sends the data to the [Google Cloud Data Loss Prevention service (DLP)](https://cloud.google.com/dlp). Google Cloud DLP looks for the following information types:
 
     ```
-    PERSON_NAME,
-    EMAIL_ADDRESS,
-    DATE_OF_BIRTH,
-    STREET_ADDRESS
+    Date of birth
+    Email address
+    Passport number
+    Person name
+    Phone number
+    Street address
+    UK National Insurance number
     ```
     Google Cloud DLP then cleanses the data of these information types and returns the cleansed data to the tool.
 

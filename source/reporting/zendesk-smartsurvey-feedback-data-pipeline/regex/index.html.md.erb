@@ -1,0 +1,214 @@
+---
+title: Feedback Pipeline tool regular expressions
+weight: 41.5
+last_reviewed_on: 2022-02-14
+review_in: 6 months
+---
+
+# Feedback Pipeline tool regular expressions
+
+The Feedback Pipeline tool uses 4 data cleansing methods:
+
+- pruning
+- masking
+- filtering
+- marking up
+
+The tool identifies data to cleanse using known text patterns, otherwise known as regular expressions.
+
+The following tables summarise the regular expressions the tool uses to identify data to cleanse.
+
+## Pruning regular expressions
+
+<table dir="ltr" border="1" cellspacing="0" cellpadding="0"><colgroup><col width="191" /><col width="158" /><col width="386" /><col width="972" /></colgroup>
+<tbody>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Objective&quot;}">Objective</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Pipeline Metrics Alias&quot;}">Pipeline Metrics Alias</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Expression&quot;}">Expression</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Description&quot;}">Description</td>
+</tr>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove URL strings&quot;}">Remove URL strings</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;&lsquo;[remove_url]'&quot;}">&lsquo;[remove_url]'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;r'\\?.*w'&quot;}">r'\?.*w'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Removes URL parameters (e.g. '?something=something')&quot;}">Removes URL parameters (e.g. '?something=something')</td>
+</tr>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove URL strings&quot;}">Remove URL strings</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;&lsquo;[remove_url]'&quot;}">&lsquo;[remove_url]'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;r'http\\S+'&quot;}">r'http\S+'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Removes contiguous block of text where the block begins with &ldquo;http&rdquo;&quot;}">Removes contiguous block of text where the block begins with &ldquo;http&rdquo;</td>
+</tr>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove Code Snippets&quot;}">Remove Code Snippets</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;&lsquo;[remove_code_snippets]'&quot;}">&lsquo;[remove_code_snippets]'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;r'(?i)[?requester]?\\n?[^\\n]*[\\n]{0,2}'&quot;}">r'(?i)[?requester]?\n?[^\n]*[\n]{0,2}'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Removes newline content following a specified string (e.g. 'requester') where it can be assumed that the newline content contains non-relevant technical information&quot;}">Removes newline content following a specified string (e.g. 'requester') where it can be assumed that the newline content contains non-relevant technical information</td>
+</tr>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove Code Snippets&quot;}">Remove Code Snippets</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;&lsquo;[remove_code_snippets]'&quot;}">&lsquo;[remove_code_snippets]'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;r'(?i)[?referrer]?\\n?[^\\n]*[\\n]{0,2}'&quot;}">r'(?i)[?referrer]?\n?[^\n]*[\n]{0,2}'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Removes newline content following a specified string (e.g. 'requester') where it can be assumed that the newline content contains non-relevant technical information&quot;}">Removes newline content following a specified string (e.g. 'requester') where it can be assumed that the newline content contains non-relevant technical information</td>
+</tr>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove Code Snippets&quot;}">Remove Code Snippets</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;&lsquo;[remove_code_snippets]'&quot;}">&lsquo;[remove_code_snippets]'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;r'(?i)([?user agent]?\\n?|user_agent)[^\\n]*[\\n]{0,2}'&quot;}">r'(?i)([?user agent]?\n?|user_agent)[^\n]*[\n]{0,2}'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Removes newline content following a specified string (e.g. 'requester') where it can be assumed that the newline content contains non-relevant technical information&quot;}">Removes newline content following a specified string (e.g. 'requester') where it can be assumed that the newline content contains non-relevant technical information</td>
+</tr>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove Code Snippets&quot;}">Remove Code Snippets</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;&lsquo;[remove_code_snippets]'&quot;}">&lsquo;[remove_code_snippets]'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;r'(?i)([?javaScript enabled]?\\n?|javascript_enabled)[^\\n]*[\\n]{0,2}'&quot;}">r'(?i)([?javaScript enabled]?\n?|javascript_enabled)[^\n]*[\n]{0,2}'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Removes newline content following a specified string (e.g. 'requester') where it can be assumed that the newline content contains non-relevant technical information&quot;}">Removes newline content following a specified string (e.g. 'requester') where it can be assumed that the newline content contains non-relevant technical information</td>
+</tr>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove Code Snippets&quot;}">Remove Code Snippets</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;&lsquo;[remove_code_snippets]'&quot;}">&lsquo;[remove_code_snippets]'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;r'\\[*-\\]'&quot;}">r'\[*-\]'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Removes instances of text contained within square brackets where the text is non-alpha/or any number of &ldquo;-&ldquo;&quot;}">Removes instances of text contained within square brackets where the text is non-alpha/or any number of &ldquo;-&ldquo;</td>
+</tr>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove Code Snippets&quot;}">Remove Code Snippets</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;&lsquo;[remove_code_snippets]'&quot;}">&lsquo;[remove_code_snippets]'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;\\[^a-z-A-Z\\]+'&quot;,&quot;6&quot;:1}">\[^a-z-A-Z\]+'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Removes instances of text contained within square brackets where the text is non-alpha/or any number of &ldquo;-&ldquo;&quot;}">Removes instances of text contained within square brackets where the text is non-alpha/or any number of &ldquo;-&ldquo;</td>
+</tr>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove redundant whitespace&quot;}">Remove redundant whitespace</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;&lsquo;[remove_whitespace]&rsquo;&quot;}">&lsquo;[remove_whitespace]&rsquo;</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;r' \\s, '&quot;}">r' \s, '</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Replace contiguous blocks of whitespace with a single whitespace character&quot;}">Replace contiguous blocks of whitespace with a single whitespace character</td>
+</tr>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove redundant whitespace&quot;}">Remove redundant whitespace</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;&lsquo;[remove_whitespace]&rsquo;&quot;}">&lsquo;[remove_whitespace]&rsquo;</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;r' \\S+$&quot;}">r' \S+$</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove instances of a single whitespace character at the end of a given text field&quot;}">Remove instances of a single whitespace character at the end of a given text field</td>
+</tr>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove redundant whitespace&quot;}">Remove redundant whitespace</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;&lsquo;[remove_whitespace]&rsquo;&quot;}">&lsquo;[remove_whitespace]&rsquo;</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;r' ^\\S+&quot;}">r' ^\S+</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove instances of a single whitespace character at the beginning of a given text field&quot;}">Remove instances of a single whitespace character at the beginning of a given text field</td>
+</tr>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove redundant whitespace&quot;}">Remove redundant whitespace</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;&lsquo;[other_cleaning&rsquo;]'&quot;}">&lsquo;[other_cleaning&rsquo;]'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;r'what_wrong'&quot;}">r'what_wrong'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove instances of &ldquo;what_wrong&rdquo; from beginning of line&quot;}">Remove instances of &ldquo;what_wrong&rdquo; from beginning of line</td>
+</tr>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove redundant whitespace&quot;}">Remove redundant whitespace</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;&lsquo;[other_cleaning&rsquo;]'&quot;}">&lsquo;[other_cleaning&rsquo;]'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;r'what_doing'&quot;}">r'what_doing'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove instance of &ldquo;what_doing&rdquo; from beginning of line&quot;}">Remove instance of &ldquo;what_doing&rdquo; from beginning of line</td>
+</tr>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove redundant whitespace&quot;}">Remove redundant whitespace</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;&lsquo;[other_cleaning&rsquo;]'&quot;}">&lsquo;[other_cleaning&rsquo;]'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;r'^details'&quot;}">r'^details'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove instance of &ldquo;details&rdquo; from beginning of line&quot;}">Remove instance of &ldquo;details&rdquo; from beginning of line</td>
+</tr>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove redundant whitespace&quot;}">Remove redundant whitespace</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;&lsquo;[other_cleaning&rsquo;]'&quot;}">&lsquo;[other_cleaning&rsquo;]'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;r'^url'&quot;}">r'^url'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove instance of &ldquo;url&rdquo; from beginning of line&quot;}">Remove instance of &ldquo;url&rdquo; from beginning of line</td>
+</tr>
+</tbody>
+</table>
+
+## Masking regular expressions
+
+<table dir="ltr" border="1" cellspacing="0" cellpadding="0"><colgroup><col width="191" /><col width="158" /><col width="386" /><col width="972" /></colgroup>
+<tbody>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Objective&quot;}">Objective</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Pipeline Metrics Alias&quot;}">Pipeline Metrics Alias</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Expression&quot;}">Expression</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Description&quot;}">Description</td>
+</tr>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove PII&quot;}">Remove PII</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;&lsquo;[remove_pii]'&quot;}">&lsquo;[remove_pii]'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Phone number&quot;}">Phone number</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;[PH###]&quot;}">[PH###]</td>
+</tr>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove PII&quot;}">Remove PII</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;&lsquo;[remove_pii]'&quot;}">&lsquo;[remove_pii]'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;r'\\w{5}\\d{6}\\w{2}\\d\\w{2}', &lsquo;[DL###]&rsquo;&quot;}">r'\w{5}\d{6}\w{2}\d\w{2}', &lsquo;[DL###]&rsquo;</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Matches [a-zA-Z0-9_] 5 times, any digit 6 times, [a-zA-Z0-9_] 2 times, then a digit, then [a-zA-Z0-9_] a final 2 times. Does not account for whitespaces.\nReplaces matched instances with &lsquo;[DL###]&rsquo;&quot;}">Matches [a-zA-Z0-9_] 5 times, any digit 6 times, [a-zA-Z0-9_] 2 times, then a digit, then [a-zA-Z0-9_] a final 2 times. Does not account for whitespaces.<br />Replaces matched instances with &lsquo;[DL###]&rsquo;</td>
+</tr>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove PII&quot;}">Remove PII</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;&lsquo;[remove_pii]'&quot;}">&lsquo;[remove_pii]'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Passport number&quot;}">Passport number</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;['PN###']&quot;}">['PN###']</td>
+</tr>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove PII&quot;}">Remove PII</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;&lsquo;[remove_pii]'&quot;}">&lsquo;[remove_pii]'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;r'(?i)\\b(?:[a-z]\\W?){2}(?:\\d\\W?){6}\\W?[a-z]\\b'&quot;}">r'(?i)\b(?:[a-z]\W?){2}(?:\d\W?){6}\W?[a-z]\b'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Replaces instances of text matching national insurance number pattern with &ldquo;[NI###]&rdquo;&quot;}">Replaces instances of text matching national insurance number pattern with &ldquo;[NI###]&rdquo;</td>
+</tr>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove PII&quot;}">Remove PII</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;&lsquo;[remove_pii]'&quot;}">&lsquo;[remove_pii]'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;r'(?i)nhs\\s?(?:.{0,20})?(?:\\d\\D?){9}(?:\\d)'&quot;}">r'(?i)nhs\s?(?:.{0,20})?(?:\d\D?){9}(?:\d)'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Replaces instances of text matching NHS number pattern with &ldquo;[NHS###]&rdquo;&quot;}">Replaces instances of text matching NHS number pattern with &ldquo;[NHS###]&rdquo;</td>
+</tr>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove PII&quot;}">Remove PII</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;&lsquo;[remove_pii]'&quot;}">&lsquo;[remove_pii]'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;r'(?:\\d\\D?){16}'&quot;}">r'(?:\d\D?){16}'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Replaces instances of text matching credit card number pattern with &ldquo;[CC###]&rdquo;&quot;}">Replaces instances of text matching credit card number pattern with &ldquo;[CC###]&rdquo;</td>
+</tr>
+</tbody>
+</table>
+
+## Filtering, marking up and do nothing regular expressions
+
+<table dir="ltr" border="1" cellspacing="0" cellpadding="0"><colgroup><col width="191" /><col width="158" /><col width="386" /><col width="972" /></colgroup>
+<tbody>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Objective&quot;}">Objective</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Pipeline Metrics Alias&quot;}">Pipeline Metrics Alias</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Expression&quot;}">Expression</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Description&quot;}">Description</td>
+</tr>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove Spam Entries&quot;}">Remove Spam Entries</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;TDB&quot;}">TDB</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;SQL injection - select statements&quot;}">SQL injection - select statements</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;To identify strings which contain &ldquo;select&rdquo; and for which the next non-whitespace character is among: &ldquo;(&ldquo;, numeric e.g. 1-0), &ldquo;*&rdquo;&quot;}">To identify strings which contain &ldquo;select&rdquo; and for which the next non-whitespace character is among: &ldquo;(&ldquo;, numeric e.g. 1-0), &ldquo;*&rdquo;</td>
+</tr>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove Spam Entries&quot;}">Remove Spam Entries</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;TDB&quot;}">TDB</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;r'(?i)pg_sleep'&quot;}">r'(?i)pg_sleep'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Identifies strings which match the pattern &lsquo;pg_sleep&rsquo; in without case sensitivity&quot;}">Identifies strings which match the pattern &lsquo;pg_sleep&rsquo; in without case sensitivity</td>
+</tr>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove Spam Entries&quot;}">Remove Spam Entries</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;TDB&quot;}">TDB</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Javascript&quot;}">Javascript</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove Spam Entries&quot;}">Remove Spam Entries</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;TDB&quot;}">TDB</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;HTML\n&lt;(.)&gt;.?|&lt;(.*) /&gt;&quot;}">HTML<br />&lt;(.)&gt;.?|&lt;(.*) /&gt;</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Remove Spam Entries&quot;}">Remove Spam Entries</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;TDB&quot;}">TDB</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;r'(?i)nessus[_0-9]'&quot;}">r'(?i)nessus[_0-9]'</td>
+<td data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Matches records containing the string &ldquo;nessus&rdquo; where the the following character is either an underscore or a numeric.&quot;}">Matches records containing the string &ldquo;nessus&rdquo; where the the following character is either an underscore or a numeric.</td>
+</tr>
+</tbody>
+</table>
