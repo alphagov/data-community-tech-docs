@@ -63,67 +63,116 @@ If you receive a warning message saying "The notebook was not authored by Google
 
 You set the query parameters in the __Set query parameters__ cell.
 
-You must set the following mandatory query parameters:
+1. You must set the following mandatory query parameters:
+  - start and end dates for the analysis
+  - desired page path of interest
+  - the number of pages or events the user journeys will be subsetted by
+  - whether to include page and/or event hits
+  - device categories to include
 
-- start and end dates for the analysis
-- desired page path of interest
-- the number of pages or events the user journeys will be subsetted by
-- whether to include page and/or event hits
-- device categories to include
+1. You can set the following optional query parameters on whether to:
+  - remove query strings from the page path of interest
+  - append event-associated page paths with an __[E]__,
+  - append event-associated page paths with the event category, event action, and/or event label suffixes
+  - flag journeys that include the entrance page
+  - remove refreshes of the page of interest
+  - have search pages only show the search content type and search keywords
 
+Once you are happy with the query parameters, select the cell and first select __Runtime__, and then __Run after__. The notebook will run each cell following the __Set query parameters__ cell one at a time.
 
+___cannot see this option on the notebook?___
 
-whether query strings are removed from the page path of interest,
- whether page paths associated with events are appended with an [E],
- whether page paths associated with events are appended with event information event category,
- event action, and/or event label, whether journeys that include the entrance page should be flagged,
- whether refreshes of the page of interest should be removed
- whether search pages only show the search content type, and search keywords.
+### Execute the query and save output
 
+The notebook should automatically scroll down to __cell 5__. Manually scroll to the cell if you need to.
 
+___which is cell 5??? Does it start with "Initialise a Google BigQuery client, and define the query parameters" ??___
 
+This cell estimates the number of gigabytes read by the query and shows you the amount.
 
+If you are happy to run the query, enter "yes" into the user input box.
 
-3.
+If you leave the input box blank or type in something other than "yes", the query will not run.
 
+The query generates the requested data, creates a local CSV file and exports the data into that file.
 
-2. Next, edit the `Set query parameters` cell.
+___Where is the CSV file? https://drive.google.com/drive/folders/1DBXzHbg5qLiFYK8BIuYGKFjlDBkQALUs ?? Or somewhere else?___
 
-   - There are a number of query parameters that are mandatory to set.
-   - Mandatory: .
-   - Optional:
-3. Once you are happy with the query parameters, ensure the cell is selected, select `Runtime`, then `Run after`
+If no CSV file is created, check the end of the URL search bar. If you see a download icon with a red cross, select the icon and change the option to __Always allow....__, and then select __Done__.
 
-   - The notebook will run each cell following the `Set query parameters` cell one at a time.
-
-
-4. The notebook should automatically scroll down to `cell 5`. If you are waiting what seems like a long time, then manually scroll down to `cell 5`
-
-   - This cell executes a dry run for the query, which estimates the number of gigabytes read by the query
-   - If you are happy to continue, type `yes` into the user input box
-   - Note:  the query will only run if you type `yes` in the user input box. If you leave the input blank or type in something else, the query will not be executed, and the code will stop running
-
-
-  ![Dry run prompt to confirm estimated query costs](images/dry-run-prompt-reverse-path.png)
-
-
-5. A local copy of the data generated is exported in a CSV file.
-   - If no files are downloaded, check the end of the URL search bar. If you see a download icon with a red cross (as shown below), select the icon and change the option to `Always allow....` before clicking `Done`
-
-     ![Download multiple files option](images/download-multiple-files.png)
-
+The CSV file shows the top 10 forward path tool results, and follows the [forward path template](https://docs.google.com/spreadsheets/d/1kISyKu2jVzINCxwPe8ydQM8cibgEX2a3WCPxkJM9W80/edit#gid=1115034830). To access this template, [email the GOV.UK Data Labs team](mailto:gov.uk-data-labs@digital.cabinet-office.gov.uk).
 
 [assumptions]: ../aqa/assumptions-caveats-forward-path-tool.md
 [repository]: https://github.com/alphagov/govuk-user-journey-analysis-tools
 
-
-
-
-
-
-https://github.com/alphagov/govuk-user-journey-analysis-tools/blob/main/docs/user_guide/user-guide-forward-path-tool.md
-
-
 ## Assumptions and caveats
 
-https://github.com/alphagov/govuk-user-journey-analysis-tools/blob/main/docs/aqa/assumptions-caveats-forward-path-tool.md
+This log contains a list of assumptions and caveats used in the Forward Path tool analysis.
+
+### Definitions
+
+Assumptions are RAG-rated according to the following definitions for quality and impact.
+
+| RAG   | Assumption quality | Assumption impact |
+|---|---|---|
+|Green|Reliable assumption, well understood and/or documented; anything up to a validated & recent set of actual data.|Marginal assumptions; their changes have no or limited impact on the outputs.|
+|Amber|Some evidence to support the assumption; may vary from a source with poor methodology to a good source that is a few years old.|Assumptions with a relevant, even if not critical, impact on the outputs.|
+|Red|Little evidence to support the assumption; may vary from an opinion to a limited data source with poor methodology|Core assumptions of the analysis; the output would be drastically affected by their change.|
+
+Thank you to the Home Office Analytical Quality Assurance team for these definitions.
+
+### Assumption 1: Only exact matches to `DESIRED_PAGE` are currently supported
+
+* Quality: GREEN
+* Impact: AMBER
+
+The query parameter for `DESIRED_PAGE` cannot evaluate the field using regular expression, and therefore only exact matches are currently supported. This is acceptable as users of these tools are accustomed to providing exact matches for analyses.
+
+### Assumption 2: Previous visits to `DESIRED_PAGE` are ignored, only the last visit is used
+
+* Quality: GREEN
+* Impact: AMBER
+
+The subsetted journey considers the last visit to the `DESIRED_PAGE` as the goal location (that is, the first step).
+
+Therefore, any previous visits to the `DESIRED_PAGE` are ignored. This was decided as the main aim of the tool is to understand which pages are visited following the `DESIRED_PAGE`.
+
+However, it is important that the user of the tool is aware of this assumption, as it will impact the subsetted journey output.
+
+### Assumption 3: If `REMOVE_DESIRED_PAGE_REFRESHES` is `TRUE`, only the first visit in a series of sequential visits (page refreshes) to `DESIRED_PAGE` are used to determine which is the last visit.
+
+* Quality: GREEN
+* Impact: GREEN
+
+Therefore, if TRUE, it will only use the first visit in a series of sequential visits to `DESIRED_PAGE` of hit type PAGE. Other earlier visits to `DESIRED_PAGE` will remain, as will any earlier desired page refreshes.
+
+### Assumption 4: Journeys shorter than the number of desired stages (`NUMBER_OF_STAGES`) are always included.
+
+* Quality: GREEN
+* Impact: AMBER
+
+While journeys shorter than the number of desired stages are always included, journeys longer than the number of desired stages will not be accurately represented. For example, if `NUMBER_OF_STAGES = 2`, and the journey consists of 3 stages, then the user of the tool will not be provided with the full journey (i.e. the 3rd page path). Therefore, this journey will be amalgamated with other journeys that consist of the same 2 page paths (`NUMBER_OF_STAGES = 2`), even if further page paths differ.
+
+### Assumption 5: GOV.UK search page paths are assumed to have the format /search/{TYPE}?keywords={KEYWORDS}{...}, where {TYPE} is the GOV.UK search content type, {KEYWORDS} are the search keywords, where each keyword is separated by +, and {...} are any other parts of the search query that are not keyword-related (if they exist).
+
+* Quality: GREEN
+* Impact: GREEN
+
+### Assumption 6: GOV.UK search page titles are assumed to have the format {KEYWORDS} - {TYPE} - GOV.UK, where {TYPE} is the GOV.UK search content type, and {KEYWORDS} are the search keywords.
+
+* Quality: GREEN
+* Impact: GREEN
+
+### Assumption 7: If `ENTRANCE_PAGE` is FALSE, each journey contains both instances where the entrance page is included, and the entrance page is not included.
+
+* Quality: GREEN
+* Impact: RED
+
+Therefore, if `ENTRANCE_PAGE` is TRUE, these two instances (where the entrance page is included vs when the entrance page is not included) will be considered two separate journeys. This is a truer representation of the journey, as a TRUE flag indicates that the journey had more page paths than `NUMBER_OF_STAGES`. The user must have a good understanding of what the `ENTRANCE_FLAG` represents, as this could drastically change the output.
+
+### Assumption 8: If `DEVICE_ALL` is selected in combination with either `DEVICE_DESKTOP`, `DEVICE_MOBILE`, and/or `DEVICE_TABLET`, then the analysis will use `DEVICE_ALL` and ignore all other arguments.
+
+* Quality: GREEN
+* Impact: RED
+
+Be default, `DEVICE_ALL` argument will be implemented over `DEVICE_DESKTOP`, `DEVICE_MOBILE`, and `DEVICE_TABLET`. Therefore, if the user accidentally selects `DEVICE_ALL`, the query will ignore the desired arguments `DEVICE_DESKTOP`, `DEVICE_MOBILE`, and/or `DEVICE_TABLET`. This will drastically change the expected output, as `DEVICE_ALL` will split up journeys undertaken on a desktop, mobile, and tablet device. The output CSV file flags which device category(ies) were used, which should mitigate errors related to interpreting the data.
