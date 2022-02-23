@@ -144,35 +144,53 @@ However, it is important that the user of the tool is aware of this assumption, 
 * Quality: GREEN
 * Impact: GREEN
 
-Therefore, if TRUE, it will only use the first visit in a series of sequential visits to `DESIRED_PAGE` of hit type PAGE. Other earlier visits to `DESIRED_PAGE` will remain, as will any earlier desired page refreshes.
+Therefore, if `REMOVE_DESIRED_PAGE_REFRESHES` is `TRUE`, it will only use the first visit in a series of sequential visits to `DESIRED_PAGE` of hit type PAGE. Other earlier visits to `DESIRED_PAGE` will remain, as will any earlier desired page refreshes.
 
 ### Assumption 4: Journeys shorter than the number of desired stages (`NUMBER_OF_STAGES`) are always included.
 
 * Quality: GREEN
 * Impact: AMBER
 
-While journeys shorter than the number of desired stages are always included, journeys longer than the number of desired stages will not be accurately represented. For example, if `NUMBER_OF_STAGES = 2`, and the journey consists of 3 stages, then the user of the tool will not be provided with the full journey (i.e. the 3rd page path). Therefore, this journey will be amalgamated with other journeys that consist of the same 2 page paths (`NUMBER_OF_STAGES = 2`), even if further page paths differ.
+While journeys shorter than the number of desired stages are always included, journeys longer than the number of desired stages will not be accurately represented.
 
-### Assumption 5: GOV.UK search page paths are assumed to have the format /search/{TYPE}?keywords={KEYWORDS}{...}, where {TYPE} is the GOV.UK search content type, {KEYWORDS} are the search keywords, where each keyword is separated by +, and {...} are any other parts of the search query that are not keyword-related (if they exist).
+For example, if `NUMBER_OF_STAGES = 2`, and the journey consists of 3 stages, then the user of the tool will not be provided with the full journey (that is, the 3rd page path).
+
+Therefore, this journey will be amalgamated with other journeys that consist of the same 2 page paths (`NUMBER_OF_STAGES = 2`), even if further page paths differ.
+
+### Assumption 5: GOV.UK search page paths are assumed to have the format /search/{TYPE}?keywords={KEYWORDS}{...}
 
 * Quality: GREEN
 * Impact: GREEN
 
-### Assumption 6: GOV.UK search page titles are assumed to have the format {KEYWORDS} - {TYPE} - GOV.UK, where {TYPE} is the GOV.UK search content type, and {KEYWORDS} are the search keywords.
+`{TYPE}` is the GOV.UK search content type, `{KEYWORDS}` are the search keywords, where each keyword is separated by +, and {...} are any other parts of the search query that are not keyword-related (if they exist).
+
+### Assumption 6: GOV.UK search page titles are assumed to have the format {KEYWORDS} - {TYPE} - GOV.UK
 
 * Quality: GREEN
 * Impact: GREEN
 
-### Assumption 7: If `ENTRANCE_PAGE` is FALSE, each journey contains both instances where the entrance page is included, and the entrance page is not included.
+`{TYPE}` is the GOV.UK search content type, and `{KEYWORDS}` are the search keywords.
+
+### Assumption 7: If `ENTRANCE_PAGE` is `FALSE`, each journey contains both instances where the entrance page is included, and the entrance page is not included.
 
 * Quality: GREEN
 * Impact: RED
 
-Therefore, if `ENTRANCE_PAGE` is TRUE, these two instances (where the entrance page is included vs when the entrance page is not included) will be considered two separate journeys. This is a truer representation of the journey, as a TRUE flag indicates that the journey had more page paths than `NUMBER_OF_STAGES`. The user must have a good understanding of what the `ENTRANCE_FLAG` represents, as this could drastically change the output.
+Therefore, if `ENTRANCE_PAGE` is `TRUE`, these two instances (where the entrance page is included against when the entrance page is not included) will be considered two separate journeys.
+
+This is a better representation of the journey, as a `TRUE` flag indicates that the journey had more page paths than `NUMBER_OF_STAGES`.
+
+The user must have a good understanding of what the `ENTRANCE_FLAG` represents, as this could drastically change the output.
 
 ### Assumption 8: If `DEVICE_ALL` is selected in combination with either `DEVICE_DESKTOP`, `DEVICE_MOBILE`, and/or `DEVICE_TABLET`, then the analysis will use `DEVICE_ALL` and ignore all other arguments.
 
 * Quality: GREEN
 * Impact: RED
 
-Be default, `DEVICE_ALL` argument will be implemented over `DEVICE_DESKTOP`, `DEVICE_MOBILE`, and `DEVICE_TABLET`. Therefore, if the user accidentally selects `DEVICE_ALL`, the query will ignore the desired arguments `DEVICE_DESKTOP`, `DEVICE_MOBILE`, and/or `DEVICE_TABLET`. This will drastically change the expected output, as `DEVICE_ALL` will split up journeys undertaken on a desktop, mobile, and tablet device. The output CSV file flags which device category(ies) were used, which should mitigate errors related to interpreting the data.
+Be default, `DEVICE_ALL` argument will be implemented over `DEVICE_DESKTOP`, `DEVICE_MOBILE`, and `DEVICE_TABLET`.
+
+Therefore, if the user accidentally selects `DEVICE_ALL`, the query will ignore the desired arguments `DEVICE_DESKTOP`, `DEVICE_MOBILE`, and/or `DEVICE_TABLET`.
+
+This will drastically change the expected output, as `DEVICE_ALL` will split up journeys undertaken on a desktop, mobile, and tablet device.
+
+The output CSV file flags which device category(ies) were used, which should mitigate errors related to interpreting the data.
