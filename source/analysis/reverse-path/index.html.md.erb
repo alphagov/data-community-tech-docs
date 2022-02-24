@@ -7,14 +7,114 @@ review_in: 6 months
 
 # Use the reverse path tool
 
-The reverse path tool is...
+The forward path tool shows the pages a user visits before visiting a page of interest on GOV.UK.
 
-A CSV file presenting the previous page paths that reached a GOV.UK page of interest, over a date range and device category(ies). The count and proportion of sessions visiting distinct, subsetted journeys are compiled together, and returned as a sorted list in descending order. Answers the question, 'Which pages do users visit before arriving at page X?'
+This tool outputs a CSV file with the count and proportion of user sessions visiting distinct, subsetted journeys for a specified date range. This list of sessions is in the CSV file as a sorted list in descending order, categorised by device.
 
-## How to use...
+To use the reverse path tool, you must do the following.
 
-https://github.com/alphagov/govuk-user-journey-analysis-tools/blob/main/docs/user_guide/user-guide-reverse-path-tool.md
+1. Download the reverse path tool notebook.
+1. Open the tool notebook in Google Colab.
+1. Run the notebook.
+
+## Download the reverse path tool
+
+___Do you need any specific permission to do this?___
+
+Download the notebook from GitHub.
+
+1. Go to the [`govuk-user-journey-analysis-tools` GitHub repo][repository].
+1. Select the __Code__ button, and then select __Download Zip__.
+1. Unzip the __govuk-user-journey-analysis-tools__ folder and go to the __notebooks__ folder.
+1. Save the __reverse-path-tool__ Jupyter notebook to your Google Drive account.
+
+## Open the tool notebook in Google Colab
+
+1. Go to [Google Colab](https://colab.research.google.com/). You will see an window to open a notebook.
+1. Select the __Google Drive__ tab and open the __reverse-path-tool__ notebook.
+
+___Cannot find below___
+
+You may need to 'connect' the notebook to be associated with Google Colab the first time you open a Jupyter
+notebook from Google Drive. To do this, look for the link at the top-centre of the page which says something
+like `Connect more apps` (see screenshot below), search for `Google Colaboratory` and then accept any required
+permissions it asks for. Once you have associated Jupyter notebooks with Google Colab, the notebook should open.
+
+## Run the tool notebook
+
+To run the notebook, you must do the following.
+
+1. Authenticate your access.
+1. Set the query parameters.
+
+### Authenticate your access
+
+1. Hover your cursor over the cell that starts with the code `from datetime import datetime` to show the run icon. Select the run icon to start the authentication process.
+1. Select the authentication link in the text box and then select your Google account.
+1. Follow the on screen prompts, selecting __Allow__ when prompted, and copy the __Sign in code__ when this code appears.
+1. Go back to the text box in the notebook and paste the sign in code into the __Enter verification code__ field.
+1. Select __Enter__ to complete authentication.
+
+If you receive a warning message saying "The notebook was not authored by Google", select __Run Anyway__.
+
+### Set the query parameters
+
+You set the query parameters in the __Set query parameters__ cell.
+
+1. You must set the following mandatory query parameters:
+  - start and end dates for the analysis
+  - desired page path of interest
+  - the number of pages or events the user journeys will be subsetted by
+  - whether to include page and/or event hits
+  - device categories to include
+
+1. You can set the following optional query parameters on whether to:
+  - remove query strings from the page path of interest
+  - append event-associated page paths with an __[E]__,
+  - append event-associated page paths with the event category, event action, and/or event label suffixes
+  - flag journeys that include the entrance page
+  - remove refreshes of the page of interest
+  - have search pages only show the search content type and search keywords
+
+Once you are happy with the query parameters, select the cell and first select __Runtime__, and then __Run after__. The notebook will run each cell following the __Set query parameters__ cell one at a time. ___what does this mean??___
+
+___cannot see this option on the notebook?___
+
+### Execute the query and save output
+
+The notebook should automatically scroll down to __cell 5__. Manually scroll to the cell if you need to.
+
+___which is cell 5??? Does it start with "Initialise a Google BigQuery client, and define the query parameters" ??___
+
+This cell estimates the number of gigabytes read by the query and shows you the amount.
+
+If you are happy to run the query, enter "yes" into the user input box.
+
+If you leave the input box blank or type in something other than "yes", the query will not run.
+
+The query generates the requested data, creates a local CSV file and exports the data into that file.
+
+___Where is the CSV file? https://drive.google.com/drive/folders/1DBXzHbg5qLiFYK8BIuYGKFjlDBkQALUs ?? Or somewhere else?___
+
+If no CSV file is created, check the end of the URL search bar. If you see a download icon with a red cross, select the icon and change the option to __Always allow....__, and then select __Done__.
+
+The CSV file shows the top 10 forward path tool results, and follows the [forward path template](https://docs.google.com/spreadsheets/d/1kISyKu2jVzINCxwPe8ydQM8cibgEX2a3WCPxkJM9W80/edit#gid=1115034830). To access this template, [email the GOV.UK Data Labs team](mailto:gov.uk-data-labs@digital.cabinet-office.gov.uk).
+
+[assumptions]: ../aqa/assumptions-caveats-forward-path-tool.md
+[repository]: https://github.com/alphagov/govuk-user-journey-analysis-tools
 
 ## Assumptions and caveats
 
-https://github.com/alphagov/govuk-user-journey-analysis-tools/blob/main/docs/aqa/assumptions-caveats-reverse-path-tool.md
+This log contains a list of assumptions and caveats used in the Forward Path tool analysis.
+
+### Definitions
+
+Assumptions are RAG-rated according to the following definitions for quality and impact.
+
+| RAG   | Assumption quality | Assumption impact |
+|---|---|---|
+|Green|Reliable assumption, well understood and/or documented; anything up to a validated & recent set of actual data.|Marginal assumptions; their changes have no or limited impact on the outputs.|
+|Amber|Some evidence to support the assumption; may vary from a source with poor methodology to a good source that is a few years old.|Assumptions with a relevant, even if not critical, impact on the outputs.|
+|Red|Little evidence to support the assumption; may vary from an opinion to a limited data source with poor methodology|Core assumptions of the analysis; the output would be drastically affected by their change.|
+
+Thank you to the Home Office Analytical Quality Assurance team for these definitions.
