@@ -32,27 +32,33 @@ To get pogo-sticking metrics, you must specify 2 variables.
 
   For example, if you want the pogo-sticking metrics for `https://www.gov.uk/travel-abroad`, enter `/travel-abroad`. The input text must match the page path exactly.
 
-1. Within the internal and external sections, these sections are split between the original page of interest, and a page to compare that original page to. You can also enter a page path in the __Page equals__ field under __Comparisons with another page__.
+1. Within the internal and external sections, these sections are split between the original page of interest, and a page to compare that original page to.
+
+  You can also enter a page path in the __Page equals__ field under __Comparisons with another page__.
 
 You can now view the pogo-sticking metrics.
 
-### Metrics
+## Metrics
 
-#### Total number of sessions
+### Total number of sessions
 
 The total number of sessions for the particular date or date range for Desktop and Mobile devices.
 
-#### Percentage of the sessions where the page triggered pogo-sticking
+This metric is in both the original page and comparison page sections.
+
+### Percentage of the sessions where the page triggered pogo-sticking
 
 The percentage of sessions where the page triggered pogo-sticking for Desktop and Mobile devices for a particular date or date range, averaged over the dates.
 
 For example, if the total number of sessions is 1000, and the % of sessions where the page triggered pogo-sticking is 45%, then pogo-sticking occurred during 450 out of 1000 sessions.
 
-#### Time-series graph
+This metric is in both the original page and comparison page sections.
+
+### Time-series graph
 
 This graph plots the percentage of the sessions where the page triggered pogo-sticking rate for Desktop and Mobile over the past 28 days. Hover your cursor over the graph to see the percentages.
 
-#### Common pogo-sticking sequences
+### Common pogo-sticking sequences
 
 This table displays the most common pogo-sticking sequences over a date or date range.
 
@@ -60,8 +66,7 @@ Count is in descending order. Desktop and Mobile journeys are summed together.
 
 Comparisons
 
-Original pogo-sticking rate (as above): both the total number of sessions and % of the sessions where the page triggered pogo-sticking are repeated. This is so the user does not need to keep scrolling up and down the page.
 
-Comparisons with another page: type in a page path (URL - the page of interest) to compare the results to. Similarly as above, the page path must always start with ‘/’. This is of use to users who want to compare the results of one page path to another page path.
+
 
 Comparisons with other document types that triggered pogo-sticking: each plot represents a different document type: guide, transaction, step-by-step navigation. These plots include all page paths of the specified document type. Under the document type heading, e.g. Guide, a table presents the metrics: minimum, 25th percentile, median, 75th percentile, and maximum pogo-sticking rate. For example, if the minimum pogo-sticking rate is 2%, this means that the lowest pogo-sticking rate of any page path characterised as a Guide is 2%. If the 25th percentile is 16%, then this means that 25% of page paths characterised as Guide have a pogo-sticking rate less than 16%. The plot displays the quartile ranges (lower-, inter-, upper-). The black dot and value represents the average pogo-sticking rate for the page path of interest. Note: Desktop and Mobile pogo-sticking rates are averaged together.
