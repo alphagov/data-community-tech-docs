@@ -11,8 +11,8 @@ Pogo-sticking is when a user navigates repeatedly through the same web page with
 
 There are 2 types of pogo-sticking:
 
-- internal, which is navigating repeatedly through GOV.UK
-- external, which is navigating repeatedly through an external search
+- internal, which is navigating repeatedly through GOV.UK pages
+- external, which is navigating repeatedly GOV.UK and non-GOV.UK pages
 
 The [pogo-sticking dashboard](https://datastudio.google.com/u/0/reporting/28806d62-5478-4fe2-95d6-be80facf03c0/page/iOQ7B) provides access to the internal and external pogo-sticking rate for GOV.UK pages.
 
@@ -64,9 +64,27 @@ This table displays the most common pogo-sticking sequences over a date or date 
 
 Count is in descending order. Desktop and Mobile journeys are summed together.
 
-Comparisons
+### Comparisons with other document types that triggered pogo-sticking
 
+There are 3 plotted graphs in the __Comparisons with other document types that triggered pogo-sticking__ section.
 
+Each plot represents a different document type; guide, transaction and step-by-step navigation. These plots include all page paths of the specified document type.
 
+Under the document type, a table presents the following pogo-sticking rate metrics:
 
-Comparisons with other document types that triggered pogo-sticking: each plot represents a different document type: guide, transaction, step-by-step navigation. These plots include all page paths of the specified document type. Under the document type heading, e.g. Guide, a table presents the metrics: minimum, 25th percentile, median, 75th percentile, and maximum pogo-sticking rate. For example, if the minimum pogo-sticking rate is 2%, this means that the lowest pogo-sticking rate of any page path characterised as a Guide is 2%. If the 25th percentile is 16%, then this means that 25% of page paths characterised as Guide have a pogo-sticking rate less than 16%. The plot displays the quartile ranges (lower-, inter-, upper-). The black dot and value represents the average pogo-sticking rate for the page path of interest. Note: Desktop and Mobile pogo-sticking rates are averaged together.
+- minimum
+- 25th percentile
+- median
+- 75th percentile
+- maximum
+
+Using the Guide plot as an example, if the:
+
+- minimum pogo-sticking rate is 2%, this means that the lowest pogo-sticking rate of any page path characterised as a Guide is 2%
+- 25th percentile is 16%, this means that 25% of page paths characterised as Guide have a pogo-sticking rate less than 16%.
+
+The plot displays the quartile ranges (lower-, inter-, upper-).
+
+The black dot and value represents the average pogo-sticking rate for the page path of interest.
+
+Desktop and Mobile pogo-sticking rates are averaged together.
