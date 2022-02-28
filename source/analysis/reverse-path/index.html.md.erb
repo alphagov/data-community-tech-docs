@@ -11,15 +11,18 @@ The forward path tool shows the pages a user visits before visiting a page of in
 
 This tool outputs a CSV file with the count and proportion of user sessions visiting distinct, subsetted journeys for a specified date range. This list of sessions is in the CSV file as a sorted list in descending order, categorised by device.
 
+A subsetted journey is a part of a user's journey rather than the entire journey.
+
+A distinct journey is a unique journey that is not the same as any other journey that user has taken.
+
 To use the reverse path tool, you must do the following.
 
 1. Download the reverse path tool notebook.
 1. Open the tool notebook in Google Colab.
 1. Run the notebook.
+1. View the outputs.
 
 ## Download the reverse path tool
-
-___Do you need any specific permission to do this?___
 
 Download the notebook from GitHub.
 
@@ -28,17 +31,18 @@ Download the notebook from GitHub.
 1. Unzip the __govuk-user-journey-analysis-tools__ folder and go to the __notebooks__ folder.
 1. Save the __reverse-path-tool__ Jupyter notebook to your Google Drive account.
 
-## Open the tool notebook in Google Colab
+## Opening the tool notebook in Google Colab
 
 1. Go to [Google Colab](https://colab.research.google.com/). You will see an window to open a notebook.
-1. Select the __Google Drive__ tab and open the __reverse-path-tool__ notebook.
+1. Select the __Google Drive__ tab and open the __forward-path-tool__ notebook.
 
-___Cannot find below___
+To open a Juypter notebook in Google Colab from Google Drive for the first time, you must associate Juypter notebooks with Google Colab.
 
-You may need to 'connect' the notebook to be associated with Google Colab the first time you open a Jupyter
-notebook from Google Drive. To do this, look for the link at the top-centre of the page which says something
-like `Connect more apps` (see screenshot below), search for `Google Colaboratory` and then accept any required
-permissions it asks for. Once you have associated Jupyter notebooks with Google Colab, the notebook should open.
+1. Right-click anywhere in Google Drive and select __More__.
+1. Select __Connect more apps__ and then __Google Colaboratory__.
+1. Accept any required permissions.
+
+Once you have associated Juypter notebooks with Google Colab, you can open a Juypter notebook in Google Colab from Google Drive.
 
 ## Run the tool notebook
 
@@ -76,29 +80,60 @@ You set the query parameters in the __Set query parameters__ cell.
   - remove refreshes of the page of interest
   - have search pages only show the search content type and search keywords
 
-Once you are happy with the query parameters, select the cell and first select __Runtime__, and then __Run after__. The notebook will run each cell following the __Set query parameters__ cell one at a time. ___what does this mean??___
+Once you are happy with the query parameters, select the cell and first select __Runtime__ in the top menu, and then __Run after__.
 
-___cannot see this option on the notebook?___
+The notebook will run each cell __after__ the __Set query parameters__ cell one at a time.
 
-### Execute the query and save output
+## Viewing the outputs
 
-The notebook should automatically scroll down to __cell 5__. Manually scroll to the cell if you need to.
+There are 4 outputs from running the notebook:
 
-___which is cell 5??? Does it start with "Initialise a Google BigQuery client, and define the query parameters" ??___
+- a raw CSV data file
+- a summary of the most popular pages
+- a Sankey diagram
+- the top 10 forward path rool results
 
-This cell estimates the number of gigabytes read by the query and shows you the amount.
+After you select __Runtime__ and then __Run after__, the notebook should automatically scroll to the cell that starts with __Initialise a Google BigQuery client, and define the query parameters__.
+
+Manually scroll to this cell if the notebook does not automatically scroll to it.
+
+This cell first estimates the number of gigabytes read by the query and shows you the amount.
 
 If you are happy to run the query, enter "yes" into the user input box.
 
 If you leave the input box blank or type in something other than "yes", the query will not run.
 
-The query generates the requested data, creates a local CSV file and exports the data into that file.
+### The raw data file, summary, and Sankey diagram
 
-___Where is the CSV file? https://drive.google.com/drive/folders/1DBXzHbg5qLiFYK8BIuYGKFjlDBkQALUs ?? Or somewhere else?___
+The query first generates the raw CSV data file and summary of the most popular pages.
 
-If no CSV file is created, check the end of the URL search bar. If you see a download icon with a red cross, select the icon and change the option to __Always allow...__, and then select __Done__.
+The query then downloads those files into the __Downloads_ folder on your local machine.
 
-The CSV file shows the top 10 forward path tool results, and follows the [forward path template](https://docs.google.com/spreadsheets/d/1kISyKu2jVzINCxwPe8ydQM8cibgEX2a3WCPxkJM9W80/edit#gid=1115034830). To access this template, [email the GOV.UK Data Labs team](mailto:gov.uk-data-labs@digital.cabinet-office.gov.uk).
+If the query does not generate these CSV files, check the end of the URL search bar. If you see a download icon with a red cross, select the icon and change the option to __Always allow...__, and then select __Done__.
+
+Finally, running the query also creates the Sankey diagram, which is a visualisation of the forward path from the page of interest.
+
+To download the Sankey diagram, select the camera icon in the top right of the diagram, labelled __Download plot as a png__. This will download a png file to your __Downloads__ folder.
+
+### The top 10 forward path tool results
+
+The __Presenting results in Google sheets__ cells create a Google Sheet of the top 10 forward path journeys.
+
+Select the cell that starts __Compile a message, and flag to the user for a response; if not "yes", terminate execution__.
+
+Select __Runtime__ and then __Run after__.
+
+You will see a box asking if you are happy to run the query.
+
+If you are happy to run the query, enter "yes" into the user input box. If you leave the input box blank or type in something other than "yes", the query will not run.
+
+The query will create the Google Sheet and provide a link to this spreadsheet under the __Create google sheet in `GOV.UK teams/2021-2022/Data labs/Requests/Data analysis tools/Templates__ cell.
+
+This Google Sheet follows the [forward path template](https://docs.google.com/spreadsheets/d/1kISyKu2jVzINCxwPe8ydQM8cibgEX2a3WCPxkJM9W80/edit#gid=1115034830).
+
+You have now viewed all the outputs from the forward path tool.
+
+Check the __Origin SQL query__ cell for the original SQL for the forward path tool.
 
 [assumptions]: ../aqa/assumptions-caveats-forward-path-tool.md
 [repository]: https://github.com/alphagov/govuk-user-journey-analysis-tools

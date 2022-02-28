@@ -9,7 +9,11 @@ review_in: 6 months
 
 The spider diagram tool is a visualisation tool that shows the page users come from before going to a page of interest, and which page do the users go to after the page of interest.
 
-This data is over a date range, and is broken down by device category, internal/external links, and the individual entry/exit pages paired with the count and proportion of page views.
+This data is over a date range, and is broken down by:
+
+- device category
+- internal/external links
+- individual entry/exit pages paired with the count and proportion of page views
 
 To use the spider diagram tool, you must do the following.
 
@@ -19,8 +23,6 @@ To use the spider diagram tool, you must do the following.
 1. Save a local copy of the data.
 
 ## Download the spider diagram tool
-
-___Do you need any specific permission to do this?___
 
 Download the notebook from GitHub.
 
@@ -34,12 +36,13 @@ Download the notebook from GitHub.
 1. Go to [Google Colab](https://colab.research.google.com/). You will see an window to open a notebook.
 1. Select the __Google Drive__ tab and open the __spider-diagram-tool__ notebook.
 
-___Cannot find below___
+To open a Juypter notebook in Google Colab from Google Drive for the first time, you must associate Juypter notebooks with Google Colab.
 
-You may need to 'connect' the notebook to be associated with Google Colab the first time you open a Jupyter
-notebook from Google Drive. To do this, look for the link at the top-centre of the page which says something
-like `Connect more apps` (see screenshot below), search for `Google Colaboratory` and then accept any required
-permissions it asks for. Once you have associated Jupyter notebooks with Google Colab, the notebook should open.
+1. Right-click anywhere in Google Drive and select __More__.
+1. Select __Connect more apps__ and then __Google Colaboratory__.
+1. Accept any required permissions.
+
+Once you have associated Juypter notebooks with Google Colab, you can open a Juypter notebook in Google Colab from Google Drive.
 
 ## Run the tool notebook
 
@@ -63,20 +66,20 @@ If you receive a warning message saying "The notebook was not authored by Google
 
 ### Set the input variables
 
-You must complete and run the 3 cells in the __Input Variables__ ___cell category???___.
+You must complete and run the cells in the __Input Variables__ section.
 
 1. Complete the __Set Input Variables Form__ by entering the following fields:
-  - `project_id` - the GOV.UK page of interest you want to visualise entries and exits for
-  - `ga_dataset` - ___??? do you need to set this?___
   - `start_date` and `end_date` - the date range you want to look at, in `YYYY/MM/DD` format
-  - `page_path` - ___??? how does this relate to the following one?___
-  - `path_or_title` - ___??? can you select both? how does it relate to the previous one?___
-  - `remove_query_string` - ___???___
+  - `page_path` - the URL for the page of interest which always starts with `/`, for example `/brexit`
+  - `path_or_title` - select either the path or the title to specify what you will see in the visualisation
+  - `remove_query_string` - check this box if you want to remove the query string from the URL, for example if you've input an answer into a smart answer field
   - device categories - you must select at least one device type from __Desktop__, __Mobile__ or __Tablet__, otherwise the code will not run and will raise a `ValueError`
 
-  ___which are mandatory and which are optional? are there any that must always be ticked?___
+  You do not need to change the following fields:
+  - `project_id` - this is always `govuk-bigquery-analytics`
+  - `ga_dataset` this is always `87773428`
 
-1. Run the other 2 cells in the __Input Variables__ ___cell category???___.
+1. Select __Runtime__ and then __Run after__ to run all the cells in the __Input Variables__ section.
 
 ### Run the query cells
 
