@@ -1,11 +1,11 @@
 ---
-title: Use the pogo-sticking dashboard
+title: Use the pogo-sticking dashboards
 weight: 39.4
 last_reviewed_on: 2022-02-23
 review_in: 6 months
 ---
 
-# Use the pogo-sticking dashboard
+# Use the pogo-sticking dashboards
 
 Pogo-sticking is when a user navigates repeatedly through the same web page within a user journey.
 
@@ -14,77 +14,8 @@ There are 2 types of pogo-sticking:
 - internal, which is navigating repeatedly through GOV.UK pages
 - external, which is navigating repeatedly GOV.UK and non-GOV.UK pages
 
-The [pogo-sticking dashboard](https://datastudio.google.com/u/0/reporting/28806d62-5478-4fe2-95d6-be80facf03c0/page/iOQ7B) provides access to the internal and external pogo-sticking rate for GOV.UK pages.
+There are 3 pogo-sticking dashboards:
 
-You can view the pogo-sticking dashboard if you have a `@digital.cabinet-office.gov.uk` Google account.
-
-## Use the dashboard
-
-The dashboard is split into internal and external pogo-sticking.
-
-These sections have the same metrics for both within GOV.UK and external search.
-
-To get pogo-sticking metrics, you must specify 2 variables.
-
-1. Select a a date or date range in the top right hand corner.
-
-1. Enter a page path in the __Page equals__ field. The page path must always start with `/`.
-
-  For example, if you want the pogo-sticking metrics for `https://www.gov.uk/travel-abroad`, enter `/travel-abroad`. The input text must match the page path exactly.
-
-1. Within the internal and external sections, these sections are split between the original page of interest, and a page to compare that original page to.
-
-  You can also enter a page path in the __Page equals__ field under __Comparisons with another page__.
-
-You can now view the pogo-sticking metrics.
-
-## Metrics
-
-### Total number of sessions
-
-The total number of sessions for the particular date or date range for Desktop and Mobile devices.
-
-This metric is in both the original page and comparison page sections.
-
-### Percentage of the sessions where the page triggered pogo-sticking
-
-The percentage of sessions where the page triggered pogo-sticking for Desktop and Mobile devices for a particular date or date range, averaged over the dates.
-
-For example, if the total number of sessions is 1000, and the % of sessions where the page triggered pogo-sticking is 45%, then pogo-sticking occurred during 450 out of 1000 sessions.
-
-This metric is in both the original page and comparison page sections.
-
-### Time-series graph
-
-This graph plots the percentage of the sessions where the page triggered pogo-sticking rate for Desktop and Mobile over the past 28 days. Hover your cursor over the graph to see the percentages.
-
-### Common pogo-sticking sequences
-
-This table displays the most common pogo-sticking sequences over a date or date range.
-
-Count is in descending order. Desktop and Mobile journeys are summed together.
-
-### Comparisons with other document types that triggered pogo-sticking
-
-There are 3 plotted graphs in the __Comparisons with other document types that triggered pogo-sticking__ section.
-
-Each plot represents a different document type; guide, transaction and step-by-step navigation. These plots include all page paths of the specified document type.
-
-Under the document type, a table presents the following pogo-sticking rate metrics:
-
-- minimum
-- 25th percentile
-- median
-- 75th percentile
-- maximum
-
-Using the Guide plot as an example, if the:
-
-- minimum pogo-sticking rate is 2%, this means that the lowest pogo-sticking rate of any page path characterised as a Guide is 2%
-- 25th percentile is 16%, this means that 25% of page paths characterised as Guide have a pogo-sticking rate less than 16%.
-
-The plot displays the quartile ranges (lower-, inter-, upper-).
-
-The black dot and value represents the average pogo-sticking rate for the page path of interest.
-
-Desktop and Mobile pogo-sticking rates are averaged together.
+- the [main pogo-sticking dashboard](https://datastudio.google.com/u/0/reporting/28806d62-5478-4fe2-95d6-be80facf03c0/page/iOQ7B) is for all users and shows the internal and external pogo-sticking rate for GOV.UK pages
+- the [pogo-sticking dashboard page tracking dashboard](https://datastudio.google.com/u/0/reporting/72caf3b3-a61c-406a-81f3-16b01774bdb6/page/UfHLC) is for the data labs team and shows if the main pogo-sticking dashboard is being used, and how
+- the [smart answer clicked pogo-sticking dashboard](https://datastudio.google.com/u/0/reporting/398d305d-faf0-452e-88b5-210932e4775c/page/YR8MC) shows the pogo sitcking rate between different tabs and different smart answers
