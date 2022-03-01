@@ -9,12 +9,42 @@ review_in: 6 months
 
 Pogo-sticking is when a user navigates repeatedly through the same web page within a user journey.
 
-There are 2 types of pogo-sticking:
+The [pogo-sticking dashboard page tracking dashboard](https://datastudio.google.com/u/0/reporting/72caf3b3-a61c-406a-81f3-16b01774bdb6/page/UfHLC) is for the data labs team and shows if the main pogo-sticking dashboard is being used, and how.
 
-- internal, which is navigating repeatedly through GOV.UK pages
-- external, which is navigating repeatedly GOV.UK and non-GOV.UK pages
+Before you view this dashboard, turn on Google Analytics.
 
+___is this correct???___
 
+1. Go to [Google Analytics](https://analytics.google.com/analytics/web/?hl=en-GB&pli=1#/report-home/a26179049w50705554p53872948).
+1. Select __Main Profile__ to change views, and then select __www.gov.uk__ > __GOV.UK - Data Studio Dashboards__ > __GDS - All Dashboards__.
+1. Change the view to __173465512__.
 
-Tracking is for data labs team to see if the dashboard is being used, and how
-dashboard for the dashboard
+___How do the URLs below correspond to the dashboard?___
+
+1. To see page views, go to __Behaviour > Site Content > All Pages__.
+1. View the pogo-sticking page directly by selecting __Page: /reporting/28806d62-5478-4fe2-95d6-be80facf03c0/page/iOQ7B__
+1. View the pogo-sticking page using the Content Support Analytics dashboard, which is __Page: /reporting/9030f1f9-8c67-4644-8ae7-934bc206413c/page/GjiEC__
+
+## Metrics
+
+All metrics related to the pogo-sticking page are filtered via a page filter capturing the urls above.
+
+Metrics related to comparison pages are filtered via page filter capturing the urls as stated in the appropriate sections below:
+
+Total page views for Pogo-sticking page: Provides total page view metrics for the pogo-sticking page. Total page views over the past 30 days, total page views by day, and total page views by month, are provided.
+
+Total page views for Overview page: Provides total page view metrics for the Overview page on the Content Support Analytics dashboard. This page is tracked as: /reporting/9030f1f9-8c67-4644-8ae7-934bc206413c/page/CSEpB. Total page views over the past 30 days, total page views by day, and total page views by month, are provided.
+
+Total page views for ‘Is this useful’ page: Provides total page view metrics for the ‘Is this page useful?’ summary page on the Content Support Analytics dashboard. This page is tracked as: /reporting/9030f1f9-8c67-4644-8ae7-934bc206413c/page/pW1vB. Total page views over the past 30 days, total page views by day, and total page views by month, are provided.
+
+Total page views for ‘Internal searches from…’ page: Provides total page view metrics for the Internal searches from a page page on the Content Support Analytics dashboard. This page is tracked as: /reporting/9030f1f9-8c67-4644-8ae7-934bc206413c/page/IfOtB. Total page views over the past 30 days, total page views by day, and total page views by month, are provided.
+
+Pogo sticking page: Page views over the previous 30 days: A time-series graph representing number of page views of the pogo-sticking page on the y-axis, and date on the x-axis.
+
+Pogo sticking page: New users over the previous 30 days: A time-series graph representing number of new users (Client ID) on the pogo-sticking page on the y-axis, and date on the x-axis.
+
+Pogo sticking page: Unique users over the previous 30 days: A time-series graph representing number of unique users (Client ID) on the pogo-sticking page on the y-axis, and date on the x-axis.
+
+Pogo sticking page: Sessions over the previous 30 days: A time-series graph representing number of sessions (Client ID + VisitId) on the pogo-sticking page on the y-axis, and date on the x-axis.
+
+Pogo sticking page: Timing: Set the date range of interest for the analysis. Each record is a page view of the pogo-sticking page. If the pogo-sticking page is the last page the user visits before leaving the dashboard, Exits will be recorded as 1. Time on page is recorded. NB: Google Analytics cannot measure the time a user spent looking at the last page of their visit. This happens because Google uses the time of the next page view to determine the time the user spent looking at the current page. On the last page, there is no next page recorded, so the Time on Page is unknown. Therefore, if the user exits from the pogo-sticking dashboard, Time on Page is recorded as 00:00:00, and Exits = 1.
