@@ -31,6 +31,46 @@ In this method:
 
 - `A` is the pogo-sticking pagePath
 - `L` is eventCategory "SmartAnswerClicked"
-- `B` and `C` are the pagePaths associated with the preceding “SmartAnswerClicked” eventCategory
+- `B` and `C` are the pagePaths associated with the preceding `SmartAnswerClicked` eventCategory
 
-As such, pogo-sticking is considered when a user is on a pagePath, selects a SmartAnswer URL, visits the SmartAnswer pagePath, goes back to the original pagePath and selects a second SmartAnswer URL, then visits the SmartAnswer pagePath.
+As such, this method detects pogo-sticking when a user:
+
+- is on a pagePath
+- selects a SmartAnswer URL
+- visits the SmartAnswer pagePath
+- goes back to the original pagePath and selects a second SmartAnswer URL
+- visits the SmartAnswer pagePath
+
+## Assumptions and caveats
+
+### Assumption 1
+
+Pogo-sticking only occurs when a SmartAnswer URL is selected on the same pagePath (PAGE A).
+
+### Assumption 2
+
+Pogo-sticking does not occur if other page interactions occurs on PAGE A or PAGE B, such as scrolling down the page.
+
+### Assumption 3
+
+Pogo-sticking does not occur if a SmartAnswer URL is selected on a different pagePath (not PAGE A).
+
+### Assumption 4
+
+Pogo-sticking does not occur if 2 or more pagePaths are visited between the pogo-sticking page (PAGE A).
+
+### Assumption 5
+
+PAGE C in the example pattern could also be PAGE B (e.g. A + "L"   > B >  A + "L" > B; the user selects the same SmartAnswer URL twice).
+
+### Assumption 6
+
+It is likely that more journeys than pogo-sticking rate sessions will be recorded.
+
+If, for example, 50 sessions demonstrate pogo-sticking, 70 different journeys might be recorded.
+
+This is because the pogo-sticking rate calculates distinct sessions. That is, the number of sessions that include at least one instance of pogo-sticking.
+
+The journeys will show all journeys taken, even if 2 journeys occur in the same session.
+
+For example, if user A pogo-sticks from `/next-steps-for-your-business/results > /vat-registration > /next-steps-for-your-business/results > /corporation-tax` and `/next-steps-for-your-business/results > /export-goods > /next-steps-for-your-business/results > /licence-finder` in the same session, this will be counted as 1 for the pogo-sticking rate, but 2 for the journeys.
