@@ -7,7 +7,7 @@ review_in: 6 months
 
 # Use the spider diagram tool
 
-The spider diagram tool is a visualisation tool that shows the page users come from before going to a page of interest, and which page do the users go to after the page of interest.
+The spider diagram tool is a visualisation tool that shows the page users come from before going to a page of interest, and which pages users go to after a page of interest.
 
 This data is over a date range, and is broken down by:
 
@@ -77,7 +77,7 @@ You must complete and run the cells in the __Input Variables__ section.
 
   You do not need to change the following fields:
   - `project_id` - this is always `govuk-bigquery-analytics`
-  - `ga_dataset` this is always `87773428`
+  - `ga_dataset` - this is always `87773428`
 
 1. Select __Runtime__ and then __Run after__ to run all the cells in the __Input Variables__ section.
 
@@ -97,19 +97,15 @@ If you are happy to run the query, enter "yes" into the user input box.
 
 If you leave the input box blank or type in something other than "yes", the query will not run.
 
-### Create the visualisation
+### Create and download the visualisation
 
-1. Run the __Compile summary statistics__ cell.
+Once the __Input Variables__, query and __Execute queries__ cells have run, the notebook generates the interactive plotly figure visualisation.
 
-1. Run the 3 __Create plotly figure__ cells to generate an interactive plotly figure visualisation onscreen.
-
-  To download the plot as a .png, hover your cursor over the figure and select the camera icon located in the top right-hand menu.
+To download the plot as a .png, hover your cursor over the figure and select the camera icon located in the top right-hand menu.
 
 ## Save a local copy of the data
 
-To download a local copy of the data generated for the Spider Diagram tool, run the __Export data, and figure__ cell.
-
-Running this cell downloads the following files to your local machine:
+Once the __Input Variables__, query and __Execute queries__ cells have run, the notebook downloads the following files to your local machine:
 
 - a CSV file of the entry and exit data, including the number and proportion of page views
 - an HTML file of the plotly figure

@@ -7,9 +7,14 @@ review_in: 6 months
 
 # Use the reverse path tool
 
-The forward path tool shows the pages a user visits before visiting a page of interest on GOV.UK.
+The reverse path tool shows the pages a user visits before visiting a page of interest on GOV.UK.
 
-This tool outputs a CSV file with the count and proportion of user sessions visiting distinct, subsetted journeys for a specified date range. This list of sessions is in the CSV file as a sorted list in descending order, categorised by device.
+This tool has 4 outputs:
+
+- a CSV file with the count and proportion of user sessions visiting distinct, subsetted journeys
+- a CSV file with the count of user sessions visiting page paths at each step, regardless of the other pages in the subsetted journey
+- a Plotly visualisation summarising the top 10 and remainder journeys
+- a Google Sheet summarising the top 10 and remainder journeys
 
 A subsetted journey is a part of a user's journey rather than the entire journey.
 
@@ -33,8 +38,8 @@ Download the notebook from GitHub.
 
 ## Opening the tool notebook in Google Colab
 
-1. Go to [Google Colab](https://colab.research.google.com/). You will see an window to open a notebook.
-1. Select the __Google Drive__ tab and open the __forward-path-tool__ notebook.
+1. Go to [Google Colab](https://colab.research.google.com/). You will see a window to open a notebook.
+1. Select the __Google Drive__ tab and open the __reverse-path-tool__ notebook.
 
 To open a Juypter notebook in Google Colab from Google Drive for the first time, you must associate Juypter notebooks with Google Colab.
 
@@ -69,6 +74,7 @@ You set the query parameters in the __Set query parameters__ cell.
   - start and end dates for the analysis
   - desired page path of interest
   - the number of pages or events the user journeys will be subsetted by
+  - whether to use the first or last hit to the desired page in the session for the subsetted journey
   - whether to include page and/or event hits
   - device categories to include
 
@@ -77,6 +83,7 @@ You set the query parameters in the __Set query parameters__ cell.
   - append event-associated page paths with an __[E]__,
   - append event-associated page paths with the event category, event action, and/or event label suffixes
   - flag journeys that include the entrance page
+  - flag journeys that include the exit page
   - remove refreshes of the page of interest
   - have search pages only show the search content type and search keywords
 
@@ -89,9 +96,9 @@ The notebook will run each cell __after__ the __Set query parameters__ cell one 
 There are 4 outputs from running the notebook:
 
 - a raw CSV data file
-- a summary of the most popular pages
+- a CSV data file summarising the most popular pages at each step
 - a Sankey diagram
-- the top 10 forward path rool results
+- a Google Sheets table of the top 10 reverse path tool results
 
 After you select __Runtime__ and then __Run after__, the notebook should automatically scroll to the cell that starts with __Initialise a Google BigQuery client, and define the query parameters__.
 
@@ -105,37 +112,35 @@ If you leave the input box blank or type in something other than "yes", the quer
 
 ### The raw data file, summary, and Sankey diagram
 
-The query first generates the raw CSV data file and summary of the most popular pages.
+The query first generates the raw CSV data file and a CSV file of the most popular pages at each step, regardless of the subsetted journey.
 
 The query then downloads those files into the __Downloads_ folder on your local machine.
 
 If the query does not generate these CSV files, check the end of the URL search bar. If you see a download icon with a red cross, select the icon and change the option to __Always allow...__, and then select __Done__.
 
-Finally, running the query also creates the Sankey diagram, which is a visualisation of the forward path from the page of interest.
+Finally, running the query also creates the Sankey diagram, which is a visualisation of the reverse path from the page of interest.
 
 To download the Sankey diagram, select the camera icon in the top right of the diagram, labelled __Download plot as a png__. This will download a png file to your __Downloads__ folder.
 
-### The top 10 forward path tool results
+### The top 10 reverse path tool results
 
-The __Presenting results in Google sheets__ cells create a Google Sheet of the top 10 forward path journeys.
+The __Presenting results in Google sheets__ cells create a Google Sheet of the top 10 reverse path journeys.
 
-Select the cell that starts __Compile a message, and flag to the user for a response; if not "yes", terminate execution__.
+Select and run the cell that starts __Compile a message, and flag to the user for a response; if not "yes", terminate execution__.
 
-Select __Runtime__ and then __Run after__.
+You will see a box asking if you are happy to create the Google Sheet.
 
-You will see a box asking if you are happy to run the query.
+If you are happy to create the Google Sheet, enter "yes" into the user input box. If you leave the input box blank or type in something other than "yes", the query will not run.
 
-If you are happy to run the query, enter "yes" into the user input box. If you leave the input box blank or type in something other than "yes", the query will not run.
+The query will create the Google Sheet and provide a link to this spreadsheet under the __Create google sheet in GOV.UK teams/2021-2022/Data labs/16 User journey tools/Path tools: google sheet result tables__ cell.
 
-The query will create the Google Sheet and provide a link to this spreadsheet under the __Create google sheet in `GOV.UK teams/2021-2022/Data labs/Requests/Data analysis tools/Templates__ cell.
+This Google Sheet follows the [reverse path template](https://docs.google.com/spreadsheets/d/1E54VgFepSCxNfNKNtxp8eQXme7wGOAEauTqgzEuz3iM/edit?usp=drive_web&ouid=114104082491527752510).
 
-This Google Sheet follows the [forward path template](https://docs.google.com/spreadsheets/d/1kISyKu2jVzINCxwPe8ydQM8cibgEX2a3WCPxkJM9W80/edit#gid=1115034830).
+You have now viewed all the outputs from the reverse path tool.
 
-You have now viewed all the outputs from the forward path tool.
+Check the __Original SQL query__ cell for the original SQL for the reverse path tool.
 
-Check the __Origin SQL query__ cell for the original SQL for the forward path tool.
-
-[assumptions]: ../aqa/assumptions-caveats-forward-path-tool.md
+[assumptions]: ../aqa/assumptions-caveats-reverse-path-tool.md
 [repository]: https://github.com/alphagov/govuk-user-journey-analysis-tools
 
 ## Assumptions and caveats
@@ -154,30 +159,30 @@ Assumptions are RAG-rated according to the following definitions for quality and
 
 Thank you to the Home Office Analytical Quality Assurance team for these definitions.
 
-### Assumption 1: Only exact matches to `DESIRed_PAGE` are currently supported
+### Assumption 1: Only exact matches to `DESIRED_PAGE` are currently supported
 
 * Quality: Green
 * Impact: Amber
 
-The query parameter for `DESIRed_PAGE` cannot evaluate the field using regular expression, and therefore only exact matches are currently supported. This is acceptable as users of these tools are accustomed to providing exact matches for analyses.
+The query parameter for `DESIRED_PAGE` cannot evaluate the field using regular expression, and therefore only exact matches are currently supported. This is acceptable as users of these tools are accustomed to providing exact matches for analyses.
 
-### Assumption 2: Previous visits to `DESIRed_PAGE` are ignored, only the last visit is used
+### Assumption 2: Previous visits to `DESIRED_PAGE` are ignored, only the first or last visit is used
 
 * Quality: Green
 * Impact: Amber
 
-The subsetted journey considers the last visit to the `DESIRed_PAGE` as the goal location (that is, the first step).
+Depending on user input, the subsetted journey considers the first or last visit to the DESIRED_PAGE as the goal location (that is, the first step).
 
-Therefore, any previous visits to the `DESIRed_PAGE` are ignored. This was decided as the main aim of the tool is to understand which pages are visited following the `DESIRed_PAGE`.
+Therefore, any other visits to the DESIRED_PAGE are ignored. We decided to do this because the main aim of the tool is to understand which pages are visited before the DESIRED_PAGE. Users also requested the ability to subset the journeys by the first hit.
 
 However, it is important that the user of the tool is aware of this assumption, as it will impact the subsetted journey output.
 
-### Assumption 3: If `REMOVE_DESIRed_PAGE_REFRESHES` is `TRUE`, only the first visit in a series of sequential visits (page refreshes) to `DESIRed_PAGE` are used to determine which is the last visit.
+### Assumption 3: If `REMOVE_DESIRED_PAGE_REFRESHES` is `TRUE`, only the first visit in a series of sequential visits (page refreshes) to `DESIRED_PAGE` are used to determine which is the last visit.
 
 * Quality: Green
 * Impact: Green
 
-Therefore, if `REMOVE_DESIRed_PAGE_REFRESHES` is `TRUE`, it will only use the first visit in a series of sequential visits to `DESIRed_PAGE` of hit type PAGE. Other earlier visits to `DESIRed_PAGE` will remain, as will any earlier desired page refreshes.
+Therefore, if `REMOVE_DESIRED_PAGE_REFRESHES` is `TRUE`, it will only use the first visit in a series of sequential visits to `DESIRED_PAGE` of hit type PAGE. Other earlier visits to `DESIRED_PAGE` will remain, as will any earlier desired page refreshes.
 
 ### Assumption 4: Journeys shorter than the number of desired stages (`NUMBER_OF_STAGES`) are always included.
 
@@ -215,7 +220,18 @@ This is a better representation of the journey, as a `TRUE` flag indicates that 
 
 The user must have a good understanding of what the `ENTRANCE_FLAG` represents, as this could drastically change the output.
 
-### Assumption 8: If `DEVICE_ALL` is selected in combination with either `DEVICE_DESKTOP`, `DEVICE_MOBILE`, and/or `DEVICE_TABLET`, then the analysis will use `DEVICE_ALL` and ignore all other arguments.
+### Assumption 8: If `EXIT_PAGE` is `FALSE`, each journey contains both instances where the exit page is included, and the exit page is not included.
+
+Quality: Green
+Impact: Red
+
+If `EXIT_PAGE` is `TRUE`, these 2 instances, when the exit page is included compared to when the exit page is not included, will be considered 2 separate journeys.
+
+This is a better representation of the journey, as a `TRUE` flag indicates that the journey had more page paths than `NUMBER_OF_STAGES`.
+
+The user must have a good understanding of what the `EXIT_FLAG` represents, as this could drastically change the output.
+
+### Assumption 9: If `DEVICE_ALL` is selected in combination with either `DEVICE_DESKTOP`, `DEVICE_MOBILE`, and/or `DEVICE_TABLET`, then the analysis will use `DEVICE_ALL` and ignore all other arguments.
 
 * Quality: Green
 * Impact: Red

@@ -15,17 +15,17 @@ This happens because a page view is recorded when a browser requests a page from
 
 This means that we cannot calculate pogo-sticking for pages where links on the pogo-sticking page open up in a new tab. An example of this is `/next-steps-for-your-business/results`. However, we can instead use `EVENT` hits to calculate pogo-sticking on this page.
 
-The [pogo-sticking between "smart answer clicked" pages dashboard](https://datastudio.google.com/u/0/reporting/398d305d-faf0-452e-88b5-210932e4775c/page/YR8MC) shows the pogo sticking rate when a user jumps between different tabs and different smart answers.
+The [pogo-sticking between "smart answer clicked" pages dashboard](https://datastudio.google.com/u/0/reporting/398d305d-faf0-452e-88b5-210932e4775c/page/YR8MC) shows the pogo sticking rate when a user clicks a link that opens in a new tab, and this link triggers a `SmartAnswerClicked` event.
 
 You can view this pogo-sticking dashboard if you have a `@digital.cabinet-office.gov.uk` Google account.
 
-You should check if your page of interest has smart answers.
+You should check if your page of interest uses the event category `SmartAnswerClicked`. If you are unsure, please [email the Data Labs team](mailto:gov.uk-data-labs@digital.cabinet-office.gov.uk).
 
 ## How pogo-sticking is calculated for different tabs and smart answers
 
 This is an adaptation of an [existing method that was developed but not used for internal pogo-sticking](https://github.com/alphagov/user-journey-metrics/blob/main/src/make_data/queries/get_pogo_internal_page_stepbystep_m1.sql).
 
-In this method, the only things kept are `PAGE` hits and the eventCategory `SmartAnswerClicked`. Therefore, pogo-sticking occurs when `A + "L" > B >  A + "L" > C`.
+In this method, the only hit kept are `PAGE` hits and the eventCategory `SmartAnswerClicked`. Therefore, pogo-sticking occurs when `A + "L" > B >  A + "L" > C`.
 
 In this method:
 
