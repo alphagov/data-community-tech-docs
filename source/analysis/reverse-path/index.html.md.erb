@@ -1,13 +1,13 @@
 ---
-title: Use the reverse path tool
+title: Use the reverse page path tool
 weight: 39.2
 last_reviewed_on: 2022-02-23
 review_in: 6 months
 ---
 
-# Use the reverse path tool
+# Use the reverse page path tool
 
-The reverse path tool shows the pages a user visits before visiting a page of interest on GOV.UK.
+The reverse page path tool shows the pages a user visits before visiting a page of interest on GOV.UK.
 
 This tool has 4 outputs:
 
@@ -20,14 +20,14 @@ A subsetted journey is a part of a user's journey rather than the entire journey
 
 A distinct journey is a unique journey that is not the same as any other journey that user has taken.
 
-To use the reverse path tool, you must do the following.
+To use the reverse page path tool, you must do the following.
 
-1. Download the reverse path tool notebook.
+1. Download the reverse page path tool notebook.
 1. Open the tool notebook in Google Colab.
 1. Run the notebook.
 1. View the outputs.
 
-## Download the reverse path tool
+## Download the reverse page path tool
 
 Download the notebook from GitHub.
 
@@ -98,7 +98,7 @@ There are 4 outputs from running the notebook:
 - a raw CSV data file
 - a CSV data file summarising the most popular pages at each step
 - a Sankey diagram
-- a Google Sheets table of the top 10 reverse path tool results
+- a Google Sheets table of the top 10 reverse page path tool results
 
 After you select __Runtime__ and then __Run after__, the notebook should automatically scroll to the cell that starts with __Initialise a Google BigQuery client, and define the query parameters__.
 
@@ -118,13 +118,13 @@ The query then downloads those files into the __Downloads_ folder on your local 
 
 If the query does not generate these CSV files, check the end of the URL search bar. If you see a download icon with a red cross, select the icon and change the option to __Always allow...__, and then select __Done__.
 
-Finally, running the query also creates the Sankey diagram, which is a visualisation of the reverse path from the page of interest.
+Finally, running the query also creates the Sankey diagram, which is a visualisation of the reverse page path from the page of interest.
 
 To download the Sankey diagram, select the camera icon in the top right of the diagram, labelled __Download plot as a png__. This will download a png file to your __Downloads__ folder.
 
-### The top 10 reverse path tool results
+### The top 10 reverse page path tool results
 
-The __Presenting results in Google sheets__ cells create a Google Sheet of the top 10 reverse path journeys.
+The __Presenting results in Google sheets__ cells create a Google Sheet of the top 10 reverse page path journeys.
 
 Select and run the cell that starts __Compile a message, and flag to the user for a response; if not "yes", terminate execution__.
 
@@ -134,11 +134,11 @@ If you are happy to create the Google Sheet, enter "yes" into the user input box
 
 The query will create the Google Sheet and provide a link to this spreadsheet under the __Create google sheet in GOV.UK teams/2021-2022/Data labs/16 User journey tools/Path tools: google sheet result tables__ cell.
 
-This Google Sheet follows the [reverse path template](https://docs.google.com/spreadsheets/d/1E54VgFepSCxNfNKNtxp8eQXme7wGOAEauTqgzEuz3iM/edit?usp=drive_web&ouid=114104082491527752510).
+This Google Sheet follows the [reverse page path template](https://docs.google.com/spreadsheets/d/1E54VgFepSCxNfNKNtxp8eQXme7wGOAEauTqgzEuz3iM/edit?usp=drive_web&ouid=114104082491527752510).
 
-You have now viewed all the outputs from the reverse path tool.
+You have now viewed all the outputs from the reverse page path tool.
 
-Check the __Original SQL query__ cell for the original SQL for the reverse path tool.
+Check the __Original SQL query__ cell for the original SQL for the reverse page path tool.
 
 [assumptions]: ../aqa/assumptions-caveats-reverse-path-tool.md
 [repository]: https://github.com/alphagov/govuk-user-journey-analysis-tools
