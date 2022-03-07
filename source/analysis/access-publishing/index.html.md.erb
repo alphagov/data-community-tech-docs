@@ -13,7 +13,12 @@ You can connect to and access the publishing database instead of [downloading th
 
 The data community does not currently have access to the production environment of the publishing database, so we access the database using the integration environment.
 
-You can also download a backup of the publishing database to your local machine. You may want to do this if you want to run resource-intensive queries on the database, as these queries may affect live services that also use the database.
+You can also download a backup of the publishing database to your local machine.
+
+You may want to do this if you want to:
+
+- run resource-intensive queries on the database, as these queries may affect live services that also use the database
+- create your own tables within the database, as you only have read access to the integration environment database
 
 ## Connect to the publishing database
 
@@ -36,7 +41,7 @@ See the [Get started on GOV.UK developer documentation](https://docs.publishing.
 
     You do not need to include `USER=<FIRSTNAMELASTNAME>;` if your username for your machine is the same as the SSH integration user.
 
-1. Open a psql terminal to the `postgresql-primary` host as the `aws_db_admin` user, and connect to the publishing API database:
+1. Open a PostgreSQL terminal to the `postgresql-primary` host as the `aws_db_admin` user, and connect to the publishing API database:
 
     ```
     sudo psql -U aws_db_admin -h publishing-api-postgres --no-password -d publishing_api_production
@@ -71,10 +76,10 @@ You do not need the GDS VPN or Secure Shell (SSH) access to the integration envi
 1. Download the backup of the publishing api database:
 
     ```sh
-    gds aws govuk-integration-readonly aws s3 cp s3://govuk-integration-database-backups/publishing-api-postgres/<YYYY-MM-DD>T<HH:MM:SS>-publishing_api_production.gz <DOWNLOAD-LOCATION>
+    gds aws govuk-integration-readonly aws s3 cp s3://govuk-integration-database-backups/publishing-api-postgres/<FILENAME> <DOWNLOAD-LOCATION>
     ```
     where:
-    - `<YYYY-MM-DD>T<HH:MM:SS>` is the date and time the backup was created.
+    - `<YYYY-MM-DD>T<HH:MM:SS>` is filename of the backup database
     - `<DOWNLOAD-LOCATION>` is the location you want to download the backup file to on your local machine
 
 ### Open the database on your local machine
