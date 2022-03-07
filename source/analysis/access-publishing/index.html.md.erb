@@ -9,9 +9,14 @@ review_in: 6 months
 
 The GOV.UK publishing database is a PostgreSQL database that keeps a copy of every version of every page published on GOV.UK.
 
-You can access the publishing database instead of [downloading the GOV.UK mirror to your local machine](/analysis/mirror/). You can use the publishing database to compute intents.
+You can connect to and access the publishing database instead of [downloading the GOV.UK mirror to your local machine](/analysis/mirror/). You can use the publishing database to compute intents.
 
 The data community does not currently have access to the production environment of the publishing database, so we access the database using the integration environment.
+
+Instead of connecting to the integration environment database, you can download a backup of the publishing database to your local machine if you need to:
+
+- run resource-intensive queries on the database, as these queries may affect live services that also use the database
+- create your own tables within the database, as you only have read access to the integration environment database
 
 ## Connect to the publishing database
 
@@ -34,10 +39,62 @@ See the [Get started on GOV.UK developer documentation](https://docs.publishing.
 
     You do not need to include `USER=<FIRSTNAMELASTNAME>;` if your username for your machine is the same as the SSH integration user.
 
-1. Open a psql terminal to the `postgresql-primary` host as the `aws_db_admin` user, and connect to the publishing API database:
+1. Open a PostgreSQL terminal to the `postgresql-primary` host as the `aws_db_admin` user, and connect to the publishing API database:
 
     ```
     sudo psql -U aws_db_admin -h publishing-api-postgres --no-password -d publishing_api_production
     ```
 
     This database is named `production`, but it is not in the production environment.
+
+## Download a backup of the publishing database
+
+Instead of connecting to the integration environment database, you can download a backup of the publishing database to your local machine if you need to:
+
+- run resource-intensive queries on the database, as these queries may affect live services that also use the database
+- create your own tables within the database, as you only have read access to the integration environment database
+
+Before you start, you must:
+
+- have [access to AWS](https://docs.publishing.service.gov.uk/manual/get-started.html#7-get-aws-access)
+- install the [GDS command line tools](https://docs.publishing.service.gov.uk/manual/get-started.html#3-install-gds-command-line-tools)
+
+You do not need the GDS VPN or Secure Shell (SSH) access to the integration environment.
+
+### Download the database backup
+
+1. The filename of the latest database backup in AWS S3 varies, depending on the date and time the backup was created. Run the following command to find out the filename:
+
+    ```sh
+    gds aws govuk-integration-readonly aws s3 ls s3://govuk-integration-database-backups/publishing-api-postgres/
+    ```
+
+1. Download the backup of the publishing API database:
+
+    ```sh
+    gds aws govuk-integration-readonly aws s3 cp s3://govuk-integration-database-backups/publishing-api-postgres/<FILENAME> <DOWNLOAD-LOCATION>
+    ```
+    where:
+    - `<YYYY-MM-DD>T<HH:MM:SS>` is the filename of the backup database
+    - `<DOWNLOAD-LOCATION>` is the location you want to download the backup file to on your local machine
+
+### Open the database on your local machine
+
+To work with the database backup on your local machine, you must open the backup on a database system.
+
+The following content assumes you’re using [PostgreSQL](https://www.postgresql.org/) as your database system.
+
+1. Run the following command to create a PostgreSQL database user called `publishing_api`:
+
+    ```sh
+    sudo -u postgres createuser -s publishing_api
+    ```
+1. Load the data from the backup database into a new PostgreSQL database called `publishing_api_production`:
+
+    ```sh
+    pg_restore --verbose --create --jobs=4 --dbname=postgres publishing-api.pgdump
+    ```
+
+When your command line becomes responsive and you can enter commands again, this means you’ll have successfully created a database named `publishing_api_production` that contains the publishing API backup data.
+
+You can now work with this database in PostgreSQL. To learn more about using PostgreSQL, [read the PostgreSQL documentation](https://www.postgresql.org/docs/).
