@@ -19,27 +19,32 @@ To use the spider diagram tool, you must do the following.
 
 1. Download the spider diagram tool notebook.
 1. Open the tool notebook in Google Colab.
-1. Run the notebook.
+1. Run the tool notebook.
 1. Save a local copy of the data.
 
-## Download the spider diagram tool
+## Download the spider diagram tool notebook
 
-Download the notebook from GitHub.
+You need to download the notebook from GitHub.
 
 1. Go to the [`govuk-user-journey-analysis-tools` GitHub repo][repository].
 1. Select the __Code__ button, and then select __Download Zip__.
-1. Unzip the __govuk-user-journey-analysis-tools__ folder and go to the __notebooks__ folder.
+1. Unzip the __govuk-user-journey-analysis-tools__ folder.
+1. Go to the __notebooks__ folder.
 1. Save the __spider-diagram-tool__ Jupyter notebook to your Google Drive account.
 
 ## Open the tool notebook in Google Colab
 
-1. Go to [Google Colab](https://colab.research.google.com/). You will see an window to open a notebook.
-1. Select the __Google Drive__ tab and open the __spider-diagram-tool__ notebook.
+1. Go to [Google Colab](https://colab.research.google.com/). You'll see a pop-up window which will prompt you to open a notebook.
+1. Select the __Google Drive__ tab.
+1. Open the __spider-diagram-tool__ notebook.
 
-To open a Juypter notebook in Google Colab from Google Drive for the first time, you must associate Juypter notebooks with Google Colab.
+### Associate Jupyter notebooks with Google Colab
+
+To open a Juypter notebook in Google Colab from Google Drive for the first time, you must associate Juypter notebooks with Google Colab. You’ll only have to do this once.
 
 1. Right-click anywhere in Google Drive and select __More__.
-1. Select __Connect more apps__ and then __Google Colaboratory__.
+1. Select __Connect more apps__.
+1. Select __Google Colaboratory__.
 1. Accept any required permissions.
 
 Once you have associated Juypter notebooks with Google Colab, you can open a Juypter notebook in Google Colab from Google Drive.
@@ -52,13 +57,13 @@ To run the notebook, you must do the following.
 1. Set the input variables.
 1. Run the query cells.
 1. Run the __Execute queries__ cell.
-1. Create the visualisation.
+1. Create and download the visualisation.
 
 ### Authenticate your access
 
-1. Hover your cursor over the cell that starts with the code `from datetime import datetime` to show the run icon. Select the run icon to start the authentication process.
+1. Hover your cursor over the cell that starts with the code `from datetime import datetime` to show the run icon. To start the authentication process, select the run icon, which is in the top left corner of the cell.
 1. Select the authentication link in the text box and then select your Google account.
-1. Follow the on screen prompts, selecting __Allow__ when prompted, and copy the __Sign in code__ when this code appears.
+1. Follow the on-screen prompts, selecting __Allow__ when prompted, and copy the __Sign in code__ when this code appears.
 1. Go back to the text box in the notebook and paste the sign in code into the __Enter verification code__ field.
 1. Select __Enter__ to complete authentication.
 
@@ -69,9 +74,10 @@ If you receive a warning message saying "The notebook was not authored by Google
 You must complete and run the cells in the __Input Variables__ section.
 
 1. Complete the __Set Input Variables Form__ by entering the following fields:
+
   - `start_date` and `end_date` - the date range you want to look at, in `YYYY/MM/DD` format
   - `page_path` - the URL for the page of interest which always starts with `/`, for example `/brexit`
-  - `path_or_title` - select either the path or the title to specify what you will see in the visualisation
+  - `path_or_title` - whether the visualisation will show the page paths or page titles, for example `/find-a-job` or __Find a job__
   - `remove_query_string` - check this box if you want to remove the query string from the URL, for example if you've input an answer into a smart answer field
   - device categories - you must select at least one device type from __Desktop__, __Mobile__ or __Tablet__, otherwise the code will not run and will raise a `ValueError`
 
@@ -93,28 +99,26 @@ Run the following cells in the following order.
 
 The __Execute queries__ cell estimates the number of gigabytes read by the query and shows you the amount.
 
-If you are happy to run the query, enter "yes" into the user input box.
+If you’re happy to run the query, enter "yes" into the user input box.
 
 If you leave the input box blank or type in something other than "yes", the query will not run.
 
 ### Create and download the visualisation
 
-Once the __Input Variables__, query and __Execute queries__ cells have run, the notebook generates the interactive plotly figure visualisation.
+Once the __Input Variables__ query and __Execute queries__ cells have finished running, the notebook generates the interactive Plotly figure visualisation.
 
 To download the plot as a .png, hover your cursor over the figure and select the camera icon located in the top right-hand menu.
 
 ## Save a local copy of the data
 
-Once the __Input Variables__, query and __Execute queries__ cells have run, the notebook downloads the following files to your local machine:
+Once the __Input Variables__ query and __Execute queries__ cells have finished running, the notebook downloads the following files to your local machine:
 
 - a CSV file of the entry and exit data, including the number and proportion of page views
-- an HTML file of the plotly figure
+- an HTML file of the Plotly figure
 - a text file of the metadata for the executed SQL queries
 
 If none or only some of the files are downloaded, check the end of the URL search bar. If you see a download icon with a red cross, select the icon and change the option to __Always allow...__, and then select __Done__.
 
-[assumptions]: ../aqa/assumptions-caveats-spider-diagram-tool.md
-[repository]: https://github.com/alphagov/govuk-user-journey-analysis-tools
 
 ## Assumptions and caveats
 
@@ -122,17 +126,17 @@ This log contains a list of assumptions and caveats used in the Forward Path too
 
 ### Definitions
 
-Assumptions are RAG-rated according to the following definitions for quality and impact.
+Assumptions are Red-Amber-Green (RAG)-rated according to the following definitions for quality and impact.
 
-| RAG   | Assumption quality | Assumption impact |
+| RAG rating   | Assumption quality | Assumption impact |
 |---|---|---|
-|Green|Reliable assumption, well understood and/or documented; anything up to a validated & recent set of actual data.|Marginal assumptions; their changes have no or limited impact on the outputs.|
-|Amber|Some evidence to support the assumption; may vary from a source with poor methodology to a good source that is a few years old.|Assumptions with a relevant, even if not critical, impact on the outputs.|
-|Red|Little evidence to support the assumption; may vary from an opinion to a limited data source with poor methodology|Core assumptions of the analysis; the output would be drastically affected by their change.|
+|Green|Reliable assumption, well understood and/or documented. Anything up to a validated and recent set of actual data.|Marginal assumptions that their changes have no or limited impact on the outputs.|
+|Amber|Some evidence to support the assumption. May vary from a source with poor methodology to a good source that’s a few years old.|Assumptions with a relevant, even if not critical, impact on the outputs.|
+|Red|Little evidence to support the assumption. May vary from an opinion to a limited data source with poor methodology|Core assumptions of the analysis is that the output would be drastically affected by their change.|
 
 Thank you to the Home Office Analytical Quality Assurance team for these definitions.
 
-### Assumption 1: Prioritise visualisation by aggregating all pages that have less than 2.5% of sessions to `(other)`
+### Group all pages that have less than 2.5% of sessions to `(other)`
 
 * Quality: Green (for visualisation purposes)
 * Impact: Green (for visualisation purposes)
@@ -143,13 +147,11 @@ To mitigate this, all pages with less than 2.5% of overall sessions are aggregat
 
 As this is strictly for visualisation purposes, it is acceptable. However, any downstream analysis of the outputs is obviously limited due to this aggregation. As such, outputs of this tool should not be used for further quantitative analysis without a thorough understanding of this assumption's implications.
 
-### Assumption 2: URL query parameters and anchors are excluded from page paths
+### Notebook tool excludes URL query parameters and anchors from page paths
 
 * Quality: Green
 * Impact: Green
 
-All URL query parameters and anchors have been removed from page paths so that page views are associated with the
-general page path URL, rather than specific query parameters and anchors. The URL parameters and anchors are removed
-during SQL execution.
+The notebook tool has removed all URL query parameters and anchors from page paths so that page views are associated with the general page path URL, rather than specific query parameters and anchors. The tool removes the URL parameters and anchors during SQL execution.
 
-The URL parameters and anchors are removed as the overall aim of the tool is to provide an understanding of which page paths have been viewed, regardless of query parameters and anchors. This is in line with Google Analytics, which also excludes query parameters and anchors from the page path.
+The tool removes the URL parameters and anchors as the overall aim of the tool is to provide an understanding of which page paths have been viewed, regardless of query parameters and anchors. This is in line with Google Analytics, which also excludes query parameters and anchors from the page path.
