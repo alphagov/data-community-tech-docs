@@ -7,15 +7,18 @@ review_in: 6 months
 
 # Use the spider diagram tool
 
-The spider diagram tool is a visualisation tool that shows the page users come from before going to a page of interest, and which pages users go to after a page of interest.
+The spider diagram tool is a visualisation tool that shows which pages users:
 
-This data is over a date range, and is broken down by:
+- come from before visiting a page of interest
+- go to after visiting a page of interest
+
+This data is over a date range and is broken down by:
 
 - device category
 - internal/external links
 - individual entry/exit pages paired with the count and proportion of page views
 
-To use the spider diagram tool, you must do the following.
+To use the spider diagram tool, you must do the following:
 
 1. Download the spider diagram tool notebook.
 1. Open the tool notebook in Google Colab.
@@ -64,7 +67,7 @@ To run the notebook, you must do the following.
 1. Hover your cursor over the cell that starts with the code `from datetime import datetime` to show the run icon. To start the authentication process, select the run icon, which is in the top left corner of the cell.
 1. Select the authentication link in the text box and then select your Google account.
 1. Follow the on-screen prompts, selecting __Allow__ when prompted, and copy the __Sign in code__ when this code appears.
-1. Go back to the text box in the notebook and paste the sign in code into the __Enter verification code__ field.
+1. Go back to the text box in the notebook and paste the sign-in code into the __Enter verification code__ field.
 1. Select __Enter__ to complete authentication.
 
 If you receive a warning message saying "The notebook was not authored by Google", select __Run Anyway__.
@@ -97,7 +100,7 @@ Run the following cells in the following order.
 
 ### Run the __Execute queries__ cell
 
-The __Execute queries__ cell estimates the number of gigabytes read by the query and shows you the amount.
+The __Execute queries__ cell estimates and shows you the amount of data read by the query in gigabytes.
 
 If you’re happy to run the query, enter "yes" into the user input box.
 
@@ -141,7 +144,7 @@ Thank you to the Home Office Analytical Quality Assurance team for these definit
 * Quality: Green (for visualisation purposes)
 * Impact: Green (for visualisation purposes)
 
-Pages that contain less than 2.5% of overall sessions are difficult to see in the diagram both in terms of their volume, and any associated labels.
+Pages that contain less than 2.5% of overall sessions are difficult to see in the diagram both in terms of their volume and any associated labels.
 
 To mitigate this, all pages with less than 2.5% of overall sessions are aggregated into a separate category, `(other)`. This happens immediately after the tool has executed the SQL queries, but before the tool has rendered the visualisations and outputs.
 
