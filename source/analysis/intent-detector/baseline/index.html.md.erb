@@ -1,0 +1,30 @@
+---
+title: Use the baseline model
+weight: 39.62
+last_reviewed_on: 2022-03-04
+review_in: 6 months
+---
+
+# Use the baseline model
+
+___who is this for???___
+
+This is a simplified version of the algorithm that does not involved any spreading activation from visited to non-visited pages, and that limits the "content" of a visited page to the text in its URL.
+
+Thus, intents are derived from terms in the URLs of the pages that were actually visited in a user session, weighted by their TF-IDF. Terms that have been viewed on multiple pages are weighted by the sum of their TF-IDF weights on those pages.
+
+Prerequisites
+A dataset of sessions and the URLs visited, where the URLs have been pruned and cleaned so that they conform to - the ones in the GOV.UK mirror and the TF-IDF matrix.
+
+To create this file, run the python script, following the instructions therein: src.make_data.download_session_pages.py
+
+A TF-IDF matrix of terms extracted from the URLs of the pages in the GOV.UK mirror.
+
+To create this file, run the python script, following the instructions therein: src.make_data.generate_topology_matrix.py
+
+Baseline model implementation
+The implementation of the baseline model is in notebooks/baseline_models_poc/baseline_2_tfidf_visited_urls_all_govuk.py
+
+Please follow this guide:
+
+Understanding how intents are derived
