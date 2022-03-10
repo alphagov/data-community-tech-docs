@@ -35,6 +35,8 @@ have at least R version 4.0.4 - https://cran.r-project.org/
 
 Required packages installed; run the make requirements command in your terminal ___what does this mean?___
 
+run make requirements command in root dir of this repo on your local machine to install python packages that are required for the intent detector to - dependencies
+
 a copy of the gov.uk mirror on your local machine - /analysis/mirror/
 
 install direnv so you can load env var - https://github.com/alphagov/govuk-intent-detector/blob/main/docs/user_guide/loading_environment_variables.md#loading-environment-variables
@@ -60,17 +62,27 @@ Google Cloud Platform (GCP) service account credentials	GOOGLE_APPLICATION_CREDE
 
 ___how do i do this???___
 
-Once complete, make sure the .secrets file has the following line uncommented out:
+John Byrne / Data AAA community / TBC sends you GCP credentials JSON file, it needs certain permissions, i need to ask John about those permissions, needs to be able to execute  select queries on bigquery
 
-source_env ".secrets"
+put that file on your local machine
+
+then add `export GOOGLE_APPLICATION_CREDENTIALS="path/to/credentials.json"` to .secrets file
+
+Make sure `source_env ".secrets"` isnt commented out
+
 This ensures direnv loads the .secrets file via .envrc without version-controlling .secrets.
 
-## Intent detector algorithsm
+only the secrets need loading in direnv
+
+## Intent detector algorithms
 
 There are 3 algorithms to infer and detect intents.
 
 - the Inferring User Needs by Information Scents (IUNIS) algorithm
 - a simpler baseline model
 - an even simpler model for performance analysts ___can we categorise them differently?___
+
+less sophisticated
+version 1, 2, and 3
 
 See the documentation for these 3 algorithms to use them.

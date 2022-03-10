@@ -7,6 +7,8 @@ review_in: 6 months
 
 # Use the IUNIS algorithm
 
+term frequency multiplied by inveser document frequency - https://en.wikipedia.org/wiki/Tf%E2%80%93idf
+
 In the Inferring User Needs by Information Scents (IUNIS) algorithm, the list of keywords that represent the user journey’s intent are driven by the:
 
 - pages that a user visits in their journey
@@ -28,6 +30,8 @@ Then, run the IUNIS algorithm on the step-alpha function.
 ## Create the page term TF-IDF matrix
 
 ___What is this thing????___
+gets the content for each page on gov.uk, one row is a page, one column is a page
+tf-idf process run give weight to words that are more important to pages, and less weight to common words such as "the" or "and"
 
 To create the page term TF-IDF matrix:
 
@@ -37,6 +41,8 @@ To create the page term TF-IDF matrix:
 If you are using AWS Sagemaker (link) you must also upload the copy of the GOV.UK mirror to your jupyter instance
 ___how do i do this???___
 ___what else would i use instead of sagemaker???___
+
+link to data tech docs on sagemaker for reason why, and lkink to aws docs for how to use sagemaker
 
 ### Set the env var
 
@@ -49,8 +55,11 @@ If using AWS Sagemaker, please first run: startup_script.ipynb and make sure the
 file notebooks/page_term_tfidf_matrix/setup_script.py is in the specified directory
 ___what specified directory? if it isnt do i just copy it from the intent detector repo???___
 
+notebooks/page_term_tfidf_matrix
+duncan / alessia to test sagemaker instructions
+
 At the root-level of this repository, run `jupyter notebook` to open Jupyter in your terminal.
-___the intent detector repository???___
+___the intent detector repository???___ yes
 
 On the Jupyter interface, navigate to the `notebooks/page_term_tfidf_matrix`.
 There are nine Jupyter notebooks here.
@@ -61,29 +70,52 @@ modify the DATA_DATE in each notebook before you run them
 
 Open each notebook in turn, and execute all the cells -
 
-002. Get the filepaths to each, and every HTML file from the GOV.UK mirror; output stored in `data/interim` folder
+002. Get the filepaths to each and every HTML file from the GOV.UK mirror; output stored in `govuk-intent-detector/data/interim` folder on your local machine
 ___where is that folder???___
 
 003b. [only for PoC set of curated user journeys]
 Compare the outputs from Step 002 and the page urls for the PoC curated user journeys in the yaml file.
-In case any page is missing, web-scraping GOV.UK following notebook 003 below
+In case any page is missing from the gov.uk mirror,
+
+web-scraping GOV.UK following notebook 003 below
+
+003_get_missing_visited_pages.ipynb
+
 (there was none for the PoC first iteration);
 ___what is PoC???___
 scraped HTML pages stored in the `data/raw/scraped` folder
 updated index of filepaths stored in the `data/interim` folder
 ___where is this folder???___
 
+PoC proof of concept yaml no longer used - Duncan to look at the process
+
 004b. Parse all the valid HTML pages from Step 002 to show only visible text;
 Remove irrelevant html parts (e.g., header, banner)
 output stored in `data/interim` folder
 
-005. Set the outputs from Step 004 to lowercase, remove digits and otehr non-alpha symbols,
+005. Set the outputs from Step 004 to lowercase, remove digits and other non-alpha symbols,
 lemmatise them using WordNet parts of speech tags, and remove English stopwords; and
 ___what does lemmatise mean??? sort so as to group together inflected or variant forms of the same word___
 output stored in `data/interim` folder
 
 006. Generate the TF-IDF matrix.
 Outputs are stored in the data/processed folder
+
+
+Additional notebooks
+The following notebooks should be run if creating a TF-IDF for the whole of bigquery rather than the mirror, while ensuring that all pages visited on a specific day (e.g., those created after the mirror version or not present in the mirror, like search-api pages) are captured in the TF-IDF.
+
+001. Get all visited GOV.UK pages from Google BigQuery for a specific day;
+
+002. (as above)
+
+003. Compare the outputs from Steps 001 and 002, web-scraping GOV.UK for any missing pages;
+
+004. Parse all the valid HTML pages from Step 001 to show only visible text; If a fragment (#) exists in the page path, only extract the visible text at and after this fragment
+
+005. (as above)
+
+006. (as above)
 
 ## Create the page-access weight matrix
 
@@ -104,10 +136,12 @@ src/make_data/queries/session_page_access_matrix.sql
 src/make_data/queries/visitor_page_access_matrix.sql
 
 ___what does a user do with these??? run them before the script??? where???___
+below script runs these - remove these
 
-Run the python script `src.make_data.make_user_page_access_matrix` to create the user-page access matrix.
+Run the python script `repo/src/make_data/make_user_page_access_matrix.py` to create the user-page access matrix.
 ___where is this???___
 ___where do i run the script?___
+src/make_data/make....
 
 Specify the following positional arguments in the script:
 
@@ -130,9 +164,13 @@ the "raw" output table of the sql query, saved in the data/interim/ folder as {s
 the user-target page access TF-IDF matrix, saved in the data/interim/ folder as {start_date>}_{end_date}_{chosen_user}_{tfidf_log}_page_access_matrix.parquet
 
 ___where are these folders? local machine? any setup of folder structure required?___
+already there in local copy of repo
 
 Lines 48-55 in src/make_data/queries/session_page_access_matrix.sql are only required for the artificial set of user journeys used for the PoC. To be removed when scaling the algorithm.
 ___what does this mean???___
+duncan to tidy up earlier bit will then provide context
+
+docs branch at Proof of concept 
 
 ## Create the step function alpha vector
 
