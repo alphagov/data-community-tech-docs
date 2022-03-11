@@ -27,62 +27,74 @@ This is based on cognitive theories of web navigation, which state that:
 
 Even if this assumption is false, many of the techniques for intent detection can still summarise a user's session.
 
-## Before you start
-
-have at least python 3.8 - https://www.python.org/downloads/
-
-have at least R version 4.0.4 - https://cran.r-project.org/
-
-Required packages installed; run the make requirements command in your terminal ___what does this mean?___
-
-run make requirements command in root dir of this repo on your local machine to install python packages that are required for the intent detector to - dependencies
-
-a copy of the gov.uk mirror on your local machine - /analysis/mirror/
-
-install direnv so you can load env var - https://github.com/alphagov/govuk-intent-detector/blob/main/docs/user_guide/loading_environment_variables.md#loading-environment-variables
-
-___apart from secrets, what other env var do i need to load with direnv???___
-
-a .secrets file with secrets/credentials as environmental variables
-
-In your terminal navigate to the root folder, and create a .secrets file.
-
-touch .secrets
-
-Open this new .secrets file using your preferred text editor, and add any secrets as environmental variables.
-
-For example, to add a JSON credentials file for Google BigQuery, save the following changes to .secrets.
-
-export GOOGLE_APPLICATION_CREDENTIALS="path/to/credentials.json"
-
-Load the following secrets using direnv:
-
-Environment variable name	Description
-Google Cloud Platform (GCP) service account credentials	GOOGLE_APPLICATION_CREDENTIALS	Absolute file path to your GCP credentials JSON file.
-
-___how do i do this???___
-
-John Byrne / Data AAA community / TBC sends you GCP credentials JSON file, it needs certain permissions, i need to ask John about those permissions, needs to be able to execute  select queries on bigquery
-
-put that file on your local machine
-
-then add `export GOOGLE_APPLICATION_CREDENTIALS="path/to/credentials.json"` to .secrets file
-
-Make sure `source_env ".secrets"` isnt commented out
-
-This ensures direnv loads the .secrets file via .envrc without version-controlling .secrets.
-
-only the secrets need loading in direnv
-
 ## Intent detector algorithms
 
 There are 3 algorithms to infer and detect intents.
 
-- the Inferring User Needs by Information Scents (IUNIS) algorithm
-- a simpler baseline model
-- an even simpler model for performance analysts ___can we categorise them differently?___
+- an Inferring User Needs by Information Scents (IUNIS) algorithm
+- a less sophisticated URL-derived algorithm
+- a performance analyst-focused algorithm
 
-less sophisticated
-version 1, 2, and 3
+## Before you start
 
-See the documentation for these 3 algorithms to use them.
+Before you use any of the intect detector algorithms, you must complete the following prerequisites.
+
+### Clone the intent-detector repo
+
+1. Go to the [`govuk-intent-detector` GitHub repo](https://github.com/alphagov/govuk-intent-detector).
+1. Select __Code__ and then select the appropriate option under __Clone__.
+1. Go to the root of the `govuk-intent-detector` directory on your local machine.
+
+### Install software dependencies
+
+Install the following software dependencies in the root of the `govuk-intent-detector` directory on your local machine.
+
+1. Install at least [Python 3.8](https://www.python.org/downloads/) or later.
+1. Install at least [R 4.0.4](https://cran.r-project.org/) or later.
+1. Run `make requirements` in the command line to install the Python packages that the intent detector needs to run.
+
+### Download a copy of the GOV.UK mirror
+
+The GOV.UK mirror is a static version of the entire GOV.UK website.
+
+See the [documentation on using the GOV.UK mirror](/analysis/mirror/) for more information on how to download a copy of the mirror.
+
+### Install direnv
+
+You should use [`direnv`](https://direnv.net/) to load environment variables, as this program ensure you only have project-specific variables loaded when you are inside the project. This prevents accidental conflicts with identically named environment variables.
+
+1. Run the following in the command line to install `direnv` using [Homebrew](https://brew.sh/):
+
+    ```
+    brew install direnv
+    ```
+
+1. Add the shell hooks to your .bash_profile:
+
+    ```
+    echo 'eval "$(direnv hook bash)"' >> ~/.bash_profile
+    ```
+1. Check that you have added the shell hooks correctly:
+
+    ```
+    cat ~/.bash_profile
+    ```
+
+    If you have added the shell hooks correctly, you should see `eval "$(direnv hook bash)"`.
+
+1. Restart your terminal to finish installing `direnv`.
+
+### Load the secrets environment variable
+
+1. Ask the GOV.UK Data AAA team govuk-data-aaa@digital.cabinet-office.gov.uk for a Google Cloud Platform (GCP) credentials JSON file. These credentials must give permission to execute `select` queries on BigQuery.
+
+1. When you receive this GCP credentials JSON file, store it on your local machine.
+
+1. Go to the root of the `govuk-intent-detector` directory on your local machine and create a `.secrets` file:
+
+    ```
+    touch .secrets
+    ```
+1. Add `export GOOGLE_APPLICATION_CREDENTIALS="<SECRETS-FILE-ABSOLUTE-FILEPATH-AND-FILENAME>"` to the `.secrets` file.
+
+1. Make sure `source_env ".secrets"` is not commented out to make sure `direnv` loads the `.secrets` file using `.envrc` without changing the version of the `.secrets` file.
