@@ -7,7 +7,7 @@ review_in: 6 months
 
 # Use the IUNIS algorithm
 
-term frequency multiplied by inveser document frequency - https://en.wikipedia.org/wiki/Tf%E2%80%93idf
+term frequency-inverse document frequency - https://en.wikipedia.org/wiki/Tf%E2%80%93idf
 
 In the Inferring User Needs by Information Scents (IUNIS) algorithm, the list of keywords that represent the user journey’s intent are driven by the:
 
@@ -29,13 +29,13 @@ Then, run the IUNIS algorithm on the step-alpha function.
 
 ## Create the page term TF-IDF matrix
 
-___What is this thing????___
-gets the content for each page on gov.uk, one row is a page, one column is a page
-tf-idf process run give weight to words that are more important to pages, and less weight to common words such as "the" or "and"
+In information retrieval, [term frequency-inverse document frequency (TF-IDF)](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) is a numerical statistic that shows how important a word is to a document.
+
+The TF-IDF gives weight to words that are more important to documents, and less weight to common words such as "the" or "and".
 
 To create the page term TF-IDF matrix:
 
-- set the env var
+- set the environment variables
 - execute the Jupyter notebooks
 
 If you are using AWS Sagemaker (link) you must also upload the copy of the GOV.UK mirror to your jupyter instance
@@ -170,7 +170,7 @@ Lines 48-55 in src/make_data/queries/session_page_access_matrix.sql are only req
 ___what does this mean???___
 duncan to tidy up earlier bit will then provide context
 
-docs branch at Proof of concept 
+docs branch at Proof of concept
 
 ## Create the step function alpha vector
 
