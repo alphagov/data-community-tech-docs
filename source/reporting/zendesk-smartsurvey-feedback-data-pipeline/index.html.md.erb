@@ -9,15 +9,15 @@ review_in: 6 months
 
 GOV.UK users can provide feedback about GOV.UK by selecting the:
 
-- "Is this page useful? Yes / No" button on a GOV.UK page to provide qualitative feedback about their experience on GOV.UK
-- "Report a problem" button on a GOV.UK page to report issues with that page
-- "Contact" link in a GOV.UK page footer to go to a service-specific contact page to leave written feedback
+- __Is this page useful? Yes or No__ button on a GOV.UK page to provide qualitative feedback about their experience on GOV.UK
+- __Report a problem__ button on a GOV.UK page to report issues with that page
+- __Contact__ link in a GOV.UK page footer to go to a service-specific contact page to leave written feedback
 
 These feedback methods appear on all GOV.UK pages.
 
-The GOV.UK Insights team is required to collate feedback data from multiple sources to make that data available to GDS users for analysis.
+The GOV.UK Insights team collects and organises feedback data from multiple sources to make that data available to GDS users for analysis.
 
-The [GOV.UK Feedback Pipeline tool](https://github.com/alphagov/govuk-feedback-pipeline) consolidates, cleanses and standardises the feedback data to enable accurate analysis of the user feedback. This maximises the quality and reliability of the user feedback data, making it easier to identify both known and new meaningful insights and actions.
+The [GOV.UK Feedback Pipeline tool](https://github.com/alphagov/govuk-feedback-pipeline) consolidates, cleanses and standardises the feedback data to enable accurate analysis of user feedback. This tool maximises the quality and reliability of the user feedback data, making it easier to identify new meaningful insights and actions.
 
 The following content explains how:
 
@@ -27,14 +27,14 @@ The following content explains how:
 
 ## Copy the feedback data
 
-Feedback data is stored in one of the following data sources, depending on the route through which the feedback was submitted:
+Feedback data is stored in one of the following data sources, depending on the route through which users submitted feedback:
 
-- the "Is this page useful?" survey results are stored in SmartSurvey
-- both the "Report a problem" issue descriptions and "Contact" request details are stored in Zendesk
+- SmartSurvey, which stores the __Is this page useful?__ survey results
+- Zendesk, which store both the __Report a problem__ issue descriptions and __Contact__ request details
 
 Every day at approximately 8:10am, an [Apache Airflow process](https://airflow.apache.org/) runs a collection of Python scripts to copy the previous day's feedback data from the SmartSurvey and Zendesk servers to BigQuery.
 
-These Python scripts are located in the [govuk-user-journey-models GitHub repo on alphagov](https://github.com/alphagov/govuk-user-journey-models).
+You can find these Python scripts in the [govuk-user-journey-models GitHub repo on alphagov](https://github.com/alphagov/govuk-user-journey-models).
 
 To get access to this repo, speak to the GDS Data Labs team on the [#govuk-data-labs Slack channel](https://app.slack.com/client/T8GT9416G/CHR4UQKU4).
 
@@ -53,21 +53,21 @@ The tool uses 4 data cleansing methods:
 - filtering
 - marking up
 
-The tool identifies data to cleanse using known text patterns, otherwise known as regular expressions.
+The tool uses known text patterns to identify data to cleanse. These text patterns are known as regular expressions.
 
 See the [Feedback Pipeline tool regular expressions documentation](/reporting/zendesk-smartsurvey-feedback-data-pipeline/regex/) for more information.
 
 #### Pruning
 
-Pruning is removing a portion of nonsensical or irrelevant feedback text from a feedback record.
+Pruning removes nonsensical or irrelevant feedback text from a feedback record.
 
 Examples of pruning include trimming whitespace and removing URL parameters or code snippets.
 
 #### Masking
 
-Masking is replacing a portion of feedback text with a text mask indicating that the feedback text has been modified.
+Masking replaces a portion of feedback text with a text mask indicating the feedback text has been modified.
 
-An example of a text mask is `****`. Text can be masked because the portion is:
+An example of a text mask is `****`. You can decide to mask text if it’s:
 
 - not relevant to the analysis
 - potentially sensitive
@@ -75,31 +75,31 @@ An example of a text mask is `****`. Text can be masked because the portion is:
 
 #### Filtering
 
-Filtering is excluding a feedback record from the pipeline output data set because the feedback record has no relevant or legitimate feedback.
+Filtering excludes a feedback record from the pipeline output data set because the record has no relevant or legitimate feedback.
 
 Examples of feedback records that should be filtered are spam records or duplicate records.
 
 #### Marking up
 
-Marking up is adding a flag to a feedback record to suggest that the record may be spam or has no relevant or legitimate feedback.
+Marking up adds a flag to a feedback record to suggest the record may be spam or has no relevant or legitimate feedback.
 
-This way, the record remains in the data set, but can be filtered out later
+This way, the record remains in the data set, but you can filter it out later if needed.
 
 ### Data cleansing
 
 The Feedback Pipeline tool goes through the following steps to cleanse the SmartSurvey and Zendesk data sets.
 
-1. Reads the feedback data from the previous full day from the data sets by submitting an API request.
+1. Reads the previous full day's feedback data from the data sets by submitting an API request.
 
-1. Prunes unnnecessary white space in feedback text to avoid issues in text analysis later in the process.
+1. Prunes unnecessary white space in feedback text to avoid issues in text analysis later in the process.
 
 1. Deletes duplicate feedback records to minimise processing cost. Duplicate records share an internal system identifier with another record in the same data set.
 
-1. Deletes verbose feedback records as verbose records cannot be processed and analysed later in the process. Verbose records are defined as having more than 2000 characters.
+1. Deletes verbose feedback records as verbose records cannot be processed and analysed later in the process. Verbose records have more than 2000 characters.
 
-1. Deletes records whose text patterns match known vulnerability exploits, such as javascript or SQL strings, or contain text patterns indicating the use of vulnerability scanning tools.
+1. Deletes records whose text patterns match known vulnerability exploits, such as JavaScript or SQL strings, or contain text patterns indicating the use of vulnerability scanning tools.
 
-1. Masks and removes PII in a 2 step process. First, the tool sends the data to the [Google Cloud Data Loss Prevention service (DLP)](https://cloud.google.com/dlp). Google Cloud DLP looks for the following information types:
+1. Masks and removes PII in a 2-step process. First, the tool sends the data to the [Google Cloud Data Loss Prevention service (DLP)](https://cloud.google.com/dlp). Google Cloud DLP looks for the following information types:
 
     ```
     Date of birth
@@ -114,15 +114,13 @@ The Feedback Pipeline tool goes through the following steps to cleanse the Smart
 
     Second, the tool compares the feedback records against PII regular expressions. The tool then masks any identified PII instances.
 
-1. Prunes code snippets in feedback records by replacing those snippets with the blank character '', as code snippets are not relevant to feedback data analysis.
+1. Prunes code snippets in feedback records by replacing those snippets with the blank character `''`, as code snippets are not relevant to feedback data analysis.
 
 1. Masks instances of profanity in feedback records with `****`.
 
-The tool has finished cleansing the feedback data.
-
 ## Save the feedback data in BigQuery
 
-The Feedback Pipeline tool saves the following to BigQuery:
+The Feedback Pipeline tool saves the following data to BigQuery:
 
 - cleansed data
 - pipeline metrics
@@ -146,17 +144,17 @@ To request permission to view or edit these data tables in BigQuery, speak to th
 
 The Zendesk and SmartSurvey feedback data is now in BigQuery, ready for users to view and analyse.
 
-See the [documentation on viewing or extracting feedback data from BigQuery](/reporting/view-extract-feedback-data-bigquery/) for more information on the next step of the process.
+For more information on the next step of the process, see the [documentation on viewing or extracting feedback data from BigQuery](/reporting/view-extract-feedback-data-bigquery/).
 
 ### Save the pipeline and PII metrics
 
 The tool also saves pipeline and PII metrics to BigQuery.
 
-The pipeline metrics summarise the changes to the feedback records due to the data cleansing process.
+The pipeline metrics summarise the changes to the feedback records caused by the data cleansing process.
 
-The PII metrics show how many articles of PII have been removed for each combination of PII type and source system field.
+The PII metrics show how many articles of PII the tool has removed for each combination of PII type and source system field.
 
-In the following example, the metrics table shows that the feedback pipeline tool has removed 10 instances of person names from the description field in the data source.
+In the following example, the metrics table shows a feedback pipeline tool. The tool has removed 10 instances of person names from the description field in the data source.
 
 ```
 Source system field: description
