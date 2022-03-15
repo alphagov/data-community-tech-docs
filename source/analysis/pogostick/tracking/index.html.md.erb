@@ -1,17 +1,15 @@
 ---
-title: Use the pogo-sticking dashboard page tracking dashboard
+title: Using the pogo-sticking dashboard page tracking dashboard
 weight: 39.42
 last_reviewed_on: 2022-02-23
 review_in: 6 months
 ---
 
-# Use the pogo-sticking dashboard page tracking dashboard
+# Using the pogo-sticking dashboard page tracking dashboard
 
-Pogo-sticking is when a user quickly navigates back and forth from a web page within the same user session
+Pogo-sticking is when a user navigates repeatedly through the same web page within a user journey.
 
-For example, a user navigates from Page A to Page B back to Page A and then to Page C.
-
-The [pogo-sticking dashboard page tracking dashboard](https://datastudio.google.com/u/0/reporting/72caf3b3-a61c-406a-81f3-16b01774bdb6/page/UfHLC) is for the data labs team and shows if the main pogo-sticking dashboard is being used, and how.
+The [pogo-sticking dashboard page tracking dashboard](https://datastudio.google.com/u/0/reporting/72caf3b3-a61c-406a-81f3-16b01774bdb6/page/UfHLC) is for the Data Labs team and shows if the main pogo-sticking dashboard is being used, and how.
 
 To view the metrics on how users are using the main pogo-sticking dashboard, you can either:
 
@@ -20,9 +18,9 @@ To view the metrics on how users are using the main pogo-sticking dashboard, you
 
 The dashboard has a set amount of metrics. If you want to customise and explore the data more, you should use Google Analytics instead of the dashboard.
 
-## View the metrics data in Google Analytics
+## Viewing the metrics data in Google Analytics
 
-To view this metrics data, you must have access to Google Analytics. If you do not have access Google Analytics, see this [documentation on accessing Google Analytics](https://sites.google.com/a/digital.cabinet-office.gov.uk/gds/communities-of-practice/data-analysis/tools-technical/access-to-google-analytics).
+To view this metrics data, you must have access to Google Analytics. If you do not have access to Google Analytics, see this [documentation on accessing Google Analytics](https://sites.google.com/a/digital.cabinet-office.gov.uk/gds/communities-of-practice/data-analysis/tools-technical/access-to-google-analytics).
 
 1. Go to [Google Analytics](https://analytics.google.com/analytics/web/?hl=en-GB&pli=1#/report-home/a26179049w50705554p53872948).
 1. Select __Main Profile__ to change views, and then select __www.gov.uk__ > __GOV.UK - Data Studio Dashboards__ > __GDS - All Dashboards__.
@@ -36,7 +34,7 @@ You can now view this metrics data in Google Analytics.
 
 ## Metrics
 
-All metrics related to the pogo-sticking page are filtered using a page filter capturing the URLs mentioned previously.
+All metrics related to the pogo-sticking page are filtered using a page filter capturing the URLs mentioned in the [#viewing-the-metrics-data-in-google-analytics][] section.
 
 Metrics related to comparison pages are filtered using a page filter capturing the URLs as stated in the appropriate following sections.
 
@@ -68,23 +66,26 @@ This page is tracked as `/reporting/9030f1f9-8c67-4644-8ae7-934bc206413c/page/If
 
 Provides total page views over the past 30 days, total page views by day, and total page views by month.
 
-### Pogo sticking page - Page views over the previous 30 days
+### Pogo-sticking page - Page views over the previous 30 days
 
-A time-series graph representing number of page views of the pogo-sticking page on the y-axis, and date on the x-axis.
+A time-series graph representing:
 
-### Pogo sticking page - New users over the previous 30 days
+- number of page views of the pogo-sticking page on the y-axis
+- date on the x-axis.
 
-A time-series graph representing number of new users (Client ID) on the pogo-sticking page on the y-axis, and date on the x-axis.
+### Pogo-sticking page - New users over the previous 30 days
 
-### Pogo sticking page - Unique users over the previous 30 days
+A time-series graph representing the number of new users, based on Client ID, on the pogo-sticking page on the y-axis, and date on the x-axis.
 
-A time-series graph representing number of unique users (Client ID) on the pogo-sticking page on the y-axis, and date on the x-axis.
+### Pogo-sticking page - Unique users over the previous 30 days
 
-### Pogo sticking page - Sessions over the previous 30 days
+A time-series graph representing the number of unique users, based on Client ID, on the pogo-sticking page on the y-axis, and date on the x-axis.
 
-A time-series graph representing number of sessions (Client ID + VisitId) on the pogo-sticking page on the y-axis, and date on the x-axis.
+### Pogo-sticking page - Sessions over the previous 30 days
 
-### Pogo sticking page - Timing
+A time-series graph representing number of sessions, based on Client ID plus Visit ID, on the pogo-sticking page on the y-axis, and date on the x-axis.
+
+### Pogo-sticking page - Timing
 
 Set the date range of interest for the analysis.
 
@@ -92,10 +93,10 @@ Each record is a page view of the pogo-sticking page.
 
 If the pogo-sticking page is the last page the user visits before leaving the dashboard, Exits are recorded as 1.
 
-Time on page is recorded. Google Analytics cannot measure the time a user spent looking at the last page of their visit.
+__Time on Page__ is recorded. Google Analytics cannot measure the time a user spent looking at the last page of their visit.
 
 This happens because Google uses the time of the next page view to determine the time the user spent looking at the current page.
 
-On the last page, there is no next page recorded, so the Time on Page is unknown.
+On the last page, there is no next page recorded, so the __Time on Page__ is unknown.
 
-Therefore, if the user exits from the pogo-sticking dashboard, Time on Page is recorded as 00:00:00, and Exits = 1.
+So, if the user exits from the pogo-sticking dashboard, __Time on Page__ is recorded as 00:00:00, and Exits = 1.
