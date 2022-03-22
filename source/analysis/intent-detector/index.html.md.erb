@@ -55,13 +55,15 @@ Install the following software dependencies in the root of the `govuk-intent-det
 
 ### Download a copy of the GOV.UK mirror
 
-The GOV.UK mirror is a static version of the entire GOV.UK website.
+Download a copy of the GOV.UK mirror, which is a static version of the entire GOV.UK website.
 
 See the [documentation on using the GOV.UK mirror](/analysis/mirror/) for more information on how to download a copy of the mirror.
 
+You do not need to download a copy of the GOV.UK mirror if you are using [AWS Sagemaker](LINK).
+
 ### Install direnv
 
-You should use [`direnv`](https://direnv.net/) to load environment variables, as this program ensure you only have project-specific variables loaded when you are inside the project. This prevents accidental conflicts with identically named environment variables.
+You should use [`direnv`](https://direnv.net/) to load environment variables, as this program makes sure you only have project-specific variables loaded when you are inside the project. This prevents accidental conflicts with identically named environment variables.
 
 1. Run the following in the command line to install `direnv` using [Homebrew](https://brew.sh/):
 
@@ -80,13 +82,13 @@ You should use [`direnv`](https://direnv.net/) to load environment variables, as
     cat ~/.bash_profile
     ```
 
-    If you have added the shell hooks correctly, you should see `eval "$(direnv hook bash)"`.
+    If you have added the shell hooks correctly, you should see `eval "$(direnv hook bash)"` as output.
 
-1. Restart your terminal to finish installing `direnv`.
+1. Restart your command line interface to finish installing `direnv`.
 
 ### Load the secrets environment variable
 
-1. Ask the GOV.UK Data AAA team govuk-data-aaa@digital.cabinet-office.gov.uk for a Google Cloud Platform (GCP) credentials JSON file. These credentials must give permission to execute `select` queries on BigQuery.
+1. [Ask the GOV.UK Data AAA team](mailto:govuk-data-aaa@digital.cabinet-office.gov.uk) for a Google Cloud Platform (GCP) credentials JSON file. These credentials must give permission to execute `select` queries on BigQuery.
 
 1. When you receive this GCP credentials JSON file, store it on your local machine.
 
@@ -97,4 +99,4 @@ You should use [`direnv`](https://direnv.net/) to load environment variables, as
     ```
 1. Add `export GOOGLE_APPLICATION_CREDENTIALS="<SECRETS-FILE-ABSOLUTE-FILEPATH-AND-FILENAME>"` to the `.secrets` file.
 
-1. Make sure `source_env ".secrets"` is not commented out to make sure `direnv` loads the `.secrets` file using `.envrc` without changing the version of the `.secrets` file.
+1. Make sure `source_env ".secrets"` is not commented out. This will make sure `direnv` loads the `.secrets` file using `.envrc` without changing the version of the `.secrets` file.

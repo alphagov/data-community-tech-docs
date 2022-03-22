@@ -7,16 +7,14 @@ review_in: 6 months
 
 # Use the IUNIS algorithm
 
-term frequency-inverse document frequency - https://en.wikipedia.org/wiki/Tf%E2%80%93idf
-
 In the Inferring User Needs by Information Scents (IUNIS) algorithm, the list of keywords that represent the user journey’s intent are driven by the:
 
 - pages that a user visits in their journey
-- possible pages that they could have visited but did not,
+- possible pages that a user could have visited but did not
 
-The algorithm weights pages according to how rare those pages are across all user journeys in the specified time period.
+The IUNIS algorithm weights pages according to how rare those pages are across all user journeys in a specified time period.
 
-The algorithm then weights the derived keywords by how important and unique those words are to the weighted pages compared to the rest of GOV.UK. Only the top-weighted keywords are kept.
+The algorithm then weights the derived keywords by how important and unique those words are to the weighted pages compared to the rest of GOV.UK. The algorithm only keeps the top-weighted keywords.
 
 To use IUNIS, you must create the:
 
@@ -33,42 +31,78 @@ In information retrieval, [term frequency-inverse document frequency (TF-IDF)](h
 
 The TF-IDF gives weight to words that are more important to documents, and less weight to common words such as "the" or "and".
 
-To create the page term TF-IDF matrix:
+How you create the page term TF-IDF matrix differs depending on whether you are using AWS Sagemaker or not. You can either:
 
-- set the environment variables
-- execute the Jupyter notebooks
+- set the environment variables on your local machine
+- use AWS Sagemaker to open a copy of the GOV.UK mirror
 
-If you are using AWS Sagemaker (link) you must also upload the copy of the GOV.UK mirror to your Jupyter instance.
-___how do i do this???___
-___what else would i use instead of sagemaker???___
+### Set the environment variables on your local machine
 
-link to data tech docs on sagemaker for reason why, and lkink to aws docs for how to use sagemaker
+[Use `direnv`](/analysis/intent-detector/#load-the-secrets-environment-variable) to set the `DIR_MIRROR` environment variable in the `.envrc` file on your local machine.
 
-### Set the env var
+When setting the `DIR_MIRROR` environment variable, use the folder path to your [downloaded copy of the GOV.UK mirror](/analysis/intent-detector/#download-a-copy-of-the-gov-uk-mirror).
 
-In the .envrc file, set the DIR_MIRROR environment variable using the folder path to your downloaded GOV.UK mirror folder;
-link to loading env var
+You can now [go to the Jupyter notebooks directory](#go-to-the-jupyter-notebooks-directory.
 
-### Execute the Jupyter notebooks
+### Use AWS Sagemaker to open a copy of the GOV.UK mirror
 
-If using AWS Sagemaker, please first run: startup_script.ipynb and make sure the
-file notebooks/page_term_tfidf_matrix/setup_script.py is in the specified directory
-___what specified directory? if it isnt do i just copy it from the intent detector repo???___
+1. Open the [`govuk-intent-detector-page-term-tf-idf` AWS instance](https://eu-west-1.console.aws.amazon.com/sagemaker/home?region=eu-west-1#/notebook-instances/govuk-intent-detector-page-term-tf-idf).
+
+    You must have the `govuk-datascienceusers` AWS IAM role to access this instance. [Contact the GOV.UK Data Labs team](mailto:gov.uk-data-labs@digital.cabinet-office.gov.uk) for more information.
+
+1. There should be a copy of the GOV.UK mirror in the instance.
+
+    If there is no copy of the mirror, or the copy is not the correct date, [download a new copy of the GOV.UK mirror to the AWS S3 bucket](/analysis/mirror/#copy-gov-uk-mirror-from-aws-s3-bucket).
+
+1. In the AWS instance, select __Open Jupyter__ or __Open JupyterLab__ and run the `govuk-intent-detector/startup_script.ipynb`notebook.
+
+1. Once the notebook has finished running, select __File > New... > Terminal__.
+
+1. Run the following in the terminal to copy the GOV.UK mirror copy from the AWS S3 bucket to this AWS instance:
+
+    ```
+    cd /home/ec2-user/SageMaker/govuk-intent-detector
+    aws s3 sync s3://govuk-data-infrastructure-integration/{YYYYMMDD}-govuk-production-mirror-replica ./govuk-production-mirror-replica
+    ```
+
+    `{YYYYMMDD}` is the date of the GOV.UK mirror copy in the AWS S3 bucket.
+
+You can now [go to the Jupyter notebooks directory](#go-to-the-jupyter-notebooks-directory).
+
+### Go to the Jupyter notebooks directory
+
+1. Go to the root of the `govuk-intent-detector` repo directory on your local machine.
+
+1. If required, run `jupyter notebook` to open Jupyter in your terminal.
+___is it still terminal if you don't use sagemaker?___
+
+1. In Jupyter, go to the `notebooks/page_term_tfidf_matrix` directory.
+
+### Run the Jupyter notebooks
+
+To produce a page-term TF-IDF matrix for the whole GOV.UK mirror, you must run multiple Python notebooks in a certain order.
+
+Change the `DATA_DATE` in each notebook before you run it.
+
+Open each notebook in turn, and run all of the cells in that notebook.
+
+Run the notebooks in the following order:
+
+-
+
 
 notebooks/page_term_tfidf_matrix
-duncan / alessia to test sagemaker instructions
 
-At the root-level of this repository, run `jupyter notebook` to open Jupyter in your terminal.
-___the intent detector repository???___ yes
 
-On the Jupyter interface, navigate to the `notebooks/page_term_tfidf_matrix`.
-There are nine Jupyter notebooks here.
 
-To produce a page-term TF-IDF matrix for the whole GOV.UK mirror, run the notebooks in the following order.
 
-modify the DATA_DATE in each notebook before you run them
+.
 
-Open each notebook in turn, and execute all the cells -
+
+
+
+
+
 
 002. Get the filepaths to each and every HTML file from the GOV.UK mirror; output stored in `govuk-intent-detector/data/interim` folder on your local machine
 ___where is that folder???___
