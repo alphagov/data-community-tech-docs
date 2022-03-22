@@ -74,82 +74,52 @@ You can now [go to the Jupyter notebooks directory](#go-to-the-jupyter-notebooks
 1. Go to the root of the `govuk-intent-detector` repo directory on your local machine.
 
 1. If required, run `jupyter notebook` to open Jupyter in your terminal.
-___is it still terminal if you don't use sagemaker?___
+
+    ___is it still terminal if you don't use sagemaker?___
 
 1. In Jupyter, go to the `notebooks/page_term_tfidf_matrix` directory.
 
-### Run the Jupyter notebooks
+### Produce a page-term TF-IDF matrix for the GOV.UK mirror
 
-To produce a page-term TF-IDF matrix for the whole GOV.UK mirror, you must run multiple Python notebooks in a certain order.
+You can produce a page-term TF-IDF matrix for the GOV.UK mirror, or for the BigQuery data set.
+
+To produce a page-term TF-IDF matrix for the GOV.UK mirror, you must run multiple Python notebooks in a certain order.
 
 Change the `DATA_DATE` in each notebook before you run it.
 
 Open each notebook in turn, and run all of the cells in that notebook.
 
-Run the notebooks in the following order:
+Run the notebooks in the following order.
 
--
+|Name|Purpose|Output location|
+|:---|:---|:---|
+|`002`|Gets the filepaths to every HTML file from the GOV.UK mirror.|The `govuk-intent-detector/data/interim` folder on your local machine.|
+|`004b`|Parses all the valid HTML pages from notebook `002` to show only visible text.<br> Removes irrelevant HTML such as the header and banner.|The `govuk-intent-detector/data/interim` folder on your local machine.|
+|`005`|Changes the outputs from notebook `004b`:<br> - Sets to lowercase<br> - Removes numbers and non-alpha symbols<br> - [Lemmatises](https://en.wikipedia.org/wiki/Lemmatisation) output using [WordNet parts of speech](https://wordnet.princeton.edu/documentation/wngloss7wn#:~:text=WordNet%20defines%20%22part%20of%20speech,Same%20as%20syntactic%20category%20.)<br> - Removes English stopwords|The `govuk-intent-detector/data/interim` folder on your local machine.|
+|`006`|Generates the TF-IDF matrix|The `govuk-intent-detector/data/processed` folder on your local machine.|
 
+### Produce a page-term TF-IDF matrix for BigQuery
 
-notebooks/page_term_tfidf_matrix
+You can produce a page-term TF-IDF matrix for the GOV.UK mirror, or for the BigQuery data set.
 
+You should produce a page-term TF-IDF matrix for the BigQuery data set to cover pages that are not normally in the GOV.UK mirror, such as search API pages.
 
+To produce a page-term TF-IDF matrix for the BigQuery data set, you must run multiple Python notebooks in a certain order.
 
+Change the `DATA_DATE` in each notebook before you run it.
 
-.
+Open each notebook in turn, and run all of the cells in that notebook.
 
+Run the notebooks in the following order.
 
-
-
-
-
-
-002. Get the filepaths to each and every HTML file from the GOV.UK mirror; output stored in `govuk-intent-detector/data/interim` folder on your local machine
-___where is that folder???___
-
-003b. [only for PoC set of curated user journeys]
-Compare the outputs from Step 002 and the page urls for the PoC curated user journeys in the yaml file.
-In case any page is missing from the gov.uk mirror,
-
-web-scraping GOV.UK following notebook 003 below
-
-003_get_missing_visited_pages.ipynb
-
-(there was none for the PoC first iteration);
-___what is PoC???___
-scraped HTML pages stored in the `data/raw/scraped` folder
-updated index of filepaths stored in the `data/interim` folder
-___where is this folder???___
-
-PoC proof of concept yaml no longer used - Duncan to look at the process
-
-004b. Parse all the valid HTML pages from Step 002 to show only visible text;
-Remove irrelevant html parts (e.g., header, banner)
-output stored in `data/interim` folder
-
-005. Set the outputs from Step 004 to lowercase, remove digits and other non-alpha symbols,
-lemmatise them using WordNet parts of speech tags, and remove English stopwords; and
-___what does lemmatise mean??? sort so as to group together inflected or variant forms of the same word___
-output stored in `data/interim` folder
-
-006. Generate the TF-IDF matrix.
-Outputs are stored in the data/processed folder
-
-
-Additional notebooks
-The following notebooks should be run if creating a TF-IDF for the whole of bigquery rather than the mirror, while ensuring that all pages visited on a specific day (e.g., those created after the mirror version or not present in the mirror, like search-api pages) are captured in the TF-IDF.
-
-001. Get all visited GOV.UK pages from Google BigQuery for a specific day;
-
-002. (as above)
-
-003. Compare the outputs from Steps 001 and 002, web-scraping GOV.UK for any missing pages;
-
-004. Parse all the valid HTML pages from Step 001 to show only visible text; If a fragment (#) exists in the page path, only extract the visible text at and after this fragment
-
-005. (as above)
-
-006. (as above)
+|Name|Purpose|Output location|
+|:---|:---|:---|
+|`001`|Gets all visited GOV.UK pages from BigQuery for a specific day.|The `govuk-intent-detector/data/interim` folder on your local machine.|
+|`002`|Gets the filepaths to every HTML file from the GOV.UK mirror.|The `govuk-intent-detector/data/interim` folder on your local machine.|
+|`003`|Compares the outputs from `001` and `002` and web-scrapes GOV.UK for any missing pages.|The `govuk-intent-detector/data/interim` folder on your local machine.|
+|`004`|Parses all the valid HTML pages from `001` to show only visible text. If a fragment (#) exists in the page path, the notebook only extracts the visible text at and after this fragment.|The `govuk-intent-detector/data/interim` folder on your local machine.|
+|`005`|Changes the outputs from notebook `004b`:<br> - Sets to lowercase<br> - Removes numbers and non-alpha symbols<br> - [Lemmatises](https://en.wikipedia.org/wiki/Lemmatisation) output using [WordNet parts of speech](https://wordnet.princeton.edu/documentation/wngloss7wn#:~:text=WordNet%20defines%20%22part%20of%20speech,Same%20as%20syntactic%20category%20.)<br> - Removes English stopwords|The `govuk-intent-detector/data/interim` folder on your local machine.|
+|`006`|Generates the TF-IDF matrix|The `govuk-intent-detector/data/processed` folder on your local machine.|
 
 ## Create the page-access weight matrix
 
