@@ -33,7 +33,7 @@ The TF-IDF gives weight to words that are more important to documents, and less 
 
 How you create the page term TF-IDF matrix differs depending on whether you are using AWS Sagemaker or not. You can either:
 
-- set the environment variables on your local machine
+- set the environment variables on your local machine, or
 - use AWS Sagemaker to open a copy of the GOV.UK mirror
 
 ### Set the environment variables on your local machine
@@ -253,6 +253,7 @@ target_urls:
   - /coronavirus
 .
 ```
+___Does the user need to change the curated list of pages?___
 
 The notebook consists of two steps:
 
@@ -261,6 +262,7 @@ For the pages specified in the curated user-journey set (see .yaml file), downlo
 Generate the directed adjacency (topology) matrix and save it locally as a .pickle file to the data/interim/ folder.
 
 ___what am I doing and how am I doing it???___
+___or is this what the notebook does when you run it?___
 
 Outputs
 The HTML pages will be saved locally in the data/raw/html folder.
@@ -273,6 +275,8 @@ At the root-level of this repository, run the following command.
 python -m src.make_data.generate_topology_matrix
 Requirements
 A copy of the GOV.UK production mirror.
+
+___do you need the copy of the mirror if you use AWS sagemaker?___
 
 Outputs
 Three files will be saved locally in the data/interim folder.
