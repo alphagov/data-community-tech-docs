@@ -121,60 +121,46 @@ Run the notebooks in the following order.
 |`005`|Changes the outputs from notebook `004b`:<br> - Sets to lowercase<br> - Removes numbers and non-alpha symbols<br> - [Lemmatises](https://en.wikipedia.org/wiki/Lemmatisation) output using [WordNet parts of speech](https://wordnet.princeton.edu/documentation/wngloss7wn#:~:text=WordNet%20defines%20%22part%20of%20speech,Same%20as%20syntactic%20category%20.)<br> - Removes English stopwords|The `govuk-intent-detector/data/interim` folder on your local machine.|
 |`006`|Generates the TF-IDF matrix|The `govuk-intent-detector/data/processed` folder on your local machine.|
 
-## Create the page-access weight matrix
+## Create the page access weight matrix
 
-The user-page access TF-IDF weight matrix aims to give less weight to pages that are accessed by many users and are not relevant to the user's information needs. For example, the GOV.UK homepage.
+The page access TF-IDF weight matrix gives less weight to pages that are accessed by many users and are not relevant to the user's information needs. For example, the GOV.UK homepage.
 
 ### Definitions
 
-the "user" is defined as either "sessionId" or "fullVisitorId";
-at the moment, the "pages" are limited to the ones in the curated set of user journeys ("target urls");
-the "term frequency" (TF) corresponds to the access frequency of the page by the given user;
-the "inverse document frequency" (IDF) is the ratio of total users to the number of distinct users who have accessed the given page.
+The following definitions apply to this matrix:
+
+- `user` is defined as either `sessionId` or `fullVisitorId`
+- `pages` are the pages in the curated set of user journeys, otherwise known as `target urls`
+- `term frequency` (TF) is the access frequency of the page by the given user
+- `inverse document frequency` (IDF) is the ratio of total users to the number of distinct users who have accessed the given page
 
 ### Create the matrix
 
-The script requires the following two parametrised sql queries:
+1. Go to the `intent-detector` repo folder on your local machine.
 
-src/make_data/queries/session_page_access_matrix.sql
-src/make_data/queries/visitor_page_access_matrix.sql
+1. Run the [`make_user_page_access_matrix.py` Python script](https://github.com/alphagov/govuk-intent-detector/blob/main/src/make_data/make_user_page_access_matrix.py) to create the user-page access matrix.
+___how? in jupyter?___
 
-___what does a user do with these??? run them before the script??? where???___
-below script runs these - remove these
+    Specify the following positional arguments in the script:
+    - `--which-user` (optional, default is `sessionId`) states whether the user in the user-page access matrix is the `sessionId` or the `fullVisitorId`
+    - `--start_date` (required) is the start date to query as a `YYYYMMDD` string, for example `20210428`
+    - `--end_date` (required) is the end date to query as a `YYYYMMDD` string, for example `20210428`
+    - `--tfidf-log` (optional, default is `1 : 'yes'`) states whether to use the log(IDF) in the TF-IDF calculation
 
-Run the python script `repo/src/make_data/make_user_page_access_matrix.py` to create the user-page access matrix.
-___where is this???___
-___where do i run the script?___
-src/make_data/make....
+    For example, to create a visitor page access TF-IDF matrix for 28 April 2021 using the raw IDF, go to the root-level of the `intent-detector` repo and run the following in your terminal:
+    ___terminal or command line?___
 
-Specify the following positional arguments in the script:
+    ```
+    python -m src.make_data.make_user_page_access_matrix --start-date "20210428" \
+    --end-date "20210428" --which-user "fullVisitorId" --tfidf-log 0
+    ```
 
---which-user:        (optional, default='sessionId') whether the user in the user-page access matrix is
-                      the 'sessionId' or the 'fullVisitorId'
---start_date         (required) start date to query as "YYYYMMDD" string (e.g., "20210428)
---end_date:          (required) start date to query as "YYYYMMDD" string (e.g., "20210428)
---tfidf-log:         (optional, default=1 : 'yes') whether to use the log(IDF) in the TF-IDF calculation
+### Outputs
 
-For example, to create a visitor-page TF-IDF access matrix for 28-April-2021 using the raw IDF, go to the root-level of this repository, open your terminal and run
+When you create the page access TF-IDF matrix, the script outputs 2 `.parquet` files to the `intent-detector` repo on your local machine:
 
-python -m src.make_data.make_user_page_access_matrix --start-date "20210428" \
-     --end-date "20210428" --which-user "fullVisitorId" --tfidf-log 0
-
-
-Outputs
-The script outputs two .parquet files:
-
-the "raw" output table of the sql query, saved in the data/interim/ folder as {start_date>}_{end_date}_{chosen_user}_page_access_raw_table.parquet
-the user-target page access TF-IDF matrix, saved in the data/interim/ folder as {start_date>}_{end_date}_{chosen_user}_{tfidf_log}_page_access_matrix.parquet
-
-___where are these folders? local machine? any setup of folder structure required?___
-already there in local copy of repo
-
-Lines 48-55 in src/make_data/queries/session_page_access_matrix.sql are only required for the artificial set of user journeys used for the PoC. To be removed when scaling the algorithm.
-___what does this mean???___
-duncan to tidy up earlier bit will then provide context
-
-docs branch at Proof of concept
+- the raw output table of the SQL query, saved in the `data/interim/` folder as `{start_date>}_{end_date}_{chosen_user}_page_access_raw_table.parquet`
+- the user-target page access TF-IDF matrix, saved in the `data/interim/` folder as `{start_date>}_{end_date}_{chosen_user}_{tfidf_log}_page_access_matrix.parquet`
 
 ## Create the step function alpha vector
 
