@@ -138,14 +138,15 @@ The following definitions apply to this matrix:
 
 1. Run the [`make_user_page_access_matrix.py` Python script](https://github.com/alphagov/govuk-intent-detector/blob/main/src/make_data/make_user_page_access_matrix.py) to create the user-page access matrix.
 ___how? in jupyter?___
+run `python src/make_data/make_user_page_access_matrix.py` in your command line
 
     Specify the following positional arguments in the script:
     - `--which-user` (optional, default is `sessionId`) states whether the user in the user-page access matrix is the `sessionId` or the `fullVisitorId`
     - `--start_date` (required) is the start date to query as a `YYYYMMDD` string, for example `20210428`
     - `--end_date` (required) is the end date to query as a `YYYYMMDD` string, for example `20210428`
-    - `--tfidf-log` (optional, default is `1 : 'yes'`) states whether to use the log(IDF) in the TF-IDF calculation
+    - `--tfidf-log` (optional, default is `1 : 'yes'`) states whether to use the log of the IDF in the TF-IDF calculation
 
-    For example, to create a visitor page access TF-IDF matrix for 28 April 2021 using the raw IDF, go to the root-level of the `intent-detector` repo and run the following in your terminal:
+    For example, to create a visitor page access TF-IDF matrix for 28 April 2021 using the raw IDF, go to the root-level of the `intent-detector` repo and run the following in your command line:
     ___terminal or command line?___
 
     ```
@@ -162,6 +163,16 @@ When you create the page access TF-IDF matrix, the script outputs 2 `.parquet` f
 
 ## Create the step function alpha vector
 
+IUNIS - given this page that the user landed on, can you desscribe it using vocab from previous pages in that session
+WUFIS - given this current page, can we say how likely it is that the user will visit n more pages?
+
+WUFIS, sessions are likely to have 1 more page, less likely to have 2 more, unlikely to have 3 more and so on
+
+the alpha dampening parameter reflects that likelihood for the n future pages in the session
+
+vector is more than one number, but still only one parameter in the algorithms
+
+
 ___Assumptions and caveats here? https://github.com/alphagov/govuk-intent-detector/blob/main/docs/aqa/assumptions_caveats.md#tf-idf-in-user-page-access-matrix___
 
 The script produces an alpha dampening parameter for the pages visited within a specified time window, on all of GOV.UK. This is a vector, beginning at 100%, and decreasing thereafter, for example 40%, then 20%. Each element represents the percentage of sessions that were n pages long or longer, so 100% of sessions were 1 page long or longer, 40% were two pages long or longer, etc.
@@ -171,6 +182,14 @@ The vector that is actually used is a modification of that. When the elements of
 =n pages long | % of sessions | Alpha | Cumulative product of alpha ---------------|---------------|-------|---------------------------- 1 | 100% | 100 | 100% 2 | 40% | 40% | 40% 3 | 20% | 50% | 20%
 
 ___i have no idea what this means___
+
+algorithm that gives a list of vocab that describes a page on gov.uk, some of that vocab is from the page itself, but augmented from other pages that users visit in the same session
+Some sessions are long, and the pages at the end of the session may not be relevant to the pages at the beginning of the session
+So for each page in the session, we give it a score to reflect how distant / removed it is from the page that we're interested in for that session
+Use that score for those pages to choose what vocab to describe the page we're interested in
+there are several different page scoring systems going on, this is one of them, the one that lowers the score of a word that is distant from the page we are interested in
+snag: the score for a page is going to be applied several different times as the algorithm loops, so dampening factor has to be adjusted to account for the loops, so that the factor raised to the power of the loops of the algorithm, e.g. we want 50% to be the dampening factor, and there are 4 loops, so the dampening factor in the algorithm must be 1/16, as 1/16 to the power of 4 is 50%
+
 
 ### Definitions
 
@@ -182,13 +201,9 @@ ___this is not a definition - what is this supposed to say???___
 
 ### Create the vector
 
-Before you run script...
+the function that returns the dampening parameters that you want
 
-The script requires the following parametrised sql query:
 
-src/make_data/queries/calc_num_pages_visited_per_session.sql
-
-___what does this mean???___
 
 Run the python script `src.make_data.make_alpha_step_function` to create the step-function alpha-values vector.
 
@@ -229,12 +244,14 @@ For all the pages in the GOV.UK mirror.
 The version for the curated set of journeys treats URLs with anchors as pages in their own right (an approach that is now deprecated), whereas the version for the GOV.UK mirror ignores anchors. See the assumptions and caveats.
 
 ___which version are we using now???___
+document both
 
 ### Create the matrix (curated journeys)
 
 At the root-level of this repository, open Jupyter in your terminal.
 
 jupyter notebook
+
 
 
 The notebook requires:
@@ -244,6 +261,8 @@ ___do we really need to specify this???___
 a .yaml file containing a list of "curated" GOV.UK page urls saved in `data/external/curated_journey_urls.yaml`
 ___where is this???___
 The .yaml file should have a single key, target_urls, with the list of "curated" GOV.UK pages as its value.
+
+duncan committed the yaml file, it exists already
 
 For example, if the only curated pages are the GOV.UK homepage, and the main coronavirus page, the yaml file is:
 
@@ -255,6 +274,8 @@ target_urls:
 ```
 ___Does the user need to change the curated list of pages?___
 
+
+
 The notebook consists of two steps:
 
 For the pages specified in the curated user-journey set (see .yaml file), download the (current time) GOV.UK HTML pages locally. For any pages specified with an anchor heading, the code automatically strips out all HTML content prior to this heading.
@@ -263,6 +284,7 @@ Generate the directed adjacency (topology) matrix and save it locally as a .pick
 
 ___what am I doing and how am I doing it???___
 ___or is this what the notebook does when you run it?___
+this is what the notebook does
 
 Outputs
 The HTML pages will be saved locally in the data/raw/html folder.
@@ -277,6 +299,7 @@ Requirements
 A copy of the GOV.UK production mirror.
 
 ___do you need the copy of the mirror if you use AWS sagemaker?___
+just get a copy of the mirror
 
 Outputs
 Three files will be saved locally in the data/interim folder.
@@ -290,5 +313,14 @@ See commented code at the bottom of notebooks/generate_topology_matrix.py for an
 ## Run the IUNIS algorithm on the step-alpha function.
 
 https://github.com/alphagov/govuk-intent-detector/blob/main/notebooks/proof_of_concept_alpha_step_function.py
+
+root folder of repo
+
+notebooks/proof_of_concept_alpha_step_function.py
+
+output file
+
+data/processed/poc_intents_step_alpha.csv
+
 
 ___what am i doing and how am i doing it???___
