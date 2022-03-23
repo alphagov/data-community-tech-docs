@@ -73,9 +73,7 @@ You can now [go to the Jupyter notebooks directory](#go-to-the-jupyter-notebooks
 
 1. Go to the root of the `govuk-intent-detector` repo directory on your local machine.
 
-1. If required, run `jupyter notebook` to open Jupyter in your terminal.
-
-    ___is it still terminal if you don't use sagemaker?___
+1. Run `jupyter notebook` in your command line to open Jupyter.
 
 1. In Jupyter, go to the `notebooks/page_term_tfidf_matrix` directory.
 
@@ -163,6 +161,8 @@ When you create the page access TF-IDF matrix, the script outputs 2 `.parquet` f
 - the user-target page access TF-IDF matrix, saved in the `data/interim/` folder as `{start_date>}_{end_date}_{chosen_user}_{tfidf_log}_page_access_matrix.parquet`
 
 ## Create the step function alpha vector
+
+___Assumptions and caveats here? https://github.com/alphagov/govuk-intent-detector/blob/main/docs/aqa/assumptions_caveats.md#tf-idf-in-user-page-access-matrix___
 
 The script produces an alpha dampening parameter for the pages visited within a specified time window, on all of GOV.UK. This is a vector, beginning at 100%, and decreasing thereafter, for example 40%, then 20%. Each element represents the percentage of sessions that were n pages long or longer, so 100% of sessions were 1 page long or longer, 40% were two pages long or longer, etc.
 
