@@ -1,0 +1,46 @@
+---
+title: Create the step function alpha vector
+weight: 3
+last_reviewed_on: 2022-03-25
+review_in: 6 months
+---
+
+# Create the step-function alpha-values vector
+
+There are 2 algorithms that produce a list of words that describes a page of interest:
+
+- IUNIS, which tries to describe a page of interest using words from previous pages in that user session
+- Web User Flow by Information Scent (WUFIS), which tries to determine how likely it is that user will visit `n` more pages in their user session after they have visited a page of interest, and weights words from those future pages accordingly
+
+User sessions can be different lengths. The pages viewed at the end of a session may be less relevant to the page of interest if the session is long.
+
+So we need to give each page in a session a score to reflect how distant that page is from the page of interest.
+
+The more distant a page is from the page of interest, the lower the score, and the less weight the words on that page have when describing the page of interest.
+
+The step-function alpha-values vector reflects how likely it is that a user session will have n more pages, and attaches a score to the words from those future pages.
+
+## Create the vector
+
+Run the following in the root of the `intent-detector` repo folder on your local machine to create the step-function alpha-values vector:
+
+```
+python -m src.make_data.make_alpha_step_function --alpha-start-date "{YYYYMMDD}" --alpha-end-date "{YYYYMMDD}"
+```
+
+Where:
+
+- `--alpha-start-date "{YYYYMMDD}"` is the start date to query as a string parameter, for example `"20210428"`
+- `--alpha-end-date "{YYYYMMDD}"` is the end date to query as a string parameter, for example `"20210528"`
+
+## Outputs
+
+Running the script creates a `.parquet` file at `data/interim/{alpha-start-date}_{alpha-end-date}_alpha_step_function.parquet`.
+
+This file has an output table with five columns:
+
+- `numberPagesVisited` integer, which is how many pages were visited in a session
+- `frequencyPageCount` integer, which is the number of sessions that visited that many pages
+- `percentagePageCount` float, which is the percentage of sessions that visited that many pages
+- `cumulativePercentagePageCount` float, which is the percentage of sessions that visited at least that many pages
+- `relativePercentagePageCount` float, which is, of the sessions that visited at least `numberpagesVisited` - 1, the percentage of session that also visited `numberPagesVisited` (when `numberPagesVisited` is 1, `relativePercentagePageCount` is also 1)
