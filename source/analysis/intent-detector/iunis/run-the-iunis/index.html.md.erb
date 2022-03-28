@@ -1,0 +1,23 @@
+---
+title: Run the IUNIS algorithm
+weight: 5
+last_reviewed_on: 2022-03-25
+review_in: 6 months
+---
+
+# Run the IUNIS algorithm
+
+Before you can run the IUNIS algorithm, you must create the following components:
+
+- [page term TF-IDF matrix](/analysis/intent-detector/iunis/page-term-idf-matrix/)
+- [page-access weight matrix](/analysis/intent-detector/iunis/page-access-weight-matrix/)
+- [step function alpha vector](/analysis/intent-detector/iunis/step-function-alpha-vector/)
+- [topology matrix](/analysis/intent-detector/iunis/topology-matrix/)
+
+Once you have created these components, run the IUNIS algorithm on the step-alpha function to use the IUNIS algorithm intent detector
+
+In the root of the `intent-detector` repo folder on your local machine, run `python notebooks/proof_of_concept_alpha_step_function.py` in your command line.
+
+Running this python script produces the IUNIS algorithm intent detector outputs CSV file at `intent-detector data/processed/poc_intents_step_alpha.csv` on your local machine.
+
+You have successfully used the IUNIS algorithm to detect user intents for a page of interest.
