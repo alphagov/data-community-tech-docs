@@ -27,33 +27,6 @@ This is based on cognitive theories of web navigation, which state that:
 
 Even if this assumption is false, many of the techniques for intent detection can still summarise a user's session.
 
-### User intents example
-
-
-
-
-Intents accumulate during a session. On the first page that a user visits, their intent is only the words of the title of that page. On the second page, it is the words of both pages, on the third page, it is the words of all three.
-
-For example,  the words in the `pageTitle` of each page of a user journey in sequence are:
-
-- finland, travel, advice,
-- coronavirus
-- using, nhs, abroad
-
-The backwards intent is the words that the user saw before landing on a particular page of interest. If the third page is the one of interest, then the backwards intent is "finland, travel, advice, coronavirus".
-
-The forwards intent of the user, at the moment when they were still on the first page, would be the words that they saw later in their journey: "coronavirus, using, nhs, abroad".
-
-The "whole session intent" would be all the words that they ever saw: "finland, travel, advice, coronavirus, using, nhs, abroad"
-
-
-
-
-
-
-
-
-
 ## Intent detector algorithms
 
 There are 3 algorithms to infer and detect intents:
@@ -61,17 +34,6 @@ There are 3 algorithms to infer and detect intents:
 - an [Inferring User Needs by Information Scents (IUNIS) algorithm](/analysis/intent-detector/iunis/)
 - a less sophisticated URL-derived algorithm
 - a performance analyst-focused algorithm
-
-
-
-
-
-performance analyst, before using the google colab notebook, needs to make sure the data is available -
-a data scientist makes the data availble by running some sql queries
-https://github.com/alphagov/govuk-intent-detector/blob/main/docs/user_guide/intents-v2.md#computation
-
-
-
 
 ## Before you start
 
