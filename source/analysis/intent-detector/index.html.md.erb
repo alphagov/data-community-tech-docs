@@ -69,7 +69,7 @@ You should use [`direnv`](https://direnv.net/) to load environment variables, as
     brew install direnv
     ```
 
-1. Add the shell hooks to your .bash_profile:
+1. Add the shell hooks to your bash profile:
 
     ```
     echo 'eval "$(direnv hook bash)"' >> ~/.bash_profile
@@ -95,6 +95,7 @@ You should use [`direnv`](https://direnv.net/) to load environment variables, as
     ```
     touch .secrets
     ```
+
 1. Add `export GOOGLE_APPLICATION_CREDENTIALS="<SECRETS-FILE-ABSOLUTE-FILEPATH-AND-FILENAME>"` to the `.secrets` file.
 
 1. Make sure `source_env ".secrets"` is not commented out. This will make sure `direnv` loads the `.secrets` file using `.envrc` without changing the version of the `.secrets` file.

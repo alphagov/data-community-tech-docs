@@ -22,7 +22,7 @@ How you create the page term TF-IDF matrix differs depending on whether you are 
 
 When setting the `DIR_MIRROR` environment variable, use the folder path to your [downloaded copy of the GOV.UK mirror](/analysis/intent-detector/#download-a-copy-of-the-gov-uk-mirror).
 
-You can now [go to the Jupyter notebooks directory](#go-to-the-jupyter-notebooks-directory.
+You can now [go to the Jupyter notebooks directory](#go-to-the-jupyter-notebooks-directory).
 
 ## Use AWS Sagemaker to open a copy of the GOV.UK mirror
 
@@ -45,7 +45,7 @@ You can now [go to the Jupyter notebooks directory](#go-to-the-jupyter-notebooks
     aws s3 sync s3://govuk-data-infrastructure-integration/{YYYYMMDD}-govuk-production-mirror-replica ./govuk-production-mirror-replica
     ```
 
-    `{YYYYMMDD}` is the date of the GOV.UK mirror copy in the AWS S3 bucket.
+Replace `{YYYYMMDD}` with the date of the GOV.UK mirror copy in the AWS S3 bucket.
 
 You can now [go to the Jupyter notebooks directory](#go-to-the-jupyter-notebooks-directory).
 
@@ -63,7 +63,7 @@ You can produce a page-term TF-IDF matrix for the GOV.UK mirror, or for the BigQ
 
 To produce a page-term TF-IDF matrix for the GOV.UK mirror, you must run multiple Python notebooks in a certain order.
 
-Change the `DATA_DATE` in each notebook before you run it.
+Change the `DATA_DATE` in each notebook to the dates you want to look at before you run those notebooks.
 
 Open each notebook in turn, and run all of the cells in that notebook.
 
