@@ -1,0 +1,58 @@
+---
+title: Create the topology matrix
+weight: 4
+last_reviewed_on: 2022-03-25
+review_in: 6 months
+---
+
+# Create the topology matrix
+
+The topology matrix, also known as the directed adjacency matrix, represents how pages are connected to each other through hyperlink.
+
+There are 2 versions of the topology matrix:
+
+- for the pages in the curated set of user journeys
+- for the pages in the GOV.UK mirror
+
+The version for the curated set of journeys treats URLs with anchors as pages in their own right. We have deprecated this method.
+
+The version for the GOV.UK mirror ignores anchors.
+
+## Create the curated journeys topology matrix
+
+1. At the root-level of the `intent-detector` repo folder on your local machine, run `jupyter notebook` in the command line to open Jupyter.
+
+1. In Jupyter, go to the `notebooks` folder, and run the `generate_topology_matrix.ipynb` notebook.
+
+    This notebook uses the `data/external/curated_journey_urls.yaml` file which has a list of curated GOV.UK page URLs.
+
+    For example, if the only curated pages are the GOV.UK homepage and the main coronavirus page, the YAML file contains the following:
+
+    ```
+    target_urls:
+      - /
+      - /coronavirus
+    .
+    ```
+
+### Outputs
+
+When you run the notebook, it downloads the current GOV.UK HTML pages for the pages specified in the YAML file, and saves those pages in the local `intent-detector/data/raw/html` folder.
+
+If any of the download pages have an anchor heading, the notebook automatically removes all HTML content prior to this heading.
+
+The notebook then creates the curated journeys topology matrix, and saves the matrix as `{YYYYMMDD}_{HHMMSS}_govuk_topology_matrix.pickle` in the local `intent-detector/data/interim`/ folder.
+
+## Create the GOV.UK mirror topology matrix
+
+In the root of the `intent-detector` repo folder on your local machine, run `python -m src.make_data.generate_topology_matrix` in the command line to create the GOV.UK mirror topology matrix.
+
+### Outputs
+
+Running the `python -m src.make_data.generate_topology_matrix` creates the following files in your local `intent-detector/data/interim` folder:
+
+- `{YYYYMMDD}_{HHMMSS}_govuk_link_list.pickle` - a dictionary keyed by URL, where each item contains a list of other URLs that are linked to
+- `{YYYYMMDD}_{HHMMSS}_govuk_topology_matrix.pickle` - a SciPy sparse matrix, where the first dimension is the `from` URL, and the second dimension is the `to` URL
+- `{YYYYMMDD}_{HHMMSS}_govuk_vertex_url.pickle` - a vector of URLs in the same order as each dimension of the topology matrix, used to slice the topology matrix for URLs of interest
+
+See the commented code at the end of the `intent-detector/notebooks/generate_topology_matrix.py` file for an example of slicing the topology matrix for a given URL.

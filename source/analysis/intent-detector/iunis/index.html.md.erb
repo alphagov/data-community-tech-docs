@@ -1,0 +1,28 @@
+---
+title: Use the IUNIS algorithm
+weight: 39.61
+last_reviewed_on: 2022-03-04
+review_in: 6 months
+---
+
+# Use the IUNIS algorithm
+
+In the Inferring User Needs by Information Scents (IUNIS) algorithm, the list of keywords that represent the user journey’s intent are driven by the:
+
+- pages that a user visits in their journey
+- possible pages that a user could have visited but did not
+
+The IUNIS algorithm weights pages according to how rare those pages are across all user journeys in a specified time period.
+
+The algorithm then weights the derived keywords by how important and unique those words are to the weighted pages compared to the rest of GOV.UK. The algorithm only keeps the top-weighted keywords.
+
+To use IUNIS, you must create the:
+
+- [page term TF-IDF matrix](/analysis/intent-detector/iunis/page-term-idf-matrix/)
+- [page-access weight matrix](/analysis/intent-detector/iunis/page-access-weight-matrix/)
+- [step function alpha vector](/analysis/intent-detector/iunis/step-function-alpha-vector/)
+- [topology matrix](/analysis/intent-detector/iunis/topology-matrix/)
+
+Once you have created these components, [run the IUNIS algorithm on the step-alpha function](/analysis/intent-detector/iunis/run-the-iunis/).
+
+See the [assumptions and caveats documentation](/analysis/intent-detector/iunis/assumptions-caveats/) for more information on the assumptions and caveats.

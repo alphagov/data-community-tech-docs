@@ -1,0 +1,45 @@
+---
+title: Create the page access weight matrix
+weight: 2
+last_reviewed_on: 2022-03-25
+review_in: 6 months
+---
+
+# Create the page access weight matrix
+
+The page access TF-IDF weight matrix gives less weight to pages that are accessed by many users and are not relevant to the user's information needs. For example, the GOV.UK homepage.
+
+## Definitions
+
+The following definitions apply to this matrix:
+
+- `user` is defined as either `sessionId` or `fullVisitorId`
+- `pages` are the pages in the curated set of user journeys, otherwise known as `target urls`
+- `term frequency` (TF) is the access frequency of the page by the given user
+- `inverse document frequency` (IDF) is the ratio of total users to the number of distinct users who have accessed the given page
+
+## Create the matrix
+
+1. Go to the `intent-detector` repo folder on your local machine.
+
+1. Run `python src/make_data/make_user_page_access_matrix.py` in your command line.
+
+    Specify the following positional arguments in the script:
+    - `--which-user` (optional, default is `sessionId`) states whether the user in the user-page access matrix is the `sessionId` or the `fullVisitorId`
+    - `--start_date` (required) is the start date to query as a `YYYYMMDD` string, for example `20210428`
+    - `--end_date` (required) is the end date to query as a `YYYYMMDD` string, for example `20210428`
+    - `--tfidf-log` (optional, default is `1 : 'yes'`) states whether to use the log of the IDF in the TF-IDF calculation
+
+    For example, to create a visitor page access TF-IDF matrix for 28 April 2021 using the raw IDF, go to the root-level of the `intent-detector` repo and run the following in your command line:
+
+    ```
+    python -m src.make_data.make_user_page_access_matrix --start-date "20210428" \
+    --end-date "20210428" --which-user "fullVisitorId" --tfidf-log 0
+    ```
+
+## Outputs
+
+When you create the page access TF-IDF matrix, the script outputs 2 `.parquet` files to the `intent-detector` repo on your local machine:
+
+- the raw output table of the SQL query, saved in the `data/interim/` folder as `{start_date>}_{end_date}_{chosen_user}_page_access_raw_table.parquet`
+- the user-target page access TF-IDF matrix, saved in the `data/interim/` folder as `{start_date>}_{end_date}_{chosen_user}_{tfidf_log}_page_access_matrix.parquet`

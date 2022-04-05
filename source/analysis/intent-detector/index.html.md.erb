@@ -1,0 +1,101 @@
+---
+title: Use the GOV.UK intent detector
+weight: 39.6
+last_reviewed_on: 2022-03-04
+review_in: 6 months
+---
+
+# Use the GOV.UK intent detector
+
+The intent detector is a tool that analyses GOV.UK user journeys to better understand user intents.
+
+## User intents definition
+
+Intents summarise what a user came to do on GOV.UK and what their information needs are.
+
+At a high level, inferred user intents are a summary of the content visited by a user in a session.
+
+More specifically, a user journey's intent is a list of weighted keywords. The weights represent how important and distinctive to that journey each keyword is.
+
+This definition assumes that the content that a user visits as part of a session is relevant and informative to what the user wants to know or do.
+
+This is based on cognitive theories of web navigation, which state that:
+
+- users navigate content by following relevant information clues
+- the content users visit is relevant to their information goals
+- therefore, the content that a user visits represents their intents
+
+Even if this assumption is false, many of the techniques for intent detection can still summarise a user's session.
+
+## Intent detector algorithms
+
+There are 3 algorithms to infer and detect intents:
+
+- an [Inferring User Needs by Information Scents (IUNIS) algorithm](/analysis/intent-detector/iunis/)
+- a less sophisticated URL-derived algorithm
+- a performance analyst-focused algorithm
+
+## Before you start
+
+Before you use any of the intect detector algorithms, you must complete the following prerequisites.
+
+### Clone the intent-detector repo
+
+1. Go to the [`govuk-intent-detector` GitHub repo](https://github.com/alphagov/govuk-intent-detector).
+1. Select __Code__ and then select the appropriate option under __Clone__.
+1. Go to the root of the `govuk-intent-detector` directory on your local machine.
+
+### Install software dependencies
+
+Install the following software dependencies in the root of the `govuk-intent-detector` directory on your local machine.
+
+1. Install at least [Python 3.8](https://www.python.org/downloads/) or later.
+1. Install at least [R 4.0.4](https://cran.r-project.org/) or later.
+1. Run `make requirements` in the command line to install the Python packages that the intent detector needs to run.
+
+### Download a copy of the GOV.UK mirror
+
+Download a copy of the GOV.UK mirror, which is a static version of the entire GOV.UK website.
+
+See the [documentation on using the GOV.UK mirror](/analysis/mirror/) for more information on how to download a copy of the mirror.
+
+### Install direnv
+
+You should use [`direnv`](https://direnv.net/) to load environment variables, as this program makes sure you only have project-specific variables loaded when you are inside the project. This prevents accidental conflicts with identically named environment variables.
+
+1. Run the following in the command line to install `direnv` using [Homebrew](https://brew.sh/):
+
+    ```
+    brew install direnv
+    ```
+
+1. Add the shell hooks to your bash profile:
+
+    ```
+    echo 'eval "$(direnv hook bash)"' >> ~/.bash_profile
+    ```
+1. Check that you have added the shell hooks correctly:
+
+    ```
+    cat ~/.bash_profile
+    ```
+
+    If you have added the shell hooks correctly, you should see `eval "$(direnv hook bash)"` as output.
+
+1. Restart your command line interface to finish installing `direnv`.
+
+### Load the secrets environment variable
+
+1. [Ask the GOV.UK Data AAA team](mailto:govuk-data-aaa@digital.cabinet-office.gov.uk) for a Google Cloud Platform (GCP) credentials JSON file. These credentials must give permission to execute `select` queries on BigQuery.
+
+1. When you receive this GCP credentials JSON file, store it on your local machine.
+
+1. Go to the root of the `govuk-intent-detector` directory on your local machine and create a `.secrets` file:
+
+    ```
+    touch .secrets
+    ```
+
+1. Add `export GOOGLE_APPLICATION_CREDENTIALS="<SECRETS-FILE-ABSOLUTE-FILEPATH-AND-FILENAME>"` to the `.secrets` file.
+
+1. Make sure `source_env ".secrets"` is not commented out. This will make sure `direnv` loads the `.secrets` file using `.envrc` without changing the version of the `.secrets` file.
