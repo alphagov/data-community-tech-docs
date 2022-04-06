@@ -152,7 +152,11 @@ Expect the values of some cells in the sheet to be printed at the command line.
 
 ## Use GCP from code that runs on GCP itself
 
-Request a [service account](https://cloud.google.com/iam/docs/service-accounts) from the slack channel #data-engineering, saying what roles and permissions it requires.  Ask for the service account to be attached to the resource in GCP that the code will run in.
+Request a [service account](https://cloud.google.com/iam/docs/service-accounts) from the slack channel #data-engineering, saying what roles and permissions it requires.  Ask for the service account to be attached to the resource in GCP that the code will run in.  There should be no need to modify your code, because it will automatically find and use the service account credentials.
+
+### Access files on Google Drive, such as Sheets and Docs, using a service account
+
+In Google Drive, share the files with the email address of the service account.
 
 ## Impersonate a service account on your local device
 
