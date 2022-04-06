@@ -102,6 +102,54 @@ name=Matthew, count=88464
 name=Joe, count=87977
 ```
 
+### Access files on Google Drive such as Sheets and Docs
+
+Follow the instructions "Use GCP from code that runs on your device" and "".
+
+Run `gcloud auth login --enable-gdrive-access --update-adc` at the command line.  The flag `--enable-gdrive-access` allows code to access files on Google Drive, such as Sheets and Docs.
+
+Install the legacy Google API Python Client by running `pip install google-api-python-client` at the command line.  It is best to do this in a new [python virtual environment](https://gds-way.cloudapps.digital/manuals/programming-languages/python/python.html#environments).  No newer client library supports Google Drive, Sheets or Docs.
+
+Create a file called `sheets.py` that contains the following code.
+
+```python
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+from pprint import pprint
+from argparse import ArgumentParser
+
+parser = ArgumentParser()
+parser.add_argument("-s", "--sheet-id", dest="SHEET_ID",
+                    help="ID of a Google Sheet")
+parser.add_argument("-r", "--range", dest="RANGE",
+                    help="Range of cells in A1 or R1C1 notation")
+args = parser.parse_args()
+
+# The ID and range of a sample spreadsheet.
+# SHEET_ID = '1ThBiDsAtMhfwvPXW39siZkZPdFS3FW_IGgQuET4YjnM'
+# RANGE = 'scores!A:E'
+
+try:
+    service = build('sheets', 'v4')
+
+    # Call the Sheets API
+    result = service.spreadsheets().values().get(
+        spreadsheetId=args.SHEET_ID, range=args.RANGE).execute()
+    rows = result.get('values', [])
+
+    if not rows:
+        print('No data found.')
+
+    # print('{0} rows retrieved.'.format(len(rows)))
+    pprint(rows)
+except HttpError as err:
+    print(err)
+```
+
+Run the code at the command line with `python sheets.py -s=SHEET_ID -r=RANGE`, where `SHEET_ID` is the ID of a sheet that that you can access, and `RANGE` is the name of a tab and a range of cells, such as `Sheet1\!A1:E5`.  You will probably need to escape the exclamation mark with a backslash, as shown in the example.
+
+Expect the values of some cells in the sheet to be printed at the command line.
+
 ## Use GCP from code that runs on GCP itself
 
 Request a [service account](https://cloud.google.com/iam/docs/service-accounts) from the slack channel #data-engineering, saying what roles and permissions it requires.  Ask for the service account to be attached to the resource in GCP that the code will run in.
