@@ -47,9 +47,11 @@ Follow the instructions "Use GCP from the command line".  Then run `gcloud auth 
 
 Obtain the role BigQuery Job User for your account.
 
-Run `gcloud auth login` at the command line.
+Install the [BigQuery API client library for Python](https://cloud.google.com/bigquery/docs/reference/libraries#client-libraries-install-python) with `pip install --upgrade google-cloud-bigquery`.  It is best to do this in a new [python virtual environment](https://gds-way.cloudapps.digital/manuals/programming-languages/python/python.html#environments).
 
-Run the following python script.
+Run `gcloud auth login --update-adc` at the command line.  The flag `--update-adc` allows code that you run to use your credentials.
+
+Create a file called `bigquery.py` that contains the following code.
 
 ```python
 from google.cloud import bigquery
@@ -74,7 +76,7 @@ for row in query_job:
     print("name={}, count={}".format(row[0], row["total_people"]))
 ```
 
-Expect to see the following result.
+Run the code at the command line with `python bigquery.py`.  Expect to see the following result.
 
 ```text
 The query data:
