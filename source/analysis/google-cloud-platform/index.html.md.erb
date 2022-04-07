@@ -166,6 +166,17 @@ Follow the instructions "Use GCP from the command line".  Then run `gcloud auth 
 
 The Google Cloud client libraries will now use the service account.
 
+## Use GCP from code that runs on Google Colab
+
+Paste the following code into a cell in a Colab notebook.
+
+```py
+from google.colab import auth
+
+# Authenticate the user - follow the link and the prompts to get an authentication token
+auth.authenticate_user()
+```
+
 ## Avoid using a credentials file
 
 It is [best practice](https://cloud.google.com/blog/products/identity-security/how-to-authenticate-service-accounts-to-help-keep-applications-secure) not to use a credentials file, because they pose a security risk.  The Google Cloud client libraries will automatically find the credentials that it needs, whether you are running code on your local device or in GCP itself.
