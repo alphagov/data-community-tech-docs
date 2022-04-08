@@ -94,6 +94,7 @@ The following content assumes you’re using [PostgreSQL](https://www.postgresql
     ```sh
     pg_restore --verbose --create --jobs=4 --dbname=postgres publishing-api.pgdump
     ```
+    where `--jobs=4` is the number of CPU threads that will be used.  You can change this to suit your device.
 
 When your command line becomes responsive and you can enter commands again, this means you’ll have successfully created a database named `publishing_api_production` that contains the publishing API backup data.
 
