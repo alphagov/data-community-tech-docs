@@ -97,4 +97,27 @@ The following content assumes you’re using [PostgreSQL](https://www.postgresql
 
 When your command line becomes responsive and you can enter commands again, this means you’ll have successfully created a database named `publishing_api_production` that contains the publishing API backup data.
 
+### Run queries in the database
+        
+1. Run the following command to start using the database.
+        
+    ```sh
+    psql -d publishing_api_production
+    ```
+
+    You should see a prompt like this.
+        
+    ```text
+    psql (13.6)
+    Type "help" for help.
+
+    publishing_api_production=#
+    ```
+
+1. Enter a query.  Here is an example.
+        
+    ```sql
+    SELECT title FROM editions LIMIT 5;
+    ```
+
 You can now work with this database in PostgreSQL. To learn more about using PostgreSQL, [read the PostgreSQL documentation](https://www.postgresql.org/docs/).
