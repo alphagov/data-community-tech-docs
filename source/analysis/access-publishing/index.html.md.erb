@@ -92,8 +92,9 @@ The following content assumes you’re using [PostgreSQL](https://www.postgresql
 1. Load the data from the backup database into a new PostgreSQL database called `publishing_api_production`:
 
     ```sh
-    pg_restore --verbose --create --jobs=4 --dbname=postgres publishing-api.pgdump
+    pg_restore --verbose --create --jobs=4 --dbname=postgres <DOWNLOAD-LOCATION>
     ```
+    where `<DOWNLOAD-LOCATION>` is the location that you downloaded the backup file to on your local machine.
 
 When your command line becomes responsive and you can enter commands again, this means you’ll have successfully created a database named `publishing_api_production` that contains the publishing API backup data.
 
