@@ -47,6 +47,79 @@ See the [Get started on GOV.UK developer documentation](https://docs.publishing.
 
     This database is named `production`, but it is not in the production environment.
 
+### Download query results
+
+One way is to print the results of the query at the command line, and redirect
+it to a local file.  Another is to write the results to a file in the `db_admin`
+server, compress it, and then download it to your device.
+
+#### Print at the command line
+
+```
+USER=<FIRSTNAMELASTNAME>; gds govuk connect --environment integration ssh db_admin sudo "psql -U aws_db_admin -h postgresql-primary --no-password -d publishing_api_production -c \"<SQL-QUERY>\"" > <FILENAME>
+```
+
+where:
+- `<SQL-QUERY>` is a SQL query
+- `<FILENAME>` is the name of a file to write the query results to.
+
+#### Write to a file in the server
+
+The `gds govuk connect` command provides `scp-pull` to fetch a file from a server and save it locally.  This enables the following workflow.
+
+1. Execute the query, and save the results to a file in the `db_admin` server.  Note that the `db_admin` server doesn't run the database itself.
+
+    ```
+    USER=<FIRSTNAMELASTNAME>; gds govuk connect --environment integration ssh db_admin:1 sudo "psql -U aws_db_admin -h postgresql-primary --no-password -d publishing_api_production -c \"\\copy ($(<<QUERY-FILE>)) TO '/tmp/<FILENAME>.csv' WITH CSV HEADER\""
+    ```
+    where:
+    - `<QUERY-FILE>` is a file on your device that contains an SQL query.  Note that the first `<` symbol in `<<QUERY-FILE>` should remain, for example `<myfile.sql`.
+    - `<FILENAME>` will be a file in the server that contains the query results.
+
+1. Compress the results file.
+
+    ```
+    gds govuk connect --environment integration ssh db_admin zip "/tmp/<FILENAME>.zip /tmp/<FILENAME>.csv"
+    ```
+    where `<FILENAME>` is the same as in the previous step.
+
+1. Use scp-pull to fetch the file locally to your laptop.
+
+    ```
+    gds govuk connect --environment integration scp-pull db_admin:1 /tmp/<FILENAME>.zip <DOWNLOAD-LOCATION>
+    ```
+    where:
+    - `<FILENAME>` is the same as in the previous step.
+    - `<DOWNLOAD-LOCATION>` is the location you want to download the backup file to on your local machine
+
+The `:1` in `db_admin:1` guarantees that `scp-pull` will connect to the same machine as `ssh`.  The `1` chooses the first available machine (in lexicographical order of something, maybe the IP address), and in integration there is only one machine anyway, so `1` is guaranteed to exist.
+
+### Upload the downloaded results into BigQuery
+
+The quickest way to upload a CSV file into BigQuery is to first convert it into
+a Parquet file.  This can be done in Python with the Pandas package, which can
+read the CSV file directly from a zip file.
+
+```
+import pandas as pd
+df = pd.read_csv("<FILENAME>.zip")
+
+# gzip compression is slower than snappy (default) but creates a much smaller file (123MB rather than 302MB)
+df.to_parquet("<FILENAME>.parquet", compression='gzip')
+```
+where `<FILENAME>` is the name of the zipped CSV file and of the Parquet file that
+you want to convert it into.
+
+The Parquet file can then be uploaded to BigQuery using the Google Cloud SDK
+command `bq` at the command line.
+
+```
+bq load --source_format=PARQUET <DATASET>.<TABLE> <FILENAME>.parquet
+```
+where:
+- `<FILENAME>` is the same as in the previous step
+- `<DATASET>` and `<TABLE>` are where to put the data in BigQuery.
+
 ## Download a backup of the publishing database
 
 Instead of connecting to the integration environment database, you can download a backup of the publishing database to your local machine if you need to:
