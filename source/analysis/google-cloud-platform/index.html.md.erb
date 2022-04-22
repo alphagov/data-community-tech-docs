@@ -5,154 +5,209 @@ last_reviewed_on: 2022-04-01
 review_in: 6 months
 ---
 
-# Use Google Cloud Platform (GCP)
+# Use Google Cloud Platform
 
-GCP is a suite of cloud computing services.  GDS maintains a central account.
+Google Cloud Platform (GCP) is a suite of cloud computing services. GDS maintains a central account.
 
 ## Get access to GCP
 
-You already have access to GCP via your GDS Google Account (the same as you use for Gmail).
+You already have access to GCP through your GDS Google Account.
 
-You will need specific roles and permissions to use each of the services in GCP.  If you need some code to run unsupervised (without you personally logging into your Google account), then request a service account.
+You will need specific roles and permissions to use each of the GCP services. If you need to run code unsupervised, that is without logging into your Google account, then you need a service account.
 
-Roles, permissions and service accounts can be requested from the Data Engineering Community, via its slack channel #data-engineering.
+[Contact the Data Engineering community on Slack](https://gds.slack.com/archives/C032AH1D6MU) to ask for a role, permission or service account.
+
+You can use GCP through:
+
+- the cloud console
+- the command line on your local machine
+- code that runs on your local machine
+- code that runs on GCP
 
 ## Google Groups
 
 TBC.
 
+___Recommend removing until finalised___
+
 ## Service accounts
 
-Service accounts are created for code that needs to run unsupervised.  It is unlikely that you will need a service account for personal use.
+Service accounts are created for code that needs to run unsupervised. It is unlikely that you will need a service account for personal use.
 
-## Use GCP from the Cloud Console
+___then why include the above content?___
+___why is this here?___
 
-Go to https://console.cloud.google.com/ in a browser.  Alternatively, use Cloud Shell by going to https://console.cloud.google.com/home/dashboard?cloudshell=true in a browser.
+## Use GCP through the cloud console
 
-## Use GCP from the command line on your device
+You can use GCP from the cloud console by opening one of the following URLs in a web browser:
 
-Use the [Google Cloud CLI](https://cloud.google.com/sdk/gcloud) to interact with GCP, and to run code that interacts with GCP.
+- the [cloud console](https://console.cloud.google.com/)
+- the [cloud shell](https://console.cloud.google.com/home/dashboard?cloudshell=true)
 
-[Install the Google Cloud CLI](https://cloud.google.com/sdk/docs/install-sdk#mac).
+## Use GCP through the command line on your local machine
 
-Follow the instructions about setting it up by running `gcloud init`.  It will open a browser for you to authorise gcloud to use your Google account.
+Use the [Google Cloud CLI](https://cloud.google.com/sdk/gcloud) to:
 
-Once it has been set up, you and your code will be authenticated for an hour.  Refresh your authentication by running `gcloud auth login`.
+- interact directly with GCP
+- run code that interacts with GCP
 
-## Use GCP from code that runs on your device
+1. [Install the Google Cloud CLI](https://cloud.google.com/sdk/docs/install-sdk#mac) on your local machine.
 
-Follow the instructions "Use GCP from the command line".  Then run `gcloud auth application-default login`.  It will open a browser for you to authorise gcloud to use your Google account.  It will also create a file in a location that it prints at the command line, resembling `~/.config/gcloud/application_default_credentials.json`.  Code that you run will use this file to authenticate itself on GCP.
+1. Run `gcloud init` to configure the Google Cloud CLI. Authorise gcloud to use your Google account when prompted in a separate window.
+___Run it in the normal CLI or the Google Cloud CLI?___
 
-### Check that you can use GCP from code that runs on your device.
+1. Once configuration is complete, you and your code are authenticated for an hour. You can refresh your authentication by running `gcloud auth login` in the command line.
+______Run it in the normal CLI or the Google Cloud CLI?___
 
-Obtain the role BigQuery Job User for your account.
+## Use GCP through code that runs on your local machine
 
-Install the [BigQuery API client library for Python](https://cloud.google.com/bigquery/docs/reference/libraries#client-libraries-install-python) with `pip install --upgrade google-cloud-bigquery`.  It is best to do this in a new [python virtual environment](https://gds-way.cloudapps.digital/manuals/programming-languages/python/python.html#environments).
+1. Follow the [documentation on using GCP through the command line on your local machine]().
 
-Run `gcloud auth login --update-adc` at the command line.  The flag `--update-adc` allows code that you run to use your credentials.
+1. Run `gcloud auth application-default login`.
+______Run it in the normal CLI or the Google Cloud CLI?___
 
-Create a file called `bigquery.py` that contains the following code.
+    Authorise gcloud to use your Google account when prompted in a separate window.
 
-```python
-from google.cloud import bigquery
+    Running this command also creates a file in a location that it prints at the command line, `~/.config/gcloud/application_default_credentials.json`.
 
-# Construct a BigQuery client object.
-client = bigquery.Client(project="govuk-bigquery-analytics")
+    Code that you run will use this file to authenticate itself on GCP.
 
-query = """
-    SELECT name, SUM(number) as total_people
-    FROM `bigquery-public-data.usa_names.usa_1910_2013`
-    WHERE state = 'TX'
-    GROUP BY name, state
-    ORDER BY total_people DESC
-    LIMIT 20
-"""
+### Check that you can use GCP from code that runs on your local machine
 
-query_job = client.query(query)  # Make an API request.
+___Should you do this before doing the above?___
 
-print("The query data:")
-for row in query_job:
-    # Row values can be accessed by field name or index.
-    print("name={}, count={}".format(row[0], row["total_people"]))
-```
+1. Obtain the role __BigQuery Job User__ for your account.
+___How?___
 
-Run the code at the command line with `python bigquery.py`.  Expect to see the following result.
+1. Install the [BigQuery API client library for Python](https://cloud.google.com/bigquery/docs/reference/libraries#client-libraries-install-python) by running `pip install --upgrade google-cloud-bigquery` in the command line.
 
-```text
-The query data:
-name=James, count=272793
-name=John, count=235139
-name=Michael, count=225320
-name=Robert, count=220399
-name=David, count=219028
-name=Mary, count=209893
-name=William, count=173092
-name=Jose, count=157362
-name=Christopher, count=144196
-name=Maria, count=131056
-name=Charles, count=126509
-name=Daniel, count=117470
-name=Richard, count=109888
-name=Juan, count=109808
-name=Jennifer, count=98696
-name=Joshua, count=90679
-name=Elizabeth, count=90465
-name=Joseph, count=89097
-name=Matthew, count=88464
-name=Joe, count=87977
-```
+    You should do this in a new [python virtual environment](https://gds-way.cloudapps.digital/manuals/programming-languages/python/python.html#environments).
+
+1. Run `gcloud auth login --update-adc`. The flag `--update-adc` allows code that you run to use your credentials.
+
+1. Create a file called `bigquery.py` that contains the following code:
+
+    ```python
+    from google.cloud import bigquery
+
+    # Construct a BigQuery client object.
+    client = bigquery.Client(project="govuk-bigquery-analytics")
+
+    query = """
+      SELECT name, SUM(number) as total_people
+      FROM `bigquery-public-data.usa_names.usa_1910_2013`
+      WHERE state = 'TX'
+      GROUP BY name, state
+      ORDER BY total_people DESC
+      LIMIT 20
+    """
+
+    query_job = client.query(query) # Make an API request.
+
+    print("The query data:")
+    for row in query_job:
+      # Row values can be accessed by field name or index.
+      print("name={}, count={}".format(row[0], row["total_people"]))
+    ```
+
+1. Run the code at the command line with `python bigquery.py`. You should see the following output:
+
+    ```text
+    The query data:
+    name=James, count=272793
+    name=John, count=235139
+    name=Michael, count=225320
+    name=Robert, count=220399
+    name=David, count=219028
+    name=Mary, count=209893
+    name=William, count=173092
+    name=Jose, count=157362
+    name=Christopher, count=144196
+    name=Maria, count=131056
+    name=Charles, count=126509
+    name=Daniel, count=117470
+    name=Richard, count=109888
+    name=Juan, count=109808
+    name=Jennifer, count=98696
+    name=Joshua, count=90679
+    name=Elizabeth, count=90465
+    name=Joseph, count=89097
+    name=Matthew, count=88464
+    name=Joe, count=87977
+    ```
+
+___What should you do if you don't see this output?___
 
 ### Access files on Google Drive such as Sheets and Docs
 
-Follow the instructions "Use GCP from code that runs on your device" and "".
+1. Follow the [documentation on using GCP through code that runs on your local machine]().
 
-Run `gcloud auth login --enable-gdrive-access --update-adc` at the command line.  The flag `--enable-gdrive-access` allows code to access files on Google Drive, such as Sheets and Docs.
+1. Run `gcloud auth login --enable-gdrive-access --update-adc` in the command line. The flag `--enable-gdrive-access` allows code to access files on Google Drive.
+___which command line?___
 
-Install the legacy Google API Python Client by running `pip install google-api-python-client` at the command line.  It is best to do this in a new [python virtual environment](https://gds-way.cloudapps.digital/manuals/programming-languages/python/python.html#environments).  No newer client library supports Google Drive, Sheets or Docs.
+1. Install the legacy Google API Python Client by running `pip install google-api-python-client` in the command line.
 
-Create a file called `sheets.py` that contains the following code.
+    You should do this in a new [python virtual environment](https://gds-way.cloudapps.digital/manuals/programming-languages/python/python.html#environments).
 
-```python
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
-from pprint import pprint
-from argparse import ArgumentParser
+    No newer client library supports Google Drive, Sheets or Docs.
 
-parser = ArgumentParser()
-parser.add_argument("-s", "--sheet-id", dest="SHEET_ID",
-                    help="ID of a Google Sheet")
-parser.add_argument("-r", "--range", dest="RANGE",
-                    help="Range of cells in A1 or R1C1 notation")
-args = parser.parse_args()
+1. Create a file called `sheets.py` that contains the following code:
 
-# The ID and range of a sample spreadsheet.
-# SHEET_ID = '1ThBiDsAtMhfwvPXW39siZkZPdFS3FW_IGgQuET4YjnM'
-# RANGE = 'scores!A:E'
+    ```python
+    from googleapiclient.discovery import build
+    from googleapiclient.errors import HttpError
+    from pprint import pprint
+    from argparse import ArgumentParser
 
-try:
-    service = build('sheets', 'v4')
+    parser = ArgumentParser()
+    parser.add_argument("-s", "--sheet-id", dest="SHEET_ID",
+              help="ID of a Google Sheet")
+    parser.add_argument("-r", "--range", dest="RANGE",
+              help="Range of cells in A1 or R1C1 notation")
+    args = parser.parse_args()
 
-    # Call the Sheets API
-    result = service.spreadsheets().values().get(
+    # The ID and range of a sample spreadsheet.
+    # SHEET_ID = '1ThBiDsAtMhfwvPXW39siZkZPdFS3FW_IGgQuET4YjnM'
+    # RANGE = 'scores!A:E'
+
+    try:
+      service = build('sheets', 'v4')
+
+      # Call the Sheets API
+      result = service.spreadsheets().values().get(
         spreadsheetId=args.SHEET_ID, range=args.RANGE).execute()
-    rows = result.get('values', [])
+      rows = result.get('values', [])
 
-    if not rows:
+      if not rows:
         print('No data found.')
 
-    # print('{0} rows retrieved.'.format(len(rows)))
-    pprint(rows)
-except HttpError as err:
-    print(err)
-```
+      # print('{0} rows retrieved.'.format(len(rows)))
+      pprint(rows)
+    except HttpError as err:
+      print(err)
+    ```
 
-Run the code at the command line with `python sheets.py -s=SHEET_ID -r=RANGE`, where `SHEET_ID` is the ID of a sheet that that you can access, and `RANGE` is the name of a tab and a range of cells, such as `Sheet1\!A1:E5`.  You will probably need to escape the exclamation mark with a backslash, as shown in the example.
+1. Run the code at the command line with `python sheets.py -s=SHEET_ID -r=RANGE`, where:
+
+    - `SHEET_ID` is the ID of a sheet that that you can access
+    - `RANGE` is the name of a tab and a range of cells, such as `Sheet1\!A1:E5`.
+
+    You will probably need to escape the exclamation mark with a backslash, as shown in the example.
+___Run which code?___
 
 Expect the values of some cells in the sheet to be printed at the command line.
 
-## Use GCP from code that runs on GCP itself
+## Use GCP from code that runs on GCP
 
-Request a [service account](https://cloud.google.com/iam/docs/service-accounts) from the slack channel #data-engineering, saying what roles and permissions it requires.  Ask for the service account to be attached to the resource in GCP that the code will run in.  There should be no need to modify your code, because it will automatically find and use the service account credentials.
+[Contact the Data Engineering community on Slack](https://gds.slack.com/archives/C032AH1D6MU) to ask for a service account, saying what roles and permissions it requires.
+___Conflicts slightly with the section at the start about probably not needing a service account?___
+___How do I know what roles and permissions it needs?___
+
+Ask for the service account to be attached to the resource in GCP that the code will run in.
+___How?___
+
+There should be no need to modify your code, because it will automatically find and use the service account credentials.
+___Is "it" the code?___
 
 ### Access files on Google Drive, such as Sheets and Docs, using a service account
 
@@ -160,15 +215,19 @@ In Google Drive, share the files with the email address of the service account.
 
 ## Impersonate a service account on your local device
 
-Obtain a service account that grants your personal account the role "Service Account Token Creator", which includes the permission "iam.serviceAccounts.getAccessToken".  Note the email address of the service account.
+1. Obtain a service account that grants your personal account the role "Service Account Token Creator", which includes the permission "iam.serviceAccounts.getAccessToken". Note the email address of the service account.
+___Through data engineering slack?___
 
-Follow the instructions "Use GCP from the command line".  Then run `gcloud auth application-default login --impersonate-service-account=EMAIL_ADDRESS`, where `EMAIL_ADDRESS` is the one of the service account, ending in `.iam.gserviceaccount.com`.
+1. Follow the [documentation on using GCP through the command line on your local machine]().
+
+1. Run `gcloud auth application-default login --impersonate-service-account=EMAIL_ADDRESS`, where `EMAIL_ADDRESS` is the email of the service account, ending in `.iam.gserviceaccount.com`.
+___In a specific command line? the Google cloud one?___
 
 The Google Cloud client libraries will now use the service account.
 
 ## Use GCP from code that runs on Google Colab
 
-Paste the following code into a cell in a Colab notebook.
+Paste and run the following code into a cell in a Colab notebook.
 
 ```py
 from google.colab import auth
@@ -179,4 +238,6 @@ auth.authenticate_user()
 
 ## Avoid using a credentials file
 
-It is [best practice](https://cloud.google.com/blog/products/identity-security/how-to-authenticate-service-accounts-to-help-keep-applications-secure) not to use a credentials file, because they pose a security risk.  The Google Cloud client libraries will automatically find the credentials that it needs, whether you are running code on your local device or in GCP itself.
+[You should not use a credentials file](https://cloud.google.com/blog/products/identity-security/how-to-authenticate-service-accounts-to-help-keep-applications-secure) because they pose a security risk. 
+
+The Google Cloud client libraries will automatically find the credentials that it needs, whether you are running code on your local device or in GCP itself.
