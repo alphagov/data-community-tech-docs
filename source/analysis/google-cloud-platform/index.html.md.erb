@@ -13,16 +13,26 @@ Google Cloud Platform (GCP) is a suite of cloud computing services. GDS maintain
 
 You already have access to GCP through your GDS Google Account.
 
-You will need specific roles and permissions to use each of the GCP services. If you need to run code unsupervised, that is without logging into your Google account, then you need a service account. [It's unlikely that you will need a service account for personal use](https://cloud.google.com/iam/docs/best-practices-for-using-and-managing-service-accounts#development).
-
-[Contact the Data Engineering community on Slack](https://gds.slack.com/archives/C032AH1D6MU) to ask for a role, permission or service account.
-
 You can use GCP through:
 
 - the cloud console
 - the command line on your local machine
 - code that runs on your local machine
 - code that runs on GCP
+
+You will need specific roles and permissions to use each of the GCP services.
+
+### Get a specific role or permissions to use GCP
+
+A role is a set of permissions. You should only have the specific role or permissions you need to use the GCP.
+
+See the [Google Cloud documentation on understanding roles](https://cloud.google.com/iam/docs/understanding-roles) and the [IAM permissions reference](https://cloud.google.com/iam/docs/permissions-reference) for more information.
+
+If your code fails to run, check the error message to see if there was a role or permission error.
+
+If you need to run code unsupervised, that is without logging into your Google account, then you need a service account. [It's unlikely that you will need a service account for personal use](https://cloud.google.com/iam/docs/best-practices-for-using-and-managing-service-accounts#development).
+
+[Contact the Data Engineering community on Slack](https://gds.slack.com/archives/C032AH1D6MU) to ask for a role, permission or service account.
 
 ## Use GCP through the cloud console
 
@@ -33,28 +43,28 @@ You can use GCP from the cloud console by opening one of the following URLs in a
 
 ## Use GCP through the command line on your local machine
 
-Use the [Google Cloud CLI](https://cloud.google.com/sdk/gcloud) to:
+You can use the [Google Cloud CLI](https://cloud.google.com/sdk/gcloud) to:
 
 - interact directly with GCP
 - run code that interacts with GCP
 
 1. [Install the Google Cloud CLI](https://cloud.google.com/sdk/docs/install-sdk#mac) on your local machine.
 
-1. Run `gcloud init` in the command line to configure the Google Cloud CLI. Authorise gcloud to use your Google account when prompted in a separate window.
+1. Run `gcloud init` in the command line to configure the Google Cloud CLI. Authorise the Google Cloud CLI to use your Google account when prompted in a separate window.
 
 1. Once configuration is complete, you and your code are authenticated for an hour. You can refresh your authentication by running `gcloud auth login` in the command line.
 
 ## Use GCP through code that runs on your local machine
 
-1. Follow the [documentation on using GCP through the command line on your local machine]().
+1. Follow the [documentation on using GCP through the command line on your local machine](#use-gcp-through-the-command-line-on-your-local-machine).
 
 1. Run `gcloud auth login --update-adc` in the command line.
 
     Authorise gcloud to use your Google account when prompted in a separate window.
 
-    Running this command also creates a file in a location that it prints at the command line, `~/.config/gcloud/application_default_credentials.json`.
+Running this command also creates a file in a location that it prints at the command line, `~/.config/gcloud/application_default_credentials.json`.
 
-    Code that you run will use this file to authenticate itself on GCP.
+Code that you run will use this file to authenticate itself on GCP.
 
 ### Check that you can now use GCP through code that runs on your local machine
 
@@ -62,7 +72,7 @@ You should check that you can now use GCP through code that runs on your local m
 
 If you cannot, this is likely to be an authentication issue.
 
-1. Get the __BigQuery Job User__ role for your GDS Google account by contacting the Data Engineering community on Slack](https://gds.slack.com/archives/C032AH1D6MU).
+1. Get the __BigQuery Job User__ role for your GDS Google account by [contacting the Data Engineering community on Slack](https://gds.slack.com/archives/C032AH1D6MU).
 
 1. Install the [BigQuery API client library for Python](https://cloud.google.com/bigquery/docs/reference/libraries#client-libraries-install-python) by running `pip install --upgrade google-cloud-bigquery` in the command line.
 
@@ -95,7 +105,7 @@ If you cannot, this is likely to be an authentication issue.
       print("name={}, count={}".format(row[0], row["total_people"]))
     ```
 
-1. Run the code at the command line with `python bigquery.py`. You should see the following output:
+1. Run `python bigquery.py` in the command line. You should see the following output:
 
     ```text
     The query data:
@@ -127,7 +137,7 @@ If you do not see this output, then you currently cannot use GCP through code th
 
 ### Access files on Google Drive
 
-1. Follow the [documentation on using GCP through code that runs on your local machine]().
+1. Follow the [documentation on using GCP through code that runs on your local machine](http://localhost:4567/analysis/google-cloud-platform/#use-gcp-through-the-command-line-on-your-local-machine).
 
 1. Run `gcloud auth login --enable-gdrive-access --update-adc` in the command line. The flag `--enable-gdrive-access` allows code to access files on Google Drive.
 
@@ -182,17 +192,17 @@ If you do not see this output, then you currently cannot use GCP through code th
 
     The values of some cells in this file sheet will be printed at the command line.
 
-## Use GCP from code that runs on GCP
+## Use GCP through code that runs on GCP
 
-[Contact the Data Engineering community on Slack](https://gds.slack.com/archives/C032AH1D6MU) to ask for a service account, saying what roles and permissions it requires.
-___Conflicts slightly with the section at the start about probably not needing a service account?___
-___How do I know what roles and permissions it needs?___
+You can use the GCP through code that runs on the GCP itself.
 
-Ask for the service account to be attached to the resource in GCP that the code will run in.
-___How?___
+This is the same as running code unsupervised or automatically as part of a service, without needing to log into your Google account.
 
-There should be no need to modify your code, because it will automatically find and use the service account credentials.
-___Is "it" the code?___
+Therefore you need a service account. [Contact the Data Engineering community on Slack](https://gds.slack.com/archives/C032AH1D6MU) to ask for a service account, saying what [roles and permissions]() it requires.
+
+[Contact the Data Engineering community on Slack](https://gds.slack.com/archives/C032AH1D6MU) to ask for the service account to be attached to the resource in GCP that the code will run in.
+
+You should not need to modify your code, because this code will automatically find and use the service account credentials.
 
 ### Access files on Google Drive, such as Sheets and Docs, using a service account
 
@@ -200,13 +210,13 @@ In Google Drive, share the files with the email address of the service account.
 
 ## Impersonate a service account on your local device
 
-1. Obtain a service account that grants your personal account the role "Service Account Token Creator", which includes the permission "iam.serviceAccounts.getAccessToken". Note the email address of the service account.
-___Through data engineering slack?___
+1. [Contact the Data Engineering community on Slack](https://gds.slack.com/archives/C032AH1D6MU) to get a service account that grants your personal account the role __Service Account Token Creator__, which includes the permission __iam.serviceAccounts.getAccessToken__.
 
-1. Follow the [documentation on using GCP through the command line on your local machine]().
+    Note the email address of the service account.
 
-1. Run `gcloud auth application-default login --impersonate-service-account=EMAIL_ADDRESS`, where `EMAIL_ADDRESS` is the email of the service account, ending in `.iam.gserviceaccount.com`.
-___In a specific command line? the Google cloud one?___
+1. Follow the [documentation on using GCP through the command line on your local machine](http://localhost:4567/analysis/google-cloud-platform/#use-gcp-through-the-command-line-on-your-local-machine).
+
+1. Run `gcloud auth application-default login --impersonate-service-account=EMAIL_ADDRESS` on the command line, where `EMAIL_ADDRESS` is the email of the service account, ending in `.iam.gserviceaccount.com`.
 
 The Google Cloud client libraries will now use the service account.
 
