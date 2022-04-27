@@ -37,7 +37,7 @@ See the [Get started on GOV.UK developer documentation](https://docs.publishing.
 
     `<FIRSTNAMELASTNAME>` must be the same user that you created to SSH into integration.
 
-    You do not need to include `USER=<FIRSTNAMELASTNAME>;` if your username for your machine is the same as the SSH integration user.
+    You do not need to include `USER=<FIRSTNAMELASTNAME>;` if the username for your machine is the same as the SSH integration user.
 
 1. Open a PostgreSQL terminal to the `postgresql-primary` host as the `aws_db_admin` user, and connect to the publishing API database:
 
@@ -46,6 +46,93 @@ See the [Get started on GOV.UK developer documentation](https://docs.publishing.
     ```
 
     This database is named `production`, but it is not in the production environment.
+
+You can now run queries on the integration environment publishing database.
+
+### Download query results from the publishing database
+
+Once you have run queries on the publishing database, download the results of those queries to your local machine by either:
+
+- printing the query results in the command line, and sending those results to a file on your local machine
+- writing the query results to a file in the `db_admin` server, compressing the file, and then downloading it to your local machine
+
+#### Print query results in the command line
+
+Run the following in the command line to print a query's results and send those results to a file on your local machine:
+
+```
+USER=<FIRSTNAMELASTNAME>; gds govuk connect --environment integration ssh db_admin sudo "psql -U aws_db_admin -h postgresql-primary --no-password -d publishing_api_production -c \"<SQL-QUERY>\"" > <FILENAME>
+```
+
+where:
+
+- `<SQL-QUERY>` is a SQL query
+- `<FILENAME>` is the name of a file to write the query results to
+
+#### Write query results to a server file
+
+The `gds govuk connect` command enables you to fetch a file from a server and save it locally.
+
+1. Run the following in the command line to execute the query, and save the results to a file in the `db_admin` server:
+
+    ```
+    USER=<FIRSTNAMELASTNAME>; gds govuk connect --environment integration ssh db_admin:1 sudo "psql -U aws_db_admin -h postgresql-primary --no-password -d publishing_api_production -c \"\\copy ($(<<QUERY-FILE>)) TO '/tmp/<FILENAME>.csv' WITH CSV HEADER\""
+    ```
+
+    where:
+    - `<QUERY-FILE>` is a file on your local machine that contains an SQL query. Keep the first `<` in `<<QUERY-FILE>`, for example `<myfile.sql`.
+    - `<FILENAME>` is a file in the server that contains the query results.
+
+    The `db_admin` server does not run the database itself.
+
+1. Compress the results file by running:
+
+    ```
+    gds govuk connect --environment integration ssh db_admin zip "/tmp/<FILENAME>.zip /tmp/<FILENAME>.csv"
+    ```
+
+    where `<FILENAME>` is the same as the previous step, a file in the server that contains the query results.
+
+1. Use `scp-pull` to fetch the file to your local machine.
+
+    ```
+    gds govuk connect --environment integration scp-pull db_admin:1 /tmp/<FILENAME>.zip <DOWNLOAD-LOCATION>
+    ```
+    where:
+    - `<FILENAME>` is the same as the previous step, a file in the server that contains the query results.
+    - `<DOWNLOAD-LOCATION>` is the location you want to download the backup file to on your local machine.
+
+    The `:1` in `db_admin:1` guarantees that `scp-pull` will connect to the same machine as `ssh`.
+
+    The `1` chooses the first available machine. There is only one machine in the integration environment, so `1` is guaranteed to exist.
+
+### Upload the downloaded results into BigQuery
+
+When you have downloaded your query results from the publishing database, you can then upload those results into BigQuery for analysis.
+
+1. Run the following in the command line to convert the downloaded file to a parquet file using the Pandas package:
+
+    ```
+    import pandas as pd
+    df = pd.read_csv("<FILENAME>.zip")
+
+    # gzip compression is slower than snappy (default) but creates a much smaller file (123MB rather than 302MB)
+    df.to_parquet("<FILENAME>.parquet", compression='gzip')
+    ```
+
+    where `<FILENAME>` is the name of the zipped CSV file and of the parquet file that you want to convert it into.
+
+1. Upload the parquet file to BigQuery using the Google Cloud SDK command `bq` in the command line:
+
+    ```
+    bq load --source_format=PARQUET <DATASET>.<TABLE> <FILENAME>.parquet
+    ```
+
+    where:
+    - `<FILENAME>` is the name of the zipped CSV file and of the parquet file to convert the CSV file into
+    - `<DATASET>` and `<TABLE>` are where to put the data in BigQuery
+
+You have now uploaded your query results into BigQuery for analysis.
 
 ## Download a backup of the publishing database
 
