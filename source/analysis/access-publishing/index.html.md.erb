@@ -1,15 +1,15 @@
 ---
-title: Access the publishing database
+title: Use the publishing database
 weight: 39
 last_reviewed_on: 2021-11-04
 review_in: 6 months
 ---
 
-# Access the GOV.UK publishing database
+# Use the GOV.UK publishing database
 
 The GOV.UK publishing database is a PostgreSQL database that keeps a copy of every version of every page ever drafted or published on GOV.UK.
 
-You can connect to and access the publishing database instead of [downloading the GOV.UK mirror to your local machine](/analysis/mirror/). You can use the publishing database to compute intents.
+You can connect to and use the publishing database instead of [downloading the GOV.UK mirror to your local machine](/analysis/mirror/). You can use the publishing database to compute intents.
 
 If you only want to analyse the most recent version of every page that is currently published, you should [use the Content Store](/analysis/content-store/).
 
@@ -286,8 +286,6 @@ You might need to do this to link a record of a page view from Google Analytics 
 
 Run the following query to extract each full URL into a separate record.
 
-This query does not affect records that already represent the full URL in their `base_path`.
-
 ```
 select
   base_path,
@@ -308,3 +306,65 @@ select
   ORDER BY updated_at
 ```
 `'<BASE-PATH>'` is the base_path you want to extract full URLs from, for example, `'/honours'`.
+
+This query does not affect records that already represent the full URL in their `base_path`.
+
+### Run queries on pages partly represented by a URL record
+
+Some pages are represented by URL records in the database, but those pages' content is not included in those records. For example, `https://www.gov.uk/bank-holidays`.
+
+Another example of this type of page is a page with dynamic content. Dynamic content is created automatically in response to information provided by the user.
+
+For example, a search results page at `https://gov.uk/search/all`.
+
+In this example, you can run the following query on the search results page:
+
+```
+select * from editions where base_path = '/search' limit 1;
+```
+
+### Run queries on pages not represented by a URL record
+
+The following types of pages are not represented by a URL record:
+
+- pages with dynamic content
+- pages with no content
+- pages that do not exist
+
+#### Pages with dynamic content
+
+Dynamic content is created automatically in response to information provided by the user.
+
+An example of this type of page is `https://gov.uk/towing-rules/y/car-or-light-vehicle`, which is a smart answer.
+
+In this example, you can run the following query on the smart answer page:
+
+```
+select * from editions where base_path = '/towing-rules/y/car-or-light-vehicle' limit 1;
+```
+
+#### Pages with no content
+
+Pages with no content are not represented by a URL record.
+
+An example of this type of page is `https://www.gov.uk/random`, which has no content and redirects to a page chosen at random
+
+In this example, you can run the following query on a page with no content:
+
+```
+select * from editions where base_path = '/random' limit 1;
+```
+
+#### Pages that do not exist
+
+Pages that do not exist are not represented by a URL record.
+
+URLs of non-existent pages often appear in Google Analytics and server logs. Sometimes these pages are typos.
+
+We have used some common typos to create pages that redirect to the correctly spelled equivalent page.
+
+In this example, you can run the following query on a page with a typo:
+
+```
+select *, redirects from editions where base_path = '/view-driving-license' limit 1;
+```
