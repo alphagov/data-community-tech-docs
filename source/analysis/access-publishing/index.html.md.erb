@@ -7,9 +7,11 @@ review_in: 6 months
 
 # Access the GOV.UK publishing database
 
-The GOV.UK publishing database is a PostgreSQL database that keeps a copy of every version of every page published on GOV.UK.
+The GOV.UK publishing database is a PostgreSQL database that keeps a copy of every version of every page ever drafted or published on GOV.UK.
 
 You can connect to and access the publishing database instead of [downloading the GOV.UK mirror to your local machine](/analysis/mirror/). You can use the publishing database to compute intents.
+
+If you only want to analyse the most recent version of every page that is currently published, you should [use the Content Store](/analysis/content-store/).
 
 The data community does not currently have access to the production environment of the publishing database, so we access the database using the integration environment.
 
@@ -211,3 +213,98 @@ When your command line becomes responsive and you can enter commands again, this
     ```
 
 You can now work with this database in PostgreSQL. To learn more about using PostgreSQL, [read the PostgreSQL documentation](https://www.postgresql.org/docs/).
+
+## Run queries on the database
+
+The Publishing API database does not specifically refer to GOV.UK pages.
+
+The database contains records of URLs that users visit.
+
+You can run queries on these records. However, the results you get back will differ depending on whether the page associated with the record are:
+
+- fully represented by a URL record
+- fully represented by a part of a URL record
+- partly represented by a URL record
+- not represented by a URL record
+
+### Run queries on pages fully represented by a URL record
+
+Every URL record in the Publishing API database begins with `https://www.gov.uk`. For example, `https://www.gov.uk/transport`.
+
+These URLs are in the `base_path` column in the database, excluding `https://www.gov.uk`. For example, the base_path of `https://www.gov.uk/transport` is `/transport`.
+
+To find records about these types of pages, you run the query `select * from editions where base_path = <BASE_PATH>;`.
+
+For example, `select * from editions where base_path = '/transport';`
+
+### Run queries on pages fully represented by part of a URL record
+
+Some URL records in the Publishing API database describe more than one URL. So those pages are fully represented by a part of a URL record.
+
+The URL is made up of the `base_path` and the last part of the URL, known as the URL slug.
+
+The slug is defined in the JSON data in the `details` column of the database.
+
+For example, the page at `https://www.gov.uk/honours` has a contents list, where each heading is a link to another URL, such as `https://www.gov.uk/honours/honours-lists`.
+
+In this example, the `base_path` is `honours`, and the slug is `/honours-lists`.
+
+There are two queries you can run on this type of page.
+
+You can run the following query to count how many of this type of page are currently published:
+
+```
+Select document_type, count(*) from editions where state=’published’ group by document_type order by document_type;
+```
+
+You can also run the following query to check which document types these pages and URLs fit into:
+
+```
+with samples as (
+	select distinct on (document_type)
+		document_type,
+		base_path,
+		details
+	from editions
+	where state='published'
+	order by document_type, updated_at desc
+)
+select
+	document_type
+from samples
+where details ? 'parts'
+order by document_type;
+```
+
+Currently, running this query returns the document types `guide` and `travel_advice`.
+
+#### Extracting the full URLs from a record that represents multiple URLs
+
+You can extract the full URL of these types of pages, so that you have one record for each full URL.
+
+You might need to do this to link a record of a page view from Google Analytics to a record of the content of the page in the Publishing API database.
+
+Run the following query to extract each full URL into a separate record.
+
+This query does not affect records that already represent the full URL in their `base_path`.
+
+```
+select
+  base_path,
+  updated_at,
+  CONCAT(
+    base_path,
+    CASE WHEN parts.value->>'slug' IS NOT NULL
+    THEN '/'
+    ELSE ''
+    END,
+    PARTS.VALUE->>'slug'
+  ) AS pagePath
+  FROM editions
+  LEFT JOIN LATERAL
+  json_array_elements(details::json->'parts') AS parts
+  ON true
+  WHERE base_path = '<BASE-PATH>'
+  ORDER BY updated_at
+```
+`'<BASE-PATH>'` is the base_path you want to extract full URLs from, for example, `'/honours'`.
