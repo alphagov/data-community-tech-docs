@@ -9,9 +9,9 @@ review_in: 6 months
 
 The GOV.UK publishing database is a PostgreSQL database that keeps a copy of every version of almost every page ever drafted or published on GOV.UK.
 
-You can connect to and use the publishing database instead of [downloading the GOV.UK mirror to your local machine](/analysis/mirror/). You can use the publishing database to compute intents.
+You can connect to and use the publishing database instead of [downloading the GOV.UK mirror to your local machine](/analysis/mirror/).
 
-If you only want to analyse the most recent version of every page that is currently published, you should [use the Content Store](/analysis/content-store/).
+If you only want to analyse the most recent version of every page that is currently published, you can [use the Content Store](/analysis/content-store/).
 
 The data community does not currently have access to the production environment of the publishing database, so we access the database using the integration environment.
 
@@ -155,13 +155,13 @@ You do not need the GDS VPN or Secure Shell (SSH) access to the integration envi
 1. The filename of the latest database backup in AWS S3 varies, depending on the date and time the backup was created. Run the following command to find out the filename:
 
     ```sh
-    gds aws govuk-integration-readonly aws s3 ls s3://govuk-integration-database-backups/publishing-api-postgres/
+    USER=<FIRSTNAMELASTNAME>; gds aws govuk-integration-readonly aws s3 ls s3://govuk-integration-database-backups/publishing-api-postgres/
     ```
 
 1. Download the backup of the publishing database:
 
     ```sh
-    gds aws govuk-integration-readonly aws s3 cp s3://govuk-integration-database-backups/publishing-api-postgres/<FILENAME> <DOWNLOAD-LOCATION>
+    USER=<FIRSTNAMELASTNAME>; gds aws govuk-integration-readonly aws s3 cp s3://govuk-integration-database-backups/publishing-api-postgres/<FILENAME> <DOWNLOAD-LOCATION>
     ```
     where:
     - `<YYYY-MM-DD>T<HH:MM:SS>` is the filename of the backup database
@@ -266,7 +266,7 @@ select * from editions where base_path = '/towing-rules/y/car-or-light-vehicle' 
 
 Pages with no content are not represented by a URL record.
 
-An example of this type of page is `https://www.gov.uk/random`, which has no content and redirects to a page chosen at random
+An example of this type of page is `https://www.gov.uk/random`, which has no content and redirects to a page chosen at random.
 
 In this example, you can run the following query on a page with no content to see that the publishing database does not include this page:
 
