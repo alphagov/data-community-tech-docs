@@ -1,15 +1,17 @@
 ---
-title: Access the publishing database
+title: Use the publishing database
 weight: 39
-last_reviewed_on: 2021-11-04
+last_reviewed_on: 2022-05-13
 review_in: 6 months
 ---
 
-# Access the GOV.UK publishing database
+# Use the GOV.UK publishing database
 
-The GOV.UK publishing database is a PostgreSQL database that keeps a copy of every version of every page published on GOV.UK.
+The GOV.UK publishing database is a PostgreSQL database that keeps a copy of every version of almost every page ever drafted or published on GOV.UK.
 
-You can connect to and access the publishing database instead of [downloading the GOV.UK mirror to your local machine](/analysis/mirror/). You can use the publishing database to compute intents.
+You can connect to and use the publishing database instead of [downloading the GOV.UK mirror to your local machine](/analysis/mirror/).
+
+If you only want to analyse the most recent version of every page that is currently published, you can [use the Content Store](/analysis/content-store/).
 
 The data community does not currently have access to the production environment of the publishing database, so we access the database using the integration environment.
 
@@ -153,13 +155,13 @@ You do not need the GDS VPN or Secure Shell (SSH) access to the integration envi
 1. The filename of the latest database backup in AWS S3 varies, depending on the date and time the backup was created. Run the following command to find out the filename:
 
     ```sh
-    gds aws govuk-integration-readonly aws s3 ls s3://govuk-integration-database-backups/publishing-api-postgres/
+    USER=<FIRSTNAMELASTNAME>; gds aws govuk-integration-readonly aws s3 ls s3://govuk-integration-database-backups/publishing-api-postgres/
     ```
 
-1. Download the backup of the publishing API database:
+1. Download the backup of the publishing database:
 
     ```sh
-    gds aws govuk-integration-readonly aws s3 cp s3://govuk-integration-database-backups/publishing-api-postgres/<FILENAME> <DOWNLOAD-LOCATION>
+    USER=<FIRSTNAMELASTNAME>; gds aws govuk-integration-readonly aws s3 cp s3://govuk-integration-database-backups/publishing-api-postgres/<FILENAME> <DOWNLOAD-LOCATION>
     ```
     where:
     - `<YYYY-MM-DD>T<HH:MM:SS>` is the filename of the backup database
@@ -185,7 +187,7 @@ The following content assumes you’re using [PostgreSQL](https://www.postgresql
     - `--jobs=4` is the number of CPU threads that will be used.  You can change this to suit your device.
     - `<DOWNLOAD-LOCATION>` is the location that you downloaded the backup file to on your local machine.
 
-When your command line becomes responsive and you can enter commands again, this means you’ll have successfully created a database named `publishing_api_production` that contains the publishing API backup data.
+When your command line becomes responsive and you can enter commands again, this means you’ll have successfully created a database named `publishing_api_production` that contains the publishing backup data.
 
 ### Run queries in the database
 
@@ -211,3 +213,77 @@ When your command line becomes responsive and you can enter commands again, this
     ```
 
 You can now work with this database in PostgreSQL. To learn more about using PostgreSQL, [read the PostgreSQL documentation](https://www.postgresql.org/docs/).
+
+## Find content that is not included in the publishing database
+
+The GOV.UK publishing database contains records of URLs that users visit.
+
+These URL records correspond to GOV.UK pages. However, the publishing database does not include all GOV.UK pages.
+
+Some GOV.UK pages are partially represented by a URL record.
+
+Some GOV.UK pages are not represented by a URL record.
+
+You can run queries on these records to understand what the publishing database does not include.
+
+### Run queries on pages partially represented by a URL record
+
+Some pages are represented by URL records in the database, but those pages' content is not included in those records.
+
+The most common example of this type of page is a page with dynamic content.
+
+Dynamic content is created automatically in response to information provided by the user.
+
+For example, a search results page at `https://gov.uk/search/all`.
+
+Using this example, you can run the following query on the search results page to understand what information is included in the URL record and what is not included:
+
+```
+select * from editions where base_path = '/search' limit 1;
+```
+
+### Run queries on pages not represented by a URL record
+
+The following types of pages are not represented by a URL record:
+
+- pages with dynamic content
+- pages with no content
+- pages that do not exist
+
+#### Pages with dynamic content
+
+Dynamic content is created automatically in response to information provided by the user.
+
+An example of this type of page is `https://gov.uk/towing-rules/y/car-or-light-vehicle`, which is a smart answer.
+
+In this example, you can run the following query on the smart answer page to see that the publishing database does not include this page:
+
+```
+select * from editions where base_path = '/towing-rules/y/car-or-light-vehicle' limit 1;
+```
+
+#### Pages with no content
+
+Pages with no content are not represented by a URL record.
+
+An example of this type of page is `https://www.gov.uk/random`, which has no content and redirects to a page chosen at random.
+
+In this example, you can run the following query on a page with no content to see that the publishing database does not include this page:
+
+```
+select * from editions where base_path = '/random' limit 1;
+```
+
+#### Pages that do not exist
+
+Pages that do not exist are not represented by a URL record.
+
+URLs of non-existent pages often appear in Google Analytics and server logs. Sometimes these pages are typos.
+
+We have used some common typos to create pages that redirect to the correctly spelled equivalent page.
+
+In this example, you can run the following query on a page with a typo to see that the publishing database does not include this page:
+
+```
+select *, redirects from editions where base_path = '/view-driving-license' limit 1;
+```
