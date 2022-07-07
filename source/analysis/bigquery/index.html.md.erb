@@ -24,7 +24,7 @@ At the end of the day, UA automatically:
 - deletes this intraday table
 - creates a new intraday table for the next day
 
-If there are any issues with this process, you should contact a Google BigQuery administrator. The administrator will raise a request with Merkle, the agency that manages our Google Analytics / BigQuery relationship to fix the issue. Ask in the [GOV.UK Data Labs slack channel](https://gds.slack.com/archives/CHR4UQKU4) who the current admins are.
+If there are any issues with this process, you should contact a Google BigQuery administrator. The administrator will raise a request with Merkle, the agency that manages our Google Analytics / BigQuery relationship to fix the issue. Ask in the [GOV.UK Data Products slack channel](https://gds.slack.com/archives/CHR4UQKU4) who the current admins are.
 
 The schema of these tables is defined by the [UA BigQuery Export schema](https://support.google.com/analytics/answer/3437719?hl=en). However, not all columns are filled in our tables.
 
@@ -36,7 +36,7 @@ See the [code examples on the reference information page](/manual/datalabs-refer
 
 ## Get access to Google BigQuery
 
-To get access to Google BigQuery, ask the Data Labs team admins to set you up with a service account and access to the Google BigQuery console. Ask in the [GOV.UK Data Labs slack channel](https://gds.slack.com/archives/CHR4UQKU4) who the current admins are.
+To get access to Google BigQuery, ask the Data Products team admins to set you up with a service account and access to the Google BigQuery console. Ask in the [GOV.UK Data Products slack channel](https://gds.slack.com/archives/CHR4UQKU4) who the current admins are.
 
 Once you have a service account, store your account credentials safely. For example, store the credentials in your home directory if you have a Unix machine.
 
@@ -70,8 +70,8 @@ Be aware that intraday tables may not be representative behaviour. Queries using
 For more information, see the:
 
 - [introduction to controlling BigQuery costs](https://cloud.google.com/bigquery/docs/controlling-costs)
-- GOV.UK Data Labs BigQuery training [lesson 1: Getting started with Google Cloud](https://docs.google.com/document/d/1DY5f6Q-5ZApFq3OefbgGjx_TefT1ffFzoGu2RIUC1PM/edit)
-- GOV.UK Data Labs BigQuery training [lesson 2: BigQuery and GOV.UK Analytics](https://docs.google.com/document/d/1hF1U9XUrv5qEX97nthrKkPRuaDbOIQH64JiyZDrT0NQ/edit)
+- GOV.UK Data Products BigQuery training [lesson 1: Getting started with Google Cloud](https://docs.google.com/document/d/1DY5f6Q-5ZApFq3OefbgGjx_TefT1ffFzoGu2RIUC1PM/edit)
+- GOV.UK Data Products BigQuery training [lesson 2: BigQuery and GOV.UK Analytics](https://docs.google.com/document/d/1hF1U9XUrv5qEX97nthrKkPRuaDbOIQH64JiyZDrT0NQ/edit)
 
 ### Optimise Google BigQuery performance
 
@@ -91,7 +91,7 @@ See the [BigQuery documentation on creating datasets](https://cloud.google.com/b
 
 ### Team-developed tools for Google BigQuery
 
-The GOV.UK Data Labs team has developed some tools to access Google BigQuery. These tools are for users outside of the team with limited SQL experience.
+The GOV.UK Data Products team has developed some tools to access Google BigQuery. These tools are for users outside of the team with limited SQL experience.
 
 If you are this type of user, you should start with [modular_sql](https://github.com/alphagov/modular_sql), a lightweight pipeline to combine multiple SQL scripts and generate Google BigQuery tables.
 
@@ -99,4 +99,4 @@ You should also use [govuk-network-data](https://github.com/alphagov/govuk-netwo
 
 ### Further information
 
-For more information, see the [GOV.UK Data Labs training on how to use BigQuery to analyse user journeys](https://docs.google.com/document/d/1ojeqYDdxo9R-N8ivXu3UfHUVG0NczgNJydylNUbwXec/edit#heading=h.bz8ye39uw6m2).
+For more information, see the [GOV.UK Data Products training on how to use BigQuery to analyse user journeys](https://docs.google.com/document/d/1ojeqYDdxo9R-N8ivXu3UfHUVG0NczgNJydylNUbwXec/edit#heading=h.bz8ye39uw6m2).
