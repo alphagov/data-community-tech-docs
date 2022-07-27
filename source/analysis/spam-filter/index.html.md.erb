@@ -9,32 +9,6 @@ review_in: 6 months
 
 The spam filter is a [binary classifier](https://machinelearningmastery.com/types-of-classification-in-machine-learning/#:~:text=each%20in%20turn.-,Binary%20Classification,prediction%20(churn%20or%20not)) machine learning algorithm that classifies feedback data as spam or not spam.
 
+We trained the spam filter on [this training data set of 40k rows](LINK).
 
-
-Receives some data and identifies whether a piece of data is spam or not.
-
-Use the train-test split
-
-https://machinelearningmastery.com/train-test-split-for-evaluating-machine-learning-algorithms/
-
-We start with a dataset of 40k rows of feedback data for training.
-
-We manually labelled data as spam or not spam.
-
-Once we had that, we used this as training data to teach the spam classifier algorithm what is spam or not.
-
-We decided deriving features - spam or not spam.
-
-Link?
-
-After that, the classifier is able to use this data and features to learn what is spam or not, and add classifications to the data as appropriate.
-
-The classifier gives us a probability of data being spam.
-
-ML considers a variety of factors and can attach a probability of being spam or not to data.
-
-It separates its prediction from the information we’ve given it.
-
-We give it a new dataset, and it then attaches the probabilities to this new dataset, based on the training dataset.
-
-ML would be able to look at the balance of non ASCII to ASCII characters and we can attach a point at which this is suspect or not.
+To use the spam filter...
