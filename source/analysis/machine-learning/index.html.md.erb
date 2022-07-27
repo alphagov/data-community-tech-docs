@@ -1,0 +1,33 @@
+---
+title: Machine learning
+weight: 48
+last_reviewed_on: 2022-07-26
+review_in: 6 months
+---
+
+# Machine learning
+
+A machine learning model is a computer program that is able to improve its own performance (judged by a chosen metric) based on access to input data.
+
+## Training and testing data sets
+
+Every machine learning model needs a training data set and a test data set.
+
+A training data sets has example data of what we are attempting to teach our model. We put this data into the model so the model can learn to recognise what we are asking it to recognise.
+
+The testing data set is the data that we put into the model after we have trained the model. This data set tests the model's performance at predicting the outcomes we have asked for.
+
+## Classification
+
+Classification refers to when a machine learning model needs to classify and categorise data into specific labels.
+
+Binary classification refers to a model that categorises input data into one of two classes. For example, with a spam filter model, the classes are "spam" and "not spam".
+
+Class labels returned as string values must be encoded into an integer. The common notation is that the class with the:
+
+- normal state is assigned the value of 0
+- abnormal state gets assigned the value of 1
+
+For the spam filer example, 0 would be “spam”, and 1 would be “no-spam”.
+
+For each example, we can also create a model which predicts the Bernoulli probability for the output.
