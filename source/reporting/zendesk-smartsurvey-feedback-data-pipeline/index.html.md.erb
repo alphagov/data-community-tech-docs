@@ -17,150 +17,124 @@ These feedback methods appear on all GOV.UK pages.
 
 The Data Insights team collects and organises feedback data from multiple sources to make that data available to GDS users for analysis.
 
-The [GOV.UK Feedback Pipeline tool](https://github.com/alphagov/govuk-feedback-pipeline) consolidates, cleanses and standardises the feedback data to enable accurate analysis of user feedback. This tool maximises the quality and reliability of the user feedback data, making it easier to identify new meaningful insights and actions.
+The feedback data processing pipeline is separated into 3 stages:
 
-The following content explains how:
+- read the feedback data into the pipeline from the data sources
+- process the feedback data to make it ready for analysis
+- analyse the feedback data
 
-- GDS copies the feedback data from multiple data sources
-- the Feedback Pipeline tool cleanses the feedback data
-- the tool saves the feedback data in BigQuery
+The following content explains how each stage of this pipeline works.
 
-## Copy the feedback data
+## Read the feedback data into the pipeline
 
 Feedback data is stored in one of the following data sources, depending on the route through which users submitted feedback:
 
-- SmartSurvey, which stores the __Is this page useful?__ survey results
-- Zendesk, which store both the __Report a problem__ issue descriptions and __Contact__ request details
+- [SmartSurvey](https://www.smartsurvey.co.uk/), which stores the __Is this page useful?__ survey results
+- the [Support API](https://github.com/alphagov/support-api), which store both the Report a problem issue descriptions and Contact request details
 
-Every day at approximately 8:10am, an [Apache Airflow process](https://airflow.apache.org/) runs a collection of Python scripts to copy the previous day's feedback data from the SmartSurvey and Zendesk servers to BigQuery.
+Every day, the pipeline reads the previous day's data from the 2 data sources and stores that data in the [Google Cloud Platform](https://cloud.google.com/) as a raw text file.
 
-You can find these Python scripts in the [govuk-user-journey-models GitHub repo on alphagov](https://github.com/alphagov/govuk-user-journey-models).
+The pipeline does not do any processing or transformation of data at this stage.
 
-To get access to this repo, speak to the GDS Data Products team on the [#govuk-data-labs Slack channel](https://app.slack.com/client/T8GT9416G/CHR4UQKU4).
+## Process the feedback data
 
-## Cleanse the feedback data
+The pipeline processes the feedback data from the 2 data sources to make it ready for analysis.
 
-A feedback submission by a single user of GOV.UK is a feedback record.
+The data processing is the same regardless of the data source, and consists of several steps.
 
-The Feedback Pipeline tool cleanses the feedback records in the SmartSurvey and Zendesk data sets in BigQuery.
+### Read the data into the pipeline
 
-### Data cleansing methods
+The pipeline reads the raw text data file from the Google Cloud Platform into the pipeline programming environment in Python.
 
-The tool uses 4 data cleansing methods:
+### Structure the data
 
-- pruning
-- masking
-- filtering
-- marking up
+The data from SmartSurvey and the Support API are structured differently, but share characteristics such as prompt-response pairs and metadata about the feedback.
 
-The tool uses known text patterns to identify data to cleanse. These text patterns are known as regular expressions.
+The pipeline changes the format of the data from both data sources to be consistent with one another and to adhere to the required output data format.
 
-See the [Feedback Pipeline tool regular expressions documentation](/reporting/zendesk-smartsurvey-feedback-data-pipeline/regex/) for more information.
+### Remove whitespace from the data
 
-#### Pruning
-
-Pruning removes nonsensical or irrelevant feedback text from a feedback record.
+Pruning is a data cleansing method that removes nonsensical or irrelevant feedback text from a feedback data record.
 
 Examples of pruning include trimming whitespace and removing URL parameters or code snippets.
 
-#### Masking
+In this step, the pipeline prunes whitespace from the beginning and end of the feedback data text.
+
+The pipeline also searches from multiple consecutive whitespaces in feedback data text, and reduces those to one space if it finds any.
+
+### Remove profanity from the data
 
 Masking replaces a portion of feedback text with a text mask indicating the feedback text has been modified.
 
-An example of a text mask is `****`. You can decide to mask text if it’s:
+An example of a text mask is `****`.
 
-- not relevant to the analysis
-- potentially sensitive
-- personally identifiable information (PII) or profanity
+In this step, the pipeline searches for and replaces any profane words in the feedback text with the mask pattern of `****`.
 
-#### Filtering
+### Remove PII from the data
 
-Filtering excludes a feedback record from the pipeline output data set because the record has no relevant or legitimate feedback.
+The pipeline sends the feedback data to the [Google Cloud Data Loss Prevention service (DLP)](https://cloud.google.com/dlp).
 
-Examples of feedback records that should be filtered are spam records or duplicate records.
-
-#### Marking up
-
-Marking up adds a flag to a feedback record to suggest the record may be spam or has no relevant or legitimate feedback.
-
-This way, the record remains in the data set, but you can filter it out later if needed.
-
-### Data cleansing
-
-The Feedback Pipeline tool goes through the following steps to cleanse the SmartSurvey and Zendesk data sets.
-
-1. Reads the previous full day's feedback data from the data sets by submitting an API request.
-
-1. Prunes unnecessary white space in feedback text to avoid issues in text analysis later in the process.
-
-1. Deletes duplicate feedback records to minimise processing cost. Duplicate records share an internal system identifier with another record in the same data set.
-
-1. Deletes verbose feedback records as verbose records cannot be processed and analysed later in the process. Verbose records have more than 2000 characters.
-
-1. Deletes records whose text patterns match known vulnerability exploits, such as JavaScript or SQL strings, or contain text patterns indicating the use of vulnerability scanning tools.
-
-1. Masks and removes PII in a 2-step process. First, the tool sends the data to the [Google Cloud Data Loss Prevention service (DLP)](https://cloud.google.com/dlp). Google Cloud DLP looks for the following information types:
-
-    ```
-    Date of birth
-    Email address
-    Passport number
-    Person name
-    Phone number
-    Street address
-    UK National Insurance number
-    ```
-    Google Cloud DLP then cleanses the data of these information types and returns the cleansed data to the tool.
-
-    Second, the tool compares the feedback records against PII regular expressions. The tool then masks any identified PII instances.
-
-1. Prunes code snippets in feedback records by replacing those snippets with the blank character `''`, as code snippets are not relevant to feedback data analysis.
-
-1. Masks instances of profanity in feedback records with `****`.
-
-## Save the feedback data in BigQuery
-
-The Feedback Pipeline tool saves the following data to BigQuery:
-
-- cleansed data
-- pipeline metrics
-- PII metrics
-
-### Save the cleansed data
-
-When the data cleansing is complete, the tool saves the data into the GOV.UK Analytics project in BigQuery, `govuk-bigquery-analytics`.
-
-Within this project:
-
-- the Zendesk data is stored in the `zendeskdata` data set
-- the SmartSurvey data is stored in the `UISData` data set
-
-Within these data sets are the daily data tables. Each day’s data is created as a new data table with a `YYYYMMDD` format. For example, for 9 March 2021:
-
-- the SmartSurvey data table is `UISData_20210309`
-- the Zendesk data table is `zendesk_20210309`
-
-To request permission to view or edit these data tables in BigQuery, speak to the GDS Data Products team on the [#govuk-data-labs Slack channel](https://app.slack.com/client/T8GT9416G/CHR4UQKU4).
-
-The Zendesk and SmartSurvey feedback data is now in BigQuery, ready for users to view and analyse.
-
-For more information on the next step of the process, see the [documentation on viewing or extracting feedback data from BigQuery](/reporting/view-extract-feedback-data-bigquery/).
-
-### Save the pipeline and PII metrics
-
-The tool also saves pipeline and PII metrics to BigQuery.
-
-The pipeline metrics summarise the changes to the feedback records caused by the data cleansing process.
-
-The PII metrics show how many articles of PII the tool has removed for each combination of PII type and source system field.
-
-In the following example, the metrics table shows a feedback pipeline tool. The tool has removed 10 instances of person names from the description field in the data source.
+Google Cloud DLP looks for the following information types:
 
 ```
-Source system field: description
-PII type: Person Name
-Number removed: 10
+info_types = [
+    'DATE_OF_BIRTH',
+    'EMAIL_ADDRESS',
+    'PASSPORT',
+    'PERSON_NAME',
+    'PHONE_NUMBER',
+    'STREET_ADDRESS',
+    'UK_NATIONAL_INSURANCE_NUMBER',
+    'UK_PASSPORT',
+    'CREDIT_CARD_NUMBER',
+    'IBAN_CODE',
+    'IP_ADDRESS',
+    'MEDICAL_TERM',
+    'VEHICLE_IDENTIFICATION_NUMBER',
+    'SCOTLAND_COMMUNITY_HEALTH_INDEX_NUMBER',
+    'UK_DRIVERS_LICENSE_NUMBER',
+    'UK_NATIONAL_HEALTH_SERVICE_NUMBER',
+    'UK_TAXPAYER_REFERENCE',
+    'SWIFT_CODE'
+]
 ```
+
+Google Cloud DLP then masks any instances of feedback data text that matches these information types, and returns the cleansed data to the pipeline.
+
+### Nest the data values and group the data
+
+A single feedback record may contain multiple prompt-response pairs. For example, a single record may have the following pairs:
+
+- "What was the problem?" "The link to the PDF did not work"
+- "Were there any other issues?" "No"
+
+In the feedback data set, every prompt-response pair would have a feedback record with meta data about the record. For example:
+
+|Date|Time|URL|Prompt|Response|
+|:---|:---|:---|:---|:---|
+|2022-07-27|12:34:56|https://www.gov.uk/examplefeedback.html|What was the problem?|The link to the PDF did not work|
+|2022-07-27|12:34:56|https://www.gov.uk/examplefeedback.html|Were there any other issues?|No|
+
+This means that there is a lot of duplication in the feedback data set.
+
+In this step, the pipeline nests the data values and groups the data to remove the feedback record metadata duplication.
+
+Now there is one feedback record for the multiple prompt-response pairs that relate to that feedback record. For example:
+
+|Date|Time|URL|Prompt|Response|
+|:---|:---|:---|:---|:---|
+|2022-07-27|12:34:56|https://www.gov.uk/examplefeedback.html|What was the problem?|The link to the PDF did not work|
+||||Were there any other issues?|No|
+
+The pipeline has finished processing the data.
+
+### Save the processed feedback data
+
+The pipeline saves the processed data into the `govuk_user_feedback` table in the `govuk-bigquery-analytics` BigQuery project.
+
+To request permission to view or edit these data tables in BigQuery, speak to the GDS Data Products team on the #[govuk-data-labs Slack channel](https://app.slack.com/client/T8GT9416G/CHR4UQKU4).
+
+The Support API and SmartSurvey feedback data is now ready for users to view and analyse in BigQuery.
 
 ## Data field definitions
 
