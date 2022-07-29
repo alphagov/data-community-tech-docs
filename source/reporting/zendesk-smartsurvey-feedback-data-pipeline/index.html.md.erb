@@ -136,6 +136,108 @@ To request permission to view or edit these data tables in BigQuery, speak to th
 
 The Support API and SmartSurvey feedback data is now ready for users to view and analyse in BigQuery.
 
+## Analyse the feedback data
+
+The pipeline automatically runs an SQL script on a monthly basis to clean and analyse the processed feedback data from BigQuery.
+
+The script formats the data, then does 2 separate analysis processes:
+
+- the first analysis process is at a sentence level, and identifies what the feedback is about and what the user feedback sentiment is
+- the second analysis process is at a feedback record level, and identifies and groups feedback records by topic
+
+The script then sends the output data to BigQuery, and the Data Insights team includes it in the monthly insights report.
+
+### Format the data
+
+The SQL script:
+
+- transforms all feedback record text to lowercase
+- removes all positive and negative contractions from the feedback record text
+
+### Sentence level analysis
+
+The SQL script runs the sentence-level analysis process.
+
+This process:
+
+- cleanses the sentence-level data
+- identifies if the user feedback is positive, negative or neutral, also known as sentiment
+- identifies what the feedback is about
+
+
+#### Cleansing the sentence-level data
+
+1. The script formats the data so that every sentence in the data has a corresponding feedback record. For example:
+
+    |Feedback record number|Sentence 1|Sentence 2|Sentence 3|Sentence 4|
+    |:---|:---|:---|:---|:---|
+    |1|I like this feature.|It is good.|It makes me happy.|I will recommend it to others.|
+    |2|I hate this feature.|It is bad.|||
+
+    This step changes this data format to the following:
+
+    |Feedback record number|Sentence|
+    |:---|:---|
+    |1|I like this feature.|
+    |1|It is good.|
+    |1|It makes me happy.|
+    |1|I will recommend it to others.|
+    |2|I hate this feature.|
+    |2|It is bad.|
+
+1. The script removes all punctuation so all is left in the feedback record text are alphanumeric characters (a-z and 0-9).
+
+1. The script then re-removes any whitespace from the feedback record text that was added by the previous steps.
+
+1. The script removes all line breaks from feedback text.
+
+The output from the process is feedback record text that is all alphanumeric, with no punctuation or whitespace, and is in a single block.
+
+#### Identifying the user feedback sentiment
+
+The pipeline uses the following 3 pre-trained language models that classify text as positive, negative or neutral:
+
+- [BERT analyse](https://huggingface.co/distilbert-base-uncased-finetuned-sst-2-english)
+- [SieBERT](https://huggingface.co/siebert/sentiment-roberta-large-english)
+- [Cardiff](https://huggingface.co/cardiffnlp/twitter-xlm-roberta-base-sentiment)
+
+
+
+sentiment classification then happens -  - pre-trained language models that accept text as an input and output whether the text is positive, negative or neutral
+adds a sentiment column with positive, negative or neutral
+Then derive overall sentiment, from the outputs of the 3 previous models
+feedback records have 4 extra sentiment columns - overall plus 3 models
+
+
+
+then remove stopwords - and, to, but, as they would slow down processing for the next step
+
+then GSDMM Analyse step run - cluster similar feedback records based on the words within those feedback records
+https://github.com/rwalk/gsdmm
+
+the previous 2 are taken and interpreted together
+
+bottom process at a whole feedback level
+remove less punctutation than before - *, [], strips back to commas and full stops
+remove whitespace
+remove line breaks
+run bert topic analysis, and then remove stopwords from output
+using the bert model to pick up a theme in the feedback overall - works on larger amount of text then sentence level analysis
+
+end up with output at a sentence level and output at a feedback record level
+output for this is a topic number, and a list of terms within that topic
+give you a number of topic, and you can infer the topic from the associated terms
+will also retunr top 10 feedback records associated with each topic
+
+outputs are stored in BQ
+range of tables that are created
+
+outputs are produced automatically, put into the monthly insights report by the data insights team
+slack channel - data insights or data services
+
+
+https://github.com/MaartenGr/BERTopic
+
 ## Data field definitions
 
 All data fields in BigQuery are text strings.
