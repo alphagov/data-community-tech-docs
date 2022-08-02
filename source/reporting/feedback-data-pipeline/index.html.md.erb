@@ -17,7 +17,7 @@ These feedback methods appear on all GOV.UK pages.
 
 The Data Insights team collects and organises feedback data from multiple sources to make that data available to GDS users for analysis.
 
-The feedback data processing pipeline is separated into 3 stages:
+The feedback data processing pipeline has 3 stages:
 
 - read the feedback data into the pipeline from the data sources
 - process the feedback data to make it ready for analysis
@@ -138,25 +138,27 @@ The Support API and SmartSurvey feedback data is now ready for users to view and
 
 ## Analyse the feedback data
 
-The pipeline automatically runs an SQL script on a monthly basis to clean and analyse the processed feedback data from BigQuery.
+The feedback pipeline cleans and analyses the processed feedback data from BigQuery on a monthly basis.
 
-The script formats the data, then does 2 separate analysis processes:
+The pipeline reads processed feedback data for the previous month where that feedback data contains a free-form text input.
+
+The feedback pipeline then sends this data to a Python pipeline. The Python pipeline then performs 2 separate analysis processes:
 
 - the first analysis process is at a sentence level, and identifies what the feedback is about and what the user feedback sentiment is
 - the second analysis process is at a feedback record level, and identifies and groups feedback records by topic
 
-The script then sends the output data to BigQuery, and the Data Insights team includes it in the monthly insights report.
+The Python pipeline then sends the output data to BigQuery, and the Data Insights team includes it in the monthly insights report.
 
 ### Format the data
 
-The SQL script:
+The Python pipeline:
 
 - transforms all feedback record text to lowercase
 - removes all positive and negative contractions from the feedback record text
 
 ### Sentence level analysis
 
-The SQL script runs the sentence-level analysis process.
+The Python pipeline runs the sentence-level analysis process.
 
 This process:
 
@@ -166,16 +168,16 @@ This process:
 
 #### Cleansing the sentence-level data
 
-1. The script formats the data so that every sentence in the data has a corresponding feedback record. For example:
+1. The Python pipeline formats the data so that every sentence in the data has a corresponding feedback record. For example:
 
-    |Feedback record number|Sentence 1|Sentence 2|Sentence 3|Sentence 4|
-    |:---|:---|:---|:---|:---|
-    |1|I like this feature.|It is good.|It makes me happy.|I will recommend it to others.|
-    |2|I hate this feature.|It is bad.|||
+    |Feedback record number|Feedback|
+    |:---|:---|
+    |1|I like this feature. It is good. It makes me happy. I will recommend it to others.|
+    |2|I hate this feature. It is bad.|
 
     This step changes this data format to the following:
 
-    |Feedback record number|Sentence|
+    |Feedback record number|Feedback sentence|
     |:---|:---|
     |1|I like this feature.|
     |1|It is good.|
@@ -184,11 +186,9 @@ This process:
     |2|I hate this feature.|
     |2|It is bad.|
 
-1. The script removes all punctuation from the feedback record text, leaving only alphanumeric characters (a-z and 0-9).
+1. The Python pipeline then re-removes any whitespace from the feedback record text that the previous steps inadvertently added.
 
-1. The script then re-removes any whitespace from the feedback record text that was added by the previous steps.
-
-1. The script removes all line breaks from feedback text.
+1. Finally, the Python pipeline removes all line breaks from feedback text.
 
 The output from the process is feedback record text that is all alphanumeric, with no punctuation or whitespace, and is in a single block.
 
@@ -206,15 +206,19 @@ The 3 models each add a sentiment column to the feedback record, and then the pi
 
 #### Clustering the feedback records based on subject matter
 
-To identify what the feedback records are about and cluster them accordingly, the pipeline first runs a script to remove the stopwords.
+To identify what the feedback records are about and cluster them accordingly, the Python pipeline does the following data cleansing:
 
-Stop words are words which are classifed as insignificant, and filtered out of natural language data processing. Examples of stop words are 'and' and 'to'.
+1. The Python pipeline removes the stopwords.
 
-The pipeline removes stop words to speed up the processing for identifying feedback record subject matter.
+    Stop words are words which are classifed as insignificant, and filtered out of natural language data processing.
 
-The pipeline then runs the [GSDMM Analyse algorithm](https://github.com/rwalk/gsdmm) to cluster similar feedback records based on the text within those records.
+    Examples of stop words are 'and' and 'to'.
 
-The feedback records:
+1. The Python pipeline removes all punctuation from the feedback record text, leaving only alphanumeric characters (a-z and 0-9).
+
+1. The Python pipeline then runs the [GSDMM Analyse algorithm](https://github.com/rwalk/gsdmm) to cluster similar feedback records based on the text within those records.
+
+The feedback records now:
 
 - are clustered at a sentence level
 - have a sentiment value attached to them
@@ -228,7 +232,7 @@ The pipeline runs the feedback record-level analysis process.
     - whitespace
     - line breaks
 
-1. The pipeline runs the [BERT analyse language model](https://huggingface.co/distilbert-base-uncased-finetuned-sst-2-english) to identify themes in the feedback records.
+1. The pipeline runs the [BERT analyse language model](https://github.com/MaartenGr/BERTopic) to identify themes in the feedback records.
 
     The pipeline attaches a topic number to the feedback record, and also outputs the top 10 feedback records associated with each topic.
 
