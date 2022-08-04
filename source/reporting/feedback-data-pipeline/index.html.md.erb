@@ -27,10 +27,10 @@ The following content explains how each stage of this pipeline works.
 
 ## Read the feedback data into the pipeline
 
-Feedback data is stored in one of the following data sources, depending on the route through which users submitted feedback:
+Feedback data is stored in one of the following data sources, depending on how users submitted feedback:
 
-- [SmartSurvey](https://www.smartsurvey.co.uk/), which stores the __Is this page useful?__ survey results
-- the [Support API](https://github.com/alphagov/support-api), which store both the Report a problem issue descriptions and Contact request details
+- [SmartSurvey](https://www.smartsurvey.co.uk/) stores the __Is this page useful?__ survey results
+- the [Support API](https://github.com/alphagov/support-api) stores both the ‘Report a problem’ issue descriptions and ‘Contact’ request details
 
 Every day, the pipeline reads the previous day's data from the 2 data sources and stores that data in the [Google Cloud Platform](https://cloud.google.com/) as a raw text file.
 
@@ -60,7 +60,7 @@ Examples of pruning include trimming whitespace and removing URL parameters or c
 
 In this step, the pipeline prunes whitespace from the beginning and end of the feedback data text.
 
-The pipeline also searches from multiple consecutive whitespaces in feedback data text, and reduces those to one space if it finds any.
+The pipeline also searches for multiple consecutive whitespaces in feedback data text and reduces those to one space if it finds any.
 
 ### Remove profanity from the data
 
@@ -68,11 +68,11 @@ Masking replaces a portion of feedback text with a text mask indicating the feed
 
 An example of a text mask is `****`.
 
-In this step, the pipeline searches for and replaces any profane words in the feedback text with the mask pattern of `****`.
+In this step, the pipeline finds and replaces any profane words in the feedback text with the mask pattern of `****`.
 
-### Remove PII from the data
+### Remove Personally Identifiable Information (PII) from the data
 
-The pipeline sends the feedback data to the [Google Cloud Data Loss Prevention service (DLP)](https://cloud.google.com/dlp).
+The pipeline sends the feedback data to the [Google Cloud Data Loss Prevention (DLP)](https://cloud.google.com/dlp) service.
 
 Google Cloud DLP looks for the following information types:
 
@@ -99,7 +99,7 @@ info_types = [
 ]
 ```
 
-Google Cloud DLP then masks any instances of feedback data text that matches these information types, and returns the cleansed data to the pipeline.
+Google Cloud DLP then masks any instances of feedback data text that matches these information types and returns the cleansed data to the pipeline.
 
 ### Nest the data values and group the data
 
@@ -108,14 +108,14 @@ A single feedback record may contain multiple prompt-response pairs. For example
 - "What was the problem?" "The link to the PDF did not work"
 - "Were there any other issues?" "No"
 
-In the feedback data set, every prompt-response pair would have a feedback record with meta data about the record. For example:
+In the feedback data set, every prompt-response pair would have a feedback record with metadata about the record. For example:
 
 |Date|Time|URL|Prompt|Response|
 |:---|:---|:---|:---|:---|
 |2022-07-27|12:34:56|https://www.gov.uk/examplefeedback.html|What was the problem?|The link to the PDF did not work|
 |2022-07-27|12:34:56|https://www.gov.uk/examplefeedback.html|Were there any other issues?|No|
 
-This means that there is a lot of duplication in the feedback data set.
+This means there is a lot of duplication in the feedback data set.
 
 In this step, the pipeline nests the data values and groups the data to remove the feedback record metadata duplication.
 
@@ -147,7 +147,7 @@ The feedback pipeline then sends this data to a Python pipeline. The Python pipe
 - the first analysis process is at a sentence level, and identifies what the feedback is about and what the user feedback sentiment is
 - the second analysis process is at a feedback record level, and identifies and groups feedback records by topic
 
-The Python pipeline then sends the output data to BigQuery, and the Data Insights team includes it in the monthly insights report.
+The Python pipeline then sends the output data to BigQuery and the Data Insights team includes it in the monthly insights report.
 
 ### Format the data
 
@@ -163,8 +163,8 @@ The Python pipeline runs the sentence-level analysis process.
 This process:
 
 - cleanses the sentence-level data
-- identifies if the user feedback is positive, negative or neutral, also known as sentiment
-- cluster the feedback records based on subject matter
+- identifies the user feedback sentiment, that is whether the feedback is positive, negative or neutral
+- clusters the feedback records based on subject matter
 
 #### Cleansing the sentence-level data
 
@@ -186,7 +186,7 @@ This process:
     |2|I hate this feature.|
     |2|It is bad.|
 
-1. The Python pipeline then re-removes any whitespace from the feedback record text that the previous steps inadvertently added.
+1. The Python pipeline re-removes any whitespace from the feedback record text that the previous steps inadvertently added.
 
 1. Finally, the Python pipeline removes all line breaks from feedback text.
 
@@ -200,7 +200,7 @@ The pipeline uses the following 3 pre-trained language models that classify feed
 - [SieBERT](https://huggingface.co/siebert/sentiment-roberta-large-english)
 - [Cardiff](https://huggingface.co/cardiffnlp/twitter-xlm-roberta-base-sentiment)
 
-This classification is also know as user sentiment.
+This classification is also known as user sentiment.
 
 The 3 models each add a sentiment column to the feedback record, and then the pipeline derives an overall sentiment based on these 3 outputs.
 
@@ -208,15 +208,15 @@ The 3 models each add a sentiment column to the feedback record, and then the pi
 
 To identify what the feedback records are about and cluster them accordingly, the Python pipeline does the following data cleansing:
 
-1. The Python pipeline removes the stopwords.
+1. The Python pipeline removes the stop words.
 
-    Stop words are words which are classifed as insignificant, and filtered out of natural language data processing.
+    Stop words are words which are classified as insignificant and filtered out of natural language data processing.
 
     Examples of stop words are 'and' and 'to'.
 
 1. The Python pipeline removes all punctuation from the feedback record text, leaving only alphanumeric characters (a-z and 0-9).
 
-1. The Python pipeline then runs the [GSDMM Analyse algorithm](https://github.com/rwalk/gsdmm) to cluster similar feedback records based on the text within those records.
+1. The Python pipeline runs the [GSDMM Analyse algorithm](https://github.com/rwalk/gsdmm) to cluster similar feedback records based on the text within those records.
 
 The feedback records now:
 
