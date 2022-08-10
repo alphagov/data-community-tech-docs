@@ -7,13 +7,13 @@ review_in: 6 months
 
 # Create the page access weight matrix
 
-The page access TF-IDF weight matrix gives less weight to pages that are accessed by many users and are not relevant to the user's information needs. For example, the GOV.UK homepage.
+The page access term frequency-inverse document frequency (TF-IDF) weight matrix gives less weight to pages that are accessed by many users and are not relevant to the user's information needs. For example, the GOV.UK homepage.
 
 ## Definitions
 
 The following definitions apply to this matrix:
 
-- `user` is defined as either `sessionId` or `fullVisitorId`
+- `user` is either `sessionId` or `fullVisitorId`
 - `pages` are the pages in the curated set of user journeys, otherwise known as `target urls`
 - `term frequency` (TF) is the access frequency of the page by the given user
 - `inverse document frequency` (IDF) is the ratio of total users to the number of distinct users who have accessed the given page

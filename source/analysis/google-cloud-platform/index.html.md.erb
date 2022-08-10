@@ -101,7 +101,7 @@ If you cannot, this is likely to be an authentication issue.
 
     print("The query data:")
     for row in query_job:
-      # Row values can be accessed by field name or index.
+      # You can access row values by field name or index.
       print("name={}, count={}".format(row[0], row["total_people"]))
     ```
 
@@ -190,7 +190,7 @@ If you do not see this output, then you currently cannot use GCP through code th
 
     You will probably need to escape the exclamation mark with a backslash, as shown in the example.
 
-    The values of some cells in this file sheet will be printed at the command line.
+    Running this code prints the values of some cells of this file sheet in the command line.
 
 ## Use GCP through code that runs on GCP
 
@@ -200,7 +200,7 @@ This is the same as running code unsupervised or automatically as part of a serv
 
 Therefore you need a service account. [Contact the Data Engineering community on Slack](https://gds.slack.com/archives/C032AH1D6MU) to ask for a service account, saying what [roles and permissions]() it requires.
 
-[Contact the Data Engineering community on Slack](https://gds.slack.com/archives/C032AH1D6MU) to ask for the service account to be attached to the resource in GCP that the code will run in.
+[Contact the Data Engineering community on Slack](https://gds.slack.com/archives/C032AH1D6MU) to ask them to attach the service account to the resource in GCP that the code will run in.
 
 You should not need to modify your code, because this code will automatically find and use the service account credentials.
 
