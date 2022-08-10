@@ -7,7 +7,7 @@ review_in: 6 months
 
 # GOV.UK Knowledge Graph intermediate data files
 
-The following intermediate data files are used to build the Knowledge Graph instance.
+The `app-knowledge-graph` application builds the knowledge graph instance from the following intermediate data files.
 
 ## preprocessed_content_store_<DDMMYY>.csv.gz
 
@@ -56,7 +56,7 @@ The `preprocessed_content_store_<DDMMYY>.csv.gz` file has the following data fie
 
 A lookup table to find the content ID of a page from its URL, or the URL of a page from its content ID.
 
-This file is created by the `src.data.extract_contect_store.py` Python script.
+The `src.data.extract_contect_store.py` Python script creates this file.
 
 An example data field is `"/coronavirus-health-worker-visa-extension": "59ecfc6d-cb9e-49b8-b013-fc368ebdf8ed"`.
 
@@ -224,7 +224,7 @@ A list of all the organisations on GOV.UK.
 
 Organisations are departments, agencies and public bodies.
 
-This file is created by the `src/data/extract_organisation_api.py` Python script and has the following data fields.
+The `src/data/extract_organisation_api.py` Python script creates this file. This file has the following data fields.
 
 | Field| Description| Example|
 | --- | --- | ---- |
@@ -238,7 +238,7 @@ This file is created by the `src/data/extract_organisation_api.py` Python script
 
 The [topic taxonomy](https://docs.publishing.service.gov.uk/manual/taxonomy.html) is a classification scheme for organising and finding content on GOV.UK, based on the content subject area.
 
-This file is a list of pairs of taxons that are related to each other. For example, one taxon is the parent of the other taxon.
+This file is a list of pairs of related taxons. For example, one taxon is the parent of the other taxon.
 
 The `CreateContentGraph` Python class creates this file, which has the following data fields.
 
@@ -269,7 +269,7 @@ A list of pairs of organisations that have a parent-child relationship. The chil
 
 Organisations are departments, agencies and public bodies.
 
-This file is created by the `src/data/extract_organisation_api.py` Python script and has the following data fields.
+The `src/data/extract_organisation_api.py` Python script creates this file. This file has the following data fields.
 
 | Field| Description| Example|
 | --- | --- | --- |
@@ -284,7 +284,7 @@ A list of pairs of organisations that have a parent-child relationship. The pare
 
 Organisations are departments, agencies and public bodies.
 
-This file is created by the `src/data/extract_organisation_api.py` Python script and has the following data fields.
+The `src/data/extract_organisation_api.py` Python script creates this file. This file has the following data fields.
 
 | Field| Description| Example|
 | --- | --- | --- |
@@ -299,7 +299,7 @@ A list of superseded organisations and the organisations that superseded them.
 
 Organisations are departments, agencies and public bodies.
 
-This file is created by the `src/data/extract_organisation_api.py` Python script and has the following data fields.
+The `src/data/extract_organisation_api.py` Python script creates this file. This file has the following data fields.
 
 | Field| Description| Example|
 | --- | --- | ---- |
@@ -314,7 +314,7 @@ A list of superseding organisations that have superseded other organisations and
 
 Organisations are departments, agencies and public bodies.
 
-This file is created by the `src/data/extract_organisation_api.py` Python script and has the following data fields.
+The `src/data/extract_organisation_api.py` Python script creates this file. This file has the following data fields.
 
 | Field| Description| Example|
 | --- | --- | ---- |
@@ -327,7 +327,7 @@ This file is created by the `src/data/extract_organisation_api.py` Python script
 
 A list of GOV.UK pages about people.
 
-This file is created by the [`extract_publishing_api.py` Python script](https://github.com/alphagov/govuk-knowledge-graph/blob/master/src/data/extract_publishing_api.py) and has the following data fields.
+The [`extract_publishing_api.py` Python script](https://github.com/alphagov/govuk-knowledge-graph/blob/master/src/data/extract_publishing_api.py) creates this file. This file has the following data fields.
 
 | Field| Description| Example|
 | --- | ---- | ---- |
@@ -339,7 +339,7 @@ This file is created by the [`extract_publishing_api.py` Python script](https://
 
 A list of person-role relationships.
 
-This file is created by the [`extract_publishing_api.py` Python script](https://github.com/alphagov/govuk-knowledge-graph/blob/master/src/data/extract_publishing_api.py) and has the following data fields.
+The [`extract_publishing_api.py` Python script](https://github.com/alphagov/govuk-knowledge-graph/blob/master/src/data/extract_publishing_api.py) creates this file. This file has the following data fields.
 
 | Field| Description| Example|
 | ---- | --- | ---- |
@@ -357,7 +357,7 @@ This file is created by the [`extract_publishing_api.py` Python script](https://
 
 A list of all the roles that people on GOV.UK pages have.
 
-This file is created by the [`extract_publishing_api.py` Python script](https://github.com/alphagov/govuk-knowledge-graph/blob/master/src/data/extract_publishing_api.py) and has the following data fields.
+The [`extract_publishing_api.py` Python script](https://github.com/alphagov/govuk-knowledge-graph/blob/master/src/data/extract_publishing_api.py) creates this file. This file has the following data fields.
 
 | Field| Description| Example|
 | --- | --- | ---- |
@@ -368,7 +368,7 @@ This file is created by the [`extract_publishing_api.py` Python script](https://
 
 A list of all the role-organisation relationships.
 
-This file is created by the [`extract_publishing_api.py` Python script](https://github.com/alphagov/govuk-knowledge-graph/blob/master/src/data/extract_publishing_api.py) and has the following data fields.
+The [`extract_publishing_api.py` Python script](https://github.com/alphagov/govuk-knowledge-graph/blob/master/src/data/extract_publishing_api.py) creates this file. This file has the following data fields.
 
 | field| description | example |
 | --- | ---- | --- |
@@ -382,7 +382,7 @@ This file is created by the [`extract_publishing_api.py` Python script](https://
 
 A list of all external links extracted from the preprocessed content store, saved in the `govuk-data-inf-int/structural_network` S3 bucket.
 
-This file is created by the [`src/data/extract_external_links.py` Python script](https://github.com/alphagov/govuk-knowledge-graph/blob/master/src/data/extract_external_links.py), and has the following data fields.
+The [`src/data/extract_external_links.py` Python script](https://github.com/alphagov/govuk-knowledge-graph/blob/master/src/data/extract_external_links.py) creates this file. This file has the following data fields.
 
 | field| description | example |
 | --- | ---- | --- |

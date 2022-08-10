@@ -11,12 +11,12 @@ The GOV.UK mirror is a static version of the entire GOV.UK website. A crawler ge
 
 The GOV.UK mirror provides a static backup of GOV.UK as a fallback, and is not designed for analytics. As such, the GOV.UK mirror:
 
-- only stores pages that can be accessed by the crawler
+- only stores pages that can the crawler can access
 - skips search pages, and [pages that mandate a user input](https://www.gov.uk/child-benefit-tax-calculator/y?response=&next=1)
 - stores [pages with default or blank answers if user input is optional](https://www.gov.uk/transition-check/questions?page=6)
 - does not cache mirror versions, but instead replaces those versions once it completes each crawl
 
-The following example pages show what page types are cached by the crawler.
+The following example pages show what page types the crawler caches.
 
 Smart answer start pages and their first pages, such as the [Child Benefit Tax calculator]((https://www.gov.uk/child-benefit-tax-calculator/y)), are included in the mirror. However, all other pages are missing as they require user input.
 

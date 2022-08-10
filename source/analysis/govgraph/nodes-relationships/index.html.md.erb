@@ -7,9 +7,9 @@ review_in: 6 months
 
 # GOV.UK Knowledge Graph nodes and relationships
 
-All of the following nodes and relationships are created in/by `src/neo4j/import_edgelist.cypher`, except for `Cid - ExternalPage - HYPERLINKS_TO`.
+The `src/neo4j/import_edgelist.cypher` file creates all of the following nodes and relationships, except for `Cid - ExternalPage - HYPERLINKS_TO`.
 
-The `Cid - ExternalPage - HYPERLINKS_TO` node and relationship is created in/by `src/neo4j/import_external_links.cypher`.
+The `src/neo4j/import_external_links.cypher` file creates the `Cid - ExternalPage - HYPERLINKS_TO` node and relationship.
 
 | Source node type<br>(relationship FROM) | Target node type<br>(relationship TO) | Relationships<br>(edges) | Description |
 | --------------------------------------- | ------------------------------------- | ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
