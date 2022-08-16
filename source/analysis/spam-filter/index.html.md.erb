@@ -9,7 +9,7 @@ review_in: 6 months
 
 The [GOV.UK feedback spam classifier](https://github.com/alphagov/govuk-feedback-spam-classifier) is a [binary classifier](https://machinelearningmastery.com/types-of-classification-in-machine-learning/#:~:text=each%20in%20turn.-,Binary%20Classification,prediction%20(churn%20or%20not)) machine learning model that classifies feedback data as spam or not spam.
 
-We based this model on the [SKLearn architecture](https://scikit-learn.org/stable/).
+To develop this model, we refined a [Random Forest Classifier Model that we downloaded from `sklearn.ensemble`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html).
 
 You can use the following documentation to try the feedback spam classifier on your local machine.
 
@@ -43,6 +43,7 @@ If you want to try the feedback spam classifier with a different data set, you m
 
 - specify where this different data set is in the [params.yaml file in the feedback spam classifier repo](https://github.com/alphagov/govuk-feedback-spam-classifier/blob/master/params.yaml)
 - make sure that this different data set is similar in format and structure to the default data set
+- make any necessary changes to the Python scripts to reflect the different data set's format and structure
 
 ### Run script 001
 
@@ -61,9 +62,10 @@ This script:
 
 - [trains the spam classifier model](https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets) using the specified data set
 - creates visualisations to help you assess if the model is classifying spam correctly
-- sends the visualisations to the [repo `outputs` folder](https://github.com/alphagov/govuk-feedback-spam-classifier/tree/master/outputs)
+- calculates the features that are most important to the model's classification decisions
+- sends the visualisations to the [repo's `outputs/visualisations` folder](https://github.com/alphagov/govuk-feedback-spam-classifier/tree/master/outputs/visualisations)
 
-One of the visualisations is a [confusion matrix](https://en.wikipedia.org/wiki/Confusion_matrix).
+The visualisations are a [confusion matrix](https://en.wikipedia.org/wiki/Confusion_matrix) and 3 representations of different calculations of [feature importance](https://machinelearningmastery.com/calculate-feature-importance-with-python/).
 
 ### Run script 003
 
@@ -83,4 +85,4 @@ This script:
 
 - tests the model on the entire data set
 - attaches a label of `spam` or `not spam` and a confidence probability to each sentence
-- outputs the data set with the labels and probabilities to the [repo `data` folder](https://github.com/alphagov/govuk-feedback-spam-classifier/tree/master/data)
+- outputs the data set with the labels and probabilities to the [repo `data/outputs` folder](https://github.com/alphagov/govuk-feedback-spam-classifier/tree/master/data/outputs)
