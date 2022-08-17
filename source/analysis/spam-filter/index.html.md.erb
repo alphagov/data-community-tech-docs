@@ -35,6 +35,73 @@ Before you can try the feedback spam classifier on your local machine, you must 
 
 1. Clone the [feedback spam classifier repo](https://github.com/alphagov/govuk-feedback-spam-classifier) to your local machine.
 
+### Load environment variables
+
+You must load environment variables as part of setting up your local machine.
+
+#### Install direnv
+
+You should use [`direnv`](https://direnv.net/) to load environment variables, as this program makes sure you only have project-specific variables loaded when you are inside the project. This prevents accidental conflicts with identically named environment variables.
+
+1. Run the following in the command line to install `direnv` using [Homebrew](https://brew.sh/):
+
+    ```
+    brew install direnv
+    ```
+
+1. Add the shell hooks to your bash profile:
+
+    ```
+    echo 'eval "$(direnv hook bash)"' >> ~/.bash_profile
+    ```
+1. Check that you have added the shell hooks correctly:
+
+    ```
+    cat ~/.bash_profile
+    ```
+
+    If you have added the shell hooks correctly, you should see `eval "$(direnv hook bash)"` as output.
+
+1. Restart your command line interface to finish installing `direnv`.
+
+#### Load the secrets environment variable
+
+You must store secrets and credentials in a `.secrets` file. This file is not version-controlled, so do not commit secrets to GitHub.
+
+1. Go to the root of the `govuk-feedback-spam-classifier` directory on your local machine and create a `.secrets` file:
+
+    ```
+    touch .secrets
+    ```
+
+1. Open this `.secrets` file using your preferred text editor, and add any secrets as environmental variables.
+
+    For example, to add a JSON credentials file for Google BigQuery, add the following to the `.secrets` file:
+
+    ```
+    export GOOGLE_APPLICATION_CREDENTIALS="<SECRETS-FILE-ABSOLUTE-FILEPATH-AND-FILENAME>"
+    ```
+
+1. Make sure the `.secrets` file has the following commented out:
+
+    ```
+    source_env ".secrets"
+    ```
+    This will make sure `direnv` loads the `.secrets` file using `.envrc` without changing the version of the `.secrets` file.
+
+#### Allow `direnv` in your virtual environment
+
+Every time you change `.envrc` or `.secrets`, you must allow `direnv` in your virtual environment
+
+1. Go to the `govuk-feedback-spam-classifier` folder in your virtual environment. You will see the following message:
+
+    ```
+    direnv: error .envrc is blocked. Run `direnv allow` to approve its content.
+    ```
+1. Run `direnv allow` to allow `direnv` in your virtual environment.
+
+You have now set up your local machine to try the feedback spam classifier.
+
 ## Run the feedback spam classifier Python scripts
 
 You run 4 Python scripts in your virtual environment to try the feedback spam classifier. These scripts are set up to use the default feedback data set.
@@ -86,3 +153,5 @@ This script:
 - tests the model on the entire data set
 - attaches a label of `spam` or `not spam` and a confidence probability to each sentence
 - outputs the data set with the labels and probabilities to the [repo `data/outputs` folder](https://github.com/alphagov/govuk-feedback-spam-classifier/tree/master/data/outputs)
+
+You can now view the outputs of the feedback spam classifier model.
