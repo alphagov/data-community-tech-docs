@@ -9,9 +9,9 @@ review_in: 6 months
 
 The [GOV.UK feedback spam classifier](https://github.com/alphagov/govuk-feedback-spam-classifier) is a [binary classifier](https://machinelearningmastery.com/types-of-classification-in-machine-learning/#:~:text=each%20in%20turn.-,Binary%20Classification,prediction%20(churn%20or%20not)) machine learning model that classifies feedback data as spam or not spam.
 
-To develop this model, we refined a [Random Forest Classifier Model that we downloaded from `sklearn.ensemble`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html).
+To develop this model, we refined a [Random Forest Classifier Model that uses the `sklearn.ensemble` API](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html).
 
-You can use the following documentation to try the feedback spam classifier on your local machine.
+Use the following documentation to try the feedback spam classifier on your local machine.
 
 ## Set up your local machine
 
@@ -104,7 +104,7 @@ You have now set up your local machine to try the feedback spam classifier.
 
 ## Run the feedback spam classifier Python scripts
 
-You run 4 Python scripts in your virtual environment to try the feedback spam classifier. These scripts are set up to use the default feedback data set.
+You run 4 Python scripts in your virtual environment to try the feedback spam classifier. These scripts use the default feedback data set.
 
 If you want to try the feedback spam classifier with a different data set, you must:
 
@@ -114,7 +114,11 @@ If you want to try the feedback spam classifier with a different data set, you m
 
 ### Run script 001
 
-Run the [`001_feature_engineering.py` Python script](https://github.com/alphagov/govuk-feedback-spam-classifier/blob/master/src/001_feature_engineering.py) in your virtual environment.
+Run the [`001_feature_engineering.py` Python script](https://github.com/alphagov/govuk-feedback-spam-classifier/blob/master/src/001_feature_engineering.py) in your virtual environment:
+
+```
+python src/001_feature_engineering.py --config params.yaml
+```
 
 This script:
 
@@ -123,12 +127,16 @@ This script:
 
 ### Run script 002
 
-Run the [`002_train.py` Python script](https://github.com/alphagov/govuk-feedback-spam-classifier/blob/master/src/002_train.py) in your virtual environment.
+Run the [`002_train.py` Python script](https://github.com/alphagov/govuk-feedback-spam-classifier/blob/master/src/002_train.py) in your virtual environment:
+
+```
+python src/002_train.py --config params.yaml
+```
 
 This script:
 
 - [trains the spam classifier model](https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets) using the specified data set
-- creates visualisations to help you assess if the model is classifying spam correctly
+- creates visualisations to help users assess model performance
 - calculates the features that are most important to the model's classification decisions
 - sends the visualisations to the [repo's `outputs/visualisations` folder](https://github.com/alphagov/govuk-feedback-spam-classifier/tree/master/outputs/visualisations)
 
@@ -136,22 +144,30 @@ The visualisations are a [confusion matrix](https://en.wikipedia.org/wiki/Confus
 
 ### Run script 003
 
-Run the [`003_predict.py` Python script](https://github.com/alphagov/govuk-feedback-spam-classifier/blob/master/src/003_predict.py) in your virtual environment.
+Run the [`003_predict.py` Python script](https://github.com/alphagov/govuk-feedback-spam-classifier/blob/master/src/003_predict.py) in your virtual environment:
+
+```
+python src/003_predict.py --config params.yaml
+```
 
 This script:
 
 - tests the model on 3 sentences specified in the `003_predict.py` script
-- attaches a label of `spam` or `not spam` and a confidence probability to each sentence
+- attaches a label of `spam` or `not spam` and a confidence probability to each sentence of feedback text
 - outputs the labels and probabilities to the command line
 
 ### Run script 004
 
-Run the [`004_predict_new_data.py` Python script](https://github.com/alphagov/govuk-feedback-spam-classifier/blob/master/src/004_predict_new_data.py) in your virtual environment.
+Run the [`004_predict_new_data.py` Python script](https://github.com/alphagov/govuk-feedback-spam-classifier/blob/master/src/004_predict_new_data.py) in your virtual environment:
+
+```
+python src/004_predict_new_data.py --config params.yaml
+```
 
 This script:
 
-- tests the model on the entire data set
-- attaches a label of `spam` or `not spam` and a confidence probability to each sentence
+- applies the model to the entire data set
+- attaches a label of `spam` or `not spam` and a confidence probability to each sentence of feedback text
 - outputs the data set with the labels and probabilities to the [repo `data/outputs` folder](https://github.com/alphagov/govuk-feedback-spam-classifier/tree/master/data/outputs)
 
 You can now view the outputs of the feedback spam classifier model.
