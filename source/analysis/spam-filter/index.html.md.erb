@@ -27,7 +27,7 @@ Before you can try the feedback spam classifier on your local machine, you must 
 
 1. Make sure your Python virtual environment has `pip` installed. If your virtual environment does not have `pip` installed, then [install `pip` manually](https://pip.pypa.io/en/stable/installation/).
 
-1. Activate your virtual environment and use `pip` to install all the Python packages that the spam classifier needs to run:
+1. Start your virtual environment and use `pip` to install all the Python packages that the spam classifier needs to run:
 
     ```
     pip install -r requirements.txt
@@ -54,7 +54,7 @@ You should use [`direnv`](https://direnv.net/) to load environment variables, as
     ```
     echo 'eval "$(direnv hook bash)"' >> ~/.bash_profile
     ```
-1. Check that you have added the shell hooks correctly:
+1. Check you have added the shell hooks correctly:
 
     ```
     cat ~/.bash_profile
@@ -87,7 +87,7 @@ You must store secrets and credentials in a `.secrets` file. This file is not ve
     ```
     source_env ".secrets"
     ```
-    This will make sure `direnv` loads the `.secrets` file using `.envrc` without changing the version of the `.secrets` file.
+    This will make sure `direnv` uses `.envrc` to load the `.secrets` file without changing the version of the `.secrets` file.
 
 #### Allow `direnv` in your virtual environment
 
@@ -109,7 +109,7 @@ You run 4 Python scripts in your virtual environment to try the feedback spam cl
 If you want to try the feedback spam classifier with a different data set, you must:
 
 - specify where this different data set is in the [params.yaml file in the feedback spam classifier repo](https://github.com/alphagov/govuk-feedback-spam-classifier/blob/master/params.yaml)
-- make sure that this different data set is similar in format and structure to the default data set
+- make sure this different data set is similar in format and structure to the default data set
 - make any necessary changes to the Python scripts to reflect the different data set's format and structure
 
 ### Run script 001
@@ -123,7 +123,7 @@ python src/001_feature_engineering.py --config params.yaml
 This script:
 
 - turns the raw data set into a [Pandas dataframe](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html) and identifies relevant columns in the data set
-- searches the text in the Pandas dataframe for features that may indicate that the feedback data is spam (for example, if the feedback text has SQL)
+- searches the text in the Pandas dataframe for features that may indicate the feedback data is spam (for example, if the feedback text has SQL)
 
 ### Run script 002
 
@@ -135,12 +135,14 @@ python src/002_train.py --config params.yaml
 
 This script:
 
-- [trains the spam classifier model](https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets) using the specified data set
+- uses the specified data set to [train the spam classifier model](https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets)
 - creates visualisations to help users assess model performance
 - calculates the features that are most important to the model's classification decisions
 - sends the visualisations to the [repo's `outputs/visualisations` folder](https://github.com/alphagov/govuk-feedback-spam-classifier/tree/master/outputs/visualisations)
 
-The visualisations are a [confusion matrix](https://en.wikipedia.org/wiki/Confusion_matrix) and 3 representations of different calculations of [feature importance](https://machinelearningmastery.com/calculate-feature-importance-with-python/).
+The visualisations are
+- a [confusion matrix](https://en.wikipedia.org/wiki/Confusion_matrix)
+- 3 representations of different calculations of [feature importance](https://machinelearningmastery.com/calculate-feature-importance-with-python/).
 
 ### Run script 003
 
