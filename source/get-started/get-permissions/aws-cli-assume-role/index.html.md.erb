@@ -1,0 +1,76 @@
+---
+title: Set up AWS CLI to assume roles with MFA and interact with GDS AWS
+weight: X
+last_reviewed_on: 2022-09-07
+review_in: 12 months
+---
+
+# Set up AWS CLI to assume roles with MFA and interact with GDS AWS
+
+Here we go through how to set up `aws cli` to assume an AWS IAM Role that has permissions your AWS user account does not have (for instance, accessing `S3`). It assumes that MFA is also required.
+
+Assuming a role means that the AWS token service will give you **temporary credentials** to access the (GDS) AWS account with an assumed role. 
+
+
+## GDS AWS Requirements
+
+1. Ensure you have access to GDS AWS Account. Follow these instructions if you have not already done so as part of your onboarding: [GDS - Get AWS Access](https://docs.publishing.service.gov.uk/manual/get-started.html#8-get-aws-access). At the end, you will have created your AWS IAM user account, and also received an AWS `access key ID` and `secret access key`.
+
+2. Get [STS Permission to AssumeRole with MFA](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_permissions-to-switch.html) for the role you want to assume. 
+
+    For instance, if you are a Data Scientist in CPTO, you may want to assume the [`govuk-datascienceusers` IAM Role](https://us-east-1.console.aws.amazon.com/iamv2/home?region=eu-west-1#/roles/details/govuk-datascienceusers?section=permissions). Ask on the `#data-engineering` Slack channel to get this permission.
+
+
+## Set up AWS CLI
+
+3. Ensure you have `aws cli` installed. It should have gotten installed as part of step 1. To verify, in your terminal run:
+
+    ```shell
+    which aws
+    aws --version
+    ```
+    If it is not available, please [follow the official installation instructions](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
+
+4. Configure `aws cli`. In your terminal, run:
+
+    ```shell
+    aws configure
+    ```
+    and follow the prompts. NOTE: you will be asked to provide your AWS `access key ID` and `secret access key` so have them ready.
+    Please also provide `eu-west-1` when asked for `region`.
+
+    Your credentials should have now been added to the `~/.aws/credentials` file, under a `[default]` profile.
+
+5. Create a profile for the role you want to assume in your `~/.aws/config`. If the file does not exist, you'll need to create it. In your `~/.aws/config` file, add:
+
+    ```
+    [profile <PROFILE-ALIAS>]
+    source_profile = default
+    role_arn = arn:aws:iam::<ROLE ACCOUNT NUM>:role/<ROLE NAME>
+    mfa_serial = arn:aws:iam::<YOUR USER ACCOUNT NUMBER>:mfa/<YOUR NAME>.<YOUR SURNAME>@digital.cabinet-office.gov.uk
+    ```
+
+    choosing a suitable `<PROFILE-ALIAS>` and substituting the correct values for `<ROLE ACCOUNT NUM>`, `<ROLE NAME>`, `<YOUR USER ACCOUNT NUMBER>`, `<YOUR NAME>` and `<YOUR SURNAME>`.
+    If you are unfamiliar with what your <ROLE ACCOUNT NUM> and <USER ACCOUNT NUMBER>, sign in to the GDS AWS Management Console. In the navigation bar on the upper right, click on your email/username and then go to "My Security Credentials", you will find them in there.
+
+    For instance, to create a profile for the `govuk-datascienceusers` so that we can assume that role with MFA, in the `~/.aws/config` file, add:
+
+    ```
+    [profile govuk-datascience]
+    source_profile = default
+    role_arn = arn:aws:iam::<ROLE ACCOUNT NUM>:role/govuk-datascienceusers
+    mfa_serial = arn:aws:iam::<YOUR USER ACCOUNT NUMBER>:mfa/<YOUR NAME>.<YOUR SURNAME>@digital.cabinet-office.gov.uk
+    ```
+
+You can now assume the `govuk-datascienceusers` role and its permissions to interact with AWS S3 
+by adding `--profile govuk-datascience` at the end of your `aws cli` commands.
+
+For instance:
+    ```
+    aws s3 ls --profile govuk-datascience
+    ```
+
+### Note
+
+- You will be asked to provide a `MFA token` the first time you use the profile and when the temporary credentials have expired and new ones will need to be generated.
+- Your temporary credentials get saved in: `~/.aws/cli/cache`.
