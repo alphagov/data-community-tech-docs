@@ -25,21 +25,21 @@ Assuming a role means that the AWS token service will give you **temporary crede
 
 3. Ensure you have `aws cli` installed. It should have gotten installed as part of step 1. To verify, in your terminal run:
 
-```shell
-which aws
-aws --version
-```
-If it is not available, please [follow the official installation instructions](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
+    ```shell
+    which aws
+    aws --version
+    ```
+    If it is not available, please [follow the official installation instructions](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
 
 4. Configure `aws cli`. In your terminal, run:
 
-```shell
-aws configure
-```
-and follow the prompts. NOTE: you will be asked to provide your AWS `access key ID` and `secret access key` so have them ready.
-Please also provide `eu-west-1` when asked for `region`.
+    ```shell
+    aws configure
+    ```
+    and follow the prompts. NOTE: you will be asked to provide your AWS `access key ID` and `secret access key` so have them ready.
+    Please also provide `eu-west-1` when asked for `region`.
 
-Your credentials should have now been added to the `~/.aws/credentials` file, under a `[default]` profile.
+    Your credentials should have now been added to the `~/.aws/credentials` file, under a `[default]` profile.
 
 5. Create a profile for the role you want to assume in your `~/.aws/config`. If the file does not exist, you'll need to create it. In your `~/.aws/config` file, add:
 
@@ -51,7 +51,7 @@ Your credentials should have now been added to the `~/.aws/credentials` file, un
     ```
 
     choosing a suitable `<PROFILE-ALIAS>` and substituting the correct values for `<ROLE ACCOUNT NUM>`, `<ROLE NAME>`, `<YOUR USER ACCOUNT NUMBER>`, `<YOUR NAME>` and `<YOUR SURNAME>`.
-
+    If you are unfamiliar with what your <ROLE ACCOUNT NUM> and <USER ACCOUNT NUMBER>, sign in to the GDS AWS Management Console. In the navigation bar on the upper right, click on your email/username and then go to "My Security Credentials", you will find them in there.
 
     For instance, to create a profile for the `govuk-datascienceusers` so that we can assume that role with MFA, in the `~/.aws/config` file, add:
 
@@ -66,7 +66,7 @@ You can now assume the `govuk-datascienceusers` role and its permissions to inte
 by adding `--profile govuk-datascience` at the end of your `aws cli` commands.
 
 For instance:
-    ```shell
+    ```
     aws s3 ls --profile govuk-datascience
     ```
 
