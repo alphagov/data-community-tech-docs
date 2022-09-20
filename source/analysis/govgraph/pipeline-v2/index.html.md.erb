@@ -1,0 +1,313 @@
+---
+title: GOV.UK Knowledge Graph data pipeline version 2
+weight: 34
+last_reviewed_on: 2022-07-26
+review_in: 6 months
+---
+
+# GOV.UK Knowledge Graph data pipeline on GCP
+
+We are changing the way that the GOV.UK Knowledge Graph obtains and processes data from the Content Store.  This new pipeline will coexist with the current pipeline until the current pipeline has been completely replaced.
+
+The new version of the pipeline runs on GCP (Google Cloud Platform).  It has a
+[GitHub Repository](https://github.com/alphagov/govuk-knowledge-graph-gcp).
+
+## How Content Store data is put into Neo4j
+
+1. A virtual machine in GCP restores a backup file of GOV.UK's production
+Content Store database from the [GOV.UK S3 Mirror](/engineering/govuk-s3-mirror/) into a new MongoDB database, queries the database several times, extracts the results as CSV files, which it uploads to another GCP Cloud Storage bucket.
+1. Another virtual machine in GCP starts a new Neo4j database, and imports the data from the CSV files.
+
+These steps are described in more detail below.
+
+## Restoring a backup of the Content Store database
+
+This process runs automatically when a new file becomes available in the
+[`govuk-s3-mirror_govuk-integration-database-backups` Cloud Storage
+bucket](https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-integration-database-backups).
+
+<img src="/images/restoring-content-store-database.svg" alt="A diagram of the process to restore a backup the Content Store database" />
+
+1. When a new backup database file is created in the
+[`govuk-s3-mirror_govuk-integration-database-backups` Cloud Storage
+bucket](https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-integration-database-backups)
+in the `govuk-s3-mirror` project, that bucket publishes a notification to a
+Pub/Sub topic in the `govuk-knowledge-graph` project.  All subsequent steps
+take place in the `govuk-knowledge-graph` project.
+1. An EventArc trigger subscribes to the Pub/Sub topic, receives the
+notification, and triggers a Workflow.  It passes the payload of the
+notification into the Workflow.
+1. The Workflow parses the payload to check the filename of the file that was
+created.  If the filename is of a content store production database backup file,
+then the Workflow creates a Compute Instance from an Instance Template. The
+Workflow attaches some metadata to the Compute Instance, including the filename,
+the name of the bucket that the file is in, and information about a Docker image
+for the Compute Instance to host when it starts.
+1. The Compute Instance fetches the Docker Image from the Artifact Registry.
+The Docker Image has MongoDB installed.  The image is built by a GitHub Action,
+from a `Dockerfile` in the [GitHub
+Repository](https://github.com/alphagov/govuk-knowledge-graph-gcp), and is
+rebuilt whenever a new version of the `Dockerfile` is merged into the `main`
+branch.
+1. The Docker instance fetches and executes a bash script from the
+[`govuk-knowledge-graph-repository` Cloud Storage
+bucket](https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-integration-database-backups).
+That bucket contains the HEAD of the `main` branch of the GitHub repository.
+1. The script fetches the metadata of the Compute Instance, to find out the
+filename and bucket from which to fetch the database backup file.  It uses
+`gsutil cat` to restore that file to the running MongoDB database, without ever
+copying the file to its local disk.
+
+## Querying the Content Store database and uploading the results
+
+Many simple CSV files are extracted from the Content Store database.  Some are
+simple enough that they can be queried directly with the `mongoexport` command,
+which extracts a the data as a CSV file that is immediately compressed and
+uploaded to a Cloud Storage bucket.  Others require more preparation in the
+database, or some further processing with Python scripts.
+
+- The simplest queries are written with the `mongoexport` command, to
+  extract data as a CSV file.
+- Complex queries are written in `.js` files in the `src/mongodb/js` directory.
+  These are executed with the `mongo` command, to create new datasets in the
+  database, called "collections".  The `mongoexport` command is then used to
+  extract the data as either a CSV file or a JSON file.
+- Extracted data is sometimes further processed by Python scripts in the
+  `src/utils` directory, and shell functions that are defined in
+  `src/mongodb/functions.sh`.  The Python scripts require the data to have been
+  extracted as a JSON file.  The `parallel` command is used to run several
+  instances of a Python script in parallel on the same data file.
+- All data files are compressed and put into a Cloud Storage bucket. None of the
+  files is ever written to the local disk of the Compute Instance.
+
+<img src="/images/querying-content-store-database.svg" alt="A diagram of the process to query the Content Store database" />
+
+This process is initiated as follows.
+
+1. When the Docker instance starts, it fetches and executes a bash script from
+the [`govuk-knowledge-graph-repository` Cloud Storage
+bucket](https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-integration-database-backups).
+That bucket contains the HEAD of the `main` branch of the GitHub repository.
+2. The ecript sets up a running instance of the Content Store database in
+MongoDB.
+3. The script copies the rest of the
+[`govuk-knowledge-graph-repository` Cloud Storage
+bucket](https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-integration-database-backups)
+to the local disk, and sets `src/mongodb` as the working directory.
+4. The script runs `make`, which orchestrates queries to the database, according
+to the file `src/mongodb/Makefile`.  Steps are executed in parallel, where
+possible.
+
+## The format and structure of extracted data files
+
+All the files are CSV files, compressed with the `gzip` command, and put into
+the [govuk-knowledge-graph-data-processed Cloud Storage
+bucket](https://console.cloud.google.com/storage/browser/govuk-knowledge-graph-data-processed).
+
+For most files, each row of the file gives some information about one document,
+which corresponds to a single page that can be loaded in a web browser. For
+files whose names includes the word `parts`, each row describes a single part of
+a document that can be rendered in a web browser as its own page, with its own
+URL.
+
+Every file includes a `url` column, giving the full URL of the each document.
+The full URL includes the prefix `https://www.gov.uk`.
+
+Every file other than `url.csv.gz` includes other columns of information about
+each document, such as its document type, its content, or the date and time when
+it was last updated.  These pieces of information were chosen from among the
+[document type schemas](https://github.com/alphagov/govuk-content-schemas).
+
+## Tables of extracted data files
+
+All filenames have the form `something.csv.gz`.  Only the part `something` is
+given in the tables below.  Every file includes the column `url`, so it is
+omitted from the tables below.  The definitions given below are not the
+official. The most accurate and up-to-date definitions are in the
+[document type schemas](https://github.com/alphagov/govuk-content-schemas).
+
+### Files with a single fact about each document
+
+| File name                        | Column                                 | Notes                                                                                                                                                                   |
+|----------------------------------|----------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| # `acronym`                      | `details.acronym`                      | The acronym of an organisation.                                                                                                                                         |
+| # `analytics_identifier`         | `analytics_identifier`                 | A code to group Google Analytics data belonging to an organisation.  The code is sometimes also used as a unique identifier of the organisation.                        |
+| # `content_id`                   | `content_id`                           | A unique identifier for the document in the Content Store and the Publishing API.  It does not necessarily uniquely identify a page that is rendered on the website.    |
+| # `department_analytics_profile` | `details.department_analytics_profile` | The `analytics_identifier` of the organisation that is responsible for a transaction.                                                                                   |
+| # `description`                  | `description`                          | A description of the content of a document.                                                                                                                             |
+| # `document_type`                | `document_type`                        | Corresponds to [document type schemas](https://github.com/alphagov/govuk-content-schemas), which governs what fields are required and available to use in the document. |
+| # `first_published_at`           | `first_published_at`                   | The date and time that a document was first available to the public.                                                                                                    |
+| # `locale`                       | `locale`                               | ISO 639-1 code of the language of a document                                                                                                                            |
+| # `title`                        | `title`                                | Appears in the browser tab of a page of the document                                                                                                                    |
+| # `description`                  | `description`                          | A description of the content of a document.                                                                                                                             |
+| # `phase`                        | `phase`                                | "alpha", "beta" or "live"                                                                                                                                               |
+| # `updated_at`                   | `updated_at`                           | The date and time when a document was last changed, however insignificantly.                                                                                            |
+| # `withdrawn_at`                 | `withdrawn_notice.withdrawn_at`        | The date and time when a document was withdrawn, meaning that it is still published, but its contents are not necessarily current.                                      |
+| # `withdrawn_explanation`        | `withdrawn_notice.explanation`         | An explanation of the withdrawal of a document.                                                                                                                         |
+| # `public_updated_at`            | `public_updated_at`                    | The date and time when a document was changed significantly enough that the publisher chose to inform the public about the change.                                      |
+| # `publishing_app`               | `publishing_app`                       | The app (a website) used by a publisher to publish the document.                                                                                                        |
+| # `start_button_text`            | `details.start_button_text`            | The text of a start button on a transaction start page.  The link itself is in the `transaction_start_link` file.                                                       |
+| # `url_override`                 | `url_override`                         | Something to do with taxons?                                                                                                                                            |
+### Files containing the content of documents
+
+There are several files of the content of documents.  Each file represents the
+content in a particular form, for a particlar docment type or set of document
+types.
+
+The following files contain the text of documents.
+
+- `body`
+- `body_content`
+- `parts_content`
+- `place_content`
+- `step_by_step_content`
+- `transaction_content`
+
+Each of those files contains the following columns.
+
+- `html`: the raw HTML
+- `text`: plain text that is extracted from the HTML
+- `text_without_blank_linkes` plain text, without any blank lines (`\n\n` has
+  been replaced by `\n` everywhere)
+
+The following files contain each line of text of each document as a separate row
+of data, in the column called `line`.
+
+- `body_lines`
+- `body_content_lines`
+- `parts_lines`
+- `place_lines`
+- `step_by_step_lines`
+- `transaction_lines`
+
+The following files contain each hyperlink from each document as a separate row
+of data.
+
+- `body_embedded_links`
+- `body_content_embedded_links`
+- `parts_embedded_links`
+- `place_embedded_links`
+- `step_by_step_embedded_links`
+- `transaction_embedded_links`
+
+Each of those files contains the following columns.
+
+- `link_url`: The complete URL
+- `link_url_bare`: The URL stripped of any parameters or anchors, such as search
+  terms
+- `link_text`: The text that is displayed in place of the URL
+
+### An example of a document
+
+This is an example the HTML representation of the content of a document, as it
+might be recorded in the Content Store database.
+
+```html
+<p>This is the first paragraph of the document.  It contains two sentences.</p>
+
+<p>This is the second paragraph of the document.</p>
+```
+
+If this document has the document type `place`, then its content will be in the
+following files.
+
+- `place_content`
+- `place_lines`
+
+In the `place_content` file, it will have a single row of data.  Some of the
+values will contain newline characters.
+
+```text
+url,html,text,text_without_blank_lines
+http://www.gov.uk/example,"<p>This is the first paragraph of the document.  It contains two sentences.</p>
+
+<p>This is the second paragraph of the document, with a comma.</p>","This is the first paragraph of the document.  It contains two sentences.
+
+This is the second paragraph of the document, with a comma.","This is the first paragraph of the document.  It contains two sentences.
+This is the second paragraph of the document, with a comma."
+```
+
+In the `place_lines` file, it will have two rows of data.  None of the values
+will contain newline characters.
+
+```text
+url,line
+http://www.gov.uk/example,This is the first paragraph of the document.  It contains two sentences.
+http://www.gov.uk/example,"This is the second paragraph of the document, with a comma."
+```
+
+The content types that are in each file are listed in the corresponding MongoDB
+query files in the directory `src/mongodb/js`.
+
+- `body.js`
+- `body_content.js`
+- `parts_content.js`
+- `place_content.js`
+- `step_by_step_content.js`
+- `transaction_content.js`
+
+### Expanded links
+
+Some documents link to each another by their metadata.  These links have a type
+as well as a target.  For example, a document that represents an organisation
+can link to a document that represents a taxon.  The type of that link is
+`taxons`.
+
+Every link targets a document by its `content_id`, and most links also give the
+target URL.  These different ways of giving the target are given in different
+files, but ought to be combined.
+
+- `expanded_links`, which has the columns `link_type`, `from_url` and `to_url.
+- `expanded_links_by_content_id`, which has the colums `link_type`,
+  `from_content_id` and `to_content_id`.
+
+### Redirects
+
+Redirects are represented in two different ways.  One is by changing the
+document's type to `redirect`.  The other is by using the `redirects` field of
+the document.  The `redirects` file contains the information from the
+`redirects` field.
+
+The `redirects` file does not have a `url` column.  It has the columsn `from`
+and `to`, which are both URLs.
+
+### Taxons
+
+Taxons are hierarchical.  Relations between taxons and their parent or child
+taxons are in the `expanded_links` file.  The level of each taxon in the
+hierarcy is in the `taxon_levels` file.  The top level of the hierarchy is 1.
+
+### Transaction start links
+
+Transactions are pages that have a green button, often labelled "Start".  The
+button is a kind of hyperlink.  The target of the hyperlink is given in the file
+`transaction_start_link.sh`.  It contains the following columns. and `link_url_bare`.
+
+- `link_url`: The complete URL
+- `link_url_bare`: The URL stripped of any parameters or anchors, such as search
+  terms
+
+The text of the button is in the file `start_button_text`, which has the column
+`details.start_button_text`.
+
+## Advantages of the new pipeline
+
+- Only a small amount of data is loaded into memory at once.  This makes it
+  possible to run the pipeline on a small machine, such as a laptop, which makes
+  it quicker and easier to debug, develop, and test.
+- Each dataset can be processed on its own, potentially on a separate machine,
+  in parallel.  This makes it possible to run with modern, serverless cloud
+  infrastructure, such as Airflow.
+- Dependencies between steps are clearly expressed in the Makefile, making it
+  easier to anticipate how any change will affect other steps.
+- An error in one of those datasets does not cause all of the others to fail, so
+  some data will still be available even when some steps have failed.
+
+## Further information on the Knowledge Graph
+
+For more information, see the [blog post on the Knowledge Graph](https://insidegovuk.blog.gov.uk/2020/08/07/one-graph-to-rule-them-all/).
+
+If you have questions, you can contact the following groups on Slack:
+
+- the [GOV.UK Data Products team](https://gds.slack.com/archives/CHR4UQKU4)
+- the [GOV.UK data champions](https://app.slack.com/client/T8GT9416G/C02CM46TD52)
