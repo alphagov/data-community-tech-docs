@@ -1,0 +1,27 @@
+C4Context
+    title System Context diagram for extracting data from the Content Store
+
+    Boundary(mirror, "Project: govuk-s3-mirror") {
+        Boundary(bucket_mirror, "Bucket: govuk-s3-mirror_govuk-integration-database-backups") {
+            System(backup_file, "Object: mongo-api/YYYY-MM-DDTHH:MM:SS-content_store_production.gz")
+        }
+    }
+
+    Boundary(govuk-knowlege-graph, "Project: govuk-knowledge-graph") {
+        Boundary(compute_instance, "Compute Instance: mongodb") {
+            System(mongodb, "MongoDB database")
+            System(python, "Python scripts")
+        }
+        Boundary(bucket_data_processed, "Bucket: govuk-knowledge-graph-data-processed") {
+            System(url_csv_gz, "Object: content-store/url.csv.gz")
+            System(embedded_links_gz, "Object: content-store/embedded_links.csv.gz")
+        }
+    }
+
+    Rel(backup_file, mongodb, "")
+    Rel(mongodb, url_csv_gz, "")
+    Rel(mongodb, python, "")
+    Rel(python, embedded_links_gz, "")
+
+UpdateLayoutConfig($c4ShapeInRow="2", $c4BoundaryInRow="1")
+UpdateRelStyle(backup_file, mongodb, $offsetY="-30", $offsetX="20")
