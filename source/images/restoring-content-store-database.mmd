@@ -1,0 +1,63 @@
+C4Context
+    title System Context diagram for CPTO access of GOV.UK's data in AWS
+
+
+    Boundary(aws, "AWS GOV.UK integration environment)") {
+        System_Ext(aws_bucket, "govuk-integration-database-backups", "An S3 bucket that contains daily backups of GOV.UK databases")
+    }
+
+
+
+        Boundary(gcp_govuk_s3_mirror, "GCP Project: govuk-s3-mirror") {
+            System(bucket_1, "Bucket")
+        }
+
+        Boundary(gcp_govuk_knowledge_graph, "GCP Project: govuk-knowledge-graph") {
+            System(topic_2, "Pub/Sub topic")
+            System(subscription_2, "Pub/Sub subscription")
+            System(template_2, "Instance Template")
+            System(eventarc_2, "EventArc trigger")
+            System(instance_2, "Compute Instance")
+            System(workflow_2, "Workflow")
+
+            Boundary(storage_2, "Cloud Storage") {
+                System(bucket_repository, "Bucket for the GitHub repo HEAD")
+                System(bucket_data_processed, "Bucket for the processed data")
+            }
+
+            Boundary(registry_2, "Artifact Registry") {
+                System(docker_mongodb, "Docker Image for MongoDB")
+            }
+        }
+
+        Boundary(github_govuk_knowledge_graph_gcp, "GitHub Repo: govuk-knowledge-graph-gcp") {
+            System(workflow_rsync, "rsync")
+            System(workflow_docker, "docker_mongodb")
+        }
+
+        Rel(aws_bucket, bucket_1, "Transfer service")
+
+        Rel(bucket_1, topic_2, "Publishes notifications<br>of new files")
+        Rel(bucket_1, instance_2, "Instance fetches new file")
+        Rel(bucket_repository, instance_2, "Instance fetches scripts")
+        Rel(topic_2, subscription_2, "")
+        Rel(subscription_2, eventarc_2, "")
+        Rel(eventarc_2, workflow_2, "")
+        Rel(workflow_2, instance_2, "")
+
+        Rel(workflow_docker, docker_mongodb, "")
+        Rel(workflow_rsync, bucket_repository, "Uploads repo HEAD")
+        Rel(template_2, instance_2, "")
+        Rel(docker_mongodb, instance_2, "")
+
+        Rel(instance_2, bucket_data_processed, "")
+
+
+
+UpdateLayoutConfig($c4ShapeInRow="2", $c4BoundaryInRow="2")
+UpdateRelStyle(aws_bucket, bucket_1, $offsetY="-20", $offsetX="-40")
+UpdateRelStyle(bucket_1, topic_2, $offsetY="-40", $offsetX="0")
+UpdateRelStyle(bucket_1, instance_2, $offsetY="-160", $offsetX="190")
+UpdateRelStyle(bucket_repository, instance_2, $offsetY="-30", $offsetX="5")
+UpdateRelStyle(bucket_1, topic_3, $offsetY="-20", $offsetX="60")
+UpdateRelStyle(instance_2, bucket_data_processed, $offsetY="60", $offsetX="10")
