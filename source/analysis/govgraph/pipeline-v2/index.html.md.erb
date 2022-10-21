@@ -24,7 +24,7 @@ These steps are described in more detail below.
 
 This process runs automatically when a new file becomes available in the
 [`govuk-s3-mirror_govuk-integration-database-backups` Cloud Storage
-bucket](https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-integration-database-backups).
+bucket](https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-integration-database-backups).  The diagram below can be made bigger by opening it in a separate browser tab.
 
 <img src="/images/restoring-content-store-database.svg" alt="A diagram of the process to restore a backup the Content Store database" />
 
@@ -51,7 +51,7 @@ rebuilt whenever a new version of the `Dockerfile` is merged into the `main`
 branch.
 1. The Docker instance fetches and executes a bash script from the
 [`govuk-knowledge-graph-repository` Cloud Storage
-bucket](https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-integration-database-backups).
+bucket](https://console.cloud.google.com/storage/browser/govuk-knowledge-graph-repository).
 That bucket contains the HEAD of the `main` branch of the GitHub repository.
 1. The script fetches the metadata of the Compute Instance, to find out the
 filename and bucket from which to fetch the database backup file.  It uses
@@ -62,7 +62,7 @@ copying the file to its local disk.
 
 Many simple CSV files are extracted from the Content Store database.  Some are
 simple enough that they can be queried directly with the `mongoexport` command,
-which extracts a the data as a CSV file that is immediately compressed and
+which extracts the data as a CSV file that is immediately compressed and
 uploaded to a Cloud Storage bucket.  Others require more preparation in the
 database, or some further processing with Python scripts.
 
@@ -80,19 +80,21 @@ database, or some further processing with Python scripts.
 - All data files are compressed and put into a Cloud Storage bucket. None of the
   files is ever written to the local disk of the Compute Instance.
 
+The diagram below can be made bigger by opening it in a separate browser tab.
+
 <img src="/images/querying-content-store-database.svg" alt="A diagram of the process to query the Content Store database" />
 
 This process is initiated as follows.
 
 1. When the Docker instance starts, it fetches and executes a bash script from
 the [`govuk-knowledge-graph-repository` Cloud Storage
-bucket](https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-integration-database-backups).
+bucket](https://console.cloud.google.com/storage/browser/govuk-knowledge-graph-repository).
 That bucket contains the HEAD of the `main` branch of the GitHub repository.
-2. The ecript sets up a running instance of the Content Store database in
+2. The script sets up a running instance of the Content Store database in
 MongoDB.
 3. The script copies the rest of the
 [`govuk-knowledge-graph-repository` Cloud Storage
-bucket](https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-integration-database-backups)
+bucket](https://console.cloud.google.com/storage/browser/govuk-knowledge-graph-repository)
 to the local disk, and sets `src/mongodb` as the working directory.
 4. The script runs `make`, which orchestrates queries to the database, according
 to the file `src/mongodb/Makefile`.  Steps are executed in parallel, where
@@ -101,7 +103,7 @@ possible.
 ## The format and structure of extracted data files
 
 All the files are CSV files, compressed with the `gzip` command, and put into
-the [govuk-knowledge-graph-data-processed Cloud Storage
+the [`govuk-knowledge-graph-data-processed` Cloud Storage
 bucket](https://console.cloud.google.com/storage/browser/govuk-knowledge-graph-data-processed).
 
 For most files, each row of the file gives some information about one document,
@@ -110,7 +112,7 @@ files whose names includes the word `parts`, each row describes a single part of
 a document that can be rendered in a web browser as its own page, with its own
 URL.
 
-Every file includes a `url` column, giving the full URL of the each document.
+Every file includes a `url` column, giving the full URL of each document.
 The full URL includes the prefix `https://www.gov.uk`.
 
 Every file other than `url.csv.gz` includes other columns of information about
@@ -147,11 +149,11 @@ official. The most accurate and up-to-date definitions are in the
 | # `public_updated_at`            | `public_updated_at`                    | The date and time when a document was changed significantly enough that the publisher chose to inform the public about the change.                                      |
 | # `publishing_app`               | `publishing_app`                       | The app (a website) used by a publisher to publish the document.                                                                                                        |
 | # `start_button_text`            | `details.start_button_text`            | The text of a start button on a transaction start page.  The link itself is in the `transaction_start_link` file.                                                       |
-| # `url_override`                 | `url_override`                         | Something to do with taxons?                                                                                                                                            |
+| # `url_override`                 | `url_override`                         | We don't know what this means. It might be something to do with taxons. If you know, please edit this page.                                                             |
 ### Files containing the content of documents
 
 There are several files of the content of documents.  Each file represents the
-content in a particular form, for a particlar docment type or set of document
+content in a particular form, for a particlar document type or set of document
 types.
 
 The following files contain the text of documents.
@@ -167,7 +169,7 @@ Each of those files contains the following columns.
 
 - `html`: the raw HTML
 - `text`: plain text that is extracted from the HTML
-- `text_without_blank_linkes` plain text, without any blank lines (`\n\n` has
+- `text_without_blank_lines` plain text, without any blank lines (`\n\n` has
   been replaced by `\n` everywhere)
 
 The following files contain each line of text of each document as a separate row
@@ -255,9 +257,9 @@ can link to a document that represents a taxon.  The type of that link is
 
 Every link targets a document by its `content_id`, and most links also give the
 target URL.  These different ways of giving the target are given in different
-files, but ought to be combined.
+files, but ought to be combined.`
 
-- `expanded_links`, which has the columns `link_type`, `from_url` and `to_url.
+- `expanded_links`, which has the columns `link_type`, `from_url` and `to_url`.
 - `expanded_links_by_content_id`, which has the colums `link_type`,
   `from_content_id` and `to_content_id`.
 
@@ -281,7 +283,7 @@ hierarcy is in the `taxon_levels` file.  The top level of the hierarchy is 1.
 
 Transactions are pages that have a green button, often labelled "Start".  The
 button is a kind of hyperlink.  The target of the hyperlink is given in the file
-`transaction_start_link.sh`.  It contains the following columns. and `link_url_bare`.
+`transaction_start_link.sh`.  It contains the following columns.
 
 - `link_url`: The complete URL
 - `link_url_bare`: The URL stripped of any parameters or anchors, such as search
@@ -309,5 +311,5 @@ For more information, see the [blog post on the Knowledge Graph](https://insideg
 
 If you have questions, you can contact the following groups on Slack:
 
-- the [GOV.UK Data Products team](https://gds.slack.com/archives/CHR4UQKU4)
+- the [Data Products team](https://gds.slack.com/archives/CHR4UQKU4)
 - the [GOV.UK data champions](https://app.slack.com/client/T8GT9416G/C02CM46TD52)
