@@ -34,10 +34,12 @@ To get pogo-sticking metrics, you must specify 2 variables.
 
 1. Select a date or date range in the top right hand corner.
 
-1. Enter a page path in the __Page equals__ field. The page path must always start with `/`.
-
-    For example, if you want the pogo-sticking metrics for `https://www.gov.uk/travel-abroad`, enter `/travel-abroad`. The input text must match the page path exactly.
-
+1. Enter a page path in the __Page equals__ field. The input text must match the page path exactly.
+    
+    If you want the pogo-sticking metrics for before 01-Nov-2022, URLs must not include the domain, e.g. `/find-a-job`.
+    
+    If you want the pogo-sticking metrics for after 01-Nov-2022, URLs must start with the domain, e.g. `www.gov.uk/find-a-job`.    
+    
 1. Within the internal and external sections, these sections are split between the original page of interest, and a page to compare that original page to.
 
   You can also enter a page path in the __Page equals__ field under __Comparisons with another page__.
