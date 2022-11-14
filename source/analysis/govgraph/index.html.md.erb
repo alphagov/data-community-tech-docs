@@ -14,7 +14,7 @@ For example, in the statement “Passport #23431 is owned by John Smith”:
 - “Passport #23431” and “John Smith” are subject and object nodes
 - “is owned by” is a link between these nodes
 
-The [GOV.UK Knowledge Graph](https://github.com/alphagov/govuk-knowledge-graph), also known as govGraph, is a knowledge graph that:
+The [GOV.UK Knowledge Graph](https://github.com/alphagov/govuk-knowledge-graph-gcp), also known as govGraph, is a knowledge graph that:
 
 - combines structural GOV.UK information with user behaviour into a single data structure
 - uses this data structure to build a knowledge graph with nodes that represent real-life concepts such as person name and address
@@ -27,13 +27,16 @@ The Knowledge Graph allows you to:
 - improve colleagues’ data literacy so they can make better use of GOV.UK data
 - provide early adopters with access and training to help increase use of our data applications and product
 
+## Access the Knowledge Graph
+
+There is one instance of the Knowledge Graph, the [developer-facing Knowledge Graph](https://govgraph.dev:7473/browser/) (accessible only via the VPN), and the [Gov Graph Search](https://govgraphsearch.dev) app that content designers use to answer common content questions.
+
 ## Data sources
 
 The Knowledge Graph has 4 data sources:
 
 - the [Content Store](https://github.com/alphagov/content-store)
 - the [GOV.UK Publishing API](https://github.com/alphagov/publishing-api)
-- the [GOV.UK Organisations API](link: https://www.api.gov.uk/gds/gov-uk-organisations/#gov-uk-organisations)
 - BigQuery Google Analytics data
 
 ### Content Store
@@ -51,13 +54,13 @@ The Content Store is also used to create:
 - additional nodes like Taxon, Step-by-Step and Chapter nodes
 - relationships between nodes and/or node types types to the graph, like "has_taxon", "has_organisation"
 
-### Publishing API and the Organisations API are
+### Publishing API
 
-The Publishing API and the Organisations API enrich the network of content-item nodes by linking these nodes to content metadata such as publishing organisation, departmental organisation and people within these organisations.
+The Publishing API enriches the network of content-item nodes by linking these nodes to content metadata such as publishing organisation, departmental organisation and people within these organisations.
 
 ### Google Analytics
 
-We use Google Analytics data from 2 days before to build a functional network.
+We use Google Analytics data from the day before to build a functional network.
 
 This network visualises user movement between specified content items (pages), which captures how users are navigating to and from these pages.
 
@@ -69,29 +72,6 @@ This means that the Knowledge Graph includes the GOV.UK content, but not dynamic
 
 This also means that elements like `/browse` and `/topic` pages are not in the Knowledge Graph as source content ID or `Cid` nodes. A source `Cid` node is a node that has hyperlinks from it. You can however find these elements as target nodes. A target node is a node that has hyperlinks to it. This is because embedded links to these nodes are on content items.
 
-## Create the Knowledge Graph
+## How the Knowledge Graph is created
 
-There is one instance of the Knowledge Graph, the [user-facing Knowledge Graph](https://knowledge-graph.integration.govuk.digital:7473/browser/) that content designers use to answer common content questions.
-
-To create the Knowledge Graph instance, every day at 5am the following applications are automatically run in sequence:
-
-- [`app-data-science`](https://github.com/alphagov/govuk-aws/tree/master/terraform/projects/app-data-science)
-- [`app-knowledge-graph`](https://github.com/alphagov/govuk-aws/blob/master/terraform/projects/app-knowledge-graph)
-
-1. The `app-data-science` application runs the [`build_knowledge_graph_data` bash script](https://github.com/alphagov/govuk-knowledge-graph/blob/master/build_knowledge_graph_data). This script generates [intermediate data files](/analysis/govgraph/int-data-files/) from the 4 data sources and copies those files to these AWS S3 buckets:
-  - `govuk-data-infrastructure-integration` in these subdirectories:
-      - `knowldge_graph`
-      - `structural_network`
-      - `functional-network/DATE/`
-  - `govuk-related-links-integration`
-
-1. The `app-knowledge-graph` application runs the [`provision_knowledge_graph` bash script](https://github.com/alphagov/govuk-knowledge-graph/blob/master/provision_knowledge_graph) to build the user-facing Knowledge Graph instance from the intermediate data files. This bash script:
-  - builds the Neo4J instance
-  - downloads aggregated functional edges that are generated daily from the previous 3 weeks (2 days prior)
-  - uses cypher queries to create nodes and add relationships between nodes and properties (if available) in `src/neo4j`
-
-The Knowledge Graph instance is password-protected. [Ask the GOV.UK Data Products team on Slack](https://gds.slack.com/archives/CHR4UQKU4) for the username and password to view the Knowledge Graph instance.
-
-For more information on the intermediate data files, see the [intermediate data files documentation](/analysis/govgraph/int-data-files/).
-
-For more information on the Knowledge Graph nodes and relationships, see the [nodes and relationships documentation](/analysis/govgraph/nodes-relationships/).
+The Knowledge Graph is created in a project in GCP (Google Cloud Platform).j [Read how it is done](/analysis/govgraph/pipeline-v2/).
