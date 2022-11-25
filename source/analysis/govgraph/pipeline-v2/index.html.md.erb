@@ -79,6 +79,14 @@ database, or some further processing with Python scripts.
   instances of a Python script in parallel on the same data file.
 - All data files are compressed and put into a Cloud Storage bucket. None of the
   files is ever written to the local disk of the Compute Instance.
+- The BigQuery API is used to load the files into tables in the `content`
+  dataset.
+- BigQuery queries are used to concatenate the `*_content` and
+  `*_embedded_links` files into a the tables `content` and `embedded_links`, to
+  create a `lines` table that contains each line of text of each document as a
+  separate row of data, and to export those tables back into a bucket.
+- The Cloud Storage API is used to concatenate the exported tables into single
+  files (each big table is exported into several small files).
 
 The diagram below can be made bigger by opening it in a separate browser tab.
 
@@ -152,11 +160,16 @@ official. The most accurate and up-to-date definitions are in the
 | # `url_override`                 | `url_override`                         | We don't know what this means. It might be something to do with taxons. If you know, please edit this page.                                                             |
 ### Files containing the content of documents
 
-There are several files of the content of documents.  Each file represents the
-content in a particular form, for a particlar document type or set of document
-types.
+The `content` file contains the content of documents, with the following columns.
 
-The following files contain the text of documents.
+- `html`: the raw HTML
+- `text`: plain text that is extracted from the HTML
+- `text_without_blank_lines` plain text, without any blank lines (`\n\n` has
+  been replaced by `\n` everywhere)
+
+There are also several intermediate files of content, which are consolidated
+into the `content` file.  Each intermediate file represents the content in a
+particular form, for a particlar document type or set of document types.
 
 - `body`
 - `body_content`
@@ -165,34 +178,11 @@ The following files contain the text of documents.
 - `step_by_step_content`
 - `transaction_content`
 
-Each of those files contains the following columns.
+The `embedded_links` file contains each hyperlink from each document as a
+separate row of data.  There is also a set of intermediate files, with the
+suffix `_embeded_links`, following the same pattern as for the `content` files.
 
-- `html`: the raw HTML
-- `text`: plain text that is extracted from the HTML
-- `text_without_blank_lines` plain text, without any blank lines (`\n\n` has
-  been replaced by `\n` everywhere)
-
-The following files contain each line of text of each document as a separate row
-of data, in the column called `line`.
-
-- `body_lines`
-- `body_content_lines`
-- `parts_lines`
-- `place_lines`
-- `step_by_step_lines`
-- `transaction_lines`
-
-The following files contain each hyperlink from each document as a separate row
-of data.
-
-- `body_embedded_links`
-- `body_content_embedded_links`
-- `parts_embedded_links`
-- `place_embedded_links`
-- `step_by_step_embedded_links`
-- `transaction_embedded_links`
-
-Each of those files contains the following columns.
+Each `embedded_links` file contains the following columns.
 
 - `link_url`: The complete URL
 - `link_url_bare`: The URL stripped of any parameters or anchors, such as search
