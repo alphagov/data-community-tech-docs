@@ -22,10 +22,10 @@ The project meets these objectives by:
 2. Defining 'workflows' which orchestrate the use of technical components into an executable process
 3. Implementing the mechanisms used to automate the execution of workflows (daily)
 
+All resources defined and implemented for the purposes of feedback processing are deployed into Google Cloud.
+
 Technical definitions for components, workflows, and other required cloud computing resources is contained 
 within the [govuk-feedback-processing](https://github.com/alphagov/govuk-feedback-processing) GitHub repository.
-
-# Context
 
 The two sources of GOV.UK user feedback data are: 
 
@@ -99,9 +99,10 @@ The following configuration options have been set for the Posgres database insta
 
 ## Publisher/Subscriber Topic
 
-A publisher/subscriber (pub/sub) topic (`support-api-backup-staging`) is used to enable notifications relating to the creation of
-new Support API database backup files to be passed between the Google Cloud Storage bucket where they are kept 
-(`govuk-s3-mirror_govuk-integration-database-backups`) and the component used to handle them (`propogate-support-api`).
+A publisher/subscriber (pub/sub) topic (`support-api-backup-staging`) is used to enable notifications relating to the 
+creation of new Support API database backup files to be passed between the Google Cloud Storage bucket where they are 
+kept (`govuk-s3-mirror_govuk-integration-database-backups`) and the component used to handle them 
+(`propogate-support-api`).
 
 Support API database backup files are copied from GOV.UK AWS to a Google Cloud Storage bucket 
 (`govuk-s3-mirror_govuk-integration-database-backups`) by the 
@@ -112,9 +113,76 @@ The Cloud Storage bucket is [configured](https://github.com/alphagov/govuk-s3-mi
 to publish a notification into the `support-api-backup-staging` queue when the creation of a new file is completed in 
 the bucket.
 
-These notifications are used to trigger the `support-api-workflow` workflow.
+These notifications are used to trigger the [`support-api-workflow`](#support-api-workflow) workflow.
 
 - [Resource definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L128)
+
+## Workflow Triggers
+
+### Cloud Scheduler Trigger
+
+The `smart-survey-trigger` Cloud Scheduler job is used to automatically invoke the 
+[Smart Survery Workflow](#smart-survey-workflow on a daily basis at 07:00AM GMT. The job uses the workflow's HTTP
+Uniform Resource Identifier (URI) to trigger an execution of the workflow.
+
+- [Resource definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L328)
+
+### EventArc Trigger
+
+The `support-api-workflow-trigger` EventArc trigger is used to automatically invoke the 
+[Support API Workflow](#support-api-workflow) when a new message as been published into the 
+[`support-api-backup-staging`](#publishersubscriber-topic) pub/sub topic. 
+
+Filter criteria in the trigger ensure that the workflow is only invoked on publication of messages relating to the
+creation of new files in relevant upstream buckets (S3 Mirror). The trigger refers to the workflow's internal identifier
+to trigger an execution of the workflow.
+
+- [Resource definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L347)
+
+## Workflows
+
+Google [Cloud Workflows](https://cloud.google.com/workflows) are used to sequence the execution of individual 
+[cloud functions](#Cloud-Functions) as part of a longer 'pipeline' process.
+
+### Smart Survey Workflow
+
+The `smart-survey-workflow` is used to: 
+
+1. Read 'raw' Smart Survey data from the Smart Survey API into the staging Cloud Storage bucket
+2. Process the 'raw' Smart Survey data from the bucket
+3. Save the output records into Google BigQuery
+
+The workflow calls the [`read-raw-feedback`](#Read-Raw-Feedback) and [`process-raw-feedback`](#Process-Raw-Feedback) 
+cloud functions in sequence. The process is run daily at 07:00AM, and is triggered by Cloud Scheduler.
+
+The workflow creates an internal `type` variable and sets the value of the variable to "SmartSurvey". This variable is 
+passed as input to each called cloud function which requires `type` as an input.
+
+- Resource definition: 
+  - [Workflow cloud resource](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L314)
+  - [Workflow YAML definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/workflows/smart-survey-workflow.yaml)
+
+### Support API Workflow
+
+The `support-api-workflow` is used to: 
+
+1. Fetch the latest Support API Datastore backup file from the S3 Mirror Cloud Storage bucket
+2. Restore the API Datastore backup file to a Google Cloud-hosted Postgres instance
+3. Read the `raw` Support API data from the Google Cloud-hosted Postres instance into the staging Cloud Storage bucket
+4. Process the `raw` Support API data from the bucket
+5. Save the output records into Google BigQuery.
+
+The workflow calls the [`propogate-support-api`](#propogate-support-api-data), [`read-raw-feedback`](#read-raw-feedback)
+and [`process-raw-feedback`](#process-raw-feedback) cloud functions in sequence. The process is run each time a new
+Support API Datastore backup file is created in the S3 Mirror Cloud Storage bucket; typically, this occurs daily at 
+06:00AM. 
+
+The workflow creates an internal `type` variable and sets the value of the variable to "SupportAPI". This variable is
+passed as input to each called cloud function which requires `type` as an input.
+
+- Resource definition: 
+  - [Workflow cloud resource](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L299)
+  - [Workflow YAML definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/workflows/support-api-workflow.yaml)
 
 ## Cloud Functions
 
@@ -133,7 +201,7 @@ The `propogate-support-api` function is used to:
 The `propogate-support-api` function responds to messages published into the `support-api-backup-staging` pub/sub topic, 
 and accepts a [cloud event](https://cloud.google.com/eventarc/docs/cloudevents#pubsub) object as an input. Messages are 
 published into that topic whenever new Support API datastore backup files are copied into the S3 Mirror bucket as per 
-the [pub/sub topic documentation](##Publisher/Subscriber-Topic).
+the [pub/sub topic documentation](#publishersubscriber-topic).
 
 Messages published into the `support-api-backup-staging` topic will contain `bucketId` and `objectId` attributes which 
 uniquely identify a Support API Database backup file. The function uses these attributes to read the file from
@@ -175,10 +243,12 @@ The function depends the following environment variables/secrets:
 Failure access/determine these environment variable/secret values will result in the function returning an HTTP 500 
 (internal server) error.
 
+- **Required input**: `type` - string value indicating the type of feedback to be read. Must be one of "SmartSurvey" or 
+                      "SupportAPI"
 - **Optional input**: accepts `start_date` and `end_date` values in the format "YYYY-MM-DD HH:MM:SS". If not specified, 
   or if only one of the two is provided, the function defaults these values to the start and end of prior day
 - **Output**: 
-  - HTTP response (200 for success), containing the name of the output file
+  - HTTP response containing a response code (200 for success) and the name of the output file
   - A JSON file in the project staging bucket named using the convention __datasource-date__; e.g. 
     `supportapi-2022-10-01`.
 - **Max timeout**: 9 minutes
@@ -190,15 +260,20 @@ The `process-raw-feedback` function is used to:
 
 1. Read a specified 'raw' feedback JSON file from the staging Cloud Storage bucket
 2. Process the 'raw' feedback data: 
-  - Reformat the data to adhere to the output [feedback data schema](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/feedback_data_schema.json)
+  - Re-format the data to adhere to the output 
+    [feedback data schema](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/feedback_data_schema.json)
   - Remove instances of profanity from feedback text
-  - Remove instance of personally identifiable informatioon (PII) using [Google Cloud DLP](https://cloud.google.com/dlp)
+  - Remove instance of personally identifiable information (PII) using [Google Cloud DLP](https://cloud.google.com/dlp)
 3. Output the data to BigQuery
+
+The process of removing profanity and PII are described in greater depth in the [Text processing](#text-processing) 
+section.
 
 The function requires that two inputs are provided: 
 
 - `type`: string value indicating the type of feedback being processed. Must be one of "SmartSurvey" or "SupportAPI"
-- `input_file`: string value containing the name of the input file in the staging bucket to be processed
+- `input_file`: string value containing the name of the input file (present in the staging cloud storage bucket) to be 
+                processed
 
 If either of these inputs are not provided or are invalid, the function will return an HTTP 400 (invalid request) error.
 
@@ -209,5 +284,5 @@ If either of these inputs are not provided or are invalid, the function will ret
 - **Max timeout**: 60 minutes
 - [Resource definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L262)
 
-
+# Text Processing
  
