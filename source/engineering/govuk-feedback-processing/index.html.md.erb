@@ -1,0 +1,213 @@
+---
+title: GOV.UK User Feedback Processing
+weight: 33
+last_reviewed_on: 2022-12-19
+review_in: 6 months
+---
+
+# Introduction
+
+GOV.UK provides multiple channels through which users can provide feedback on their experience or report any issues with 
+the platform. Those channels include the 'Report a Problem', 'Contact', and 'Is this page useful?' forms on GOV.UK 
+pages.
+
+The objective of the **GOV.UK Feedback Processing** project is to facilitate the analysis of user feedback data by: 
+
+1. Consolidating feedback data from multiple sources into a single source/format
+2. Sanitising feedback data by removing or masking potentially offensive, private, or sensitive text
+
+The project meets these objectives by: 
+
+1. Delivering technical components enabling sourcing, consolidation and sanitisation of user feedback data
+2. Defining 'workflows' which orchestrate the use of technical components into an executable process
+3. Implementing the mechanisms used to automate the execution of workflows (daily)
+
+Technical definitions for components, workflows, and other required cloud computing resources is contained 
+within the [govuk-feedback-processing](https://github.com/alphagov/govuk-feedback-processing) GitHub repository.
+
+# Context
+
+The two sources of GOV.UK user feedback data are: 
+
+- **SmartSurvey**: a vendor tool used to capture user feedback submitted via the 'Is this page useful?' feedback route
+- **Support API**: a GOV.UK [internal API](https://github.com/alphagov/support-api) which routes feedback responses 
+                    submitted via 'Report a Problem', 'Contact', and other routes to a Postgres database instance
+
+# Components
+
+## BigQuery Table
+
+The BigQuery table to which processed data is saved. 
+
+A single user feedback submission may contain multiple user 'responses' where a user has been issued more than one 
+'prompt' for feedback or comment.
+
+The BigQuery table uses [field nesting](https://cloud.google.com/bigquery/docs/best-practices-performance-nested) to 
+capture all prompts and their associated responses against a single record for a given user submission. 
+
+The table is [partitioned](https://cloud.google.com/bigquery/docs/partitioned-tables) by feedback record creation date.
+Queries against the table **must** contain a filter on the field containing the record creation date (`created`).
+
+- [Resource definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L16)
+- [Schema definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/feedback_data_schema.json)
+
+## Networking Componentry
+
+It is necessary to create 'Virtual Private Cloud' (VPC) in order to enable secure communication between components 
+(such as between a Cloud Function/API and a Cloud SQL instance).
+
+The following network components have been created: 
+
+- A [compute subnetwork](https://cloud.google.com/vpc/docs/subnets) - [definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L31)
+- A [VPC network](https://cloud.google.com/vpc/docs/vpc) - [definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L40)
+- A [VPC access connector](https://cloud.google.com/vpc/docs/serverless-vpc-access) - [definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L46)
+- A compute global address - [definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L54)
+- A [private VPC connection](https://cloud.google.com/vpc/docs/configure-private-services-access) - [definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L63)
+
+## SQL Database Instance
+
+A Postgres instance is used as the basis for enabling access to feedback data contained with the Support API Datastore.
+
+The Support API is a GOV.UK-internal technical component which routes feedback data submitted by GOV.UK users. For the
+majority of feedback types, the Support API persists feedback in a Postgres database instance hosted in AWS. That 
+database instance is not acccessible for the purposes of data analysis.
+
+Backup files for that database instance are taken daily and stored in S3 cloud object storage. Access to this object 
+storage has been granted to enable the contents to be mirrored in equivalent cloud object storage in Google Cloud. 
+The [GOVUK S3 Mirror](https://docs.data-community.publishing.service.gov.uk/engineering/govuk-s3-mirror/) project 
+assumes responsibility for copying backup files between the AWS and Google Cloud environments.
+
+The files use a proprietary, non-human-readable format which necessitates that they are restored into Postgres database
+instance before the data they contain can be queried and read.
+
+A Postgres14 database instance (`support-api`) has been created in Google Cloud to enable the restoration of Support API
+Datastore backup files and access to the data they contain. 
+
+The instance has been configured to be accessible via a Google Cloud-internal private network **only**. The instance
+cannot by default accept incoming connections from external networks (for the purposes of restoring backup files or 
+handling SQL queries). 
+
+The following configuration options have been set for the Posgres database instance: 
+
+|Option                |Value  |Description                                                                                                                                                                            | 
+|----------------------|-------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|Disk size             |30GB   |Ensures there is enough usable storage to enable restoration of Support API backup files (~10GB)                                                                                       |
+|`max_wal_size`        |3008   |Increased from the default value to improve performance of `pg_restore`. More information available in the [Postgres documentation](https://postgresqlco.nf/doc/en/param/max_wal_size/)|
+|`maintenance_work_mem`|2048   |As above. More information available in the [Postgres documentation](https://postgresqlco.nf/doc/en/param/maintenance_work_mem/)                                                       |
+
+- [Resource definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L70)
+
+## Publisher/Subscriber Topic
+
+A publisher/subscriber (pub/sub) topic (`support-api-backup-staging`) is used to enable notifications relating to the creation of
+new Support API database backup files to be passed between the Google Cloud Storage bucket where they are kept 
+(`govuk-s3-mirror_govuk-integration-database-backups`) and the component used to handle them (`propogate-support-api`).
+
+Support API database backup files are copied from GOV.UK AWS to a Google Cloud Storage bucket 
+(`govuk-s3-mirror_govuk-integration-database-backups`) by the 
+[GOV.UK S3 Mirror](https://docs.data-community.publishing.service.gov.uk/engineering/govuk-s3-mirror/). This process
+happens daily.
+
+The Cloud Storage bucket is [configured](https://github.com/alphagov/govuk-s3-mirror/blob/main/terraform/pubsub.tf#L107) 
+to publish a notification into the `support-api-backup-staging` queue when the creation of a new file is completed in 
+the bucket.
+
+These notifications are used to trigger the `support-api-workflow` workflow.
+
+- [Resource definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L128)
+
+## Cloud Functions
+
+Google [Cloud Functions](https://cloud.google.com/functions) are used to execute the logic involved the restoration of
+Support API database backups, reading raw feedback data from upstream sources, and processing feedback data.
+
+### Propogate Support API Data
+
+The `propogate-support-api` function is used to: 
+
+1. Read a Support API Database back-up file from Cloud Storage into the local compute environment
+2. Use the Postgres [`pg_restore`](https://www.postgresql.org/docs/current/app-pgrestore.html) utility to: 
+ - Purge the Google Cloud Postgres instance of data
+ - Restore the contents of the Support API Database back-up file into the Google Cloud Postgres instance 
+
+The `propogate-support-api` function responds to messages published into the `support-api-backup-staging` pub/sub topic, 
+and accepts a [cloud event](https://cloud.google.com/eventarc/docs/cloudevents#pubsub) object as an input. Messages are 
+published into that topic whenever new Support API datastore backup files are copied into the S3 Mirror bucket as per 
+the [pub/sub topic documentation](##Publisher/Subscriber-Topic).
+
+Messages published into the `support-api-backup-staging` topic will contain `bucketId` and `objectId` attributes which 
+uniquely identify a Support API Database backup file. The function uses these attributes to read the file from
+Cloud Storage into the local compute environment.
+
+The function then uses the `pg_restore` binary executable utility to restore the contents of the Support API Database 
+backup file to the Google Cloud-hosted Postgres instance. The connection between the function and the Postgres instance
+is facilitated by a Virtual Private Cloud (VPC) connector. 
+
+The function depends on the `CLOUD_SQL_QUERY_USER` and `CLOUD_SQL_QUERY_PASS` secrets having been set in the project
+environment. These secrets are the credentials used by the function to authenticate with the Google Cloud-hosted 
+Postgres instance. Failure to access/determine these secret values will result in the function returning an HTTP 500 
+(internal server) error.
+
+- **Required input**: cloud event object containing `bucketId` and `objectId` attributes
+- **Output**: HTTP response (200 for success)
+- **Max timeout**: 60 minutes
+- [Resource definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L160)
+
+### Read Raw Feedback 
+
+The `read-raw-feedback` function is used to: 
+
+1. Connect to an upstream 'system of record' containing unmodified feedback data
+2. Fetch all feedback records which were created between a specified start date and end date
+3. Stage the unmodified, 'raw' feedback data in JSON format in a Cloud Storage bucket
+
+Target systems of record include: 
+
+- **SmartSurvey** - accessed via an [API](https://docs.smartsurvey.io/docs/getting-started)
+- **Google Cloud-hosted Postgres Instance** - DB instance containing Support API data accessed via VPC connection
+
+The function depends the following environment variables/secrets: 
+
+- `SMART_SURVEY_API_ENDPOINT` (environment variable) - the target API endpoint to query for feedback data
+- `SMART_SURVEY_API_TOKEN` and `SMART_SURVEY_API_SECRET` (secret) - used to authenticate with Smart Survey
+- `CLOUD_SQL_QUERY_USER` and `CLOUD_SQL_QUERY_PASS` (secret) - used to authenticate with the Postgres instance
+
+Failure access/determine these environment variable/secret values will result in the function returning an HTTP 500 
+(internal server) error.
+
+- **Optional input**: accepts `start_date` and `end_date` values in the format "YYYY-MM-DD HH:MM:SS". If not specified, 
+  or if only one of the two is provided, the function defaults these values to the start and end of prior day
+- **Output**: 
+  - HTTP response (200 for success), containing the name of the output file
+  - A JSON file in the project staging bucket named using the convention __datasource-date__; e.g. 
+    `supportapi-2022-10-01`.
+- **Max timeout**: 9 minutes
+- [Resource definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L209)
+
+### Process Raw Feedback
+
+The `process-raw-feedback` function is used to: 
+
+1. Read a specified 'raw' feedback JSON file from the staging Cloud Storage bucket
+2. Process the 'raw' feedback data: 
+  - Reformat the data to adhere to the output [feedback data schema](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/feedback_data_schema.json)
+  - Remove instances of profanity from feedback text
+  - Remove instance of personally identifiable informatioon (PII) using [Google Cloud DLP](https://cloud.google.com/dlp)
+3. Output the data to BigQuery
+
+The function requires that two inputs are provided: 
+
+- `type`: string value indicating the type of feedback being processed. Must be one of "SmartSurvey" or "SupportAPI"
+- `input_file`: string value containing the name of the input file in the staging bucket to be processed
+
+If either of these inputs are not provided or are invalid, the function will return an HTTP 400 (invalid request) error.
+
+- **Required input**: `type` and `input_file` string values
+- **Output**: 
+   - HTTP response (200 for success)
+   - New records created in the target BigQuery table (`govuk-user-feedback`)
+- **Max timeout**: 60 minutes
+- [Resource definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L262)
+
+
+ 
