@@ -122,7 +122,7 @@ These notifications are used to trigger the [`support-api-workflow`](#support-ap
 ### Cloud Scheduler Trigger
 
 The `smart-survey-trigger` Cloud Scheduler job is used to automatically invoke the 
-[Smart Survery Workflow](#smart-survey-workflow on a daily basis at 07:00AM GMT. The job uses the workflow's HTTP
+[Smart Survery Workflow](#smart-survey-workflow) on a daily basis at 07:00AM GMT. The job uses the workflow's HTTP
 Uniform Resource Identifier (URI) to trigger an execution of the workflow.
 
 - [Resource definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L328)
@@ -152,7 +152,7 @@ The `smart-survey-workflow` is used to:
 2. Process the 'raw' Smart Survey data from the bucket
 3. Save the output records into Google BigQuery
 
-The workflow calls the [`read-raw-feedback`](#Read-Raw-Feedback) and [`process-raw-feedback`](#Process-Raw-Feedback) 
+The workflow calls the [`read-raw-feedback`](#read-raw-feedback) and [`process-raw-feedback`](#process-raw-feedback) 
 cloud functions in sequence. The process is run daily at 07:00AM, and is triggered by Cloud Scheduler.
 
 The workflow creates an internal `type` variable and sets the value of the variable to "SmartSurvey". This variable is 
@@ -263,7 +263,7 @@ The `process-raw-feedback` function is used to:
   - Re-format the data to adhere to the output 
     [feedback data schema](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/feedback_data_schema.json)
   - Remove instances of profanity from feedback text
-  - Remove instance of personally identifiable information (PII) using [Google Cloud DLP](https://cloud.google.com/dlp)
+  - Remove instances of personally identifiable information (PII) 
 3. Output the data to BigQuery
 
 The process of removing profanity and PII are described in greater depth in the [Text processing](#text-processing) 
@@ -285,4 +285,66 @@ If either of these inputs are not provided or are invalid, the function will ret
 - [Resource definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L262)
 
 # Text Processing
- 
+
+The [`process-raw-feedback`](#process-raw-feedback) Cloud function performs text processing on raw feedback text with 
+the purpose of masking instances of profanity or PII within the text.
+
+## Profanity Removal
+
+The [`better-profanity`](https://pypi.org/project/better-profanity/) Python package is used in combination with a 
+pre-compiled [list of censored words](https://github.com/alphagov/govuk-feedback-processing/blob/main/src/utils/profane_words.txt)
+to: 
+
+1. Identify instances of profanity in user feedback text
+2. Replace identified instances of profanity with a mask value ('****').
+
+## PII Removal 
+
+The objective of PII removal is remove from feedback text any articles - such as phone numbers, names, or National 
+Insurance numbers - which could be used to uniquely identify an individual.
+
+Two methods are used to achieve this: 
+
+1. [Google Cloud DLP](https://cloud.google.com/dlp): Feedback data is parsed using Google's Data Loss Prevention (DLP) 
+   API. The DLP tools can be configured to scan feedback text for 
+   specific [types of PII](https://github.com/alphagov/govuk-feedback-processing/blob/main/src/transforms/utils.py#L10), 
+   and will replace identified instances of PII with an appropriate mask, e.g. ['PERSON_NAME']
+2. Text pattern matching: Feedback data is scanned to identify the presence of text combinations which match 
+   [pre-defined patterns](https://github.com/alphagov/govuk-feedback-processing/blob/main/src/transforms/utils.py#L1). 
+   These patterns may be used to identify instances of PII which meet standard patterns relating to their length and 
+   content (such as credit card numbers, driving license numbers etc).
+
+Comprehensive lists of the types of PII which are addressed by each method can be found below.
+
+<details>
+  <summary>Cloud DLP Info Types</summary>
+
+  - Date of birth
+  - Email address
+  - Passport
+  - Person name
+  - Phone number
+  - Street address
+  - UK National Insurance number
+  - UK passport number
+  - Credit card number
+  - IBAN code    
+  - IP address
+  - Medical terms
+  - Vehicle identification number
+  - Scotland community health index number
+  - UK drivers license number
+  - UK NHS number
+  - UK taxpayer reference
+  - SWIFT code
+</details>
+
+<details>
+  <summary>Pattern Matching Types</summary>
+
+  - National Insurance number
+  - UK NHS number
+  - Credit card number
+  - UK drivers license number
+  - UK visa application reference number
+</details>
