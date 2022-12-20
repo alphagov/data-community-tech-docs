@@ -18,8 +18,8 @@ The objective of the **GOV.UK Feedback Processing** project is to facilitate the
 
 The project meets these objectives by: 
 
-1. Delivering technical components enabling the sourcing, consolidation and sanitisation of user feedback data
-2. Defining 'workflows' which orchestrate the use of technical components into an executable process
+1. Delivering technical components to enable the sourcing, consolidation, and sanitisation of user feedback data
+2. Defining 'workflows' which coordinate the execution of multiple components
 3. Implementing the mechanisms used to automate the execution of workflows (daily)
 
 All resources defined and implemented for the purposes of feedback processing are deployed into Google Cloud.
@@ -34,6 +34,10 @@ The two sources of GOV.UK user feedback data are:
                     submitted via 'Report a Problem', 'Contact', and other routes to a Postgres database instance
 
 # Components
+
+**Note** that component descriptions contain hyperlinks to component Terraform definitions in the 
+[`govuk-feedback-processing`](https://github.com/alphagov/govuk-feedback-processing) repository. Please contact
+[James Marvin](mailto:james.marvin@digital.cabinet-office.gov.uk) to request access.
 
 ## BigQuery Table
 
@@ -51,7 +55,7 @@ Queries against the table **must** contain a filter on the field containing the 
 - [Resource definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L16)
 - [Schema definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/feedback_data_schema.json)
 
-## Networking Componentry
+## Networking Components
 
 It is necessary to create 'Virtual Private Cloud' (VPC) in order to enable secure communication between components 
 (such as between a Cloud Function/API and a Cloud SQL instance).
@@ -175,7 +179,7 @@ The `support-api-workflow` is used to:
 The workflow calls the [`propogate-support-api`](#propogate-support-api-data), [`read-raw-feedback`](#read-raw-feedback)
 and [`process-raw-feedback`](#process-raw-feedback) cloud functions in sequence. The process is run each time a new
 Support API Datastore backup file is created in the S3 Mirror Cloud Storage bucket; typically, this occurs daily at 
-06:00AM. 
+06:00AM GMT. 
 
 The workflow creates an internal `type` variable and sets the value of the variable to "SupportAPI". This variable is
 passed as input to each called cloud function which requires `type` as an input.
@@ -299,7 +303,7 @@ to:
 
 ## PII Removal 
 
-The objective of PII removal is remove from feedback text any articles of data - such as phone numbers, names, or 
+The objective of PII removal is to remove from feedback text any articles of data - such as phone numbers, names, or 
 National Insurance numbers - which could be used to uniquely identify an individual.
 
 Two methods are used to achieve this: 
@@ -309,7 +313,7 @@ Two methods are used to achieve this:
    specific [types of PII](https://github.com/alphagov/govuk-feedback-processing/blob/main/src/transforms/utils.py#L10), 
    and will replace identified instances of PII with an appropriate mask, e.g. ['PERSON_NAME']
 2. Text pattern matching: Feedback data is scanned to identify the presence of text combinations which match 
-   [pre-defined patterns](https://github.com/alphagov/govuk-feedback-processing/blob/main/src/transforms/utils.py#L1). 
+   [pre-defined (regular expression) patterns](https://github.com/alphagov/govuk-feedback-processing/blob/main/src/transforms/utils.py#L1). 
    These patterns may be used to identify instances of PII which meet standard patterns relating to their length and 
    content (such as credit card numbers, driving license numbers etc).
 
