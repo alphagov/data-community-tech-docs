@@ -18,7 +18,7 @@ The objective of the **GOV.UK Feedback Processing** project is to facilitate the
 
 The project meets these objectives by: 
 
-1. Delivering technical components enabling sourcing, consolidation and sanitisation of user feedback data
+1. Delivering technical components enabling the sourcing, consolidation and sanitisation of user feedback data
 2. Defining 'workflows' which orchestrate the use of technical components into an executable process
 3. Implementing the mechanisms used to automate the execution of workflows (daily)
 
@@ -167,9 +167,9 @@ passed as input to each called cloud function which requires `type` as an input.
 The `support-api-workflow` is used to: 
 
 1. Fetch the latest Support API Datastore backup file from the S3 Mirror Cloud Storage bucket
-2. Restore the API Datastore backup file to a Google Cloud-hosted Postgres instance
+2. Restore the Support API Datastore backup file to a Google Cloud-hosted Postgres instance
 3. Read the `raw` Support API data from the Google Cloud-hosted Postres instance into the staging Cloud Storage bucket
-4. Process the `raw` Support API data from the bucket
+4. Process the `raw` Support API data from the staging bucket
 5. Save the output records into Google BigQuery.
 
 The workflow calls the [`propogate-support-api`](#propogate-support-api-data), [`read-raw-feedback`](#read-raw-feedback)
@@ -216,7 +216,7 @@ environment. These secrets are the credentials used by the function to authentic
 Postgres instance. Failure to access/determine these secret values will result in the function returning an HTTP 500 
 (internal server) error.
 
-- **Required input**: cloud event object containing `bucketId` and `objectId` attributes
+- **Required input**: cloud event object containing valid `bucketId` and `objectId` attributes
 - **Output**: HTTP response (200 for success)
 - **Max timeout**: 60 minutes
 - [Resource definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L160)
@@ -236,7 +236,7 @@ Target systems of record include:
 
 The function depends the following environment variables/secrets: 
 
-- `SMART_SURVEY_API_ENDPOINT` (environment variable) - the target API endpoint to query for feedback data
+- `SMART_SURVEY_API_ENDPOINT` (environment variable) - the target Smart Survey API endpoint to query for feedback data
 - `SMART_SURVEY_API_TOKEN` and `SMART_SURVEY_API_SECRET` (secret) - used to authenticate with Smart Survey
 - `CLOUD_SQL_QUERY_USER` and `CLOUD_SQL_QUERY_PASS` (secret) - used to authenticate with the Postgres instance
 
@@ -266,8 +266,7 @@ The `process-raw-feedback` function is used to:
   - Remove instances of personally identifiable information (PII) 
 3. Output the data to BigQuery
 
-The process of removing profanity and PII are described in greater depth in the [Text processing](#text-processing) 
-section.
+Processes used to remove profanity and PII are described in the [Text processing](#text-processing) section.
 
 The function requires that two inputs are provided: 
 
@@ -300,8 +299,8 @@ to:
 
 ## PII Removal 
 
-The objective of PII removal is remove from feedback text any articles - such as phone numbers, names, or National 
-Insurance numbers - which could be used to uniquely identify an individual.
+The objective of PII removal is remove from feedback text any articles of data - such as phone numbers, names, or 
+National Insurance numbers - which could be used to uniquely identify an individual.
 
 Two methods are used to achieve this: 
 
