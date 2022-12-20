@@ -240,9 +240,13 @@ Target systems of record include:
 
 The function depends the following environment variables/secrets: 
 
-- `SMART_SURVEY_API_ENDPOINT` (environment variable) - the target Smart Survey API endpoint to query for feedback data
-- `SMART_SURVEY_API_TOKEN` and `SMART_SURVEY_API_SECRET` (secret) - used to authenticate with Smart Survey
-- `CLOUD_SQL_QUERY_USER` and `CLOUD_SQL_QUERY_PASS` (secret) - used to authenticate with the Postgres instance
+|Name                       |Type                  |Description                                                     |
+|---------------------------|----------------------|----------------------------------------------------------------|
+|`SMART_SURVEY_API_ENDPOINT`|Environment variable  |The target Smart Survey API endpoint to query for feedback data |
+|`SMART_SURVEY_API_TOKEN`   |Secret                |Used to authenticate with Smart Survey                          |
+|`SMART_SURVEY_API_SECRET`  |Secret                |User to authenticate with Smart Survey                          |
+|`CLOUD_SQL_QUERY_USER`     |Secret                |Username for authentication with Postgres instance              |
+|`CLOUD_SQL_QUERY_PASS`     |Secret                |Password for authentication with Postgres instance              |
 
 Failure access/determine these environment variable/secret values will result in the function returning an HTTP 500 
 (internal server) error.
