@@ -5,7 +5,7 @@ last_reviewed_on: 2022-12-19
 review_in: 6 months
 ---
 
-# Introduction
+## Introduction
 
 GOV.UK provides multiple channels through which users can provide feedback on their experience or report any issues with 
 the platform. Those channels include the 'Report a Problem', 'Contact', and 'Is this page useful?' forms on GOV.UK 
@@ -33,13 +33,13 @@ The two sources of GOV.UK user feedback data are:
 - **Support API**: a GOV.UK [internal API](https://github.com/alphagov/support-api) which routes feedback responses 
                     submitted via 'Report a Problem', 'Contact', and other routes to a Postgres database instance
 
-# Components
+## Components
 
 **Note** that component descriptions contain hyperlinks to component Terraform definitions in the 
 [`govuk-feedback-processing`](https://github.com/alphagov/govuk-feedback-processing) repository. Please contact
 [James Marvin](mailto:james.marvin@digital.cabinet-office.gov.uk) to request access.
 
-## BigQuery Table
+### BigQuery Table
 
 The BigQuery table to which processed data is saved. 
 
@@ -55,7 +55,7 @@ Queries against the table **must** contain a filter on the field containing the 
 - [Resource definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L16)
 - [Schema definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/feedback_data_schema.json)
 
-## Networking Components
+### Networking Components
 
 It is necessary to create 'Virtual Private Cloud' (VPC) in order to enable secure communication between components 
 (such as between a Cloud Function/API and a Cloud SQL instance).
@@ -68,7 +68,7 @@ The following network components have been created:
 - A compute global address - [definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L54)
 - A [private VPC connection](https://cloud.google.com/vpc/docs/configure-private-services-access) - [definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L63)
 
-## SQL Database Instance
+### SQL Database Instance
 
 A Postgres instance is used as the basis for enabling access to feedback data contained with the Support API Datastore.
 
@@ -101,7 +101,7 @@ The following configuration options have been set for the Posgres database insta
 
 - [Resource definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L70)
 
-## Publisher/Subscriber Topic
+### Publisher/Subscriber Topic
 
 A publisher/subscriber (pub/sub) topic (`support-api-backup-staging`) is used to enable notifications relating to the 
 creation of new Support API database backup files to be passed between the Google Cloud Storage bucket where they are 
@@ -121,9 +121,9 @@ These notifications are used to trigger the [`support-api-workflow`](#support-ap
 
 - [Resource definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L128)
 
-## Workflow Triggers
+### Workflow Triggers
 
-### Cloud Scheduler Trigger
+#### Cloud Scheduler Trigger
 
 The `smart-survey-trigger` Cloud Scheduler job is used to automatically invoke the 
 [Smart Survery Workflow](#smart-survey-workflow) on a daily basis at 07:00AM GMT. The job uses the workflow's HTTP
@@ -131,7 +131,7 @@ Uniform Resource Identifier (URI) to trigger an execution of the workflow.
 
 - [Resource definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L328)
 
-### EventArc Trigger
+#### EventArc Trigger
 
 The `support-api-workflow-trigger` EventArc trigger is used to automatically invoke the 
 [Support API Workflow](#support-api-workflow) when a new message has been published into the 
@@ -143,12 +143,12 @@ to trigger an execution of the workflow.
 
 - [Resource definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L347)
 
-## Workflows
+### Workflows
 
 Google [Cloud Workflows](https://cloud.google.com/workflows) are used to sequence the execution of individual 
 [cloud functions](#cloud-functions) as part of a longer 'pipeline' process.
 
-### Smart Survey Workflow
+#### Smart Survey Workflow
 
 The `smart-survey-workflow` is used to: 
 
@@ -166,7 +166,7 @@ passed as input to each called cloud function which requires `type` as an input.
   - [Workflow cloud resource](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L314)
   - [Workflow YAML definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/workflows/smart-survey-workflow.yaml)
 
-### Support API Workflow
+#### Support API Workflow
 
 The `support-api-workflow` is used to: 
 
@@ -188,12 +188,12 @@ passed as input to each called cloud function which requires `type` as an input.
   - [Workflow cloud resource](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L299)
   - [Workflow YAML definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/workflows/support-api-workflow.yaml)
 
-## Cloud Functions
+### Cloud Functions
 
 Google [Cloud Functions](https://cloud.google.com/functions) are used to execute the logic involved the restoration of
 Support API database backups, reading raw feedback data from upstream sources, and processing feedback data.
 
-### Propogate Support API Data
+#### Propogate Support API Data
 
 The `propogate-support-api` function is used to: 
 
@@ -225,7 +225,7 @@ Postgres instance. Failure to access/determine these secret values will result i
 - **Max timeout**: 60 minutes
 - [Resource definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L160)
 
-### Read Raw Feedback 
+#### Read Raw Feedback 
 
 The `read-raw-feedback` function is used to: 
 
@@ -258,7 +258,7 @@ Failure access/determine these environment variable/secret values will result in
 - **Max timeout**: 9 minutes
 - [Resource definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L209)
 
-### Process Raw Feedback
+#### Process Raw Feedback
 
 The `process-raw-feedback` function is used to: 
 
@@ -287,12 +287,12 @@ If either of these inputs are not provided or are invalid, the function will ret
 - **Max timeout**: 60 minutes
 - [Resource definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L262)
 
-# Text Processing
+## Text Processing
 
 The [`process-raw-feedback`](#process-raw-feedback) Cloud function performs text processing on raw feedback text with 
 the purpose of masking instances of profanity or PII within the text.
 
-## Profanity Removal
+### Profanity Removal
 
 The [`better-profanity`](https://pypi.org/project/better-profanity/) Python package is used in combination with a 
 pre-compiled [list of censored words](https://github.com/alphagov/govuk-feedback-processing/blob/main/src/utils/profane_words.txt)
@@ -301,7 +301,7 @@ to:
 1. Identify instances of profanity in user feedback text
 2. Replace identified instances of profanity with a mask value ('****').
 
-## PII Removal 
+### PII Removal 
 
 The objective of PII removal is to remove from feedback text any articles of data - such as phone numbers, names, or 
 National Insurance numbers - which could be used to uniquely identify an individual.
