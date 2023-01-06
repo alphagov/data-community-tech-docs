@@ -118,6 +118,23 @@ each document, such as its document type, its content, or the date and time when
 it was last updated.  These pieces of information were chosen from among the
 [document type schemas](https://github.com/alphagov/govuk-content-schemas).
 
+Most files only include two columns, including the `url` column, for the
+following reasons.
+
+1. It was difficult to work with the very wide dataset that the original data
+   pipeline created, called preprocessed_content_store.csv, because it was
+   difficult to avoid loading the entire dataset into memory (and it was huge),
+   and it forced its users to deal with nulls everywhere.  There is a way to
+   anticipate nulls, but referring to
+   https://github.com/alphagov/govuk-content-schemas/.
+2. It is easier to make incremental changes to the code and data, without having
+   to understand the entire pipeline.
+3. It seems natural to never flatten the tree-link and graph-like structures of
+   the source data in MongoDB and a JSON column of a PostgreSQL table.
+4. The main disadvantage doesn't seem bad.  It is that there are more tables to
+   handle, and users of the data must do more joins, at slightly more expense in
+   BigQuery.
+
 ## Tables of extracted data files
 
 All filenames have the form `something.csv.gz`.  Only the part `something` is
