@@ -14,14 +14,24 @@ C4Context
         }
         Boundary(bucket_data_processed, "Bucket: govuk-knowledge-graph-data-processed") {
             System(url_csv_gz, "Object: content-store/url.csv.gz")
-            System(embedded_links_gz, "Object: content-store/embedded_links.csv.gz")
+            System(transaction_content_gz, "Object: content-store/transaction_content.csv.gz")
+            System(place_content_gz, "Object: content-store/place_content.csv.gz")
+            System(content_gz, "Object: content-store/content.csv.gz")
+        }
+        Boundary(dataset_content, "BigQuery Dataset: content") {
+            System(table_url, "Table: url")
+            System(content_table, "Table: content")
         }
     }
 
     Rel(backup_file, mongodb, "")
     Rel(mongodb, url_csv_gz, "")
     Rel(mongodb, python, "")
-    Rel(python, embedded_links_gz, "")
+    Rel(url_csv_gz, table_url, "BigQuery API")
+    Rel(transaction_content_gz, content_table, "BigQuery query (concatenate)")
+    Rel(place_content_gz, content_table, "BigQuery query (concatenate)")
+    Rel(content_table, content_gz, "BigQuery export")
+
 
 UpdateLayoutConfig($c4ShapeInRow="2", $c4BoundaryInRow="1")
 UpdateRelStyle(backup_file, mongodb, $offsetY="-30", $offsetX="20")
