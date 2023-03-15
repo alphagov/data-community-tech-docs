@@ -10,13 +10,19 @@ review_in: 6 months
 The Knowledge Graph data pipeline is in GCP (Google Cloud Platform).  It has a
 [GitHub Repository](https://github.com/alphagov/govuk-knowledge-graph-gcp).
 
-## How Content Store data is put into Neo4j
+## How Content Store data is put into BigQuery and Neo4j.
 
 1. A virtual machine in GCP restores a backup file of GOV.UK's production
-Content Store database from the [GOV.UK S3 Mirror](/engineering/govuk-s3-mirror/) into a new MongoDB database, queries the database several times, extracts the results as CSV files, which it uploads to another GCP Cloud Storage bucket.
+Content Store database from the [GOV.UK S3 Mirror](/engineering/govuk-s3-mirror/) into a new MongoDB database, queries the database several times, extracts the results as CSV files, which it uploads to another GCP Cloud Storage bucket, and loads the CSV files into BigQuery.
 1. Another virtual machine in GCP starts a new Neo4j database, and imports the data from the CSV files.
 
 These steps are described in more detail below.
+
+Similar steps are followed for data from the Publishing API database.
+
+Bank Holiday data is retrieved from the Bank Holidays API by a GCP Workflow and
+written to a CSV file in a GCP Cloud Storage bucket, and uploaded into BigQuery.
+The Neo4j instance fetches it from the bucket.
 
 ## Restoring a backup of the Content Store database
 
@@ -319,6 +325,13 @@ The text of the button is in the file `start_button_text`, which has the column
   easier to anticipate how any change will affect other steps.
 - An error in one of those datasets does not cause all of the others to fail, so
   some data will still be available even when some steps have failed.
+
+## Futher data transformations for the GovSearch app
+
+Several scheduled queries run at a certain time of day to transform data from
+the `content` and `graph` datasets into tables in the `search` dataset.  The
+tables in the `search` dataset are designed to make the GovSearch app run
+quickly with simple SQL queries.
 
 ## Further information on the Knowledge Graph
 

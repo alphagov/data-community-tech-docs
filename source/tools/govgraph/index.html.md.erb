@@ -31,15 +31,48 @@ The Knowledge Graph allows you to:
 
 ## Access the Knowledge Graph
 
-There is one instance of the Knowledge Graph, the [developer-facing Knowledge Graph](https://govgraph.dev:7473/browser/) (accessible only via the VPN), and the [Gov Graph Search](https://govgraphsearch.dev) app that content designers use to answer common content questions.
+The concept of the GOV.UK Knowledge Graph is represented in two different
+databases: BigQuery, and Neo4j.  The main difference between them is that
+BigQuery is a relational database that uses SQL, whereas Neo4j is a graph
+database that uses the Cypher query language.  Almost exactly the same data is
+available in both databases, and any query can be written in either language.
+The same concepts of nodes and edges are represented in both databases.
+
+### Neo4j
+
+* Development lags behind BigQuery, because the main user-facing app, [GovSearch](/source/tools/govsearch/), runs off BigQuery, not Neo4j.
+* Pricing is by the time that the instance is on, so it is only on between 7am and 7pm on weekdays.
+* Full-text searches are slow.
+* Only 100 concurrent sessions are supported.
+* Access must be via the VPN, because the Neo4j browser doesn't support OAuth.
+* Graph data structure
+* Cypher query language
+
+### BigQuery
+
+* Development occurs here first, because the main user-facing app, which is GovSearch, runs off BigQuery.
+* Pricing is for the amount of data scanned by queries.
+* Full-text searches are quick.
+* The number of concurrent sessions seems to be unlimited.
+* Access is via Google login, which allows access to users in other departments.
+* Relational data structure
+* SQL
+
+## Environments
+
+There are three environments, which are each in their own GCP project.
+
+* [Production](https://console.cloud.google.com/welcome?project=govuk-knowledge-graph)
+* [Staging](https://console.cloud.google.com/welcome?project=govuk-knowledge-graph-staging)
+* [Development](https://console.cloud.google.com/welcome?project=govuk-knowledge-graph-dev)
 
 ## Data sources
 
-The Knowledge Graph has 4 data sources:
-
-- the [Content Store](https://github.com/alphagov/content-store)
-- the [GOV.UK Publishing API](https://github.com/alphagov/publishing-api)
-- BigQuery Google Analytics data
+- [Content Store](https://github.com/alphagov/content-store) for most GOV.UK content.UK.
+- [GOV.UK Publishing API](https://github.com/alphagov/publishing-api) for GOV.UK content relating to some roles and persons.
+- Google Analytics for the number of page views and transitions between pages.
+- [Bank Holidays API](https://www.api.gov.uk/gds/bank-holidays/#bank-holidays).
+- [Entities](https://www.api.gov.uk/gds/bank-holidays/#bank-holidays).
 
 ### Content Store
 
