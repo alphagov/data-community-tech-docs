@@ -1,77 +1,88 @@
 ---
-title: How the GOV.UK Knowledge Graph works
+title: GovSearch
 weight: 33
-last_reviewed_on: 2022-02-02
+last_reviewed_on: 2023-03-08
 review_in: 6 months
 ---
 
-# How the GOV.UK Knowledge Graph works
+# GovSearch
 
-A [knowledge graph](https://www.turing.ac.uk/research/interest-groups/knowledge-graphs) is a collection of objects or nodes, linked together by relationships or links, representing statements or facts about a specific domain.
+GovSearch is a tool to help content designers find content on GOV.UK. It collects most of the content on www.gov.uk from multiple data sources and indexes it to provide an advanced search engine.
 
-For example, in the statement “Passport #23431 is owned by John Smith”:
 
-- “Passport #23431” and “John Smith” are subject and object nodes
-- “is owned by” is a link between these nodes
+## Overview
 
-The [GOV.UK Knowledge Graph](https://github.com/alphagov/govuk-knowledge-graph-gcp), also known as govGraph, is a knowledge graph that:
+* The frontend is available to users at [https://gov-search.service.gov.uk](https://gov-search.service.gov.uk). Users need to authenticate using their Google account for selected government domains (such as digital.cabinet-office.gov.uk). In the future we will use GOV.UK Signon for authentication.
 
-- combines structural GOV.UK information with user behaviour into a single data structure
-- uses this data structure to build a knowledge graph with nodes that represent real-life concepts such as person name and address
+* The service is hosted on GCP, mainly within the govuk-knowledge-graph project. The staging and development environment are hosted in separate projects, `govuk-knowledge-graph-staging` and `govuk-knowledge-graph-dev`, respectively.
 
-The Knowledge Graph allows you to:
+* The source code is on github, at [https://github.com/alphagov/govuk-knowledge-graph-gcp](alphagov/govuk-knowledge-graph-gcp) and [https://github.com/alphagov/govuk-knowledge-graph-search](alphagov/govuk-knowledge-graph-search)
 
-- explore graph databases and knowledge graphs for GOV.UK applications
-- collaborate with other teams and communities to help them find content
-- build products and applications that tell users about our content, such as the weighted PageRank algorithm
-- improve colleagues’ data literacy so they can make better use of GOV.UK data
-- provide early adopters with access and training to help increase use of our data applications and product
+### Data pipeline
 
-## Access the Knowledge Graph
+Every day:
 
-There is one instance of the Knowledge Graph, the [developer-facing Knowledge Graph](https://govgraph.dev:7473/browser/) (accessible only via the VPN), and the [Gov Graph Search](https://govgraphsearch.dev) app that content designers use to answer common content questions.
+- New backups of the GOV.UK Content Store and the Publishing API become available in the [govuk-s3-mirror_govuk-integration-database-backups](https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-integration-database-backups;tab=objects?prefix=&forceOnObjectsSortingFiltering=false) Bucket, as a result of the [S3 Mirror copy process](/engineering/govuk-s3-mirror/).
 
-## Data sources
+- A GCP Workflow (defined in the govuk-knowledge-graph project) is triggered by the mirror's Pub/Sub topic and creates 2 virtual machines, one running MongoDB to recreate an instance of the content store, and one running Postgres to recreate an instance of the Publishing API.
 
-The Knowledge Graph has 4 data sources:
+- From those two databases, a process creates multiple CSV files
 
-- the [Content Store](https://github.com/alphagov/content-store)
-- the [GOV.UK Publishing API](https://github.com/alphagov/publishing-api)
-- BigQuery Google Analytics data
+- From those CSV files, a process spins up a Neo4j instance and another creates tables in BigQuery that receives content from the CSV files
 
-### Content Store
+- At that point all the data is ready for the two frontends:
 
-We use the Content Store to build a structural network. In the structural network:
+    - Neo4j: available at [https://govgraph.dev:7473/](https://govgraph.dev:7473/) (VPN required - only available 9 to 7)
+    - GovSearch: available at [https://gov-search.service.gov.uk](https://gov-search.service.gov.uk). GovSearch is available 24/7 but might miss data while BigQuery tables are being deleted and repopulated daily.
 
-- the network nodes are GOV.UK content items, mostly corresponding to pages on GOV.UK
-- the network edges are hyperlinks between those content items
+While Gov Search is the normal way to use the service, the Neo4j frontend allows for more complex searches using the Cypher language.
 
-In this context, a page is a GOV.UK content item, not a URL.
 
-The Content Store is also used to create:
+## Hosting
 
-- node labels or node categories, like Brexit or Farming
-- additional nodes like Taxon, Step-by-Step and Chapter nodes
-- relationships between nodes and/or node types types to the graph, like "has_taxon", "has_organisation"
+GovGraph is hosted in the govuk-knowledge-graph google cloud project. It uses the following services:
 
-### Publishing API
+- Load balancer (managing the domain names, external and internal, authorisation)
+- Cloud run (to run the front-end)
+- BigQuery (to hold the data)
+- Cloud Storage, to store the CSV files
+- Cloud compute to run the Neo4j, mongo and postgres VMs
+- Workflow to define the data pipeline
 
-The Publishing API enriches the network of content-item nodes by linking these nodes to content metadata such as publishing organisation, departmental organisation and people within these organisations.
+The terraform configuration describes how each service is set up.
 
-### Google Analytics
+## Front-end
 
-We use Google Analytics data from the day before to build a functional network.
+The user-facing application is hosted as a Cloud Run service. Its source code is in a separate repository (alphagov/govuk-knowledge-graph-search).
 
-This network visualises user movement between specified content items (pages), which captures how users are navigating to and from these pages.
+### Architecture
 
-## Knowledge graph limitation
+It consists of an API, which fetches the search results from BigQuery and a
+single-page app (SPA), which takes user input, queries the API, and displays the
+search results.
 
-The Knowledge Graph does not fully represent the GOV.UK website because the graph uses the Content Store to create the content item network nodes.
+Both the APIs and the SPA are written in TypeScript. The API is an ExpressJS
+server. The software architecture, as well as instructions on how to run/develop
+it, are explained in the repository's README file.
 
-This means that the Knowledge Graph includes the GOV.UK content, but not dynamic elements or elements rendered by the rendering app.
+### Authorisation
 
-This also means that elements like `/browse` and `/topic` pages are not in the Knowledge Graph as source content ID or `Cid` nodes. A source `Cid` node is a node that has hyperlinks from it. You can however find these elements as target nodes. A target node is a node that has hyperlinks to it. This is because embedded links to these nodes are on content items.
+Currently, the application is behind Google's OAuth authorisation framework (this is provided by the "Identity-aware proxy" service. This means that users must authenticate using an email address from a domain managed by Google Workspace. The authorised domains are listed out in the terraform configuration. Onboarding a new department is just a matter of adding its domain to the list.
 
-## How the Knowledge Graph is created
+As of March 2023, the plan is to move to the GOV.UK Signon authorisation framework in order to make GovSearch available to anyone in Government.
 
-The Knowledge Graph is created in a project in GCP (Google Cloud Platform).j [Read how it is done](/analysis/govgraph/pipeline-v2/).
+
+### Hosting and deployment
+
+The front-end runs as a Cloud Run service and is therefore run as a Docker container. The Dockerfile is in the repository. There is also a script to deploy it to production using `gcloud run deploy`. Deploying in the staging or dev environments is a matter of changing the `--project` command-line parameter in the script.
+
+
+### Analytics
+
+Google Analytics and Google Tag Manager are enabled for GovSearch.
+
+## Networking
+
+The Google Cloud project makes use of a load balancer that handles the networking configuration:
+
+Domain names: we use `govgraph.dev` as our internal domain for the production environment, as well as `govgraphstaging.dev` and `govgraphdev.dev`. Those domains, as well as the TLS certificates are managed using Cloud Domains and the terraform configuration can be found in the `terraform`, `terraform-dev` and `terraform-staging` directories in the git repo. The public-facing production domain, `gov-search.service.gov.uk` is delegated from the team managing `service.gov.uk` and we manage the mapping to the service's public IP address.

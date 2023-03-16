@@ -1,0 +1,79 @@
+---
+title: How the GOV.UK Knowledge Graph works
+weight: 33
+last_reviewed_on: 2022-02-02
+---
+
+# How the GOV.UK Knowledge Graph works
+
+<%= warning_text('The GOV.UK Knowledge Graph is no longer in use. The project has evolved into GovSearch, which is based on the same principles, reuses the same pipeline. The documentation below is kept as a record.') %>
+
+
+A [knowledge graph](https://www.turing.ac.uk/research/interest-groups/knowledge-graphs) is a collection of objects or nodes, linked together by relationships or links, representing statements or facts about a specific domain.
+
+For example, in the statement “Passport #23431 is owned by John Smith”:
+
+- “Passport #23431” and “John Smith” are subject and object nodes
+- “is owned by” is a link between these nodes
+
+The [GOV.UK Knowledge Graph](https://github.com/alphagov/govuk-knowledge-graph-gcp), also known as govGraph, is a knowledge graph that:
+
+- combines structural GOV.UK information with user behaviour into a single data structure
+- uses this data structure to build a knowledge graph with nodes that represent real-life concepts such as person name and address
+
+The Knowledge Graph allows you to:
+
+- explore graph databases and knowledge graphs for GOV.UK applications
+- collaborate with other teams and communities to help them find content
+- build products and applications that tell users about our content, such as the weighted PageRank algorithm
+- improve colleagues’ data literacy so they can make better use of GOV.UK data
+- provide early adopters with access and training to help increase use of our data applications and product
+
+## Access the Knowledge Graph
+
+There is one instance of the Knowledge Graph, the [developer-facing Knowledge Graph](https://govgraph.dev:7473/browser/) (accessible only via the VPN), and the [Gov Graph Search](https://govgraphsearch.dev) app that content designers use to answer common content questions.
+
+## Data sources
+
+The Knowledge Graph has 4 data sources:
+
+- the [Content Store](https://github.com/alphagov/content-store)
+- the [GOV.UK Publishing API](https://github.com/alphagov/publishing-api)
+- BigQuery Google Analytics data
+
+### Content Store
+
+We use the Content Store to build a structural network. In the structural network:
+
+- the network nodes are GOV.UK content items, mostly corresponding to pages on GOV.UK
+- the network edges are hyperlinks between those content items
+
+In this context, a page is a GOV.UK content item, not a URL.
+
+The Content Store is also used to create:
+
+- node labels or node categories, like Brexit or Farming
+- additional nodes like Taxon, Step-by-Step and Chapter nodes
+- relationships between nodes and/or node types types to the graph, like "has_taxon", "has_organisation"
+
+### Publishing API
+
+The Publishing API enriches the network of content-item nodes by linking these nodes to content metadata such as publishing organisation, departmental organisation and people within these organisations.
+
+### Google Analytics
+
+We use Google Analytics data from the day before to build a functional network.
+
+This network visualises user movement between specified content items (pages), which captures how users are navigating to and from these pages.
+
+## Knowledge graph limitation
+
+The Knowledge Graph does not fully represent the GOV.UK website because the graph uses the Content Store to create the content item network nodes.
+
+This means that the Knowledge Graph includes the GOV.UK content, but not dynamic elements or elements rendered by the rendering app.
+
+This also means that elements like `/browse` and `/topic` pages are not in the Knowledge Graph as source content ID or `Cid` nodes. A source `Cid` node is a node that has hyperlinks from it. You can however find these elements as target nodes. A target node is a node that has hyperlinks to it. This is because embedded links to these nodes are on content items.
+
+## How the Knowledge Graph is created
+
+The Knowledge Graph is created in a project in GCP (Google Cloud Platform). [Read how it is done](/analysis/govgraph/pipeline-v2/).
