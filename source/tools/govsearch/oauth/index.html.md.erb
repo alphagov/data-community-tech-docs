@@ -1,0 +1,77 @@
+---
+title: GovSearch on GOV.UK Signon
+weight: 33
+last_reviewed_on: 2023-03-22
+review_in: 6 months
+---
+
+# GovSearch on GOV.UK Signon
+
+## What is it
+
+GOV.UK Signon is a single sign-on system used by GOV.UK publishing applications, such as Whitehall or Publisher. The application running it is called [signon](https://docs.publishing.service.gov.uk/repos/signon.html) and manages accounts for the users of those applications across government. This includes credential managements and access rights (e.g. what applications a specific user has access to).
+
+signon implements the OAuth2 standard, which means that any application that supports the standard can connect to signon (if registered). Most of the GOV.UK applications use the [gds-sso](support OAuth2) client implementation to easily connect to signon without having to look into the details of OAuth. Since GovGraphSearch is an express.js application, it uses another implementation called [Passport](https://www.passportjs.org/concepts/authentication/oauth/).
+
+The signon developers have decided to stick to version 22 of OAuth2. However the Passport documentation doesn't indicate what Passport version that corresponds to. There's a certain amount of risk that the two versions may not be 100% compatible.
+
+
+## How it works
+
+We don't need to go into the details of the OAuth protocol since a lot of it is abstracted by Passport. What the user experiences is:
+
+1. User goes to gov-search.service.gov.uk in their browser
+2. GovSearch checks if the user is logged in (via a specific cookie)
+    1. if they are logged in, continue and show the GovSearch start page
+    2. otherwise:
+       1. GovSearch redirects the user's browser to the signon login page
+       2. user authenticates with their credentials and 2FA
+       3. signon sends the user back to GovSearch
+
+
+## Implementation notes
+
+### User information
+
+As the [signon and OAuth2 documentation](https://docs.publishing.service.gov.uk/repos/signon/oauth.html) explains, signon is both an authorisation server and a resource owner: not only it provides login functionality but it can also provide information about the logged-in user to the application. Because GovSearch doesn't need to know anything about the user, its code ignores most of the user information provided by signon.
+
+### Redirect flow
+
+The GovSearch code has three HTTP endpoints:
+
+* `https://gov-search.service.gov.uk/`: where the user initially goes and where they end up after authenticating.
+
+* `https://gov-search.service.gov.uk/login`: where the application redirects the user when unauthenticated. This is followed to another redirect to signon to carry out checking the user credentials
+
+* `https://gov-search.service.gov.uk/auth/gds/callback`: upon successful authentication, signon is configured to send the user back to that endpoint. GovSearch then check if indeed the request has a valid authentication cookie, and in that case redirects the browser to the app's homepage (`/`).
+
+The code for those 3 enpoints is in the application [main source file](https://github.com/alphagov/govuk-knowledge-graph-search/blob/main/app.ts#L54)
+
+
+### Direct search links
+
+GovSearch is designed so that specific searches can be shared just by sharing their URL. For instance:
+
+`https://gov-search.service.gov.uk/?search-type=link&link-search-url=%2Fmaternity-pay-leave`
+
+If user follows this URL but is not authenticated, the authentication process will lose the URL parameters and the authenticated user will just see the empty start page. If the user is already authenticated, then GovSearch will show the results of the search as specified in the URL.
+
+### Authenticated API calls
+
+GovSearch has an API, including endpoints like `/search` or `/person`, that the front-end calls to fetch search results to render in the browser. Authentication is also enabled for all API endpoints, even though it wouldn't be possible to actually authenticate through those routes. We don't currently anticipate external access to the API, but if we needed to support it we would need to change the current behaviour to use [bearer tokens](https://docs.publishing.service.gov.uk/repos/signon/oauth.html#api-requests), as other signon APIs do.
+
+### Registering the application in signon
+
+In order for GovSearch to be visible when looking at the list of available applications on signon, it needs to be registered on a running signon instance. The process is described in the [signon usage documentation](https://docs.publishing.service.gov.uk/repos/signon/usage.html). The rake task to run is:
+
+```
+rake applications:create \
+name=GovSearch \
+description="Search content on GOV.UK" \
+home_uri="https://gov-search.service.gov.uk" \
+redirect_uri="https://gov-search.service.gov.uk/auth/gds/callback"
+```
+
+This is for the production environment. For integration and staging, the domain of the `home_uri` and `redirect_uri` parameters should be set to the integration and staging domains of GovSearch, respectively.
+
+Running this command will register GovSearch but will also return two key-value pairs used in the OAuth process called `client_id` and `client_secret` . Those two parameters are essential for GovSearch to connect to signon. They must be made available to GovSearch via environment variables: `OAUTH_ID` and `OAUTH_SECRET`. Those values are secrets, and should therefore be stored in Google Cloud's secret manager feature of the govuk-knowledge-graph project.

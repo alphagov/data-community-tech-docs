@@ -12,7 +12,7 @@ GovSearch is a tool to help content designers find content on GOV.UK. It collect
 
 ## Overview
 
-* The frontend is available to users at [https://gov-search.service.gov.uk](https://gov-search.service.gov.uk). Users need to authenticate using their Google account for selected government domains (such as digital.cabinet-office.gov.uk). In the future we will use GOV.UK Signon for authentication.
+* The frontend is available to users with access to GOV.UK Signon
 
 * The service is hosted on GCP, mainly within the govuk-knowledge-graph project. The staging and development environment are hosted in separate projects, `govuk-knowledge-graph-staging` and `govuk-knowledge-graph-dev`, respectively.
 
@@ -67,10 +67,7 @@ it, are explained in the repository's README file.
 
 ### Authorisation
 
-Currently, the application is behind Google's OAuth authorisation framework (this is provided by the "Identity-aware proxy" service. This means that users must authenticate using an email address from a domain managed by Google Workspace. The authorised domains are listed out in the terraform configuration. Onboarding a new department is just a matter of adding its domain to the list.
-
-As of March 2023, the plan is to move to the GOV.UK Signon authorisation framework in order to make GovSearch available to anyone in Government.
-
+See the [GovSearch Signon page](oauth/).
 
 ### Hosting and deployment
 
