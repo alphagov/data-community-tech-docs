@@ -65,11 +65,11 @@ GovSearch has an API, including endpoints like `/search` or `/person`, that the 
 In order for GovSearch to be visible when looking at the list of available applications on signon, it needs to be registered on a running signon instance. The process is described in the [signon usage documentation](https://docs.publishing.service.gov.uk/repos/signon/usage.html). The rake task to run is:
 
 ```
-rake applications:create \
 name=GovSearch \
-description="Search content on GOV.UK" \
-home_uri="https://gov-search.service.gov.uk" \
-redirect_uri="https://gov-search.service.gov.uk/auth/gds/callback"
+redirect_uri=https://gov-search.service.gov.uk/auth/gds/callback \
+description="Search engine for GOV.UK content" \
+home_uri=https://gov-search.service.gov.uk/ \
+govuk_setenv signon bundle exec rake 'applications:create'
 ```
 
 This is for the production environment. For integration and staging, the domain of the `home_uri` and `redirect_uri` parameters should be set to the integration and staging domains of GovSearch, respectively.
