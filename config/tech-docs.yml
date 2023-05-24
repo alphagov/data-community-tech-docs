@@ -2,7 +2,7 @@
 host: https://alphagov.github.io/data-community-tech-docs
 
 # Header-related options
-show_govuk_logo: true
+show_govuk_logo: false
 service_name: Data Community Technical Documentation
 service_link: https://alphagov.github.io/data-community-tech-docs/ # temporary
 # permanent URL will be https://docs.data-community.publishing.service.gov.uk
