@@ -48,13 +48,17 @@ jobs:
         with:
           ruby-version: '2.6'
 
-      - name: Install bundler
-        run: |
-          gem install bundler
-
+      - name: Ruby gem cache
+        uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
       - name: Install Gems
         run: |
-          bundle install
+          bundle config path vendor/bundle
+          bundle install --jobs 4 --retry 3
 
       - name: Build Middleman site
         run: bundle exec middleman build
