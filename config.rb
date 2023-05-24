@@ -2,5 +2,10 @@ require 'govuk_tech_docs'
 
 GovukTechDocs.configure(self)
 
-config[:port] = 8080
-config[:http_prefix] = '/data-community-tech-docs'
+configure :development do
+end
+
+configure :build do
+  set :http_prefix, '/data-community-tech-docs'
+  set :port, 8080
+end
