@@ -1,5 +1,0 @@
----
-applications:
-- name: data-community-tech-docs
-  buildpacks:
-  - ruby_buildpack
