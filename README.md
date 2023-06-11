@@ -2,13 +2,6 @@
 
 This project uses the [Tech Docs Template][template], which is a [Middleman template][mmt] that you can use to build technical documentation using a GOV.UK style.
 
-You’re welcome to use the template even if your service isn’t considered part of GOV.UK, but your site or service must not:
-
-- identify itself as being part of GOV.UK
-- use the crown or GOV.UK logotype in the header
-- use the GDS Transport typeface
-- suggest that it’s an official UK government website if it’s not
-
 👉 To find out more about setting up and managing content for a website using this template, see the [Tech Docs Template documentation][tdt-docs].
 
 ## Before you start
@@ -18,9 +11,29 @@ To use the Tech Docs Template you need:
 - [Ruby][install-ruby]
 - [Middleman][install-middleman]
 
+The [tech docs template
+documentation](https://tdt-documentation.london.cloudapps.digital/create_project/get_started/#install-ruby)
+says to install the latest 2.7.x version listed at
+https://www.ruby-lang.org/en/downloads/ which is 2.7.8, but that page says that
+2.7.8 is no longer maintained, and rbenv will only install 2.7.6.  The
+documentation also says to use RVM to install Ruby, but the [GDS
+Way](https://gds-way.cloudapps.digital/manuals/programming-languages/ruby.html#conventional-tooling)
+recommends rbenv.
+
+## Create a new website
+
+- Install rbenv
+- Install Ruby version 2.7.6 `rbenv install 2.7.6`
+- Activate Ruby version 2.7.6 in your current terminal `rbenv shell 2.7.6`
+- Install an old version of a dependency `rbenv exec gem install contracts -v 0.16.1`
+- Install middleman `rbenv exec gem install middleman`
+- Use middleman to create a new website `rbenv exec middleman init <folder-name> -T alphagov/tech-docs-template`
+- Change directory into the new website `cd <folder-name>`
+- Install packages that the website requires `rbenv exec bundle install`
+
 ## Making changes
 
-To make changes to the documentation for the Tech Docs Template website, edit files in the `source` folder of this repository.
+To make changes to the content of this website, edit files in the `source` folder of this repository.
 
 You can add content by editing the `.html.md.erb` files. These files support content in:
 
@@ -34,11 +47,14 @@ You can add content by editing the `.html.md.erb` files. These files support con
 
 ## Preview your changes locally
 
-To preview your new website locally, navigate to your project folder and run:
-
-```sh
-bundle exec middleman server
-```
+- Install rbenv
+- Install Ruby version 2.7.6 `rbenv install 2.7.6`
+- Activate Ruby version 2.7.6 in your current terminal `rbenv shell 2.7.6`
+- Install an old version of a dependency `rbenv exec gem install contracts -v 0.16.1`
+- Install middleman `rbenv exec gem install middleman`
+- Change directory into the website `cd <folder-name>`
+- Install packages that the website requires `rbenv exec bundle install`
+- View the website on your device `bundle exec middleman server`
 
 👉 See the generated website on `http://localhost:4567` in your browser. Any content changes you make to your website will be updated in real time.
 
@@ -58,7 +74,9 @@ Every time you run this command, the `build` folder gets generated from scratch.
 
 ## Troubleshooting
 
-Run `bundle update` to make sure you're using the most recent Ruby gem versions.
+Do not run `bundle update` because the website only builds with the current
+package versions, given the old version of ruby.  You could try using a more
+recent version of ruby, and recent versions of all the packages.
 
 Run `bundle exec middleman build --verbose` to get detailed error messages to help with finding the problem.
 
