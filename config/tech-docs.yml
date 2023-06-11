@@ -1,19 +1,18 @@
 # Host to use for canonical URL generation (without trailing slash)
-host: https://alphagov.github.io/data-community-tech-docs
+host: docs.data-community.publishing.service.gov.uk
 
 # Header-related options
 show_govuk_logo: false
 service_name: Data Community Technical Documentation
-service_link: https://alphagov.github.io/data-community-tech-docs/ # temporary
-# permanent URL will be https://docs.data-community.publishing.service.gov.uk
+service_link: https://docs.data-community.publishing.service.gov.uk
 phase:
 
 # Links to show on right-hand-side of header
 header_links:
-  About: https://alphagov.github.io/data-community-tech-docs/
-  Get Started: https://alphagov.github.io/data-community-tech-docs/
+  About: https://docs.data-community.publishing.service.gov.uk
+  Get Started: https://docs.data-community.publishing.service.gov.uk
   Documentation: /
-  Support: https://alphagov.github.io/data-community-tech-docs/
+  Support: https://docs.data-community.publishing.service.gov.uk
 
 # Enables search functionality. This indexes pages only and is not recommended for single-page sites.
 enable_search: true

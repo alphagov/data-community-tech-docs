@@ -30,6 +30,16 @@ recommends rbenv.
 - Use middleman to create a new website `rbenv exec middleman init <folder-name> -T alphagov/tech-docs-template`
 - Change directory into the new website `cd <folder-name>`
 - Install packages that the website requires `rbenv exec bundle install`
+- Change the contents of the file `config.rb` to the following
+    ```ruby
+    require 'govuk_tech_docs'
+
+    GovukTechDocs.configure(self)
+
+    configure :build do
+      activate :relative_assets
+    end
+    ```
 
 ## Making changes
 
