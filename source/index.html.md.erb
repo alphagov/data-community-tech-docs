@@ -22,3 +22,105 @@ Use this documentation if you are a member of Data Services and need to find out
 - reporting best practice and methodology
 
 Contact one of the Data Services teams you have any questions or feedback.
+
+## Contribute to the documentation
+
+This project uses the [Tech Docs Template][template], which is a [Middleman template][mmt] that you can use to build technical documentation using a GOV.UK style.
+
+It is easiest to contribute by editing files directly in GitHub, but you won't be able to preview your changes.  To preview your changes, you will have to install some software.
+
+### Make changes
+
+To make changes to the content of this website, edit files in the `source` folder of this repository.
+
+You can add content by editing the `.html.md.erb` files. These files support content in:
+
+- Markdown
+- HTML
+- Ruby
+
+👉 You can use Markdown and HTML to [generate different content types][example-content] and [Ruby partials to manage content][partials].
+
+👉 Learn more about [producing more complex page structures][multipage] for your website.
+
+### Contribute without previewing your changes
+
+1. Edit the files directly in GitHub
+2. Open a pull request
+3. Merge the pull request
+
+When the pull request is merged, GitHub will automatically render the changes that you made.  It will take about a minute.  You can monitor the progress by viewing the [GitHub action][github-action] in your browser.
+
+### Preview your changes
+
+Follow the steps in the section [install the tech docs template](#install-the-tech-docs-template).  Then follow the steps below.
+
+1. Use git to clone this repository to your device.
+2. Navigate to the cloned repository on your device.
+3. Activate Ruby version 2.7.6 in your current terminal by running `rbenv shell 2.7.6`.
+4. Use rbenv to install all the required Ruby gems by running `rbenv exec bundle install`.
+5. Make some changes to the content of the site, in the `source` directory.
+6. Preview the changes by running `bundle exec middleman serve`.
+
+👉 See the generated website on `http://localhost:4567` in your browser. Any content changes you make to your website will be updated in real time.
+
+To shut down the Middleman instance running on your machine, use `ctrl+C`.
+
+If you make changes to the `config/tech-docs.yml` configuration file, you need to restart Middleman to see the changes.
+
+## Create a new website
+
+Follow the steps in the section [install the tech docs template](#install-the-tech-docs-template).  Then follow the steps below.
+
+1. Activate Ruby version 2.7.6 in your current terminal `rbenv shell 2.7.6`
+2. Install an old version of a dependency `rbenv exec gem install contracts -v 0.16.1`
+3. Install middleman `rbenv exec gem install middleman`
+4. Use middleman to create a new website `rbenv exec middleman init <folder-name> -T alphagov/tech-docs-template` where `<folder-name>` is the name of a folder to create that will contain the website
+5. Navigate into the folder that was just created `cd <folder-name>`
+6. Install packages that the website requires `rbenv exec bundle install`
+
+## Install the tech docs template
+
+You will need to install the following software.
+
+- Xcode command line tools (if you are using a Mac)
+- Node.js
+- Ruby
+
+1. Install Xcode (if necessary) and Node.js by following the instructions in the [tech docs template documentation][tdt-get-started].
+2. Install [rbenv][rbenv].  The
+[Tech docs template docs][tdt-install-ruby] recommends installing RVM instead of rbenv, however the [GDS Way][gds-way-ruby-tooling] recommends rbenv.
+3. Open a terminal.
+4. Use rbenv to install Ruby version 2.7.6 by running `rbenv install 2.7.6`. The [Tech docs template docs][tdt-install-ruby] recommends the latest 2.7.x version listed at
+https://www.ruby-lang.org/en/downloads/ which is a later version, 2.7.8, but rbenv will only install 2.7.6, and neither version is maintained anyway.
+
+Next follow the steps in the section [Create a new website](#create-a-new-website) or [Preview your changes](#preview-your-changes).
+
+## Troubleshooting
+
+Do not run `bundle update` because the website only builds with the current
+package versions, given the old version of ruby.  You could try using a more
+recent version of ruby, and recent versions of all the packages.
+
+Run `bundle exec middleman build --verbose` to get detailed error messages to help with finding the problem.
+
+## Licence
+
+The documentation is [© Crown copyright][copyright] and available under the terms of the [Open Government 3.0][ogl] licence.
+
+[copyright]: http://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/
+[ogl]: http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/
+[mmt]: https://middlemanapp.com/advanced/project_templates/
+[template]: https://github.com/alphagov/tech-docs-template
+[tdt-docs]: https://tdt-documentation.london.cloudapps.digital
+[tdt-install-ruby]: https://tdt-documentation.london.cloudapps.digital/create_project/get_started/#install-ruby
+[config]: https://tdt-documentation.london.cloudapps.digital/amend_project/configuration/#configuration-options
+[frontmatter]: https://tdt-documentation.london.cloudapps.digital/frontmatter.html#frontmatter
+[multipage]: https://tdt-documentation.london.cloudapps.digital/create_project/multipage/#build-a-multipage-documentation-site
+[example-content]: https://tdt-documentation.london.cloudapps.digital/amend_project/content/#change-your-content
+[partials]: https://tdt-documentation.london.cloudapps.digital/create_project/single_page/#add-partial-lines
+[contribute]: https://tdt-documentation.london.cloudapps.digital/support/#contribute
+[github-action]: https://github.com/alphagov/data-community-tech-docs/actions/workflows/deploy.yml
+[tdt-get-started]: https://tdt-documentation.london.cloudapps.digital/create_project/get_started/#get-started
+[rbenv]: https://github.com/rbenv/rbenv
+[gds-way-ruby-tooling]: https://gds-way.cloudapps.digital/manuals/programming-languages/ruby.html#conventional-tooling
