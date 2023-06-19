@@ -9,14 +9,21 @@ review_in: 6 months
 
 GovSearch is a tool to help content designers find content on GOV.UK. It collects most of the content on www.gov.uk from multiple data sources and indexes it to provide an advanced search engine.
 
+The production version of the app is available to GDS G-suite users at [https://gov-search.service.gov.uk](https://gov-search.service.gov.uk).  It is intended to be made available to GOV.UK Signon users.
 
-## Overview
+The development version of the app is available to users of the integration environment of GOV.UK Signon at [https://signon.integration.publishing.service.gov.uk](https://signon.integration.publishing.service.gov.uk).
 
-* The frontend is available to users with access to GOV.UK Signon
+## Technology
 
-* The service is hosted on GCP, mainly within the govuk-knowledge-graph project. The staging and development environment are hosted in separate projects, `govuk-knowledge-graph-staging` and `govuk-knowledge-graph-dev`, respectively.
+GovSearch runs on GCP (Google Cloud Platform).  Most of the data is obtained from GOV.UK via the [GOV.UK S3 Mirror](/engineering/govuk-s3-mirror/), which fetches nightly GOV.UK database backups and makes them available in a GCP bucket.
 
-* The source code is on github, at [alphagov/govuk-knowledge-graph-gcp](https://github.com/alphagov/govuk-knowledge-graph-gcp) and [alphagov/govuk-knowledge-graph-search](https://github.com/alphagov/govuk-knowledge-graph-search)
+The website is written in Typescript, using the Express framework.  It fetches search results from BigQuery.
+
+## Source code
+
+The source code of the GCP configuration and data preparation is [alphagov/govuk-knowledge-graph-gcp](https://github.com/alphagov/govuk-knowledge-graph-gcp).
+
+The  source code of the website is [alphagov/govuk-knowledge-graph-search](https://github.com/alphagov/govuk-knowledge-graph-search).
 
 ### Data pipeline
 
@@ -24,50 +31,48 @@ Every day:
 
 - New backups of the GOV.UK Content Store and the Publishing API become available in the [govuk-s3-mirror_govuk-integration-database-backups](https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-integration-database-backups;tab=objects?prefix=&forceOnObjectsSortingFiltering=false) Bucket, as a result of the [S3 Mirror copy process](/engineering/govuk-s3-mirror/).
 
-- A GCP Workflow (defined in the govuk-knowledge-graph project) is triggered by the mirror's Pub/Sub topic and creates 2 virtual machines, one running MongoDB to recreate an instance of the content store, and one running Postgres to recreate an instance of the Publishing API.
+- A GCP Workflow (defined in the govuk-knowledge-graph project) is triggered by the mirror's Pub/Sub topic and creates two virtual machines, one running MongoDB to recreate an instance of the content store, and one running Postgres to recreate an instance of the Publishing API.
 
-- From those two databases, a process creates multiple CSV files
+- From those two databases, a process creates CSV files, uploads them to a bucket, imports them into BigQuery and executes some queries in BigQuery to derive other tables.
 
-- From those CSV files, a process spins up a Neo4j instance and another creates tables in BigQuery that receives content from the CSV files
+- Scheduled queries in BigQuery run once a day to derive tables for the GovSearch app to use directly.
 
-- At that point all the data is ready for the two frontends:
-
-    - Neo4j: available at [https://govgraph.dev:7473/](https://govgraph.dev:7473/) (VPN required - only available 9 to 7)
-    - GovSearch: available at [https://gov-search.service.gov.uk](https://gov-search.service.gov.uk). GovSearch is available 24/7 but might miss data while BigQuery tables are being deleted and repopulated daily.
+- GovSearch: available at [https://gov-search.service.gov.uk](https://gov-search.service.gov.uk). GovSearch is available 24/7 but might be missing some data for a few minutes at about 6am when BigQuery tables are deleted and repopulated.
 
 While Gov Search is the normal way to use the service, the Neo4j frontend allows for more complex searches using the Cypher language.
 
+See the documentation of the [Knowledge Graph Data Pipeline](../../engineering/knowledge-graph-pipeline-v2) for more information about the batch data updates.
 
 ## Hosting
 
-GovGraph is hosted in the govuk-knowledge-graph google cloud project. It uses the following services:
+GovGraph is hosted in the govuk-knowledge-graph google cloud project. It uses the following services.
 
-- Load balancer (managing the domain names, external and internal, authorisation)
-- Cloud run (to run the front-end)
-- BigQuery (to hold the data)
-- Cloud Storage, to store the CSV files
-- Cloud compute to run the Neo4j, mongo and postgres VMs
-- Workflow to define the data pipeline
+- Load balancer to manage the domain names and user authentication
+- Cloud run to run the front-end
+- BigQuery to hold the data
+- Cloud compute to run the Neo4j, mongo and postgres virtual machines
+- Workflows, Pub/Sub and Eventarc to run the batch data updates
 
 The terraform configuration describes how each service is set up.
 
 ## Front-end
 
-The user-facing application is hosted as a Cloud Run service. Its source code is in a separate repository (alphagov/govuk-knowledge-graph-search).
+The user-facing application is hosted as a Cloud Run service. Its [source code](alphagov/govuk-knowledge-graph-search) is in a separate repository.
 
 ### Architecture
 
-It consists of an API, which fetches the search results from BigQuery and a
-single-page app (SPA), which takes user input, queries the API, and displays the
+It is written in TypeScript, and consists of:
+
+- an API, an ExpressJS server which fetches the search results from BigQuery
+- a single-page app (SPA), which takes user input, queries the API, and displays the
 search results.
 
-Both the APIs and the SPA are written in TypeScript. The API is an ExpressJS
-server. The software architecture, as well as instructions on how to run/develop
+The software architecture, as well as instructions on how to run and develop
 it, are explained in the repository's README file.
 
 ### Authorisation
 
-See the [GovSearch Signon page](oauth/).
+See the [GovSearch Signon page](oauth).
 
 ### Hosting and deployment
 
@@ -76,10 +81,20 @@ The front-end runs as a Cloud Run service and is therefore run as a Docker conta
 
 ### Analytics
 
-Google Analytics and Google Tag Manager are enabled for GovSearch.
+Google Analytics and Google Tag Manager are enabled for GovSearch in the production environment.
 
 ## Networking
 
-The Google Cloud project makes use of a load balancer that handles the networking configuration:
+The Google Cloud project makes use of a load balancer that handles the networking configuration.
 
-Domain names: we use `govgraph.dev` as our internal domain for the production environment, as well as `govgraphstaging.dev` and `govgraphdev.dev`. Those domains, as well as the TLS certificates are managed using Cloud Domains and the terraform configuration can be found in the `terraform`, `terraform-dev` and `terraform-staging` directories in the git repo. The public-facing production domain, `gov-search.service.gov.uk` is delegated from the team managing `service.gov.uk` and we manage the mapping to the service's public IP address.
+### Domain names
+
+The public-facing production domain, `gov-search.service.gov.uk` is delegated from the team managing `service.gov.uk`. We manage the mapping to the service's public IP address.
+
+We use the following domains internally.
+
+- `govgraphsearch.dev` for the production environment
+- `govgraphsearchstaging.dev` for the staging environment
+- `govgraphsearchdev.dev` for the development environment
+
+Those domains and their corresponding TLS certificates are managed using Cloud Domains.
