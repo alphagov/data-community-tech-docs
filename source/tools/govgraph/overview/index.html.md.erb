@@ -115,14 +115,10 @@ database](#publishing-api-database), which also contains some information that
 isn't available in the Content Store database, such as roles, and appointments
 to roles, if they aren't referred to in the `expanded_links` field of any page.
 
-GOV.UK will soon replace the current MongoDB implementation of the Content Store
-database with a PostgreSQL implementation, containing the same data, in single
-table with a single column of type JSON.
-
 #### Restoring the backup file
 
 A sequence of steps runs automatically once a new file becomes available in the
-[govuk-s3-mirror_govuk-integration-database-backups][govuk-s3-mirror-bucket]
+[govuk-s3-mirror_govuk-integration-database-backups](https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-integration-database-backups)
 bucket.
 
 1. A new backup database file is created in the
@@ -233,7 +229,7 @@ table with a single column of type JSON.
 #### Restoring the backup file
 
 A sequence of steps runs automatically once a new file becomes available in the
-[govuk-s3-mirror_govuk-integration-database-backups][govuk-s3-mirror-bucket]
+[govuk-s3-mirror_govuk-integration-database-backups](https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-integration-database-backups)
 bucket.
 
 1. A new backup database file is created in the
