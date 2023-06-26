@@ -1,0 +1,571 @@
+---
+title: GovGraph Overview
+weight: 34
+last_reviewed_on: 2023-06-23
+review_in: 6 months
+---
+
+# GovGraph Overview
+
+GovGraph is a rearrangement of GOV.UK content data to facilitate data analysis.
+
+Products that use GovGraph data include:
+
+- [GovSearch](../govsearch/)
+- GovNER, a named entity recognition model.
+
+GovGraph gets most of its data from nightly backups of the GOV.UK Content Store
+database and the GOV.UK Publishing API database, which it gets from the [GOV.UK
+S3 Mirror](../govuk-s3-mirror/).
+
+GovGraph makes data analysis of GOV.UK content data easier by:
+
+- Making it available on GCP (Google Cloud Platform), where the Data Services
+teams can govern access permissions themselves.
+- Making bulk data available in BigQuery, which can serve large analytical loads
+without disrupting GOV.UK's transactional services.
+- Deriving useful subsets and transformations of the data, such as extracting
+the plain text of HTML content.
+
+## Where GovGraph is
+
+The code of GovGraph is in
+[GitHub](https://github.com/alphagov/govuk-knowledge-graph-gcp).
+
+GovGraph infrastructure is in GCP, in several different projects.
+
+- [govuk-knowledge-graph](https://console.cloud.google.com/?project=govuk-knowledge-graph) is the production project
+- [govuk-knowledge-graph-staging](https://console.cloud.google.com/?project=govuk-knowledge-graph-staging) is the staging project
+- [govuk-knowledge-graph-dev](https://console.cloud.google.com/?project=govuk-knowledge-graph-dev) is the development project
+- Similar projects that might have been created since this documentation was
+written
+
+This arrangment of different versions of GovGraph are intended to mimic the
+various GOV.UK environments.  One important difference is that, whereas GOV.UK
+Staging is rebuilt every night from GOV.UK Production, that is not the case for
+GovGraph staging.
+
+## Data model
+
+There is no single data model for GOV.UK.
+
+GovGraph tries to preserve the illusion that there is a direct correspondence
+between a thing (tangible or conceptual) and a URL.  For example, the following
+are things that happen to have URLs on GOV.UK.
+
+- [page](https://www.gov.uk/api/content/government/history) about the history of the UK government
+- [person](https://www.gov.uk/government/people/winston-churchill), Winston Churchill
+- [role](https://www.gov.uk/government/ministers/prime-minister), Prime Minister
+
+It isn't always possible to maintain this illusion.  For example, the content
+item
+[https://www.gov.uk/api/content/how-to-vote](https://www.gov.uk/api/content/how-to-vote)
+in GOV.UK's Content API database corresponds to several different URLs, one for
+each 'part' of the content item:
+
+- [https://www.gov.uk/how-to-vote](https://www.gov.uk/how-to-vote)
+- [https://www.gov.uk/how-to-vote/voting-in-person](https://www.gov.uk/how-to-vote/voting-in-person)
+- [https://www.gov.uk/how-to-vote/postal-voting](https://www.gov.uk/how-to-vote/postal-voting)
+- [https://www.gov.uk/how-to-vote/voting-by-proxy](https://www.gov.uk/how-to-vote/voting-by-proxy)
+- [https://www.gov.uk/how-to-vote/voting-from-abroad](https://www.gov.uk/how-to-vote/voting-from-abroad)
+- [https://www.gov.uk/how-to-vote/photo-id-youll-need](https://www.gov.uk/how-to-vote/photo-id-youll-need)
+
+Another example is a content item with ID
+`847816b4-c0f1-11e4-8223-005056011aef`, which represents the role "Govenor to
+Bermuda", which doesn't have a URL on GOV.UK.  You can check that the role
+exists, because it is mentioned in a page about a person who has held the role,
+[Rena Lalgie](https://www.gov.uk/government/people/rena-lalgie), and it appears
+in the corresponding [content
+item](https://www.gov.uk/api/content/government/people/rena-lalgie).
+
+## Data pipeline
+
+GOV.UK data is processed in daily batches, when backup files of GOV.UK databases
+become available.  The steps are similar for both the Publishing API database
+and the Content Store database.
+
+1. A new copy of a GOV.UK database backup file becomes available from the
+[GOV.UK S3 Mirror](../govuk-s3-mirror/).
+2. A virtual machine creates a new database, and restores the database backup
+file into it.
+3. Queries extract the data into CSV files.
+4. The CSV files are uploaded to a bucket.
+5. BigQuery imports the CSV files from the bucket into tables in the `content` dataset.
+6. BigQuery queries derive other tables.
+7. The virtual machine and its database are deleted.
+
+These steps are described in more detail below.
+
+### Content Store database
+
+The Content Store database contains the current version of every page on GOV.UK.
+It is a MongoDB database, with a collection called `content_items` that contains
+one document per page on GOV.UK, where 'page' roughly corresponds to a URL (see
+the section on the [data model](#data-model) for exceptions).  Each document has
+a type, from among a set of [document type
+schemas](https://github.com/alphagov/govuk-content-schemas).  Consider
+subscribing to notifications of changes in that repository.
+
+The database also contains information about some things that are not
+necessarily pages, such as roles, and appointments to roles.  Those things are
+in the `expanded_links` field of each document.
+
+Previous versions of GOV.UK pages are in the [Publishing API
+database](#publishing-api-database), which also contains some information that
+isn't available in the Content Store database, such as roles, and appointments
+to roles, if they aren't referred to in the `expanded_links` field of any page.
+
+GOV.UK will soon replace the current MongoDB implementation of the Content Store
+database with a PostgreSQL implementation, containing the same data, in single
+table with a single column of type JSON.
+
+#### Restoring the backup file
+
+A sequence of steps runs automatically once a new file becomes available in the
+[govuk-s3-mirror_govuk-integration-database-backups][govuk-s3-mirror-bucket]
+bucket.
+
+1. A new backup database file is created in the
+[govuk-integration-database-backups](https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-integration-database-backups)
+bucket in the [govuk-s3-mirror](../govuk-s3-mirror/) project. That bucket
+publishes a notification to a Pub/Sub topic in each of the
+`govuk-knowledge-graph` projects.  All subsequent steps take place in those
+projects.
+    - [Pub/Sub configuration in the GOV.UK S3 Mirror](https://github.com/alphagov/govuk-s3-mirror/blob/main/terraform/pubsub.tf)
+    - [Pub/Sub configuration in GovGraph production](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/terraform/pubsub.tf)
+1. An EventArc trigger subscribes to the Pub/Sub topic, receives the
+notification, and triggers a Workflow.  It passes the payload of the
+notification into the Workflow.
+    - [EventArc and Workflow configuration in GovGraph production](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/terraform/workflow.tf)
+1. The Workflow parses the payload to check the filename of the file that was
+created.  If the filename is of a content store production database backup file,
+then the Workflow creates a Compute Instance from an Instance Template. The
+Workflow attaches some metadata to the Compute Instance, including the filename,
+the name of the bucket that the file is in, and information about a Docker image
+for the Compute Instance to host when it starts.
+    - [Workflow configuration in GovGraph production](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/terraform/workflow.tf)
+    - [Compute Instance configuration in GovGraph production](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/terraform-dev/gce.tf)
+1. The Compute Instance fetches and runs a Docker Image from the Artifact Registry.
+The Docker Image has MongoDB installed.  The image is built by a GitHub Action,
+from a `Dockerfile` in the [GitHub
+Repository](https://github.com/alphagov/govuk-knowledge-graph-gcp), and is
+rebuilt whenever a new version of the `Dockerfile` is merged into the `main`
+branch.
+    - [Artifact Registry configuration in GovGraph production](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/terraform/artifact-registry.tf)
+    - [Dockerfile](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/docker/mongodb/Dockerfile)
+    - [GitHub Action to build the Docker image in production](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/.github/workflows/docker-mongodb.yml)
+1. The Docker instance fetches and executes a Bash script from the `repository`
+bucket. That bucket contains the HEAD of the `main` branch of the GitHub
+repository.  The bucket name is prefixed with the name of the GCP project that
+it is in, because bucket names must be globally unique.
+    - `repository` bucket in the [production](https://console.cloud.google.com/storage/browser/govuk-knowledge-graph-repository), [staging](https://console.cloud.google.com/storage/browser/govuk-knowledge-graph-staging-repository) and [dev](https://console.cloud.google.com/storage/browser/govuk-knowledge-graph-dev-repository) projects.
+    - GitHub Actions that put the HEAD of a each branch into the `repository` bucket in each project: [main branch into production](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/.github/workflows/rsync.yml), [staging branch into staging](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/.github/workflows/rsync-staging.yml), [dev branch into development](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/.github/workflows/rsync-dev.yml)
+    - [Bash script](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/docker/mongodb/run.sh)
+1. The bash script running in the Docker instance fetches the metadata of the
+compute instance that Docker is running on, to find out the filename and bucket
+of the database backup file.  It fetches that file, starts a MongoDB database,
+and restores the file to the MongoDB database.
+
+#### Extracting and transforming data
+
+The Content Store database is a MongoDB database. Each item in the database is a
+JSON document.  GovGraph queries the JSON documents, and emits the results
+either as lines of JSON documents, or as CSV files.
+
+- The simplest queries are written with the `mongoexport` command, to
+  extract data as a CSV file.
+- Complex queries are written in `.js` files in the `src/mongodb/js` directory.
+  These are executed with the `mongo` command, to create new datasets in the
+  database, called "collections".  The `mongoexport` command is then used to
+  extract the data as either a CSV file or a JSON file.
+
+Extracted data is sometimes further processed by [Python and Ruby
+scripts](https://github.com/alphagov/govuk-knowledge-graph-gcp/tree/main/src/utils)
+and [shell functions](src/mongodb/functions.sh).  The Python and Ruby scripts
+require the data to have been extracted as a JSON file.  They consume the JSON
+data, transform it, and emit CSV data.  [GNU parallel](https://www.gnu.org/software/parallel) is used to run
+several instances of a Python script on a single input file in parallel.  The use of GNU Parallel requires the data to be in JSON format rather than CSV, because GNU Parallel splits the input file by newline characters, and MongoDB's JSON format guarantees to escape any newline characters in the value of a field, so that each line of the exported file corresponds to exactly one JSON document.  GNU Parallel can cope with newline characters in quoted fields of a CSV file, but it is very slow to do so.
+
+By this point, all the data is in the form of CSV files. These are then compressed and uploaded into the `data-processed` bucket in the [production](https://console.cloud.google.com/storage/browser/govuk-knowledge-graph-data-processed), [staging](https://console.cloud.google.com/storage/browser/govuk-knowledge-graph-staging-data-processed) and [dev](https://console.cloud.google.com/storage/browser/govuk-knowledge-graph-dev-data-processed) projects.
+
+Once the CSV files are in the bucket, the virtual machine uses the `bq`
+command-line tool to tell BigQuery to:
+
+1. import the CSV files into tables in the `content` datastet
+2. derive some more tables by executing [queries](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/src/mongodb/bigquery)
+
+Some of derived tables are aggregations.  For example, the
+tables `content.body`, `content.body_content`, `content.place_content`,
+`content.step_by_step_content`, `content.transaction_content` and
+`content.role_content` are aggregated into a single table `content.content`.
+The new tables are then exported to a compressed CSV file in the
+`data-processed` bucket, because it is sometimes easier to obtain bulk data from
+the bucket than from BigQuery, due to limitations on the amount of data that
+BigQuery will export in one go.
+
+Other derived tables are designed to represent useful concepts such as "page",
+"organisation", and "role".  These are in the `graph` dataset.  The name `graph`
+was chosen when the tables in this dataset were intended to be loaded into a
+Neo4j graph database.
+
+At the end of this process, the virtual machine deletes itself.  The database is
+no longer required, because the data is now in BigQuery and a bucket.
+
+### Publishing API database
+
+The Publishing API database is a PostgreSQL database.  It contains every version
+of every content item on GOV.UK, since about 2017.  Most content items are
+pages, but some content items are other things, such as roles, and appointments
+to roles.  It also contains all links between content items.
+
+Information must be pieced together from entries in several tables. Each
+document has a type, from among a set of [document type
+schemas](https://github.com/alphagov/govuk-content-schemas). Consider
+subscribing to notifications of changes in that repository.
+
+Current versions of GOV.UK pages are in the [Content Store
+database](#content-store-database).
+
+GOV.UK will soon replace the current MongoDB implementation of the Content Store
+database with a PostgreSQL implementation, containing the same data, in single
+table with a single column of type JSON.
+
+#### Restoring the backup file
+
+A sequence of steps runs automatically once a new file becomes available in the
+[govuk-s3-mirror_govuk-integration-database-backups][govuk-s3-mirror-bucket]
+bucket.
+
+1. A new backup database file is created in the
+[govuk-integration-database-backups](https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-integration-database-backups)
+bucket in the [govuk-s3-mirror](../govuk-s3-mirror/) project. That bucket
+publishes a notification to a Pub/Sub topic in each of the
+`govuk-knowledge-graph` projects.  All subsequent steps take place in those
+projects.
+    - [Pub/Sub configuration in the GOV.UK S3 Mirror](https://github.com/alphagov/govuk-s3-mirror/blob/main/terraform/pubsub.tf)
+    - [Pub/Sub configuration in GovGraph production](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/terraform/pubsub.tf)
+1. An EventArc trigger subscribes to the Pub/Sub topic, receives the
+notification, and triggers a Workflow.  It passes the payload of the
+notification into the Workflow.
+    - [EventArc and Workflow configuration in GovGraph production](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/terraform/workflow.tf)
+1. The Workflow parses the payload to check the filename of the file that was
+created.  If the filename is of a publishing API production database backup file,
+then the Workflow creates a Compute Instance from an Instance Template. The
+Workflow attaches some metadata to the Compute Instance, including the filename,
+the name of the bucket that the file is in, and information about a Docker image
+for the Compute Instance to host when it starts.
+    - [Workflow configuration in GovGraph production](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/terraform/workflow.tf)
+    - [Compute Instance configuration in GovGraph production](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/terraform-dev/gce.tf)
+1. The Compute Instance fetches and runs a Docker Image from the Artifact Registry.
+The Docker Image has PostgreSQL installed.  The image is built by a GitHub Action,
+from a `Dockerfile` in the [GitHub
+Repository](https://github.com/alphagov/govuk-knowledge-graph-gcp), and is
+rebuilt whenever a new version of the `Dockerfile` is merged into the `main`
+branch.
+    - [Artifact Registry configuration in GovGraph production](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/terraform/artifact-registry.tf)
+    - [Dockerfile](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/docker/postgres/Dockerfile)
+    - [GitHub Action to build the Docker image in production](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/.github/workflows/docker-postgres.yml)
+1. The Docker instance fetches and executes a Bash script from the `repository`
+bucket. That bucket contains the HEAD of the `main` branch of the GitHub
+repository.  The bucket name is prefixed with the name of the GCP project that
+it is in, because bucket names must be globally unique.
+    - `repository` bucket in the [production](https://console.cloud.google.com/storage/browser/govuk-knowledge-graph-repository), [staging](https://console.cloud.google.com/storage/browser/govuk-knowledge-graph-staging-repository) and [dev](https://console.cloud.google.com/storage/browser/govuk-knowledge-graph-dev-repository) projects.
+    - GitHub Actions that put the HEAD of a each branch into the `repository` bucket in each project: [main branch into production](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/.github/workflows/rsync.yml), [staging branch into staging](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/.github/workflows/rsync-staging.yml), [dev branch into development](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/.github/workflows/rsync-dev.yml)
+    - [Bash script](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/docker/postgres/run.sh)
+1. The bash script running in the Docker instance fetches the metadata of the
+compute instance that Docker is running on, to find out the filename and bucket
+of the database backup file.  It fetches that file, starts a PostgreSQL database,
+and restores the file to the PostgreSQL database.
+
+#### Extracting and transforming the data
+
+The Publishing API database is a PostgreSQL database.  Information about
+real-world things or concepts such as a page or a role must be assembled from
+one or more database tables.  GovGraph queries the tables, and emits the results
+either as lines of JSON documents, or as CSV files.
+
+- Every query is written in an SQL file, executed with the `psql` command.
+- Some queries create tables that are used by subsequent queries.
+- Tables are extracted with the `psql` command, as either a CSV file or a JSON
+  file.
+
+Extracted data is sometimes further processed by [Python and Ruby
+scripts](https://github.com/alphagov/govuk-knowledge-graph-gcp/tree/main/src/utils)
+and [shell functions](src/mongodb/functions.sh).  The Python and Ruby scripts
+require the data to have been extracted as a JSON file.  They consume the JSON
+data, transform it, and emit CSV data.  [GNU parallel](https://www.gnu.org/software/parallel) is used to run
+several instances of a Python script on a single input file in parallel.  The use of GNU Parallel requires the data to be in JSON format rather than CSV, because GNU Parallel splits the input file by newline characters, and MongoDB's JSON format guarantees to escape any newline characters in the value of a field, so that each line of the exported file corresponds to exactly one JSON document.  GNU Parallel can cope with newline characters in quoted fields of a CSV file, but it is very slow to do so.
+
+By this point, all the data is in the form of CSV files. These are then compressed and uploaded into the `data-processed` bucket in the [production](https://console.cloud.google.com/storage/browser/govuk-knowledge-graph-data-processed), [staging](https://console.cloud.google.com/storage/browser/govuk-knowledge-graph-staging-data-processed) and [dev](https://console.cloud.google.com/storage/browser/govuk-knowledge-graph-dev-data-processed) projects.
+
+Once the CSV files are in the bucket, the virtual machine uses the `bq`
+command-line tool to tell BigQuery to:
+
+1. import the CSV files into tables in the `content` or `publishing` datastets
+2. derive some more tables by executing [queries](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/src/postgres/bigquery)
+
+Derived tables are designed to represent useful concepts such as "role" and
+"belongs_to".  These are in the `graph` dataset.  The name `graph` was chosen
+when the tables in this dataset were intended to be loaded into a Neo4j graph
+database.
+
+At the end of this process, the virtual machine deletes itself.  The database is
+no longer required, because the data is now in BigQuery and a bucket.
+
+### Bulk export to BigQuery
+
+Both the Content Store and Publishing API databases are also exported into
+BigQuery in bulk, with no transformation.  This is to facilitate development in
+a way that avoids having to pay for instances of MongoDB and PostgreSQL to run
+all day, every day.
+
+- The Content Store database is a single collection called `content_items`,
+which is exported into a single table in BigQuery, also called `content_items`,
+in the `content` dataset.
+- The Publishing API database is several tables, which are each exported into
+tables of the same names the `publishing` dataset in BigQuery.
+
+### Design principles
+
+1. Avoid writing any data to disk.  Use UNIX pipes instead, to move data
+directly from one process to the next.  This means that the compute instance
+doesn't need much memory, and is less likely to run out of memory as the amount
+of data increases.  It also makes it possible to run the pipeline on a small
+machine such as a laptop, which makes it quicker and easier to debug, develop
+and test.
+1. Use [GNU Parallel](https://www.gnu.org/software/parallel) to run processes in
+parallel, rather than utilities in Python or Ruby.  Both Python and Ruby are
+limited by the GIL (Global Interpreter Lock), which means that they can't
+parallelise CPU-bound processes.  We can make them properly parallel by wrapping
+calls to those scripts inside GNU Parallel, which starts a separate instance of
+Python or Ruby on each CPU, supplies each instance with a subset of the data,
+and aggregates the result.
+1. Orchestrate multi-step processes with [GNU
+Make](https://www.gnu.org/software/make/).  Make manages the dependencies
+between each step, and can be configured to run independent steps in parallel.
+When one step can't be run because a previous step has failed, Make reports a
+useful error message.  You can anticipate how changing one step will affect
+dependent steps by reading the Makefile.
+
+## The format and structure of extracted data files and tables
+
+This section describes tables in the `content` dataset.
+
+The eventual form of all the data extracted from the Content Store and
+Publishing API databases is CSV files, compressed with the `gzip` command, put
+into the [`govuk-knowledge-graph-data-processed` Cloud Storage
+bucket](https://console.cloud.google.com/storage/browser/govuk-knowledge-graph-data-processed),
+and then imported into BigQuery.
+
+For most tables, each row of the table gives some information about one
+document, which corresponds to a single page that can be loaded in a web
+browser. For tables whose names includes the word `parts`, each row describes a
+single part of a document that can be rendered in a web browser as its own page,
+with its own URL.  See the section about the [data model](#data-model) for
+further explanation.
+
+Every file includes a `url` column, giving the full URL of each document. The
+full URL includes the prefix `https://www.gov.uk`.  When the document represents
+a web page, the URL should be resolvable on the GOV.UK website.  When the
+document represents a concept such as a role or a taxon, the URL is invented by
+concatenating `https://www.gov.uk/` with the Content ID of the document.
+
+Every file other than `url.csv.gz` includes other columns of information about
+each document, such as its document type, its content, or the date and time when
+it was last updated.  These pieces of information were chosen from among the
+[document type schemas](https://github.com/alphagov/govuk-content-schemas).
+
+Most files only include two columns, including the `url` column, for the
+following reasons.
+
+1. It is easier to handle a few small, dense tables of relevant information than
+   one very wide, sparse table of everything.
+2. It is easier to make incremental changes to the code and data, without having
+   to understand the entire pipeline.
+3. It seems natural to never flatten the tree-link and graph-like structures of
+   the source data in MongoDB and a JSON column of a PostgreSQL table.
+4. The main disadvantage doesn't seem bad.  It is that there are more tables to
+   handle, and users of the data must do more joins, at slightly more expense in
+   BigQuery.
+
+### Tables of extracted data files
+
+All filenames have the form `something.csv.gz`.  Only the part `something` is
+given in the tables below.  Every file includes the column `url`, so it is
+omitted from the tables below.  The definitions given below are not the
+official. The most accurate and up-to-date definitions are in the
+[document type schemas](https://github.com/alphagov/govuk-content-schemas).
+
+### Files with a single fact about each document
+
+| File name                        | Column                                 | Notes                                                                                                                                                                   |
+|----------------------------------|----------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| # `acronym`                      | `details.acronym`                      | The acronym of an organisation.                                                                                                                                         |
+| # `analytics_identifier`         | `analytics_identifier`                 | A code to group Google Analytics data belonging to an organisation.  The code is sometimes also used as a unique identifier of the organisation.                        |
+| # `content_id`                   | `content_id`                           | A unique identifier for the document in the Content Store and the Publishing API.  It does not necessarily uniquely identify a page that is rendered on the website.    |
+| # `department_analytics_profile` | `details.department_analytics_profile` | The `analytics_identifier` of the organisation that is responsible for a transaction.                                                                                   |
+| # `description`                  | `description`                          | A description of the content of a document.                                                                                                                             |
+| # `document_type`                | `document_type`                        | Corresponds to [document type schemas](https://github.com/alphagov/govuk-content-schemas), which governs what fields are required and available to use in the document. |
+| # `first_published_at`           | `first_published_at`                   | The date and time that a document was first available to the public.                                                                                                    |
+| # `locale`                       | `locale`                               | ISO 639-1 code of the language of a document                                                                                                                            |
+| # `title`                        | `title`                                | Appears in the browser tab of a page of the document                                                                                                                    |
+| # `description`                  | `description`                          | A description of the content of a document.                                                                                                                             |
+| # `phase`                        | `phase`                                | "alpha", "beta" or "live"                                                                                                                                               |
+| # `updated_at`                   | `updated_at`                           | The date and time when a document was last changed, however insignificantly.                                                                                            |
+| # `withdrawn_at`                 | `withdrawn_notice.withdrawn_at`        | The date and time when a document was withdrawn, meaning that it is still published, but its contents are not necessarily current.                                      |
+| # `withdrawn_explanation`        | `withdrawn_notice.explanation`         | An explanation of the withdrawal of a document.                                                                                                                         |
+| # `public_updated_at`            | `public_updated_at`                    | The date and time when a document was changed significantly enough that the publisher chose to inform the public about the change.                                      |
+| # `publishing_app`               | `publishing_app`                       | The app (a website) used by a publisher to publish the document.                                                                                                        |
+| # `start_button_text`            | `details.start_button_text`            | The text of a start button on a transaction start page.  The link itself is in the `transaction_start_link` file.                                                       |
+| # `url_override`                 | `url_override`                         | We don't know what this means. It might be something to do with taxons. If you know, please edit this page.                                                             |
+### Files containing the content of documents
+
+There are several files of the content of documents.  Each file represents the
+content in a particular form, for a particlar document type or set of document
+types.
+
+The following files contain the text of documents.
+
+- `body`
+- `body_content`
+- `parts_content`
+- `place_content`
+- `step_by_step_content`
+- `transaction_content`
+
+Each of those files contains the following columns.
+
+- `html`: the raw HTML
+- `text`: plain text that is extracted from the HTML
+- `text_without_blank_lines` plain text, without any blank lines (`\n\n` has
+  been replaced by `\n` everywhere)
+
+The following files contain each line of text of each document as a separate row
+of data, in the column called `line`.
+
+- `body_lines`
+- `body_content_lines`
+- `parts_lines`
+- `place_lines`
+- `step_by_step_lines`
+- `transaction_lines`
+
+The following files contain each hyperlink from each document as a separate row
+of data.
+
+- `body_embedded_links`
+- `body_content_embedded_links`
+- `parts_embedded_links`
+- `place_embedded_links`
+- `step_by_step_embedded_links`
+- `transaction_embedded_links`
+
+Each of those files contains the following columns.
+
+- `link_url`: The complete URL
+- `link_url_bare`: The URL stripped of any parameters or anchors, such as search
+  terms
+- `link_text`: The text that is displayed in place of the URL
+
+#### An example of a document
+
+This is an example the HTML representation of the content of a document, as it
+might be recorded in the Content Store database.
+
+```html
+<p>This is the first paragraph of the document.  It contains two sentences.</p>
+
+<p>This is the second paragraph of the document.</p>
+```
+
+If this document has the document type `place`, then its content will be in the
+following files.
+
+- `place_content`
+- `place_lines`
+
+In the `place_content` file, it will have a single row of data.  Some of the
+values will contain newline characters.
+
+```text
+url,html,text,text_without_blank_lines
+http://www.gov.uk/example,"<p>This is the first paragraph of the document.  It contains two sentences.</p>
+
+<p>This is the second paragraph of the document, with a comma.</p>","This is the first paragraph of the document.  It contains two sentences.
+
+This is the second paragraph of the document, with a comma.","This is the first paragraph of the document.  It contains two sentences.
+This is the second paragraph of the document, with a comma."
+```
+
+In the `place_lines` file, it will have two rows of data.  None of the values
+will contain newline characters.
+
+```text
+url,line
+http://www.gov.uk/example,This is the first paragraph of the document.  It contains two sentences.
+http://www.gov.uk/example,"This is the second paragraph of the document, with a comma."
+```
+
+The content types that are in each file are listed in the corresponding MongoDB
+query files in the directory `src/mongodb/js`.
+
+- `body.js`
+- `body_content.js`
+- `parts_content.js`
+- `place_content.js`
+- `step_by_step_content.js`
+- `transaction_content.js`
+
+## Special cases
+
+### Expanded links
+
+Some documents link to each another by their metadata.  These links have a type
+as well as a target.  For example, a document that represents an organisation
+can link to a document that represents a taxon.  The type of that link is
+`taxons`.
+
+Every link targets a document by its `content_id`, and most links also give the
+target URL.  These different ways of giving the target are given in different
+files.`
+
+- `expanded_links`, which has the columns `link_type`, `from_url` and `to_url`.
+- `expanded_links_by_content_id`, which has the colums `link_type`,
+  `from_content_id` and `to_content_id`.
+
+### Redirects
+
+Redirects are represented in two different ways.  One is by changing the
+document's type to `redirect`.  The other is by using the `redirects` field of
+the document.  The `redirects` file contains the information from the
+`redirects` field.
+
+The `redirects` file does not have a `url` column.  It has the columsn `from`
+and `to`, which are both URLs.
+
+### Taxons
+
+Taxons are hierarchical.  Relations between taxons and their parent or child
+taxons are in the `expanded_links` file.  The level of each taxon in the
+hierarcy is in the `taxon_levels` file.  The top level of the hierarchy is 1.
+
+### Transaction start links
+
+Transactions are pages that have a green button, often labelled "Start".  The
+button is a kind of hyperlink.  The target of the hyperlink is given in the file
+`transaction_start_link.sh`.  It contains the following columns.
+
+- `link_url`: The complete URL
+- `link_url_bare`: The URL stripped of any parameters or anchors, such as search
+  terms
+
+The text of the button is in the file `start_button_text`, which has the column
+`details.start_button_text`.
+
+## Contacts
+
+GovGraph is developed by the Data Products team in the Data Services group in
+the Product and Technology directorate.
+
+- data-products@digital.cabinet-office.gov.uk
+- [#data-products Slack channel](https://gds.slack.com/archives/CHR4UQKU4)
