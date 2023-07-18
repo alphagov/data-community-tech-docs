@@ -11,12 +11,12 @@ GovGraph is a rearrangement of GOV.UK content data to facilitate data analysis.
 
 Products that use GovGraph data include:
 
-- [GovSearch](../govsearch/)
+- [GovSearch](../../govsearch/)
 - GovNER, a named entity recognition model.
 
 GovGraph gets most of its data from nightly backups of the GOV.UK Content Store
 database and the GOV.UK Publishing API database, which it gets from the [GOV.UK
-S3 Mirror](../govuk-s3-mirror/).
+S3 Mirror](../../govuk-s3-mirror/).
 
 GovGraph makes data analysis of GOV.UK content data easier by:
 
@@ -85,7 +85,7 @@ become available.  The steps are similar for both the Publishing API database
 and the Content Store database.
 
 1. A new copy of a GOV.UK database backup file becomes available from the
-[GOV.UK S3 Mirror](../govuk-s3-mirror/).
+[GOV.UK S3 Mirror](../../govuk-s3-mirror/).
 2. A virtual machine creates a new database, and restores the database backup
 file into it.
 3. Queries extract the data into CSV files.
@@ -123,7 +123,7 @@ bucket.
 
 1. A new backup database file is created in the
 [govuk-integration-database-backups](https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-integration-database-backups)
-bucket in the [govuk-s3-mirror](../govuk-s3-mirror/) project. That bucket
+bucket in the [govuk-s3-mirror](../../govuk-s3-mirror/) project. That bucket
 publishes a notification to a Pub/Sub topic in each of the
 `govuk-knowledge-graph` projects.  All subsequent steps take place in those
 projects.
