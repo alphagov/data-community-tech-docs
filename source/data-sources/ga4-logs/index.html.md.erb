@@ -1,0 +1,29 @@
+---
+title: GA4 access logs
+weight: 5
+last_reviewed_on: 2023-08-17
+review_in: 6 months
+---
+
+# GA4 access logs
+This is the data exported from Google Analytics 4 admin API listing user access information
+
+# Access
+## Location
+The data is located in BigQuery under this dataset `ga4-analytics-352613.ga4_logs`.
+The data is shared with a table created each day with hte name YYYYMMDD.
+
+# Schema
+| field name | type | mode |
+-----------
+| epochTimeMicros | TIMESTAMP | NULLABLE |
+| userEmail | STRING | NULLABLE |
+| accessMechanism | STRING | NULLABLE |
+| accessorAppName | STRING | NULLABLE |
+| dataApiQuotaCategory | STRING | NULLABLE |
+| reportType | STRING | NULLABLE |
+| accessCount | INTEGER | NULLABLE |
+| dataApiQuotaPropertyTokensConsumed | INTEGER | NULLABLE |
+
+# Retention
+The data is kept for 2 years
