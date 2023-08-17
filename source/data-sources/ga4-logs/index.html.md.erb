@@ -8,12 +8,12 @@ review_in: 6 months
 # GA4 access logs
 This is the data exported from Google Analytics 4 admin API listing user access information
 
-# Access
-## Location
+## Access
+### Location
 The data is located in BigQuery under this dataset `ga4-analytics-352613.ga4_logs`.
 The data is shared with a table created each day with hte name YYYYMMDD.
 
-# Schema
+## Schema
 | field name | type | mode |
 -----------
 | epochTimeMicros | TIMESTAMP | NULLABLE |
@@ -25,5 +25,5 @@ The data is shared with a table created each day with hte name YYYYMMDD.
 | accessCount | INTEGER | NULLABLE |
 | dataApiQuotaPropertyTokensConsumed | INTEGER | NULLABLE |
 
-# Retention
+## Retention
 The data is kept for 2 years
