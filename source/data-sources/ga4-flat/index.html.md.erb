@@ -1,7 +1,7 @@
 ---
 title: GA4 Flattened Tables
 weight: 2
-last_reviewed_on: 2023-08-17
+last_reviewed_on: 2023-08-23
 review_in: 6 months
 ---
 
@@ -9,10 +9,70 @@ review_in: 6 months
 This is the [GA4](/data-sources/ga4/) data processed into a flat format
 
 ## Access
+Access to GA4 is currently limited to an early access group, for details see this blog [Sharing data and lessons from our Google Analytics 4 upgrade](https://gds.blog.gov.uk/2023/03/27/sharing-data-and-lessons-from-our-google-analytics-4-upgrade/).
+
+In addition everyone with a @digital.cabinet-office.gov.uk account has access to the data.
+
 ### Location
 It is located in BigQuery under the data set `ga4-analytics-352613.flattened_dataset`.
 Each daily table is shared in the format flattened_daily_ga_data_YYYYMMDD.
 
 ## Schema
+| field name | type | mode |
+| --- | --- | --- |
+| event_date | STRING | NULLABLE | 
+| user_pseudo_id | STRING | NULLABLE | 
+| event_name | STRING | NULLABLE | 
+| event_timestamp | INTEGER | NULLABLE | 
+| unique_session_id | STRING | NULLABLE | 
+| page_title | STRING | NULLABLE | 
+| page_location | STRING | NULLABLE | 
+| cleaned_page_location | STRING | NULLABLE | 
+| ga_sessionid | INTEGER | NULLABLE | 
+| ga_session_number | INTEGER | NULLABLE | 
+| primary_publishing_organisation | STRING | NULLABLE | 
+| page_referrer | STRING | NULLABLE | 
+| cleaned_page_referrer | STRING | NULLABLE | 
+| content_id | STRING | NULLABLE | 
+| browse_topic | STRING | NULLABLE | 
+| publishing_app | STRING | NULLABLE | 
+| public_updated_at | STRING | NULLABLE | 
+| updated_at | STRING | NULLABLE | 
+| first_published_at | STRING | NULLABLE | 
+| taxonomy_all_ids_DEPRECATED | STRING | NULLABLE | 
+| status_code | INTEGER | NULLABLE | 
+| withdrawn | STRING | NULLABLE | 
+| document_type | STRING | NULLABLE | 
+| history | STRING | NULLABLE | 
+| taxonomy_main_id | STRING | NULLABLE | 
+| taxonomy_all_DEPRECATED | STRING | NULLABLE | 
+| taxonomy_main | STRING | NULLABLE | 
+| taxonomy_level_1 | STRING | NULLABLE | 
+| full_taxonomy | STRING | NULLABLE | 
+| full_taxonomy_ids | STRING | NULLABLE | 
+| rendering_app | STRING | NULLABLE | 
+| organisations | STRING | NULLABLE | 
+| session_engaged | STRING | NULLABLE | 
+| schema_name | STRING | NULLABLE | 
+| method | STRING | NULLABLE | 
+| engagement_time_msec | INTEGER | NULLABLE | 
+| campaign | STRING | NULLABLE | 
+| content_language | STRING | NULLABLE | 
+| type | STRING | NULLABLE | 
+| session_source | STRING | NULLABLE | 
+| link_text | STRING | NULLABLE | 
+| term | STRING | NULLABLE | 
+| link_url | STRING | NULLABLE | 
+| session_medium | STRING | NULLABLE | 
+| link_domain | STRING | NULLABLE | 
+| event_previous_timestamp | INTEGER | NULLABLE | 
+| event_bundle_sequence_id | INTEGER | NULLABLE | 
+| event_server_timestamp_offset | INTEGER | NULLABLE | 
+| user_id | STRING | NULLABLE | 
+| user_first_touch_timestamp | INTEGER | NULLABLE | 
+| category | STRING | NULLABLE | 
+| mobile_brand_name | STRING | NULLABLE | 
+| mobile_model_name | STRING | NULLABLE | 
+
 
 ## Retention

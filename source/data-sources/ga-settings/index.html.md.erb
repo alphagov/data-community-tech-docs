@@ -1,13 +1,18 @@
 ---
 title: GA Settings Database
 weight: 7
-last_reviewed_on: 2023-08-18
+last_reviewed_on: 2023-08-23
 review_in: 6 months
 ---
 
 # GA Settings Database
-This is a daily download of the account settings of GA.
-[GitHub repository](https://github.com/alphagov/analytics-settings-database)
+This is a daily download of the account settings of GA. The purpose of this data is to allow for monitoring of changes to configuration of our GA account.
+
+This is that [GitHub repository](https://github.com/alphagov/analytics-settings-database)
+
+Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
+
+An example of the data in use is in this [Looker dashboard](https://lookerstudio.google.com/reporting/623bb323-2484-472e-916c-93e43ea40ad7/page/PQpTD)
 
 ## Access
 ### Location
@@ -15,32 +20,390 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 
 ## Schema
 ### Tables
-ga4_account_summaries
-ga4_accounts
-ga4_audiences
-ga4_conversion_events
-ga4_custom_dimensions
-ga4_custom_metrics
-ga4_data_streams
-ga4_dv360_link_proposals
-ga4_dv360_links
-ga4_firebase_links
-ga4_google_ads_links
-ga4_measurment_protocol_secrets
-ga4_properties
-ua_account_summaries
-ua_audiences
-ua_custom_dimensions
-ua_custom_metrics
-ua_filter_links
-ua_filters
-ua_goals
-ua_google_ads_links
-ua_segments
-ua_views
+####ga4_account_summaries
+| field name | type | mode |
+| --- | --- | --- |
+| property_summaries | RECORD | REPEATED |
+| account | STRING | NULLABLE |
+| display_name | STRING | NULLABLE |
+| name | STRING | NULLABLE |
+
+####ga4_accounts
+| field name | type | mode |
+| --- | --- | --- |
+| deleted | BOOLEAN | NULLABLE |
+| region_code | STRING | NULLABLE |
+| name | STRING | NULLABLE |
+| update_time | TIMESTAMP | NULLABLE |
+| create_time | TIMESTAMP | NULLABLE |
+| display_name | STRING | NULLABLE |
+
+####ga4_audiences
+| field name | type | mode |
+| --- | --- | --- |
+| name | STRING | NULLABLE |
+| display_name | STRING | NULLABLE |
+| description | STRING | NULLABLE |
+| membership_duration_days | INTEGER | NULLABLE |
+| ads_personalization_enabled | BOOLEAN | NULLABLE |
+| property_display_name | STRING | NULLABLE |
+| property_name | STRING | NULLABLE |
+| property | STRING | NULLABLE |
+| event_trigger | RECORD | NULLABLE |
+| filter_clauses | STRING | NULLABLE |
+| exclusion_duration_mode | STRING | NULLABLE |
+
+####ga4_conversion_events
+| field name | type | mode |
+| --- | --- | --- |
+| property | STRING | NULLABLE |
+| custom | BOOLEAN | NULLABLE |
+| deletable | BOOLEAN | NULLABLE |
+| create_time | TIMESTAMP | NULLABLE |
+| property_display_name | STRING | NULLABLE |
+| event_name | STRING | NULLABLE |
+| name | STRING | NULLABLE |
+
+####ga4_custom_dimensions
+| field name | type | mode |
+| --- | --- | --- |
+| property | STRING | NULLABLE |
+| display_name | STRING | NULLABLE | 
+| name | STRING | NULLABLE | 
+| scope | STRING | NULLABLE | 
+| parameter_name | STRING | NULLABLE | 
+| disallow_ads_personalization | BOOLEAN | NULLABLE | 
+| property_display_name | STRING | NULLABLE | 
+| description | STRING | NULLABLE | 
+
+####ga4_custom_metrics
+| field name | type | mode |
+| --- | --- | --- |
+| measurement_unit | INTEGER | NULLABLE | 
+| display_name | STRING | NULLABLE | 
+| name | STRING | NULLABLE | 
+| scope | STRING | NULLABLE | 
+| parameter_name | STRING | NULLABLE | 
+| property_display_name | STRING | NULLABLE | 
+| description | STRING | NULLABLE | 
+| property | STRING | NULLABLE | 
+
+####ga4_data_streams
+| field name | type | mode |
+| --- | --- | --- |
+| | | |
+| property | STRING | NULLABLE | 
+| display_name | STRING | NULLABLE | 
+| name | STRING | NULLABLE | 
+| update_time | TIMESTAMP | NULLABLE | 
+| create_time | TIMESTAMP | NULLABLE | 
+| property_display_name | STRING | NULLABLE | 
+| type | STRING | NULLABLE | 
+| web_stream_data | RECORD | NULLABLE | 
+| android_app_stream_data | RECORD | NULLABLE | 
+| ios_app_stream_data | RECORD | NULLABLE | 
+
+####ga4_dv360_link_proposals
+| field name | type | mode |
+| --- | --- | --- |
+| advertiser_id | STRING | NULLABLE | 
+| link_proposal_status_details | RECORD | NULLABLE | 
+| validation_email | STRING | NULLABLE | 
+| name | STRING | NULLABLE | 
+| property_display_name | STRING | NULLABLE | 
+| ads_personalization_enabled | BOOLEAN | NULLABLE | 
+| property | STRING | NULLABLE | 
+| advertiser_display_name | STRING | NULLABLE | 
+| cost_data_sharing_enabled | BOOLEAN | NULLABLE | 
+| campaign_data_sharing_enabled | BOOLEAN | NULLABLE | 
+
+####ga4_dv360_links
+| field name | type | mode |
+| --- | --- | --- |
+| campaign_data_sharing_enabled | BOOLEAN | NULLABLE | 
+| name | STRING | NULLABLE | 
+| cost_data_sharing_enabled | BOOLEAN | NULLABLE | 
+| ads_personalization_enabled | BOOLEAN | NULLABLE | 
+| advertiser_id | STRING | NULLABLE | 
+| advertiser_display_name | STRING | NULLABLE | 
+| property | STRING | NULLABLE | 
+| property_display_name | STRING | NULLABLE | 
+
+####ga4_firebase_links
+| field name | type | mode |
+| --- | --- | --- |
+| property | STRING | NULLABLE | 
+| create_time | TIMESTAMP | NULLABLE | 
+| project | STRING | NULLABLE | 
+| property_display_name | STRING | NULLABLE | 
+| name | STRING | NULLABLE | 
+
+####ga4_google_ads_links
+| field name | type | mode |
+| --- | --- | --- |
+| update_time | TIMESTAMP | NULLABLE | 
+| property | STRING | NULLABLE | 
+| ads_personalization_enabled | BOOLEAN | NULLABLE | 
+| name | STRING | NULLABLE | 
+| property_display_name | STRING | NULLABLE | 
+| can_manage_clients | BOOLEAN | NULLABLE | 
+| creator_email_address | STRING | NULLABLE | 
+| customer_id | STRING | NULLABLE | 
+| create_time | TIMESTAMP | NULLABLE | 
+
+####ga4_measurment_protocol_secrets
+| field name | type | mode |
+| --- | --- | --- |
+| name | STRING | NULLABLE | 
+| display_name | STRING | NULLABLE | 
+| secret_value | STRING | NULLABLE | 
+| stream_name | STRING | NULLABLE | 
+| type | STRING | NULLABLE | 
+| property | STRING | NULLABLE | 
+| property_display_name | STRING | NULLABLE | 
+| web_stream_data | STRING | NULLABLE | 
+| update_time | TIMESTAMP | NULLABLE | 
+| create_time | TIMESTAMP | NULLABLE | 
+
+####ga4_properties
+| field name | type | mode |
+| --- | --- | --- |
+| google_signals_settings | RECORD | NULLABLE | 
+| data_sharing_settings | RECORD | NULLABLE | 
+| attribution_settings | RECORD | NULLABLE | 
+| name | STRING | NULLABLE | 
+| service_level | STRING | NULLABLE | 
+| parent | STRING | NULLABLE | 
+| currency_code | STRING | NULLABLE | 
+| time_zone | STRING | NULLABLE | 
+| account | STRING | NULLABLE | 
+| expire_time | STRING | NULLABLE | 
+| update_time | TIMESTAMP | NULLABLE | 
+| display_name | STRING | NULLABLE | 
+| industry_category | STRING | NULLABLE | 
+| delete_time | STRING | NULLABLE | 
+| create_time | TIMESTAMP | NULLABLE | 
+| property_type | STRING | NULLABLE | 
+
+####ua_account_summaries
+| field name | type | mode |
+| --- | --- | --- |
+| name | STRING | NULLABLE | 
+| kind | STRING | NULLABLE | 
+| webProperties | RECORD | REPEATED | 
+| id | INTEGER | NULLABLE | 
+
+####ua_audiences
+| field name | type | mode |
+| --- | --- | --- |
+| linkedAdAccounts | RECORD | REPEATED | 
+| updated | TIMESTAMP | NULLABLE | 
+| description | STRING | NULLABLE | 
+| internalWebPropertyId | INTEGER | NULLABLE | 
+| stateBasedAudienceDefinition | RECORD | NULLABLE | 
+| webPropertyId | STRING | NULLABLE | 
+| id | STRING | NULLABLE | 
+| accountId | INTEGER | NULLABLE | 
+| kind | STRING | NULLABLE | 
+| name | STRING | NULLABLE | 
+| created | TIMESTAMP | NULLABLE | 
+| linkedViews | INTEGER | REPEATED | 
+| audienceType | STRING | NULLABLE | 
+| audienceDefinition | RECORD | NULLABLE | 
+
+####ua_custom_dimensions
+| field name | type | mode |
+| --- | --- | --- |
+| updated | TIMESTAMP | NULLABLE | 
+| webPropertyId | STRING | NULLABLE | 
+| active | BOOLEAN | NULLABLE | 
+| id | STRING | NULLABLE | 
+| accountId | INTEGER | NULLABLE | 
+| index | INTEGER | NULLABLE | 
+| kind | STRING | NULLABLE | 
+| name | STRING | NULLABLE | 
+| created | TIMESTAMP | NULLABLE | 
+| scope | STRING | NULLABLE | 
+| parentLink | RECORD | NULLABLE | 
+| selfLink | STRING | NULLABLE |
+
+####ua_custom_metrics
+| field name | type | mode |
+| --- | --- | --- |
+| updated | TIMESTAMP | NULLABLE | 
+| max_value | STRING | NULLABLE | 
+| min_value | INTEGER | NULLABLE | 
+| webPropertyId | STRING | NULLABLE | 
+| active | BOOLEAN | NULLABLE | 
+| id | STRING | NULLABLE | 
+| accountId | INTEGER | NULLABLE | 
+| index | INTEGER | NULLABLE | 
+| kind | STRING | NULLABLE | 
+| name | STRING | NULLABLE | 
+| created | TIMESTAMP | NULLABLE | 
+| scope | STRING | NULLABLE | 
+| parentLink | RECORD | NULLABLE | 
+| type | STRING | NULLABLE | 
+| selfLink | STRING | NULLABLE | 
+
+####ua_filter_links
+| field name | type | mode |
+| --- | --- | --- |
+| kind | STRING | NULLABLE | 
+| rank | INTEGER | NULLABLE | 
+| filterRef | RECORD | NULLABLE | 
+| profileRef | RECORD | NULLABLE | 
+| id | STRING | NULLABLE | 
+| selfLink | STRING | NULLABLE | 
+
+####ua_filters
+| field name | type | mode |
+| --- | --- | --- |
+| updated | TIMESTAMP | NULLABLE | 
+| uppercaseDetails | RECORD | NULLABLE | 
+| lowercaseDetails | RECORD | NULLABLE | 
+| excludeDetails | RECORD | NULLABLE | 
+| includeDetails | RECORD | NULLABLE | 
+| id | INTEGER | NULLABLE | 
+| accountId | INTEGER | NULLABLE | 
+| kind | STRING | NULLABLE | 
+| name | STRING | NULLABLE | 
+| created | TIMESTAMP | NULLABLE | 
+| advancedDetails | RECORD | NULLABLE | 
+| searchAndReplaceDetails | RECORD | NULLABLE | 
+| parentLink | RECORD | NULLABLE | 
+| type | STRING | NULLABLE | 
+| selfLink | STRING | NULLABLE | 
+
+####ua_goals
+| field name | type | mode |
+| --- | --- | --- |
+| kind | STRING | NULLABLE | 
+| visitTimeOnSiteDetails | RECORD | NULLABLE | 
+| name | STRING | NULLABLE | 
+| created | TIMESTAMP | NULLABLE | 
+| urlDestinationDetails | RECORD | NULLABLE | 
+| updated | TIMESTAMP | NULLABLE | 
+| value | INTEGER | NULLABLE | 
+| visitNumPagesDetails | RECORD | NULLABLE | 
+| internalWebPropertyId | INTEGER | NULLABLE | 
+| eventDetails | RECORD | NULLABLE | 
+| webPropertyId | STRING | NULLABLE | 
+| active | BOOLEAN | NULLABLE | 
+| profileId | INTEGER | NULLABLE | 
+| parentLink | RECORD | NULLABLE | 
+| type | STRING | NULLABLE | 
+| id | INTEGER | NULLABLE | 
+| selfLink | STRING | NULLABLE | 
+| accountId | INTEGER | NULLABLE | 
+
+####ua_google_ads_links
+| field name | type | mode |
+| --- | --- | --- |
+| kind | STRING | NULLABLE | 
+| name | STRING | NULLABLE | 
+| adWordsAccounts | RECORD | REPEATED | 
+| entity | RECORD | NULLABLE | 
+| profileIds | STRING | REPEATED | 
+| id | STRING | NULLABLE | 
+| selfLink | STRING | NULLABLE | 
+
+####ua_segments
+| field name | type | mode |
+| --- | --- | --- |
+| definition | STRING | NULLABLE | 
+| kind | STRING | NULLABLE | 
+| updated | TIMESTAMP | NULLABLE | 
+| segmentId | STRING | NULLABLE | 
+| created | TIMESTAMP | NULLABLE | 
+| type | STRING | NULLABLE | 
+| id | STRING | NULLABLE | 
+| selfLink | STRING | NULLABLE | 
+| name | STRING | NULLABLE | 
+
+####ua_views
+| field name | type | mode |
+| --- | --- | --- |
+| currency | STRING | NULLABLE | 
+| eCommerceTracking | BOOLEAN | NULLABLE | 
+| webPropertyId | STRING | NULLABLE | 
+| timezone | STRING | NULLABLE | 
+| id | INTEGER | NULLABLE | 
+| accountId | INTEGER | NULLABLE | 
+| botFilteringEnabled | BOOLEAN | NULLABLE | 
+| stripSiteSearchCategoryParameters | BOOLEAN | NULLABLE | 
+| siteSearchCategoryParameters | STRING | NULLABLE | 
+| type | STRING | NULLABLE | 
+| updated | TIMESTAMP | NULLABLE | 
+| excludeQueryParameters | STRING | NULLABLE | 
+| internalWebPropertyId | INTEGER | NULLABLE | 
+| childLink | RECORD | NULLABLE | 
+| enhancedECommerceTracking | BOOLEAN | NULLABLE | 
+| parentLink | RECORD | NULLABLE | 
+| permissions | RECORD | NULLABLE | 
+| defaultPage | STRING | NULLABLE | 
+| kind | STRING | NULLABLE | 
+| stripSiteSearchQueryParameters | BOOLEAN | NULLABLE | 
+| name | STRING | NULLABLE | 
+| created | TIMESTAMP | NULLABLE | 
+| siteSearchQueryParameters | STRING | NULLABLE | 
+| websiteUrl | STRING | NULLABLE | 
+| starred | BOOLEAN | NULLABLE | 
+| selfLink | STRING | NULLABLE | 
+
 
 ### Views
-ga4_settings_joined
-ua_settings_joined
+####ga4_settings_joined
+| field name | type | mode |
+| --- | --- | --- |
+| date | TIMESTAMP | NULLABLE | 
+| account_id | INTEGER | NULLABLE | 
+| account_display_name | STRING | NULLABLE | 
+| account_create_time | TIMESTAMP | NULLABLE | 
+| account_update_time | TIMESTAMP | NULLABLE | 
+| account_deleted | BOOLEAN | NULLABLE | 
+| ga4_property_id | STRING | NULLABLE | 
+| ga4_property_display_name | STRING | NULLABLE | 
+| ga4_property_signals_state | STRING | NULLABLE | 
+| ga4_property_timezone | STRING | NULLABLE | 
+| ga4_property_industry_category | STRING | NULLABLE | 
+| ga4_property_create_time | TIMESTAMP | NULLABLE | 
+| ga4_property_last_update_time | TIMESTAMP | NULLABLE | 
+| ga4_property_type | STRING | NULLABLE | 
+| ga4_property_reset_user_data_state | BOOLEAN | NULLABLE | 
+| ga4_property_event_data_retention_period | STRING | NULLABLE | 
+| ga4_property_service_level | STRING | NULLABLE | 
+| ga4_property_currency_code | STRING | NULLABLE | 
+| ga4_audience_id | STRING | NULLABLE | 
+| ga4_audience_display_name | STRING | NULLABLE | 
+| ga4_audience_description | STRING | NULLABLE | 
+| ga4_data_stream_name | STRING | NULLABLE | 
+| ga4_data_stream_display_name | STRING | NULLABLE | 
+| ga4_data_stream_create_time | TIMESTAMP | NULLABLE | 
+| ga4_data_stream_update_time | TIMESTAMP | NULLABLE | 
+| ga4_data_stream_name_1 | STRING | NULLABLE | 
+| ga4_data_stream_type | STRING | NULLABLE | 
+| ga4_data_stream_id | STRING | NULLABLE | 
+
+####ua_settings_joined
+| field name | type | mode |
+| --- | --- | --- |
+| date | TIMESTAMP | NULLABLE | 
+| account_id | INTEGER | NULLABLE | 
+| account_name | STRING | NULLABLE | 
+| ua_view_id | INTEGER | NULLABLE | 
+| ua_view_name | STRING | NULLABLE | 
+| ua_property_id | STRING | NULLABLE | 
+| ua_view_currency | STRING | NULLABLE | 
+| ua_view_ecommerce_tracking | BOOLEAN | NULLABLE | 
+| ua_view_timezone | STRING | NULLABLE | 
+| ua_view_bot_filtering | BOOLEAN | NULLABLE | 
+| ua_view_type | STRING | NULLABLE | 
+| ua_view_last_update_time | TIMESTAMP | NULLABLE | 
+| ua_view_kind | STRING | NULLABLE | 
+| ua_view_create_time | TIMESTAMP | NULLABLE | 
+| ua_view_url | STRING | NULLABLE | 
+
 
 ## Retention
+Partitions expire after 1 year
