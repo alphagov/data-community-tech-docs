@@ -10,9 +10,67 @@ This is the [UA](/data-sources/ua/) data processed into a flat format.
 
 ## Access
 Everyone with a @digital.cabinet-office.gov.uk account has access to the data.
+
 ### Location
 This is stored in BigQuery in the dataset `govuk-bigquery-analytics.FlattenedDailyData`.
+Each daily table is sharded in the format flattened_daily_ga_data_YYYYMMDD.
 
 ## Schema
+| field name | type | mode |
+| --- | --- | --- |
+| name | STRING | NULLABLE | 
+| visitId | INTEGER | NULLABLE |
+| visitNumber | INTEGER | NULLABLE |
+| visitorid | INTEGER | NULLABLE |
+| visitstarttime | INTEGER | NULLABLE |
+| date | STRING | NULLABLE |
+| hitNumber | INTEGER | NULLABLE |
+| time | INTEGER | NULLABLE |
+| hour | INTEGER | NULLABLE |
+| minute | INTEGER | NULLABLE |
+| VisitStartTimestamp | TIMESTAMP | NULLABLE |
+| Seconds | FLOAT | NULLABLE |
+| Hit_TimeStamp | TIMESTAMP | NULLABLE |
+| fullvisitorid | STRING | NULLABLE |
+| userid | STRING | NULLABLE |
+| clientid | STRING | NULLABLE |
+| channelGrouping | STRING | NULLABLE |
+| socialEngagementType | STRING | NULLABLE |
+| visits | INTEGER | NULLABLE |
+| hits | INTEGER | NULLABLE |
+| timeonsite | INTEGER | NULLABLE |
+| bounces | INTEGER | NULLABLE |
+| transactions | INTEGER | NULLABLE |
+| transactionrevenue | INTEGER | NULLABLE |
+| newVisits | INTEGER | NULLABLE |
+| screenviews | INTEGER | NULLABLE |
+| uniquescreenviews | INTEGER | NULLABLE |
+| timeonscreen | INTEGER | NULLABLE |
+| totaltransactionrevenue | INTEGER | NULLABLE |
+| sessionqualitydim | INTEGER | NULLABLE |
+| referralPath | STRING | NULLABLE |
+| campaign | STRING | NULLABLE |
+| source | STRING | NULLABLE |
+| medium | STRING | NULLABLE |
+| keyword | STRING | NULLABLE |
+| adContent | STRING | NULLABLE |
+| istruedirect | BOOLEAN | NULLABLE |
+| campaignCode | STRING | NULLABLE |
+| browser | STRING | NULLABLE |
+| browserVersion | STRING | NULLABLE |
+| browserSize | STRING | NULLABLE |
+| operatingSystem | STRING | NULLABLE |
+| operatingSystemVersion | STRING | NULLABLE |
+| isMobile | BOOLEAN | NULLABLE |
+| mobileDeviceBranding | STRING | NULLABLE |
+| mobileDeviceModel | STRING | NULLABLE |
+| mobileInputSelector | STRING | NULLABLE |
+| mobileDeviceInfo | STRING | NULLABLE |
+| mobileDeviceMarketingName | STRING | NULLABLE |
+| flashVersion | STRING | NULLABLE |
+| javaEnabled | BOOLEAN | NULLABLE |
+| language | STRING | NULLABLE |
+| screenColors | STRING | NULLABLE |
+| screenResolution | STRING | NULLABLE |
 
 ## Retention
