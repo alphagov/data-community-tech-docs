@@ -10,9 +10,30 @@ This is the data exported from Universal Analytics
 
 ## Access
 Everyone with a @digital.cabinet-office.gov.uk account has access to the data.
+
 ### Location
 The data is stored in BigQuery in the dataset `govuk-bigquery-analytics.87773428`. 
+Each daily table is sharded in the format ga_sessions_YYYYMMDD.
 
 ## Schema
+| field name | type | mode |
+| --- | --- | --- |
+| visitorId | INTEGER | NULLABLE |
+| visitNumber | INTEGER | NULLABLE |
+| visitId | INTEGER | NULLABLE |
+| visitStartTime | INTEGER | NULLABLE |
+| date | STRING | NULLABLE |
+| totals | RECORD | NULLABLE |
+| trafficSource | RECORD | NULLABLE |
+| device | RECORD | NULLABLE |
+| geoNetwork | RECORD | NULLABLE |
+| customDimensions | RECORD | REPEATED |
+| hits | RECORD | REPEATED |
+| fullVisitorId | STRING | NULLABLE |
+| userId | STRING | NULLABLE |
+| clientId | STRING | NULLABLE |
+| channelGrouping | STRING | NULLABLE |
+| socialEngagementType | STRING | NULLABLE |
+| privacyInfo | RECORD | NULLABLE |
 
 ## Retention
