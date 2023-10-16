@@ -26,7 +26,9 @@ This is a very good question that we are still investigating.
 
 Our current thinking is that the dynamic concurrent query queue could be loaded with queries before the quota is breached.
 We think that the quota check occurs before a query is moved to Active.
+
 [Google documentation on query queues](https://cloud.google.com/bigquery/docs/query-queues)
+
 
 
 ### Why is Looker so data hungry
@@ -34,7 +36,9 @@ Another good question that is under investigation.
 
 Currently Looker does not cache results from BQ, meaning the query has to be run every time. 
 Caching results is due for general availability release
+
 [Link to Google documentation](https://cloud.google.com/bigquery/docs/visualize-looker-studio.md#looker-studio-integration)
+
 
 In addition to not caching results it seems that when creating a new data connection, Looker connects to a sharded set of tables for the first time it runs a series of queries that reference all shards.
 The queries are for a small number fields each (4 or 5) and then query all shards and then include a `LIMIT 100` and this is done multiple times untli all fields are done.
