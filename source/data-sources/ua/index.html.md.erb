@@ -8,16 +8,32 @@ review_in: 6 months
 # Universal Analytics
 This is the data exported from Universal Analytics
 
+Universal Analytics (UA) sends GOV.UK visitor journey data to the `govuk-bigquery-analytics.87773428.ga_sessions_intraday_YYYYMMDD` table 3 times a day, where:
+
+- `govuk-bigquery-analytics` is the project ID
+- `87773428` is the dataset name
+- `ga_sessions_intraday_YYYYMMDD` is the table name
+- `YYYYMMDD` is the current date in year-month-day format
+
+At the end of the day, UA automatically:
+
+- moves the data in this intraday table to a `ga_sessions_YYYYMMDD` table
+- deletes this intraday table
+- creates a new intraday table for the next day
+
+
 ## Access
 Everyone with a @digital.cabinet-office.gov.uk account has access to the data.
 
 ### Location
 The data is stored in BigQuery in the dataset `govuk-bigquery-analytics.87773428`. 
-Each daily table is sharded in the format ga_sessions_YYYYMMDD.
+This is located in europe-west2 GCP region.
 
 [GCP Project Documentation link](/gcp/#universal-analytics)
 
 ## Schema
+The [UA BigQuery Export schema](https://support.google.com/analytics/answer/3437719?hl=en) defines the schema of these tables. However, not all columns are filled in our tables.
+
 | field name | type | mode |
 | --- | --- | --- |
 | visitorId | INTEGER | NULLABLE |
