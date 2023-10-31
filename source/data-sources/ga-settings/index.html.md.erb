@@ -21,7 +21,10 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 
 ## Schema
 ### Tables
-####ga4_account_summaries
+<span>
+<details>
+<summary>ga4_account_summaries</summary>
+
 | field name | type | mode |
 | --- | --- | --- |
 | property_summaries | RECORD | REPEATED |
@@ -29,7 +32,13 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 | display_name | STRING | NULLABLE |
 | name | STRING | NULLABLE |
 
-####ga4_accounts
+</details>
+</span>
+
+<span>
+<details>
+<summary>ga4_accounts</summary>
+
 | field name | type | mode |
 | --- | --- | --- |
 | deleted | BOOLEAN | NULLABLE |
@@ -39,7 +48,13 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 | create_time | TIMESTAMP | NULLABLE |
 | display_name | STRING | NULLABLE |
 
-####ga4_audiences
+</details>
+</span>
+
+<span>
+<details>
+<summary>ga4_audiences</summary>
+
 | field name | type | mode |
 | --- | --- | --- |
 | name | STRING | NULLABLE |
@@ -54,7 +69,13 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 | filter_clauses | STRING | NULLABLE |
 | exclusion_duration_mode | STRING | NULLABLE |
 
-####ga4_conversion_events
+</details>
+</span>
+
+<span>
+<details>
+<summary>ga4_conversion_events</summary>
+
 | field name | type | mode |
 | --- | --- | --- |
 | property | STRING | NULLABLE |
@@ -65,7 +86,13 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 | event_name | STRING | NULLABLE |
 | name | STRING | NULLABLE |
 
-####ga4_custom_dimensions
+</details>
+</span>
+
+<span>
+<details>
+<summary>ga4_custom_dimensions</summary>
+
 | field name | type | mode |
 | --- | --- | --- |
 | property | STRING | NULLABLE |
@@ -77,7 +104,13 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 | property_display_name | STRING | NULLABLE | 
 | description | STRING | NULLABLE | 
 
-####ga4_custom_metrics
+</details>
+</span>
+
+<span>
+<details>
+<summary>ga4_custom_metrics</summary>
+
 | field name | type | mode |
 | --- | --- | --- |
 | measurement_unit | INTEGER | NULLABLE | 
@@ -89,7 +122,13 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 | description | STRING | NULLABLE | 
 | property | STRING | NULLABLE | 
 
-####ga4_data_streams
+</details>
+</span>
+
+<span>
+<details>
+<summary>ga4_data_streams</summary>
+
 | field name | type | mode |
 | --- | --- | --- |
 | | | |
@@ -104,7 +143,13 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 | android_app_stream_data | RECORD | NULLABLE | 
 | ios_app_stream_data | RECORD | NULLABLE | 
 
-####ga4_dv360_link_proposals
+</details>
+</span>
+
+<span>
+<details>
+<summary>ga4_dv360_link_proposals</summary>
+
 | field name | type | mode |
 | --- | --- | --- |
 | advertiser_id | STRING | NULLABLE | 
@@ -118,7 +163,13 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 | cost_data_sharing_enabled | BOOLEAN | NULLABLE | 
 | campaign_data_sharing_enabled | BOOLEAN | NULLABLE | 
 
-####ga4_dv360_links
+</details>
+</span>
+
+<span>
+<details>
+<summary>ga4_dv360_links</summary>
+
 | field name | type | mode |
 | --- | --- | --- |
 | campaign_data_sharing_enabled | BOOLEAN | NULLABLE | 
@@ -130,7 +181,13 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 | property | STRING | NULLABLE | 
 | property_display_name | STRING | NULLABLE | 
 
-####ga4_firebase_links
+</details>
+</span>
+
+<span>
+<details>
+<summary>ga4_firebase_links</summary>
+
 | field name | type | mode |
 | --- | --- | --- |
 | property | STRING | NULLABLE | 
@@ -139,7 +196,13 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 | property_display_name | STRING | NULLABLE | 
 | name | STRING | NULLABLE | 
 
-####ga4_google_ads_links
+</details>
+</span>
+
+<span>
+<details>
+<summary>ga4_google_ads_links</summary>
+
 | field name | type | mode |
 | --- | --- | --- |
 | update_time | TIMESTAMP | NULLABLE | 
@@ -152,7 +215,13 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 | customer_id | STRING | NULLABLE | 
 | create_time | TIMESTAMP | NULLABLE | 
 
-####ga4_measurment_protocol_secrets
+</details>
+</span>
+
+<span>
+<details>
+<summary>ga4_measurment_protocol_secrets</summary>
+
 | field name | type | mode |
 | --- | --- | --- |
 | name | STRING | NULLABLE | 
@@ -166,7 +235,13 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 | update_time | TIMESTAMP | NULLABLE | 
 | create_time | TIMESTAMP | NULLABLE | 
 
-####ga4_properties
+</details>
+</span>
+
+<span>
+<details>
+<summary>ga4_properties</summary>
+
 | field name | type | mode |
 | --- | --- | --- |
 | google_signals_settings | RECORD | NULLABLE | 
@@ -186,7 +261,13 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 | create_time | TIMESTAMP | NULLABLE | 
 | property_type | STRING | NULLABLE | 
 
-####ua_account_summaries
+</details>
+</span>
+
+<span>
+<details>
+<summary>ua_account_summaries</summary>
+
 | field name | type | mode |
 | --- | --- | --- |
 | name | STRING | NULLABLE | 
@@ -194,7 +275,13 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 | webProperties | RECORD | REPEATED | 
 | id | INTEGER | NULLABLE | 
 
-####ua_audiences
+</details>
+</span>
+
+<span>
+<details>
+<summary>ua_audiences</summary>
+
 | field name | type | mode |
 | --- | --- | --- |
 | linkedAdAccounts | RECORD | REPEATED | 
@@ -212,7 +299,13 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 | audienceType | STRING | NULLABLE | 
 | audienceDefinition | RECORD | NULLABLE | 
 
-####ua_custom_dimensions
+</details>
+</span>
+
+<span>
+<details>
+<summary>ua_custom_dimensions</summary>
+
 | field name | type | mode |
 | --- | --- | --- |
 | updated | TIMESTAMP | NULLABLE | 
@@ -228,7 +321,13 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 | parentLink | RECORD | NULLABLE | 
 | selfLink | STRING | NULLABLE |
 
-####ua_custom_metrics
+</details>
+</span>
+
+<span>
+<details>
+<summary>ua_custom_metrics</summary>
+
 | field name | type | mode |
 | --- | --- | --- |
 | updated | TIMESTAMP | NULLABLE | 
@@ -247,7 +346,13 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 | type | STRING | NULLABLE | 
 | selfLink | STRING | NULLABLE | 
 
-####ua_filter_links
+</details>
+</span>
+
+<span>
+<details>
+<summary>ua_filter_links</summary>
+
 | field name | type | mode |
 | --- | --- | --- |
 | kind | STRING | NULLABLE | 
@@ -257,7 +362,13 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 | id | STRING | NULLABLE | 
 | selfLink | STRING | NULLABLE | 
 
-####ua_filters
+</details>
+</span>
+
+<span>
+<details>
+<summary>ua_filters</summary>
+
 | field name | type | mode |
 | --- | --- | --- |
 | updated | TIMESTAMP | NULLABLE | 
@@ -276,7 +387,13 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 | type | STRING | NULLABLE | 
 | selfLink | STRING | NULLABLE | 
 
-####ua_goals
+</details>
+</span>
+
+<span>
+<details>
+<summary>ua_goals</summary>
+
 | field name | type | mode |
 | --- | --- | --- |
 | kind | STRING | NULLABLE | 
@@ -298,7 +415,13 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 | selfLink | STRING | NULLABLE | 
 | accountId | INTEGER | NULLABLE | 
 
-####ua_google_ads_links
+</details>
+</span>
+
+<span>
+<details>
+<summary>ua_google_ads_links</summary>
+
 | field name | type | mode |
 | --- | --- | --- |
 | kind | STRING | NULLABLE | 
@@ -309,7 +432,13 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 | id | STRING | NULLABLE | 
 | selfLink | STRING | NULLABLE | 
 
-####ua_segments
+</details>
+</span>
+
+<span>
+<details>
+<summary>ua_segments</summary>
+
 | field name | type | mode |
 | --- | --- | --- |
 | definition | STRING | NULLABLE | 
@@ -322,7 +451,13 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 | selfLink | STRING | NULLABLE | 
 | name | STRING | NULLABLE | 
 
-####ua_views
+</details>
+</span>
+
+<span>
+<details>
+<summary>ua_views</summary>
+
 | field name | type | mode |
 | --- | --- | --- |
 | currency | STRING | NULLABLE | 
@@ -352,9 +487,15 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 | starred | BOOLEAN | NULLABLE | 
 | selfLink | STRING | NULLABLE | 
 
+</details>
+</span>
+
 
 ### Views
-####ga4_settings_joined
+<span>
+<details>
+<summary>ga4_settings_joined</summary>
+
 | field name | type | mode |
 | --- | --- | --- |
 | date | TIMESTAMP | NULLABLE | 
@@ -386,7 +527,13 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 | ga4_data_stream_type | STRING | NULLABLE | 
 | ga4_data_stream_id | STRING | NULLABLE | 
 
-####ua_settings_joined
+</details>
+</span>
+
+<span>
+<details>
+<summary>ua_settings_joined</summary>
+
 | field name | type | mode |
 | --- | --- | --- |
 | date | TIMESTAMP | NULLABLE | 
@@ -404,6 +551,9 @@ The data is located in BigQuery under the GA4 Analytics project in `ga4-analytic
 | ua_view_kind | STRING | NULLABLE | 
 | ua_view_create_time | TIMESTAMP | NULLABLE | 
 | ua_view_url | STRING | NULLABLE | 
+
+</details>
+</span>
 
 
 ## Retention
