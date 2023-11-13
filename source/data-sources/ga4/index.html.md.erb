@@ -1,57 +1,23 @@
 ---
 title: GA4
 weight: 1
-last_reviewed_on: 2023-08-23
+last_reviewed_on: 2023-11-13
 review_in: 6 months
 ---
 
 # GA4
-This is the Google Analytics data on usage of GOV.UK, exported from Google Analytics 4.
+This is Google Analytics data on the usage of GOV.UK.
+
+This can be accessed via the Google Analytics 4 user interface, the GA4 Looker Studio connection, and the Google Analytics Data API.
 
 ## Access
-Access to GA4 is currently limited to an early access group, for details see this blog [Sharing data and lessons from our Google Analytics 4 upgrade](https://gds.blog.gov.uk/2023/03/27/sharing-data-and-lessons-from-our-google-analytics-4-upgrade/).
+Access to GOV.UK GA4 data for data users across government is currently limited to an early access group. For details see out blog on [Sharing data and lessons from our Google Analytics 4 upgrade](https://gds.blog.gov.uk/2023/03/27/sharing-data-and-lessons-from-our-google-analytics-4-upgrade/).
 
-In addition everyone with a @digital.cabinet-office.gov.uk account has access to the data.
+In addition, everyone at GDS should be given access to the data. If you have any issues accessing the data, please contact the Analytics team.
 
 ### Location
-There are 3 GA4 datasets. These correspond to the integration, staging, and production or live GOV.UK websites.
-All of these datasets are made up of sharded tables. This means that a new table is created each day with the suffix YYYYMMDD.
-
-The GA4 data for the live GOV.UK site is located in BigQuery in the `ga4-analytics-352613.analytics_330577055` dataset.
-The GA4 data for the staging site is located in BigQuery in the `ga4-analytics-352613.analytics_330580593` dataset.
-The GA4 data for the integration site is located in BigQuery in the `ga4-analytics-352613.analytics_294475112` dataset.
-
-[GCP Project Documentation link](/gcp/#ga4-analytics)
-
-## Schema
-| field name | type | mode |
-| --- | --- | --- |
-| event_date | STRING | NULLABLE | 
-| event_timestamp | INTEGER | NULLABLE | 
-| event_name | STRING | NULLABLE | 
-| event_params | RECORD | REPEATED | 
-| event_previous_timestamp | INTEGER | NULLABLE | 
-| event_value_in_usd | FLOAT | NULLABLE | 
-| event_bundle_sequence_id | INTEGER | NULLABLE | 
-| event_server_timestamp_offset | INTEGER | NULLABLE | 
-| user_id | STRING | NULLABLE | 
-| user_pseudo_id | STRING | NULLABLE | 
-| privacy_info | RECORD | NULLABLE | 
-| user_properties | RECORD | REPEATED | 
-| user_first_touch_timestamp | INTEGER | NULLABLE | 
-| user_ltv | RECORD | NULLABLE | 
-| device | RECORD | NULLABLE | 
-| geo | RECORD | NULLABLE | 
-| app_info | RECORD | NULLABLE | 
-| traffic_source | RECORD | NULLABLE | 
-| stream_id | STRING | NULLABLE | 
-| platform | STRING | NULLABLE | 
-| event_dimensions | RECORD | NULLABLE | 
-| ecommerce | RECORD | NULLABLE | 
-| items | RECORD | REPEATED | 
-| collected_traffic_source | RECORD | NULLABLE | 
-| is_active_user | BOOLEAN | NULLABLE | 
+There are 3 GA4 GOV.UK properties. These correspond to the integration, staging, and production or live GOV.UK websites.
 
 ## Retention
 
-The integration and staging GA4 datasets have a default table expiry in BigQuery of 30 days.
+A data retention period for this data is set in the GA4 user interface. For the integration, staging, and production GOV.UK sites, this is set to 38 months.
