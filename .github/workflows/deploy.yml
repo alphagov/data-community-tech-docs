@@ -61,7 +61,7 @@ jobs:
           bundle install --jobs 4 --retry 3
 
       - name: Build Middleman site
-        run: bundle exec middleman build
+        run: bundle exec middleman build --verbose
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
