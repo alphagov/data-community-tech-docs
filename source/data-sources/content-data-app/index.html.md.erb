@@ -1,0 +1,204 @@
+---
+title: Content Data App BigQuery and Dataform tables
+weight: 2
+last_reviewed_on: 2023-11-13
+review_in: 6 months
+---
+
+This outlines the steps taking in processing GA4 data into a suitable structure for the content data tool.
+
+## Access
+Access to govuk-content-data project is currently limited to individuals that are working on the project.
+
+### Location
+The table being directly connected to the tool can be found in BigQuery under the data set `govuk-content-data.dataform.GA4 dataform`. 
+This table was created off of the back of a modified GA4 flattened dataset, which pulls data spanning over a year. This table can be found in BigQuery under the data set `govuk-content-data.ga4.ga4_two_years`.
+
+[GCP Project Documentation link](/gcp/#ga4-analytics)
+
+## Schema
+| field name | type | mode |
+| --- | --- | --- |
+| the_date | STRING | NULLABLE | 
+| user_pseudo_id | STRING | NULLABLE | 
+| event_name | STRING | NULLABLE | 
+| entrances | INTEGER | NULLABLE | 
+| unique_page_views | INTEGER | NULLABLE | 
+| page_views | INTEGER | NULLABLE | 
+| searches | INTEGER | NULLABLE | 
+| unique_searches | INTEGER | NULLABLE | 
+| cleaned_page_location | STRING | NULLABLE | 
+| useful_no | INTEGER | NULLABLE | 
+| useful_yes | INTEGER | NULLABLE | 
+| bq_entrances | STRING | NULLABLE | 
+| exits | STRING | NULLABLE | 
+| satisfaction | FLOAT | NULLABLE | 
+| session_starts | INTEGER | NULLABLE | 
+| user_engagement | INTEGER | NULLABLE | 
+| avg_user_engagement | FLOAT | NULLABLE | 
+| bounce_rate | FLOAT | NULLABLE | 
+
+
+## Retention
+
+
+
+## Code for pulling in GA4 flattened data
+```
+CREATE OR REPLACE TABLE `govuk-content-data.ga4.ga4_two_years` AS
+
+SELECT
+  user_pseudo_id,
+  user_id,
+  search_term,
+  ga_session_number,
+  cleaned_page_location,
+  ui_text,
+  document_type,
+  unique_session_id,
+  entrances,
+  event_name,
+  engagement_time_msec,
+  FORMAT_DATE('%d-%m-%Y', PARSE_DATE('%Y%m%d', event_date)) AS the_date,
+  page_location,
+IF
+(event_name = 'page_view', COALESCE(FIRST_VALUE(
+IF
+(event_name = 'page_view',cleaned_page_location, NULL) IGNORE NULLS) OVER(PARTITION BY user_pseudo_id ORDER BY event_timestamp ROWS BETWEEN 1 FOLLOWING AND UNBOUNDED FOLLOWING), '(exit)' ), NULL ) AS exits
+, IF
+(event_name = 'page_view', COALESCE(LAST_VALUE(
+IF
+(event_name = 'page_view',cleaned_page_location, NULL) IGNORE NULLS) OVER(PARTITION BY user_pseudo_id ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING), '(entrance)' ), NULL ) AS bq_entrances
+FROM
+  `ga4-analytics-352613.flattened_dataset.flattened_daily_ga_data_*`
+WHERE
+  PARSE_DATE('%Y%m%d', _TABLE_SUFFIX) > DATE_ADD(CURRENT_DATE('Europe/London'), INTERVAL -45 DAY)
+```
+
+## Code for restructuring GA4 flattened data in Dataform
+
+```
+ ---- page views
+WITH
+  CTE2 AS (
+  SELECT
+    user_pseudo_id,
+    COUNT(DISTINCT user_pseudo_id) AS unique_page_views,
+    COUNT(user_pseudo_id) AS page_views
+  FROM
+    `govuk-content-data.ga4.ga4_two_years`
+  WHERE
+    event_name = 'page_view'
+  GROUP BY
+    user_pseudo_id)
+  --- search
+  ,
+  CTE3 AS (
+  SELECT
+    user_pseudo_id,
+    COUNT(user_pseudo_id) AS searches,
+    COUNT(DISTINCT user_pseudo_id) AS unique_searches
+  FROM
+    `govuk-content-data.ga4.ga4_two_years`
+  WHERE
+    event_name = 'search'
+  GROUP BY
+    user_pseudo_id )
+  --- useful_yes
+  ,
+  CTE4 AS (
+  SELECT
+    user_pseudo_id,
+    COUNT(user_pseudo_id) AS useful_yes
+  FROM
+    `govuk-content-data.ga4.ga4_two_years`
+  WHERE
+    event_name = 'form_submit'
+    AND ui_text = 'Yes'
+  GROUP BY
+    user_pseudo_id )
+  --- useful_no
+  ,
+  CTE5 AS (
+  SELECT
+    user_pseudo_id,
+    COUNT(user_pseudo_id) AS useful_no
+  FROM
+    `govuk-content-data.ga4.ga4_two_years`
+  WHERE
+    event_name = 'form_submit'
+    AND ui_text = 'No'
+  GROUP BY
+    user_pseudo_id )
+  --- session_start
+  ,
+  CTE6 AS (
+  SELECT
+    user_pseudo_id,
+    COUNT(user_pseudo_id) AS session_starts
+  FROM
+    `govuk-content-data.ga4.ga4_two_years`
+  WHERE
+    event_name = 'session_start'
+  GROUP BY
+    user_pseudo_id )
+  --- user_engagement
+  ,
+  CTE7 AS (
+  SELECT
+    user_pseudo_id,
+    COUNT(user_pseudo_id) AS user_engagement,
+    AVG(engagement_time_msec) AS avg_user_engagement
+  FROM
+    `govuk-content-data.ga4.ga4_two_years`
+  WHERE
+    event_name = 'user_engagement'
+  GROUP BY
+    user_pseudo_id)
+SELECT
+  FORMAT_DATE('%Y-%m-%d', PARSE_DATE('%d-%m-%Y',p.the_date)) AS the_date,
+  p.entrances,
+  p.bq_entrances,
+  p.exits,
+  p.user_pseudo_id,
+  p.cleaned_page_location,
+  p.event_name,
+  CTE2.unique_page_views,
+  CTE2.page_views,
+  p.search_term,
+  CTE3.searches,
+  CTE3.unique_searches,
+  CTE4.useful_yes,
+  CTE5.useful_no,
+  CTE4.useful_yes/CTE5.useful_no * 100 AS satisfaction,
+  CTE6.session_starts,
+  CTE7.user_engagement,
+  CTE7.avg_user_engagement,
+  (CTE6.session_starts - CTE7.user_engagement/ CTE7.user_engagement) AS bounce_rate
+FROM
+  `govuk-content-data.ga4.ga4_two_years` AS p
+LEFT JOIN
+  CTE2
+ON
+  p.user_pseudo_id = CTE2.user_pseudo_id
+LEFT JOIN
+  CTE3
+ON
+  p.user_pseudo_id = CTE3.user_pseudo_id
+LEFT JOIN
+  CTE4
+ON
+  p.user_pseudo_id = CTE4.user_pseudo_id
+LEFT JOIN
+  CTE5
+ON
+  p.user_pseudo_id = CTE5.user_pseudo_id
+LEFT JOIN
+  CTE6
+ON
+  p.user_pseudo_id = CTE6.user_pseudo_id
+LEFT JOIN
+  CTE7
+ON
+  p.user_pseudo_id = CTE7.user_pseudo_id
+```
