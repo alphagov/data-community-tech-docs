@@ -1,25 +1,17 @@
 ---
 title: GA4
 weight: 1
-last_reviewed_on: 2023-08-18
+last_reviewed_on: 2023-11-13
 review_in: 6 months
 ---
 
 # GA4
-This is the Google Analytics data on usage of GOV.UK, exported from Google Analytics 4.
+This is the Google Analytics data on usage of GOV.UK. This can be accessed in the Google Analytics 4 user interface or via the Google Analytics Data API.
 
 ## Access
 ### Location
 There are 3 GA4 datasets. These correspond to the integration, staging, and production or live GOV.UK websites.
-All of these datasets are made up of sharded tables. This means that a new table is created each day with the suffix YYYYMMDD.
-
-The GA4 data for the live GOV.UK site is located in BigQuery in the `ga4-analytics-352613.analytics_330577055` dataset.
-The GA4 data for the staging site is located in BigQuery in the `ga4-analytics-352613.analytics_330580593` dataset.
-The GA4 data for the integration site is located in BigQuery in the `ga4-analytics-352613.analytics_294475112` dataset.
-
-
-## Schema
 
 ## Retention
 
-The integration and staging GA4 datasets have a default table expiry in BigQuery of 30 days.
+A data retention period is set within the GA4 interface. For all three websites, this is set to 38 months.
