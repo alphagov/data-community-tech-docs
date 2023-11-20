@@ -1,7 +1,7 @@
 ---
 title: BQ
 weight: 10
-last_reviewed_on: 2023-10-16
+last_reviewed_on: 2023-11-20
 review_in: 6 months
 ---
 
@@ -16,13 +16,15 @@ When requesting access please state what data you need access to. If in doubt tr
 
 ## Quotas
 Several projects have quotas set up to limit the amount of data that can be queried. 
-The aim of this is twofold, firstly it limits our exposure to unlimited costs from queries.
-Secondly it provides a safety net for those working with the data, you can only wrack up so much in query costs.
+The aim of this is twofold. Firstly, this limits our exposure to unlimited costs from queries.
+Secondly, this provides a safety net for those working with the data, as you can only wrack up so much in query costs.
 
 The aim is not to be a hindrance to the need to use the data we store so please contact the #data-engineering Slack channel to discuss your needs if the quotas are getting in the way of work.
 
+Specific quotas can be found detailed under the project name on the [GCP page](https://docs.data-community.publishing.service.gov.uk/gcp/).
 
-### How come I went over my quota
+
+### How did I exceed my quota?
 This is a very good question that we are still investigating.
 
 Our current thinking is that the dynamic concurrent query queue could be loaded with queries before the quota is breached.
@@ -32,13 +34,11 @@ We think that the quota check occurs before a query is moved to Active.
 
 
 
-### Why is Looker so data hungry
+### Why is Looker Studio so data hungry?
 Another good question that is under investigation.
 
 Currently Looker does not cache results from BQ, meaning the query has to be run every time. 
-Caching results is due for general availability release
-
-[Link to Google documentation](https://cloud.google.com/bigquery/docs/visualize-looker-studio.md#looker-studio-integration)
+Caching results is due for general availability release by the end of 2023 (see the [Google documentation](https://cloud.google.com/bigquery/docs/visualize-looker-studio.md#looker-studio-integration)).
 
 
 In addition to not caching results it seems that when creating a new data connection, Looker connects to a sharded set of tables for the first time it runs a series of queries that reference all shards.
