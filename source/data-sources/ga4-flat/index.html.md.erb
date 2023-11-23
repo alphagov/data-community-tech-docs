@@ -1,23 +1,26 @@
 ---
 title: GA4 Flattened Tables
 weight: 3
-last_reviewed_on: 2023-08-23
+last_reviewed_on: 2023-11-23
 review_in: 6 months
 ---
 
 # GA4 Flattened Tables
-This is the [GA4](/data-sources/ga4/) data processed into a flat format
+This is the [GA4](/data-sources/ga4/) data processed into a flat format.
+
+This is created from the [raw data exported into BigQuery](/data-sources/ga4-bq/) on the live site which contains most, but not all, of the same fields.
+This flattened dataset is easier and more efficient to query, so should be used for most analysis and reporting.
 
 ## Access
-Access to GA4 is currently limited to an early access group, for details see this blog [Sharing data and lessons from our Google Analytics 4 upgrade](https://gds.blog.gov.uk/2023/03/27/sharing-data-and-lessons-from-our-google-analytics-4-upgrade/).
+Access to GA4 is currently limited to an early access group. For more details, see our blog on [Sharing data and lessons from our Google Analytics 4 upgrade](https://gds.blog.gov.uk/2023/03/27/sharing-data-and-lessons-from-our-google-analytics-4-upgrade/).
 
-In addition everyone with a @digital.cabinet-office.gov.uk account has access to the data.
+In addition, everyone with a @digital.cabinet-office.gov.uk account has access to the data by default.
 
 ### Location
-It is located in BigQuery under the data set `ga4-analytics-352613.flattened_dataset`.
+This is located in BigQuery under the data set `ga4-analytics-352613.flattened_dataset`.
 Each daily table is sharded in the format flattened_daily_ga_data_YYYYMMDD.
 
-[GCP Project Documentation link](/gcp/#ga4-analytics)
+For more information on the Google Cloud Platform projects, see our [GCP Project Documentation](/gcp/).
 
 ## Schema
 | field name | type | mode |
