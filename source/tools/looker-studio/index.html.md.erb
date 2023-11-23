@@ -1,19 +1,19 @@
 ---
 title: Looker Studio
 weight: 3
-last_reviewed_on: 2023-11-21
+last_reviewed_on: 2023-11-23
 review_in: 6 months
 ---
 
 # Looker Studio
 
-Looker Studio is a dashboarding tool from Google
+Looker Studio is a dashboarding tool from Google.
 
 ## Report creation
 
-When creating a new report, use one of the standard data connections listed [here](https://trello.com/c/N8C3H9KT/55-looker-studio-data-sources)
+When creating a new report, use one of the standard data connections listed [here](https://trello.com/c/N8C3H9KT/55-looker-studio-data-sources).
 
-You should also add the Looker [GA4 property ID](https://trello.com/c/N8C3H9KT/55-looker-studio-data-sources) to the report to track usage.
+You should also add the Looker Studio [GA4 property ID](https://trello.com/c/N8C3H9KT/55-looker-studio-data-sources) to the report to track usage.
 
 ## Data connections
 
@@ -22,8 +22,8 @@ When making a new data connection that is to be shared you should:
  - Add the Google Group 'data-connection-editors@digital.cabinet-office.gov.uk' as editor
  - Share with the GDS domain as viewer so others can use your connection
 
- If your data connection is based on BigQuery then writing custom SQL with date range parameters is the preferred method. 
- This is because Looker queries all shards if connecting to the table directly.
+ If you are connecting to a BigQuery dataset, it is better to connect using a custom SQL query with date range parameters than to connect to the table directly.
+ This is because most of our data is stored in sharded tables, and Looker Studio queries all shards when direct connections are established. This can be quite costly given the size of our datasets.
 
- When doing this ensure you select the appropriate billing project. 
- For most shared reports that will be [this project](https://docs.google.com/spreadsheets/d/1_FQUVLNA_TYYCvI9WIuI6mOdFJTNsykSWJcNlv6SPrU/edit#gid=608928265)
+ When setting up the connection, ensure you select the appropriate billing project. 
+ For most shared reports that will be [the GDS BQ reporting project](https://docs.google.com/spreadsheets/d/1_FQUVLNA_TYYCvI9WIuI6mOdFJTNsykSWJcNlv6SPrU/edit#gid=608928265).
