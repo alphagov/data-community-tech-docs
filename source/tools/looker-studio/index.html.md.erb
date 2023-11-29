@@ -1,7 +1,7 @@
 ---
 title: Looker Studio
 weight: 3
-last_reviewed_on: 2023-11-23
+last_reviewed_on: 2023-11-29
 review_in: 6 months
 ---
 
@@ -18,12 +18,15 @@ You should also add the Looker Studio [GA4 property ID](https://trello.com/c/N8C
 ## Data connections
 
 When making a new data connection that is to be shared you should:
- - Turn off Community Visualisations
- - Add the Google Group 'data-connection-editors@digital.cabinet-office.gov.uk' as editor
- - Share with the GDS domain as viewer so others can use your connection
 
- If you are connecting to a BigQuery dataset, it is better to connect using a custom SQL query with date range parameters than to connect to the table directly.
- This is because most of our data is stored in sharded tables, and Looker Studio queries all shards when direct connections are established. This can be quite costly given the size of our datasets.
+- Turn off Community Visualisations
+- Add the Google Group 'data-connection-editors@digital.cabinet-office.gov.uk' as editor
+- Share with the GDS domain as viewer so others can use your connection
 
- When setting up the connection, ensure you select the appropriate billing project. 
- For most shared reports that will be [the GDS BQ reporting project](https://docs.google.com/spreadsheets/d/1_FQUVLNA_TYYCvI9WIuI6mOdFJTNsykSWJcNlv6SPrU/edit#gid=608928265).
+The reason for turning off community visualisations is that we have not done a DPIA on them to assess the risk of data loss.
+
+If you are connecting to a BigQuery dataset, it is better to connect using a custom SQL query with date range parameters than to connect to the table directly.
+This is because most of our data is stored in sharded tables, and Looker Studio queries all shards when direct connections are established. This can be quite costly given the size of our datasets.
+
+When setting up the connection, ensure you select the appropriate billing project. 
+For most shared reports that will be [the GDS BQ reporting project](https://docs.google.com/spreadsheets/d/1_FQUVLNA_TYYCvI9WIuI6mOdFJTNsykSWJcNlv6SPrU/edit#gid=608928265).
