@@ -1,11 +1,11 @@
 ---
-title: GA4
+title: GOV.UK GA4
 weight: 1
-last_reviewed_on: 2023-11-23
+last_reviewed_on: 2023-12-12
 review_in: 6 months
 ---
 
-# GA4
+# GOV.UK GA4
 We use Google Analytics 4 to collect data on the usage of GOV.UK.
 
 This data can be accessed via the Google Analytics 4 user interface, the GA4 Looker Studio connection, and the Google Analytics Data API.
@@ -23,10 +23,15 @@ There are three GA4 GOV.UK properties. These correspond to the integration, stag
 ## GA4 settings
 ### Data collection
 
-Google Signals data collection and Ads personalisation is disabled for GDS GA4 properties.
+Google Signals data collection and Ads personalisation is disabled for GDS GA4 properties within the interface.
+Both of these options are also disabled in Google Tag Manager, to ensure that these settings cannot be accidentally changed.
 
 Granular location and device data collection is enabled to allow reporting on the city-level location and devices used by our users.
 
 ### Retention
 
 A data retention period for this data is set in the GA4 user interface. For the integration, staging, and production GOV.UK sites, this is set to 38 months.
+
+## GA4 Implementation
+
+GA4 is implemented on GOV.UK via Google Tag Manager. Further details on this implementation can be found in the [Implementation record](https://docs.publishing.service.gov.uk/analytics/).
