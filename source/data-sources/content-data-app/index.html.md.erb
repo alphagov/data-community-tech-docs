@@ -1,7 +1,7 @@
 ---
 title: Content Data App BigQuery and Dataform tables
 weight: 9
-last_reviewed_on: 2023-11-13
+last_reviewed_on: 2023-12-18
 review_in: 6 months
 ---
 # Content Data App
@@ -23,15 +23,17 @@ This table was created off of the back of a modified GA4 flattened dataset, whic
 | user_pseudo_id | STRING | NULLABLE | 
 | event_name | STRING | NULLABLE | 
 | entrances | INTEGER | NULLABLE | 
-| unique_page_views | INTEGER | NULLABLE | 
-| page_views | INTEGER | NULLABLE | 
-| searches | INTEGER | NULLABLE | 
-| unique_searches | INTEGER | NULLABLE | 
+| unique_page_views_user_level | INTEGER | NULLABLE | 
+| unique_page_views_session_level | INTEGER | NULLABLE | 
+| total_page_views | INTEGER | NULLABLE | 
+| total_searches | INTEGER | NULLABLE | 
+| search_term | STRING | NULLABLE | 
 | cleaned_page_location | STRING | NULLABLE | 
 | useful_no | INTEGER | NULLABLE | 
 | useful_yes | INTEGER | NULLABLE | 
 | bq_entrances | STRING | NULLABLE | 
 | exits | STRING | NULLABLE | 
+| ui_text | STRING | NULLABLE | 
 | satisfaction | FLOAT | NULLABLE | 
 | session_starts | INTEGER | NULLABLE | 
 | user_engagement | INTEGER | NULLABLE | 
@@ -45,12 +47,15 @@ This table was created off of the back of a modified GA4 flattened dataset, whic
 
 ## Code for pulling in GA4 flattened data
 ```
-CREATE OR REPLACE TABLE `govuk-content-data.ga4.ga4_two_years` AS
+CREATE OR REPLACE TABLE `govuk-content-data.ga4.ga4_two_years` 
+ AS 
 
 SELECT
   user_pseudo_id,
   user_id,
+  item_list_name,
   search_term,
+  content_id,
   ga_session_number,
   cleaned_page_location,
   ui_text,
@@ -59,7 +64,7 @@ SELECT
   entrances,
   event_name,
   engagement_time_msec,
-  FORMAT_DATE('%d-%m-%Y', PARSE_DATE('%Y%m%d', event_date)) AS the_date,
+   FORMAT_DATE('%d-%m-%Y', PARSE_DATE('%Y%m%d', event_date)) AS the_date,
   page_location,
 IF
 (event_name = 'page_view', COALESCE(FIRST_VALUE(
@@ -83,8 +88,15 @@ WITH
   CTE2 AS (
   SELECT
     user_pseudo_id,
-    COUNT(DISTINCT user_pseudo_id) AS unique_page_views,
-    COUNT(user_pseudo_id) AS page_views
+    COUNT(DISTINCT
+    IF
+      (event_name="page_view",user_pseudo_id||cleaned_page_location,NULL)) AS unique_page_views_user_level,
+    COUNT(DISTINCT
+    IF
+      (event_name="page_view",unique_session_id||cleaned_page_location,NULL)) AS unique_page_views_session_level,
+    COUNT(
+    IF
+      (event_name="page_view",user_pseudo_id,NULL)) AS total_page_views
   FROM
     `govuk-content-data.ga4.ga4_two_years`
   WHERE
@@ -96,8 +108,9 @@ WITH
   CTE3 AS (
   SELECT
     user_pseudo_id,
-    COUNT(user_pseudo_id) AS searches,
-    COUNT(DISTINCT user_pseudo_id) AS unique_searches
+    COUNT(
+    IF
+      (event_name="search",user_pseudo_id,NULL)) AS total_searches,
   FROM
     `govuk-content-data.ga4.ga4_two_years`
   WHERE
@@ -109,7 +122,10 @@ WITH
   CTE4 AS (
   SELECT
     user_pseudo_id,
-    COUNT(user_pseudo_id) AS useful_yes
+    COUNT(
+    IF
+      (event_name="form_submit"
+        AND ui_text = 'Yes',user_pseudo_id,NULL)) AS useful_yes
   FROM
     `govuk-content-data.ga4.ga4_two_years`
   WHERE
@@ -122,7 +138,10 @@ WITH
   CTE5 AS (
   SELECT
     user_pseudo_id,
-    COUNT(user_pseudo_id) AS useful_no
+    COUNT(
+    IF
+      (event_name="form_submit"
+        AND ui_text = 'No',user_pseudo_id,NULL)) AS useful_no
   FROM
     `govuk-content-data.ga4.ga4_two_years`
   WHERE
@@ -163,11 +182,12 @@ SELECT
   p.user_pseudo_id,
   p.cleaned_page_location,
   p.event_name,
-  CTE2.unique_page_views,
-  CTE2.page_views,
+  p.ui_text,
+  CTE2.unique_page_views_user_level,
+  CTE2.unique_page_views_session_level,
+  CTE2.total_page_views,
   p.search_term,
-  CTE3.searches,
-  CTE3.unique_searches,
+  CTE3.total_searches,
   CTE4.useful_yes,
   CTE5.useful_no,
   CTE4.useful_yes/CTE5.useful_no * 100 AS satisfaction,
