@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4
 weight: 1
-last_reviewed_on: 2023-12-12
+last_reviewed_on: 2024-01-15
 review_in: 6 months
 ---
 
@@ -39,3 +39,8 @@ A data retention period for this data is set in the GA4 user interface. For the 
 ### Data processing and modification
 
 At present, we have not created any custom events or designated any events as conversions within GA4.
+
+We are also not using GA4's inbuilt data redaction feature on GOV.UK.
+Instead, we are applying redaction to strip out potential Personally Identifable Information (PII) from values before they are pushed to the dataLayer (see our [documentation on this in GitHub](https://github.com/alphagov/govuk_publishing_components/blob/main/docs/analytics-ga4/pii-remover.md)).
+Additional PII redaction is also applied in Google Tag Manager as a fail-safe.
+If you spot any PII or other data that should not be present in the GA4 datasets, please raise a Zendesk ticket or contact the Analytics team.
