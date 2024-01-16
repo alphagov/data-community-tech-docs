@@ -1,7 +1,7 @@
 ---
 title: GA access
 weight: 1
-last_reviewed_on: 2023-12-06
+last_reviewed_on: 2024-01-16
 review_in: 6 months
 hide_in_navigation: true
 ---
@@ -9,7 +9,7 @@ hide_in_navigation: true
 # GA access
 <span style="color:red">**This page is a draft policy**</span>.
 
-Google Analytics (granted) is not designed for collecting personally identifiable information (PII) 
+Google Analytics (GA) is not designed for collecting personally identifiable information (PII) 
 and is against GA terms and conditions. 
 
 If you notice PII in GA, please raise a Zendesk ticket as quickly as possible.
@@ -38,8 +38,24 @@ Access to Google Analytics is monitored. Inactive accounts will be removed and a
 Reports are be provided to SPOCs showing usage of their users.
 
 ## Request access
+The user request process is as follows:
+
+<pre class="mermaid">
+graph TD 
+A[DEPT: 
+SPOC raises request via SignOn] --> B
+B(Zendesk:
+ ticket generated and sent tp Analyst queue) 
+B --> C[User added via the user admin tool] 
+C --> D[User added to Basecamp]
+D --> E[Close ticket]
+A2[GDS: 
+User raises request via SignOn] --> B
+</pre>
+
 
 ### GDS staff
+
 Requests for access to Google Analytics should be raised by team members themselves, through the 
 [GDS Internal IT Support Tool](https://gdshelpdesk.digital.cabinet-office.gov.uk/helpdesk/WebObjects/Helpdesk.woa). 
 It should be raised under "GDS IT Requests" -> "People & Accounts" -> "Google Analytics".
@@ -60,3 +76,18 @@ Data must not be processed via a third-party or cloud-based systems.
 
 Google Analytics data itself is management information and not an official statistic. 
 The civil service analysis function have provided guidance [National Statistician’s guidance](https://analysisfunction.civilservice.gov.uk/policy-store/national-statisticians-guidance-management-information-and-official-statistics/)
+
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+        mainBkg: '#ffffff',
+        primaryColor: '#f3f2f1',
+        primaryTextColor: '#0b0c0c',
+        secondaryTextColor: '#505a5f'
+    } 
+    });
+</script>
