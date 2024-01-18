@@ -17,6 +17,8 @@ All GDS staff should have 'Analyst' level access to the data. If you have any is
 
 Access to GOV.UK GA4 data for data users across government is currently limited to an early access group. For details, see our blog on [Sharing data and lessons from our Google Analytics 4 upgrade](https://gds.blog.gov.uk/2023/03/27/sharing-data-and-lessons-from-our-google-analytics-4-upgrade/).
 
+See [GA access policy](/processes/ga-access/) for more information on getting access to Google Analytics for www.gov.uk.
+
 ### Location
 There are three GA4 GOV.UK properties. These correspond to the integration, staging, and production or live GOV.UK websites.
 
@@ -32,11 +34,7 @@ Both of these options are also disabled in Google Tag Manager, to ensure that th
 
 Granular location and device data collection is enabled to allow reporting on the city-level location and devices used by our users.
 
-### Retention
-
-A data retention period for this data is set in the GA4 user interface. For the integration, staging, and production GOV.UK sites, this is set to 38 months.
-
-### Data processing and modification
+#### Data processing and modification
 
 At present, we have not created any custom events or designated any events as conversions within GA4.
 
@@ -44,3 +42,7 @@ We are also not using GA4's inbuilt data redaction feature on GOV.UK.
 Instead, we are applying redaction to strip out potential Personally Identifable Information (PII) from values before they are pushed to the dataLayer (see our [documentation on this in GitHub](https://github.com/alphagov/govuk_publishing_components/blob/main/docs/analytics-ga4/pii-remover.md)).
 Additional PII redaction is also applied in Google Tag Manager as a fail-safe.
 If you spot any PII or other data that should not be present in the GA4 datasets, please raise a Zendesk ticket or contact the Analytics team.
+
+### Retention
+
+A data retention period for this data is set in the GA4 user interface. For the integration, staging, and production GOV.UK sites, this is set to 38 months.
