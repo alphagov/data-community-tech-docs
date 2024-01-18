@@ -34,11 +34,7 @@ Both of these options are also disabled in Google Tag Manager, to ensure that th
 
 Granular location and device data collection is enabled to allow reporting on the city-level location and devices used by our users.
 
-### Retention
-
-A data retention period for this data is set in the GA4 user interface. For the integration, staging, and production GOV.UK sites, this is set to 38 months.
-
-### Data processing and modification
+#### Data processing and modification
 
 At present, we have not created any custom events or designated any events as conversions within GA4.
 
@@ -46,3 +42,7 @@ We are also not using GA4's inbuilt data redaction feature on GOV.UK.
 Instead, we are applying redaction to strip out potential Personally Identifable Information (PII) from values before they are pushed to the dataLayer (see our [documentation on this in GitHub](https://github.com/alphagov/govuk_publishing_components/blob/main/docs/analytics-ga4/pii-remover.md)).
 Additional PII redaction is also applied in Google Tag Manager as a fail-safe.
 If you spot any PII or other data that should not be present in the GA4 datasets, please raise a Zendesk ticket or contact the Analytics team.
+
+### Retention
+
+A data retention period for this data is set in the GA4 user interface. For the integration, staging, and production GOV.UK sites, this is set to 38 months.
