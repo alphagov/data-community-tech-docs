@@ -1,25 +1,29 @@
 ---
 title: Google Search Console
 weight: 5
-last_reviewed_on: 2024-01-04
+last_reviewed_on: 2024-01-19
 review_in: 6 months
 ---
 
 # Google Search Console (GSC)
 
-The search console provides data on searches performed that result in a page from www.gov.uk being displayed as part of the Google search results.
+Google Search Console provides data on searches that result in a page from www.gov.uk being displayed as part of the Google search results.
+
+Search Console also allows you to remove content items from external search results and clear caches. These features are used by Technical 2nd line.
+
+The Search Console instance for www.gov.uk is owned by the Analytics team. 
 
 ## Access
-Direct access to the Search Console is limited to Search Console admins.
+Direct access to Search Console is limited to Search Console admins.
 
-Access to the data stored in BigQuery is available on request.
+Access to the data stored in BigQuery or via Looker Studio is available on request.
 
 ### Location
 
-The GSC data for www.gov.uk site is located in BigQuery in the `ga4-analytics-352613.searchconsole_wwwgovuk` dataset.
+GSC data for the www.gov.uk site is located in BigQuery in the `ga4-analytics-352613.searchconsole_wwwgovuk` dataset.
 
 This is within the [GA4 analytics project](/gcp/#ga4-analytics).
-There are 2 partitioned tables `searchdata_site_impression` and `searchdata_url_impression`.
+There are 2 partitioned tables: `searchdata_site_impression` and `searchdata_url_impression`.
 
 For more information on the Google Cloud Platform projects, see our [GCP Project Documentation](/gcp/).
 
