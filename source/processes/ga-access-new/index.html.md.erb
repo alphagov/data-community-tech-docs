@@ -1,41 +1,39 @@
 ---
-title: GA access
+title: GOV.UK GA access
 weight: 1
-last_reviewed_on: 2024-01-16
+last_reviewed_on: 2024-01-19
 review_in: 6 months
 hide_in_navigation: true
 ---
 
-# GA access
+# GOV.UK GA access
 <span style="color:red">**This page is a draft policy**</span>.
 
-Google Analytics (GA) is not designed for collecting personally identifiable information (PII) 
-and is against GA terms and conditions. 
+Google Analytics (GA) is not designed for collecting personally identifiable information (PII), and collecting PII is against GA terms and conditions. 
 
 If you notice PII in GA, please raise a Zendesk ticket as quickly as possible.
 
 ## What we provide access to
 We provice access to:
 
- - Read access to Universal Analytics views 1a and 2.
- - Analyst Read access to GA4 production property.
- - Read access to BigQuery GA4 data, flattened and raw.
- - Read access to BigQuery Search Console data.
+ - Read access to GOV.UK Universal Analytics views 1a and 2
+ - Analyst access to the GOV.UK GA4 Production property
+ - Read access to GOV.UK GA4 data in BigQuery, [flattened](/data-sources/ga/ga4-flat/) and [raw](/data-sources/ga/ga4-bq/)
+ - Read access to GOV.UK Search Console data in BigQuery
 
-Notice that we only provide read access to BigQuery, departments are expected to pay for their own queries via their own Google Cloud Project.
+Notice that we only provide read access to BigQuery.
+Departments are expected to pay for their own queries via their own Google Cloud Project.
 
 ## Who is allowed access
 Departments and organisations that publish on www.gov.uk will be allowed access to web analytics.
-Access will only be granted to email accounts managed by the department, 
-for example gmail accounts will not be allowed access.
+Access will only be granted to email accounts managed by the department.
+Accounts linked to gmail or other non-Civil Service email addresses will not be allowed access.
 
-There must be an analytics single point of contact (SPOC) nominated who raises requests and administers users.
-
-TODO: Link to SPOC responsibilities [SPOCs](/processes/spocs/)
+Every organisation must have an [analytics single point of contact (SPOC)](/processes/spocs/) nominated who raises requests and administers users.
 
 ## Monitoring and reporting
-Access to Google Analytics is monitored. Inactive accounts will be removed and any suspicious activity flagged.
-Reports are be provided to SPOCs showing usage of their users.
+Usage of Google Analytics data is monitored by the GOV.UK Analytics team. Inactive accounts will be removed and any suspicious activity flagged.
+Reports will be provided to SPOCs showing statistics on the usage of their organisation's users.
 
 ## Request access
 The user request process is as follows:
@@ -72,10 +70,10 @@ Data must only be used for Civil Service work.
 It is OK to authorise tools such as Excel Plugins and Python or R scripts to access GA data 
 provided that the system is running on your local machine. 
 
-Data must not be processed via a third-party or cloud-based systems.
+Data must not be processed via third-party or cloud-based systems.
 
 Google Analytics data itself is management information and not an official statistic. 
-The civil service analysis function have provided guidance [National Statistician’s guidance](https://analysisfunction.civilservice.gov.uk/policy-store/national-statisticians-guidance-management-information-and-official-statistics/)
+The Government Analysis Function has published [guidance on the use of management information](https://analysisfunction.civilservice.gov.uk/policy-store/national-statisticians-guidance-management-information-and-official-statistics/).
 
 
 <script type="module">

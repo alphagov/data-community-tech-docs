@@ -1,26 +1,26 @@
 ---
-title: GA4 Flattened Tables
+title: GA4 flattened tables
 weight: 3
-last_reviewed_on: 2023-11-23
+last_reviewed_on: 2024-01-19
 review_in: 6 months
 ---
 
-# GA4 Flattened Tables
-This is the [GA4](/data-sources/ga/ga4/) data processed into a flat format.
+# GA4 flattened tables
+The GA4 flattened tables contain [GOV.UK GA4](/data-sources/ga/ga4/) data processed into a flat format.
 
-This is created from the [raw data exported into BigQuery](/data-sources/ga/ga4-bq/) on the live site which contains most, but not all, of the same fields.
+These tables are created from the [raw data exported into BigQuery](/data-sources/ga/ga4-bq/) and contain most, but not all, of the same fields.
 This flattened dataset is easier and more efficient to query, so should be used for most analysis and reporting.
 
 ## Access
-Access to GA4 is currently limited to an early access group. For more details, see our blog on [Sharing data and lessons from our Google Analytics 4 upgrade](https://gds.blog.gov.uk/2023/03/27/sharing-data-and-lessons-from-our-google-analytics-4-upgrade/).
+Everyone with a @digital.cabinet-office.gov.uk email address (all GDS staff) has access to the data by default.
 
-In addition, everyone with a @digital.cabinet-office.gov.uk account has access to the data by default.
+Access to GA4 data for users across government is currently limited to an early access group. For more details, see our blog on [Sharing data and lessons from our Google Analytics 4 upgrade](https://gds.blog.gov.uk/2023/03/27/sharing-data-and-lessons-from-our-google-analytics-4-upgrade/).
 
 ### Location
-This is located in BigQuery under the data set `ga4-analytics-352613.flattened_dataset`.
+This data can be found in BigQuery in the `ga4-analytics-352613.flattened_dataset` dataset.
 Each daily table is sharded in the format flattened_daily_ga_data_YYYYMMDD.
 
-For more information on the Google Cloud Platform projects, see our [GCP Project Documentation](/gcp/).
+For more information on our Google Cloud Platform projects, see our [GCP project documentation](/gcp/).
 
 ## Schema
 | field name | type | mode |
