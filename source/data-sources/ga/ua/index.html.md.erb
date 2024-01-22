@@ -1,12 +1,13 @@
 ---
-title: Universal Analytics
+title: Universal Analytics (BigQuery export)
 weight: 4
-last_reviewed_on: 2023-08-17
+last_reviewed_on: 2024-01-19
 review_in: 6 months
 ---
 
-# Universal Analytics
-This is the data exported from Universal Analytics
+# Universal Analytics (BigQuery export)
+We export our GOV.UK Universal Analytics data and store it in Google BigQuery.
+This enables more detailed analysis and the use of GOV.UK UA data by other tools.
 
 Universal Analytics (UA) sends GOV.UK visitor journey data to the `govuk-bigquery-analytics.87773428.ga_sessions_intraday_YYYYMMDD` table 3 times a day, where:
 
@@ -23,13 +24,13 @@ At the end of the day, UA automatically:
 
 
 ## Access
-Everyone with a @digital.cabinet-office.gov.uk account has access to the data.
+Everyone with a @digital.cabinet-office.gov.uk account (all GDS staff) has access to the data.
 
 ### Location
-The data is stored in BigQuery in the dataset `govuk-bigquery-analytics.87773428`. 
-This is located in europe-west2 GCP region.
+This data is stored in BigQuery in the `govuk-bigquery-analytics.87773428` dataset. 
+Like all of our data, this is located in the europe-west2 GCP region.
 
-[GCP Project Documentation link](/gcp/#universal-analytics)
+For more information on our Google Cloud Platform projects, see our [GCP project documentation](/gcp/#universal-analytics).
 
 ## Schema
 The [UA BigQuery Export schema](https://support.google.com/analytics/answer/3437719?hl=en) defines the schema of these tables. However, not all columns are filled in our tables.
