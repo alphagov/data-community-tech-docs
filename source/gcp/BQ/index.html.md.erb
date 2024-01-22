@@ -1,7 +1,7 @@
 ---
 title: BQ
 weight: 10
-last_reviewed_on: 2023-11-20
+last_reviewed_on: 2024-01-19
 review_in: 6 months
 ---
 
@@ -12,6 +12,27 @@ Google BigQuery is a cloud-based SQL data warehouse.
 
 ## Access
 When requesting access please state what data you need access to. If in doubt try the #data-engineering Slack channel. 
+
+
+## Understanding tables, datasets, and projects
+In BigQuery, data is stored in tables, which are grouped together inside datasets.
+Datasets are organised into projects.
+
+For example, our GOV.UK Universal Analytics data is sent to the `govuk-bigquery-analytics.87773428.ga_sessions_intraday_YYYYMMDD` table three times a day. Here,
+
+- `govuk-bigquery-analytics` is the project ID
+- `87773428` is the dataset name
+- `ga_sessions_intraday_YYYYMMDD` is the table name
+
+Our Google Analytics data is stored in sharded tables. These table names end with the suffix `YYYYMMDD`, representing the date in year-month-day format.
+
+### Intraday tables
+
+We have set up our Google Analytics properties to export GOV.UK data several times a day.
+This day is temporarily stored in intraday tables.
+
+At the end of the day, BigQuery automatically moves the data in the intraday table to a date table (suffixed `YYYYMMDD`) and deletes the intraday tables in question.
+New intraday tables are created and added to throughout the next day.
 
 
 ## Quotas

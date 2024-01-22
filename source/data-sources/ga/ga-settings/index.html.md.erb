@@ -1,16 +1,15 @@
 ---
 title: GA Settings Database
 weight: 8
-last_reviewed_on: 2023-11-23
+last_reviewed_on: 2024-01-19
 review_in: 6 months
 ---
 
 # GA Settings Database
-This is a daily download of the account settings of GA. The purpose of this data is to allow for monitoring of changes to configuration of our GA account.
+The Settings Database contains a daily download of all the account settings of GDS' Google Analytics (GA) accounts.
+The purpose of this data is to enable monitoring of changes to the configuration of our GA accounts and properties.
 
-This [GitHub repository](https://github.com/alphagov/analytics-settings-database) shows the code used to query, structure, and save this data.
-
-Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
+This [GitHub repository](https://github.com/alphagov/analytics-settings-database) contains the code used to query, structure, and save this data.
 
 For an example of this data in use, see the [GA Settings Database Looker Studio dashboard](https://lookerstudio.google.com/reporting/623bb323-2484-472e-916c-93e43ea40ad7/page/PQpTD).
 
@@ -21,6 +20,8 @@ The data is located in BigQuery under the GA4 Analytics project in the `ga4-anal
 For more information on the Google Cloud Platform projects, see our [GCP Project Documentation](/gcp/).
 
 ## Schema
+Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
+
 ### Tables
 <span>
 <details>
