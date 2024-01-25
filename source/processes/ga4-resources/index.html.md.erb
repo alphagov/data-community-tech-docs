@@ -8,59 +8,137 @@ hide_in_navigation: true
 
 # GA4 Resources
 <span style="color:red">**This page is a draft policy**</span>.
-This document is here to help users of www.gov.uk GA4 data get to grips with the new interface and data structure.
+
+This page aims to help users of www.gov.uk GA4 data get to grips with the new interface and data structure.
 
 ## FAQs
+
+### What is going on with Google Analytics?
+
+Google Analytics is the primary web analytics tool used on GOV.UK, and one of the key ways we can find out about our users and what they’re doing on GOV.UK.
+The version you’ll likely be familiar with if you have used GOV.UK analytics data before is Universal Analytics (UA).
+
+[Universal Analytics (UA) is being sunset](https://support.google.com/analytics/answer/11583528) (shut down) by Google in June (2024).
+Data will stop being collected, and we will lose all access to historical data in Google Analytics, at the end of June.
+Google are also deprecating certain UA features in January and March 2024 (see their support article for the full list).
+
+We have done a lot of work to migrate www.gov.uk to the new version of Google Analytics, Google Analytics 4 (GA4).
+GA4 has a new interface and data structure, and we have taken this opportunity to redesign our tracking to improve the quality of the data we’re collecting.
 
 ### What do I need to do about this?
 
 Familiarise yourself with the new data!
 
-GA4 has a new interface, so if you usually use the interface to find out things about your users you will need to re-learn how to use the interface.
+GA4 has a new interface, so if you usually use the GA interface to find out things about your content and users you will need to re-learn how to use it.
 
-We have also significantly redesigned and updated our tracking code to make the data we collect more logical and consistent. This does mean that many events and dimensions have changed.
+We have also significantly redesigned and updated our tracking code to make the data we collect more logical and consistent.
+This does mean that many events and dimensions have changed.
 
-Any tools or dashboards (for example, Looker Studio reports) you have that currently use UA data will need to be migrated to use the new data. 
+Any tools or dashboards (for example, Looker Studio reports) you have that currently use UA data will need to be updated to use the new data. 
 
-### How do I access the data?
+### How do I access the new GA4 data?
 
-If you previously had access to the UA data, you should now be able to access the GA4 data here: https://analytics.google.com/analytics/web/?pli=1#/p330577055/reports/intelligenthome. If you did not previously have access, you can follow the GOV.UK GA access process to request access. 
+If you previously had access to the UA data for www.gov.uk, you should now be able to access the GA4 data in the [GA4 interface](https://analytics.google.com/analytics/web/?pli=1#/p330577055/reports/intelligenthome).
+You can also connect to the GA4 data in Looker Studio and other reporting tools. 
+
+If you did not previously have access, you can follow [the GOV.UK GA access process](https://docs.data-community.publishing.service.gov.uk/processes/ga-access/#request-access) to request access. 
 
 ### How can I get access? How can I request access for my colleague?
 
-Follow the GOV.UK GA access process to request GA4 data access.
+Follow [the GOV.UK GA access process](https://docs.data-community.publishing.service.gov.uk/processes/ga-access/#request-access) to request GA4 data access.
 
-At the moment, users must belong to departments that publish on GOV.UK and have Analytics SPOCs to be granted access. If your department publishes on GOV.UK but does not have a SPOC, you can nominate one via the Signon Analytics Support Form.
+At the moment, users must belong to departments that publish on GOV.UK and have Analytics SPOCs to be granted access.
+If your department publishes on GOV.UK but does not have a SPOC, you can nominate one via the [Signon Analytics Support Form](https://docs.data-community.publishing.service.gov.uk/processes/spocs/#spocs).
+
+### How will I access historic UA data after June 2024?
+
+We are currently exporting and saving the historical data for GOV.UK in Google BigQuery.
+We will share plans on how you can access this data after June with departmental analytics SPOCs (Single Points of Contact), in case you need it.
+ 
+### What are the major differences between UA and GA4?
+
+GA4 brings with it a new Google Analytics interface, featuring new tools such as [explorations](https://analytics.google.com/analytics/web/?pli=1#/analysis/p330577055).
+
+The structure of GA4 data is also quite different to that of UA data.
+We have taken the opportunity that comes with this new data structure to redesign our tracking to make our data more logical and consistent.
+This does however mean that many events and custom dimensions have changed.
+
+### What are the major differences between UA and GA4 data?
+
+There are quite a lot of differences between UA and GA4 data - too many to quickly sum up!
+
+On top of the changes that come as a result of our re-design of our analytics tracking code, there are a number of changes that have been made by Google.
+
+For example, one change that has a huge impact is the [altered definition of a session](https://support.google.com/analytics/answer/11986666).
+This change has a knock-on effect on all sessionised dimensions and metrics, so you should expect differences in the numbers returned for any metrics connected to sessions.
+
+This is only one example of many.
+
+### What are all these new GA4 events and custom dimensions?
+
+In GA4, everything is an ‘event’ - page views are no longer separated out from other events.
+The structure of the data sent to GA has changed as well, so events no longer have a category, action, and label, but are instead sent with a whole range of different custom dimensions.
+
+There are lots of different events the user can trigger on GOV.UK, but a couple of particularly important and useful ones to understand are page views and navigation.
+
+Page views are very similar to their UA counterpart and in our testing the numbers of total pageviews in UA and all ‘page_view’ events in GA4 have been close (though not the same).
+Like in UA, our page views are sent with a wealth of [custom dimensions](https://docs.publishing.service.gov.uk/analytics/event_page_view.html).
+
+Navigation events are how we capture lots of users’ link clicks, where a user interacts directly with a hyperlink that results in navigation to another page (on or off GOV.UK).
+These also come with lots of custom dimensions, but the most common ones to use will be:
+
+- Link text
+- Link URL
+- Outbound (whether the link takes you to another site (not www.gov.uk) or not)
+
+### Help! My UA and GA4 numbers don’t match?
+
+There will be differences between the numbers recorded by Universal Analytics and by GA4.
+This could be for a number of reasons.
+
+We have significantly redesigned our analytics tracking, so if numbers are very different you may need to check that you are looking at the right data.
+
+Google have also changed the definitions of many metrics.
+For example, bounce rate is calculated in very different ways in GA4 and UA, so we would expect those numbers to differ.
+Likewise, the meaning of a session has changed, which has an impact on everything from the number of sessions recorded, to what counts as a landing page, to the number of visits from different sources. 
+
+Google also apply a lot of processing to their analytics data, and that processing is different in UA and GA4.
+Sampling and [high cardinality dimensions](https://support.google.com/analytics/answer/12226705?hl=en) impact the data in different ways in UA and GA4.
+
+Finally, it is good to remember that analytics data is not, and has never been, exact. 
 
 ### Will GDS be providing any GA4 training or resources?
 
-
 Unfortunately, we do not currently have the capacity to provide training to departments on the use of GA4 data.
 
-We will be sharing resources and helping people with issues where we can via Basecamp, and would encourage people to ask questions so that we can share our knowledge of how to get the best out of GA4 and the GOV.UK GA4 data.
+We will be sharing resources and helping people with issues where we can via [Basecamp](https://3.basecamp.com/4322319/projects/14530097), and would encourage people to ask questions so that we can share our knowledge of how to get the best out of GA4 and the GOV.UK GA4 data.
 
 We would encourage you to spend some time familiarising yourself with the data and learning how to use it, as it is quite different from the previous Universal Analytics data. 
 
 ### Are there any online training courses you can recommend?
 
-Some online training may be helpful to understand the GA4 interface and core GA4 concepts, but GA4 is more customisable than Universal Analytics, so it is likely that most online resources will not be terribly helpful to those trying to understand GOV.UK-specific data.  
-What are the major differences between UA and GA4?
+Some online training may be helpful to understand the GA4 interface and core GA4 concepts, but GA4 is more customisable than Universal Analytics, so it is likely that most online resources will not be terribly helpful to those trying to understand GOV.UK-specific data. 
 
-GA4 has a new interface and data structure, and we have taken this opportunity to redesign our tracking to make our data more logical and consistent. This does mean that many events, dimensions and metrics have changed.
+Some possible resources you could explore are listed at the bottom of this page.
 
-### What are the differences between UA and GA4 data?
+### Where can I ask for help?
 
-There are quite a lot of differences between UA and GA4 data - too many to quickly sum up.
+There is a community for everyone using GOV.UK Google Analytics on [Basecamp](https://3.basecamp.com/4322319/projects/14530097).
 
-For example, one big difference is the change to the definition of a session. This change has a knock-on effect on all sessionised dimensons and metrics, so you should expect differences in the numbers returned for all of these metrics.
-
-
-
-## Timeline
+We also do try our best to watch and respond to questions across the various performance analysis focussed channels on cross-government Slack.
+    
+We would encourage people to ask questions in the open so that we can share our knowledge of how to get the best out of GA4 and the GOV.UK GA4 data.
 
 
 ## Additional resources
 
+### From Google
+
+- [Notes on the differences between metrics in UA and GA4](https://support.google.com/analytics/answer/11986666)
+- [GA4 Reporting Playbook](https://services.google.com/fh/files/newsletters/google_analytics_4_reporting_playbook.pdf)
+
+
+### Other
 [Navigation and general intro](https://www.youtube.com/watch?v=NHXeDuZ2lf0)
 But it includes a section on customising reports which only users with admin or edit permissions can do, and which is therefore not relevant to general users.
 
