@@ -23,11 +23,11 @@ Each daily table is sharded in the format flattened_daily_ga_data_YYYYMMDD.
 For more information on our Google Cloud Platform projects, see our [GCP project documentation](/gcp/).
 
 ## Production process
-The code is exectuted via Dataform every morning at 8am UTC and it is stored in this [repository](https://github.com/alphagov/ga4-flattener)
+The code is exectuted via Dataform every morning at 8am UTC and it is stored in [the 'GA4 flattener' repository](https://github.com/alphagov/ga4-flattener).
 
 ## Schema
-| field name | type | mode |
-| --- | --- | --- |
+| field name | type | mode | description |
+| --- | --- | --- | --- |
 | event_date | STRING | NULLABLE | |
 | user_pseudo_id | STRING | NULLABLE | |
 | event_name | STRING | NULLABLE | |
@@ -38,12 +38,12 @@ The code is exectuted via Dataform every morning at 8am UTC and it is stored in 
 | cleaned_page_location | STRING | NULLABLE | |
 | ga_sessionid | INTEGER | NULLABLE | |
 | ga_session_number | INTEGER | NULLABLE | |
-| primary_publishing_organisation | STRING | NULLABLE | |
+| primary_publishing_organisation | STRING | NULLABLE | Identifies which organisation published the content in clear text e.g. "Home Office" |
 | page_referrer | STRING | NULLABLE | |
 | cleaned_page_referrer | STRING | NULLABLE | |
 | content_id | STRING | NULLABLE | Content attribute of <meta name="govuk:content-id"> tag |
 | browse_topic | STRING | NULLABLE | Content attribute of <meta name="govuk:section"> tag |
-| publishing_app | STRING | NULLABLE | |
+| publishing_app | STRING | NULLABLE | Content attribute of <meta name="govuk:publishing-application"> tag e.g. "collections-publisher" |
 | public_updated_at | STRING | NULLABLE | |
 | updated_at | STRING | NULLABLE | |
 | first_published_at | STRING | NULLABLE | |
@@ -52,21 +52,21 @@ The code is exectuted via Dataform every morning at 8am UTC and it is stored in 
 | withdrawn | STRING | NULLABLE | |
 | document_type | STRING | NULLABLE | Content attribute of <meta name="govuk:format"> tag |
 | history | STRING | NULLABLE | |
-| taxonomy_main_id | STRING | NULLABLE | |
-| taxonomy_all_DEPRECATED | STRING | NULLABLE | |
-| taxonomy_main | STRING | NULLABLE | |
-| taxonomy_level_1 | STRING | NULLABLE | |
+| taxonomy_main_id | STRING | NULLABLE | Content attribute of <meta name="govuk:taxon-id"> tag |
+| taxonomy_all_DEPRECATED | STRING | NULLABLE | Content attribute of <meta name="govuk:taxon-slugs"> tag |
+| taxonomy_main | STRING | NULLABLE | Content attribute of <meta name="govuk:taxon-slug"> tag |
+| taxonomy_level_1 | STRING | NULLABLE | Content attribute of <meta name="govuk:themes"> tag |
 | full_taxonomy | STRING | NULLABLE | |
 | full_taxonomy_ids | STRING | NULLABLE | |
-| rendering_app | STRING | NULLABLE | |
+| rendering_app | STRING | NULLABLE | Content attribute of <meta name="govuk:rendering-app"> tag |
 | organisations | STRING | NULLABLE | |
 | session_engaged | STRING | NULLABLE | |
-| schema_name | STRING | NULLABLE | |
+| schema_name | STRING | NULLABLE | Content attribute of <meta name="govuk:schema-name"> tag |
 | method | STRING | NULLABLE | |
 | engagement_time_msec | INTEGER | NULLABLE | |
 | event_campaign | STRING | NULLABLE | |
 | content_language | STRING | NULLABLE | The language the content is authored in |
-| type | STRING | NULLABLE | |
+| type | STRING | NULLABLE | The type of feature the user interacted with e.g. tabs, accordion etc |
 | event_source | STRING | NULLABLE | |
 | session_source | STRING | NULLABLE | |
 | link_text | STRING | NULLABLE | |
@@ -108,17 +108,17 @@ The code is exectuted via Dataform every morning at 8am UTC and it is stored in 
 | platform | STRING | NULLABLE | |
 | event_dimensions_hostname | STRING | NULLABLE | |
 | full_link_URL | STRING | NULLABLE | |
-| search_sort | STRING | NULLABLE | |
+| search_sort | STRING | NULLABLE | Where available this is the sort method e.g. "Relevance" |
 | search_term | STRING | NULLABLE | |
-| search_results | STRING | NULLABLE | |
-| ui_text | STRING | NULLABLE | |
+| search_results | STRING | NULLABLE | The number of results returned by the search |
+| ui_text | STRING | NULLABLE | Identifying text for the specific item the user interacted with |
 | section | STRING | NULLABLE | |
 | action | STRING | NULLABLE | The action the user has taken e.g. “opened” |
 | index | INTEGER | NULLABLE | |
 | index_total | INTEGER | NULLABLE | |
 | political_status | STRING | NULLABLE | Content attribute of <meta name="govuk:political-status"> tag |
-| publishing_government | STRING | NULLABLE | |
-| world_locations | STRING | NULLABLE | |
+| publishing_government | STRING | NULLABLE | Content attribute of <meta name="govuk:political-status"> tag e.g. "historic". This will only be available on 'whitehall' pages |
+| world_locations | STRING | NULLABLE | Content attribute of <meta name="govuk:analytics:world-locations"> tag |
 | dclid | STRING | NULLABLE | |
 | debug_mode | INTEGER | NULLABLE | |
 | engaged_session_event | INTEGER | NULLABLE | |
@@ -142,7 +142,7 @@ The code is exectuted via Dataform every morning at 8am UTC and it is stored in 
 | sfmc_channel | STRING | NULLABLE | |
 | sfmc_journey_id | STRING | NULLABLE | |
 | sfmc_journey_name | STRING | NULLABLE | |
-| step_navs | STRING | NULLABLE | |
+| step_navs | STRING | NULLABLE | Content attribute of <meta name="govuk:stepnavs"> tag |
 | manual_campaign_id | STRING | NULLABLE | |
 | manual_campaign_name | STRING | NULLABLE | |
 | manual_source | STRING | NULLABLE | |
@@ -162,11 +162,11 @@ The code is exectuted via Dataform every morning at 8am UTC and it is stored in 
 | query_string | STRING | NULLABLE | |
 | spelling_suggestion | STRING | NULLABLE | |
 | outcome | STRING | NULLABLE | |
-| viewport_size | STRING | NULLABLE | |
+| viewport_size | STRING | NULLABLE | The size of the browser window, minus the scroll bars and toolbars |
 | batch_page_id | INTEGER | NULLABLE | |
 | batch_ordering_id | INTEGER | NULLABLE | |
 | timestamp | INTEGER | NULLABLE | |
-| copy_length | INTEGER | NULLABLE | |
+| copy_length | INTEGER | NULLABLE | Number of characters in text copied (copy events only) |
 | item_list_name | STRING | NULLABLE | |
 | item_id | STRING | NULLABLE | |
 | item_name | STRING | NULLABLE | |
