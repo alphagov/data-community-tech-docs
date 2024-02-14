@@ -28,59 +28,151 @@ The code is exectuted via Dataform every morning at 8am UTC and it is stored in 
 ## Schema
 | field name | type | mode |
 | --- | --- | --- |
-| event_date | STRING | NULLABLE | 
-| user_pseudo_id | STRING | NULLABLE | 
-| event_name | STRING | NULLABLE | 
-| event_timestamp | INTEGER | NULLABLE | 
-| unique_session_id | STRING | NULLABLE | 
-| page_title | STRING | NULLABLE | 
-| page_location | STRING | NULLABLE | 
-| cleaned_page_location | STRING | NULLABLE | 
-| ga_sessionid | INTEGER | NULLABLE | 
-| ga_session_number | INTEGER | NULLABLE | 
-| primary_publishing_organisation | STRING | NULLABLE | 
-| page_referrer | STRING | NULLABLE | 
-| cleaned_page_referrer | STRING | NULLABLE | 
-| content_id | STRING | NULLABLE | 
-| browse_topic | STRING | NULLABLE | 
-| publishing_app | STRING | NULLABLE | 
-| public_updated_at | STRING | NULLABLE | 
-| updated_at | STRING | NULLABLE | 
-| first_published_at | STRING | NULLABLE | 
-| taxonomy_all_ids_DEPRECATED | STRING | NULLABLE | 
-| status_code | INTEGER | NULLABLE | 
-| withdrawn | STRING | NULLABLE | 
-| document_type | STRING | NULLABLE | 
-| history | STRING | NULLABLE | 
-| taxonomy_main_id | STRING | NULLABLE | 
-| taxonomy_all_DEPRECATED | STRING | NULLABLE | 
-| taxonomy_main | STRING | NULLABLE | 
-| taxonomy_level_1 | STRING | NULLABLE | 
-| full_taxonomy | STRING | NULLABLE | 
-| full_taxonomy_ids | STRING | NULLABLE | 
-| rendering_app | STRING | NULLABLE | 
-| organisations | STRING | NULLABLE | 
-| session_engaged | STRING | NULLABLE | 
-| schema_name | STRING | NULLABLE | 
-| method | STRING | NULLABLE | 
-| engagement_time_msec | INTEGER | NULLABLE | 
-| campaign | STRING | NULLABLE | 
-| content_language | STRING | NULLABLE | 
-| type | STRING | NULLABLE | 
-| session_source | STRING | NULLABLE | 
-| link_text | STRING | NULLABLE | 
-| term | STRING | NULLABLE | 
-| link_url | STRING | NULLABLE | 
-| session_medium | STRING | NULLABLE | 
-| link_domain | STRING | NULLABLE | 
-| event_previous_timestamp | INTEGER | NULLABLE | 
-| event_bundle_sequence_id | INTEGER | NULLABLE | 
-| event_server_timestamp_offset | INTEGER | NULLABLE | 
-| user_id | STRING | NULLABLE | 
-| user_first_touch_timestamp | INTEGER | NULLABLE | 
-| category | STRING | NULLABLE | 
-| mobile_brand_name | STRING | NULLABLE | 
-| mobile_model_name | STRING | NULLABLE | 
+| event_date | STRING | NULLABLE | |
+| user_pseudo_id | STRING | NULLABLE | |
+| event_name | STRING | NULLABLE | |
+| event_timestamp | INTEGER | NULLABLE | |
+| unique_session_id | STRING | NULLABLE | |
+| page_title | STRING | NULLABLE | |
+| page_location | STRING | NULLABLE | Full URL with the protocol, hostname, page path and query string |
+| cleaned_page_location | STRING | NULLABLE | |
+| ga_sessionid | INTEGER | NULLABLE | |
+| ga_session_number | INTEGER | NULLABLE | |
+| primary_publishing_organisation | STRING | NULLABLE | |
+| page_referrer | STRING | NULLABLE | |
+| cleaned_page_referrer | STRING | NULLABLE | |
+| content_id | STRING | NULLABLE | Content attribute of <meta name="govuk:content-id"> tag |
+| browse_topic | STRING | NULLABLE | Content attribute of <meta name="govuk:section"> tag |
+| publishing_app | STRING | NULLABLE | |
+| public_updated_at | STRING | NULLABLE | |
+| updated_at | STRING | NULLABLE | |
+| first_published_at | STRING | NULLABLE | |
+| taxonomy_all_ids_DEPRECATED | STRING | NULLABLE | |
+| status_code | INTEGER | NULLABLE | Default will be 200 but interest here is on errors e.g. 404, 500 etc |
+| withdrawn | STRING | NULLABLE | |
+| document_type | STRING | NULLABLE | Content attribute of <meta name="govuk:format"> tag |
+| history | STRING | NULLABLE | |
+| taxonomy_main_id | STRING | NULLABLE | |
+| taxonomy_all_DEPRECATED | STRING | NULLABLE | |
+| taxonomy_main | STRING | NULLABLE | |
+| taxonomy_level_1 | STRING | NULLABLE | |
+| full_taxonomy | STRING | NULLABLE | |
+| full_taxonomy_ids | STRING | NULLABLE | |
+| rendering_app | STRING | NULLABLE | |
+| organisations | STRING | NULLABLE | |
+| session_engaged | STRING | NULLABLE | |
+| schema_name | STRING | NULLABLE | |
+| method | STRING | NULLABLE | |
+| engagement_time_msec | INTEGER | NULLABLE | |
+| event_campaign | STRING | NULLABLE | |
+| content_language | STRING | NULLABLE | The language the content is authored in |
+| type | STRING | NULLABLE | |
+| event_source | STRING | NULLABLE | |
+| session_source | STRING | NULLABLE | |
+| link_text | STRING | NULLABLE | |
+| term | STRING | NULLABLE | |
+| link_url | STRING | NULLABLE | |
+| event_medium | STRING | NULLABLE | |
+| session_medium | STRING | NULLABLE | |
+| link_domain | STRING | NULLABLE | |
+| event_previous_timestamp | INTEGER | NULLABLE | |
+| event_bundle_sequence_id | INTEGER | NULLABLE | |
+| event_server_timestamp_offset | INTEGER | NULLABLE | |
+| user_id | STRING | NULLABLE | |
+| user_first_touch_timestamp | INTEGER | NULLABLE | |
+| category | STRING | NULLABLE | |
+| mobile_brand_name | STRING | NULLABLE | |
+| mobile_model_name | STRING | NULLABLE | |
+| mobile_marketing_name | STRING | NULLABLE | |
+| mobile_os_hardware_model | STRING | NULLABLE | |
+| operating_system | STRING | NULLABLE | |
+| operating_system_version | STRING | NULLABLE | |
+| language | STRING | NULLABLE | |
+| is_limited_ad_tracking | STRING | NULLABLE | |
+| time_zone_offset_seconds | INTEGER | NULLABLE | |
+| device_browser | STRING | NULLABLE | |
+| device_browser_version | STRING | NULLABLE | |
+| browser | STRING | NULLABLE | |
+| browser_version | STRING | NULLABLE | |
+| hostname | STRING | NULLABLE | |
+| continent | STRING | NULLABLE | |
+| country | STRING | NULLABLE | |
+| region | STRING | NULLABLE | |
+| city | STRING | NULLABLE | |
+| sub_continent | STRING | NULLABLE | |
+| metro | STRING | NULLABLE | |
+| first_user_campaign | STRING | NULLABLE | |
+| first_user_medium | STRING | NULLABLE | |
+| first_user_source | STRING | NULLABLE | |
+| stream_id | STRING | NULLABLE | |
+| platform | STRING | NULLABLE | |
+| event_dimensions_hostname | STRING | NULLABLE | |
+| full_link_URL | STRING | NULLABLE | |
+| search_sort | STRING | NULLABLE | |
+| search_term | STRING | NULLABLE | |
+| search_results | STRING | NULLABLE | |
+| ui_text | STRING | NULLABLE | |
+| section | STRING | NULLABLE | |
+| action | STRING | NULLABLE | The action the user has taken e.g. “opened” |
+| index | INTEGER | NULLABLE | |
+| index_total | INTEGER | NULLABLE | |
+| political_status | STRING | NULLABLE | Content attribute of <meta name="govuk:political-status"> tag |
+| publishing_government | STRING | NULLABLE | |
+| world_locations | STRING | NULLABLE | |
+| dclid | STRING | NULLABLE | |
+| debug_mode | INTEGER | NULLABLE | |
+| engaged_session_event | INTEGER | NULLABLE | |
+| entrances | INTEGER | NULLABLE | |
+| firebase_conversion | INTEGER | NULLABLE | |
+| gclid | STRING | NULLABLE | |
+| gclsrc | STRING | NULLABLE | |
+| content | STRING | NULLABLE | |
+| campaign_id | STRING | NULLABLE | |
+| index_section | INTEGER | NULLABLE | |
+| index_section_total | INTEGER | NULLABLE | |
+| tool_name | INTEGER | NULLABLE | |
+| response | STRING | NULLABLE | |
+| ab_test | STRING | NULLABLE | Content attribute of <meta name="govuk:ab-test"> tag |
+| navigation_list_type | STRING | NULLABLE | Content attribute of <meta name="govuk:navigation-list-type"> tag |
+| navigation_page_type | STRING | NULLABLE | Content attribute of <meta name="govuk:navigation-page-type"> tag |
+| percent_scrolled | INTEGER | NULLABLE | The percentage scroll depth the user has reached |
+| sfmc_activity_id | STRING | NULLABLE | |
+| sfmc_activity_name | STRING | NULLABLE | |
+| sfmc_asset_id | STRING | NULLABLE | |
+| sfmc_channel | STRING | NULLABLE | |
+| sfmc_journey_id | STRING | NULLABLE | |
+| sfmc_journey_name | STRING | NULLABLE | |
+| step_navs | STRING | NULLABLE | |
+| manual_campaign_id | STRING | NULLABLE | |
+| manual_campaign_name | STRING | NULLABLE | |
+| manual_source | STRING | NULLABLE | |
+| manual_medium | STRING | NULLABLE | |
+| manual_term | STRING | NULLABLE | |
+| is_active_user | BOOLEAN | NULLABLE | |
+| video_title | STRING | NULLABLE | |
+| video_url | STRING | NULLABLE | |
+| video_duration | INTEGER | NULLABLE | |
+| video_current_time | INTEGER | NULLABLE | |
+| video_percent | INTEGER | NULLABLE | |
+| cookie_banner | STRING | NULLABLE | |
+| devolved_nations_banner | STRING | NULLABLE | |
+| intervention | STRING | NULLABLE | |
+| phase_banner | STRING | NULLABLE | |
+| outbound | STRING | NULLABLE | 'True' if link  leads away from the current domain |
+| query_string | STRING | NULLABLE | |
+| spelling_suggestion | STRING | NULLABLE | |
+| outcome | STRING | NULLABLE | |
+| viewport_size | STRING | NULLABLE | |
+| batch_page_id | INTEGER | NULLABLE | |
+| batch_ordering_id | INTEGER | NULLABLE | |
+| timestamp | INTEGER | NULLABLE | |
+| copy_length | INTEGER | NULLABLE | |
+| item_list_name | STRING | NULLABLE | |
+| item_id | STRING | NULLABLE | |
+| item_name | STRING | NULLABLE | |
+| item_list_index | STRING | NULLABLE | |
+| item_content_id | STRING | NULLABLE | |
+
 
 
 ## Retention
