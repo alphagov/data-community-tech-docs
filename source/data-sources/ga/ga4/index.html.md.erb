@@ -34,9 +34,12 @@ Both of these options are also disabled in Google Tag Manager, to ensure that th
 
 Granular location and device data collection is enabled to allow reporting on the city-level location and devices used by our users.
 
-#### Data processing and modification
+### Data processing and modification
 
 At present, we have not created any custom events or designated any events as conversions within GA4.
+
+No [subproperties](https://support.google.com/analytics/answer/11525732) are set up for the GOV.UK GA4 properties.
+Instead, we are using BigQuery and Looker Studio to clean, filter, and control access to the data.
 
 We are also not using GA4's inbuilt data redaction feature on GOV.UK.
 Instead, we are applying redaction to strip out potential Personally Identifable Information (PII) from values before they are pushed to the dataLayer (see our [documentation on this in GitHub](https://github.com/alphagov/govuk_publishing_components/blob/main/docs/analytics-ga4/pii-remover.md)).
