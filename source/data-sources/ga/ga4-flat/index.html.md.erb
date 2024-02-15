@@ -1,7 +1,7 @@
 ---
 title: GA4 flattened tables
 weight: 3
-last_reviewed_on: 2024-01-19
+last_reviewed_on: 2024-02-15
 review_in: 6 months
 ---
 
@@ -30,8 +30,8 @@ The code is exectuted via Dataform every morning at 8am UTC and it is stored in 
 | --- | --- | --- | --- |
 | event_date | STRING | NULLABLE | |
 | user_pseudo_id | STRING | NULLABLE | |
-| event_name | STRING | NULLABLE | |
-| event_timestamp | INTEGER | NULLABLE | |
+| event_name | STRING | NULLABLE | The [name of the event](https://docs.publishing.service.gov.uk/analytics/attribute_event_name.html) |
+| event_timestamp | INTEGER | NULLABLE | The time (in microseconds, UTC) when the event was logged |
 | unique_session_id | STRING | NULLABLE | |
 | page_title | STRING | NULLABLE | |
 | page_location | STRING | NULLABLE | Full URL with the protocol, hostname, page path and query string |
@@ -39,29 +39,29 @@ The code is exectuted via Dataform every morning at 8am UTC and it is stored in 
 | ga_sessionid | INTEGER | NULLABLE | |
 | ga_session_number | INTEGER | NULLABLE | |
 | primary_publishing_organisation | STRING | NULLABLE | Identifies which organisation published the content in clear text e.g. "Home Office" |
-| page_referrer | STRING | NULLABLE | |
+| page_referrer | STRING | NULLABLE | The address of the webpage where a user clicked a link that sent them to the current page |
 | cleaned_page_referrer | STRING | NULLABLE | |
-| content_id | STRING | NULLABLE | Content attribute of <meta name="govuk:content-id"> tag |
-| browse_topic | STRING | NULLABLE | Content attribute of <meta name="govuk:section"> tag |
-| publishing_app | STRING | NULLABLE | Content attribute of <meta name="govuk:publishing-application"> tag e.g. "collections-publisher" |
+| content_id | STRING | NULLABLE | Content attribute of `<meta name="govuk:content-id">` tag |
+| browse_topic | STRING | NULLABLE | Content attribute of `<meta name="govuk:section">` tag |
+| publishing_app | STRING | NULLABLE | Content attribute of `<meta name="govuk:publishing-application">` tag e.g. "collections-publisher" |
 | public_updated_at | STRING | NULLABLE | |
 | updated_at | STRING | NULLABLE | |
 | first_published_at | STRING | NULLABLE | |
 | taxonomy_all_ids_DEPRECATED | STRING | NULLABLE | |
 | status_code | INTEGER | NULLABLE | Default will be 200 but interest here is on errors e.g. 404, 500 etc |
 | withdrawn | STRING | NULLABLE | |
-| document_type | STRING | NULLABLE | Content attribute of <meta name="govuk:format"> tag |
+| document_type | STRING | NULLABLE | Content attribute of `<meta name="govuk:format">` tag |
 | history | STRING | NULLABLE | |
-| taxonomy_main_id | STRING | NULLABLE | Content attribute of <meta name="govuk:taxon-id"> tag |
-| taxonomy_all_DEPRECATED | STRING | NULLABLE | Content attribute of <meta name="govuk:taxon-slugs"> tag |
-| taxonomy_main | STRING | NULLABLE | Content attribute of <meta name="govuk:taxon-slug"> tag |
-| taxonomy_level_1 | STRING | NULLABLE | Content attribute of <meta name="govuk:themes"> tag |
+| taxonomy_main_id | STRING | NULLABLE | Content attribute of `<meta name="govuk:taxon-id">` tag |
+| taxonomy_all_DEPRECATED | STRING | NULLABLE | Content attribute of `<meta name="govuk:taxon-slugs">` tag |
+| taxonomy_main | STRING | NULLABLE | Content attribute of `<meta name="govuk:taxon-slug">` tag |
+| taxonomy_level_1 | STRING | NULLABLE | Content attribute of `<meta name="govuk:themes">` tag |
 | full_taxonomy | STRING | NULLABLE | |
 | full_taxonomy_ids | STRING | NULLABLE | |
-| rendering_app | STRING | NULLABLE | Content attribute of <meta name="govuk:rendering-app"> tag |
+| rendering_app | STRING | NULLABLE | Content attribute of `<meta name="govuk:rendering-app">` tag |
 | organisations | STRING | NULLABLE | |
 | session_engaged | STRING | NULLABLE | |
-| schema_name | STRING | NULLABLE | Content attribute of <meta name="govuk:schema-name"> tag |
+| schema_name | STRING | NULLABLE | Content attribute of `<meta name="govuk:schema-name">` tag |
 | method | STRING | NULLABLE | |
 | engagement_time_msec | INTEGER | NULLABLE | |
 | event_campaign | STRING | NULLABLE | |
@@ -69,12 +69,12 @@ The code is exectuted via Dataform every morning at 8am UTC and it is stored in 
 | type | STRING | NULLABLE | The type of feature the user interacted with e.g. tabs, accordion etc |
 | event_source | STRING | NULLABLE | |
 | session_source | STRING | NULLABLE | |
-| link_text | STRING | NULLABLE | |
+| link_text | STRING | NULLABLE | The text of a link |
 | term | STRING | NULLABLE | |
-| link_url | STRING | NULLABLE | |
+| link_url | STRING | NULLABLE | The href attribute of a link |
 | event_medium | STRING | NULLABLE | |
 | session_medium | STRING | NULLABLE | |
-| link_domain | STRING | NULLABLE | |
+| link_domain | STRING | NULLABLE | The destination domain of a link |
 | event_previous_timestamp | INTEGER | NULLABLE | |
 | event_bundle_sequence_id | INTEGER | NULLABLE | |
 | event_server_timestamp_offset | INTEGER | NULLABLE | |
@@ -116,9 +116,9 @@ The code is exectuted via Dataform every morning at 8am UTC and it is stored in 
 | action | STRING | NULLABLE | The action the user has taken e.g. “opened” |
 | index | INTEGER | NULLABLE | |
 | index_total | INTEGER | NULLABLE | |
-| political_status | STRING | NULLABLE | Content attribute of <meta name="govuk:political-status"> tag |
-| publishing_government | STRING | NULLABLE | Content attribute of <meta name="govuk:political-status"> tag e.g. "historic". This will only be available on 'whitehall' pages |
-| world_locations | STRING | NULLABLE | Content attribute of <meta name="govuk:analytics:world-locations"> tag |
+| political_status | STRING | NULLABLE | Content attribute of `<meta name="govuk:political-status">` tag |
+| publishing_government | STRING | NULLABLE | Content attribute of `<meta name="govuk:political-status">` tag e.g. "historic". This will only be available on 'whitehall' pages |
+| world_locations | STRING | NULLABLE | Content attribute of `<meta name="govuk:analytics:world-locations">` tag |
 | dclid | STRING | NULLABLE | |
 | debug_mode | INTEGER | NULLABLE | |
 | engaged_session_event | INTEGER | NULLABLE | |
@@ -132,9 +132,9 @@ The code is exectuted via Dataform every morning at 8am UTC and it is stored in 
 | index_section_total | INTEGER | NULLABLE | |
 | tool_name | INTEGER | NULLABLE | |
 | response | STRING | NULLABLE | |
-| ab_test | STRING | NULLABLE | Content attribute of <meta name="govuk:ab-test"> tag |
-| navigation_list_type | STRING | NULLABLE | Content attribute of <meta name="govuk:navigation-list-type"> tag |
-| navigation_page_type | STRING | NULLABLE | Content attribute of <meta name="govuk:navigation-page-type"> tag |
+| ab_test | STRING | NULLABLE | Content attribute of `<meta name="govuk:ab-test">` tag |
+| navigation_list_type | STRING | NULLABLE | Content attribute of `<meta name="govuk:navigation-list-type">` tag |
+| navigation_page_type | STRING | NULLABLE | Content attribute of `<meta name="govuk:navigation-page-type">` tag |
 | percent_scrolled | INTEGER | NULLABLE | The percentage scroll depth the user has reached |
 | sfmc_activity_id | STRING | NULLABLE | |
 | sfmc_activity_name | STRING | NULLABLE | |
@@ -142,7 +142,7 @@ The code is exectuted via Dataform every morning at 8am UTC and it is stored in 
 | sfmc_channel | STRING | NULLABLE | |
 | sfmc_journey_id | STRING | NULLABLE | |
 | sfmc_journey_name | STRING | NULLABLE | |
-| step_navs | STRING | NULLABLE | Content attribute of <meta name="govuk:stepnavs"> tag |
+| step_navs | STRING | NULLABLE | Content attribute of `<meta name="govuk:stepnavs">` tag |
 | manual_campaign_id | STRING | NULLABLE | |
 | manual_campaign_name | STRING | NULLABLE | |
 | manual_source | STRING | NULLABLE | |
@@ -151,22 +151,22 @@ The code is exectuted via Dataform every morning at 8am UTC and it is stored in 
 | is_active_user | BOOLEAN | NULLABLE | |
 | video_title | STRING | NULLABLE | |
 | video_url | STRING | NULLABLE | |
-| video_duration | INTEGER | NULLABLE | |
-| video_current_time | INTEGER | NULLABLE | |
-| video_percent | INTEGER | NULLABLE | |
-| cookie_banner | STRING | NULLABLE | |
+| video_duration | INTEGER | NULLABLE | The length of the video (in seconds) |
+| video_current_time | INTEGER | NULLABLE | The time through the video at the moment the event fired (in seconds) |
+| video_percent | INTEGER | NULLABLE | Percentage through the video the user was at the moment the event fired |
+| cookie_banner | STRING | NULLABLE | 'True' when the cookie banner is displayed to the user |
 | devolved_nations_banner | STRING | NULLABLE | |
 | intervention | STRING | NULLABLE | |
 | phase_banner | STRING | NULLABLE | |
 | outbound | STRING | NULLABLE | 'True' if link  leads away from the current domain |
-| query_string | STRING | NULLABLE | |
+| query_string | STRING | NULLABLE | The query string extracted from the page location |
 | spelling_suggestion | STRING | NULLABLE | |
 | outcome | STRING | NULLABLE | |
 | viewport_size | STRING | NULLABLE | The size of the browser window, minus the scroll bars and toolbars |
 | batch_page_id | INTEGER | NULLABLE | |
 | batch_ordering_id | INTEGER | NULLABLE | |
-| timestamp | INTEGER | NULLABLE | |
-| copy_length | INTEGER | NULLABLE | Number of characters in text copied (copy events only) |
+| timestamp | INTEGER | NULLABLE | [Custom Unix timestamp](https://docs.publishing.service.gov.uk/analytics/attribute_timestamp.html) pushed with every dataLayer event |
+| copy_length | INTEGER | NULLABLE | Number of characters in text copied ([copy events](https://docs.publishing.service.gov.uk/analytics/event_copy.html) only) |
 | item_list_name | STRING | NULLABLE | |
 | item_id | STRING | NULLABLE | |
 | item_name | STRING | NULLABLE | |
