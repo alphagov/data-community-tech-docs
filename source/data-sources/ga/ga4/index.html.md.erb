@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4
 weight: 1
-last_reviewed_on: 2024-01-16
+last_reviewed_on: 2024-02-26
 review_in: 6 months
 ---
 
@@ -25,8 +25,9 @@ There are three GA4 GOV.UK properties. These correspond to the integration, stag
 ## GA4 settings
 ### Data collection
 
-GA4's inbuilt 'Enhanced measurement' feature is not in use on GOV.UK as we determined that it would not meet our data collection needs.
-Instead, tracking has been implemented on GOV.UK using custom dataLayer pushes which are sent to GA4 with Google Tag Manager. 
+GA4's inbuilt 'Enhanced measurement' feature is not in use on GOV.UK as it was determined that it would not meet our data collection needs.
+However, default GA4 dimensions have been used wherever there is a clear fit to the event being captured to ensure that GDS will benefit from any default reporting functionality associated with those events and dimensions.
+Tracking has been implemented on GOV.UK using custom dataLayer pushes which are sent to GA4 with Google Tag Manager. 
 More information on this approach can be found in our [Implementation record](https://docs.publishing.service.gov.uk/analytics/).
 
 Google Signals data collection and Ads personalisation is disabled for GDS GA4 properties within the interface.

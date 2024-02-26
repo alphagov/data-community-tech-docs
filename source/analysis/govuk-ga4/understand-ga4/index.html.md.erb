@@ -1,0 +1,112 @@
+---
+title: Understand the GOV.UK GA4 data
+weight: 1
+last_reviewed_on: 2024-02-26
+review_in: 6 months
+---
+
+# Understand the GOV.UK GA4 data
+<span style="color:red">This page is a work in progress.</span>.
+
+This page contains information on the different events being captured as part of the GOV.UK GA4 implementation.
+
+GA4 data is structured around [events](https://support.google.com/analytics/answer/9322688?hl=en#zippy=%2Crealtime-report%2Cdebugview-report).
+Although [default GA4 event names](https://support.google.com/analytics/answer/9216061?hl=en&ref_topic=13367566&sjid=16640208143459923466-EU) and dimensions have been used wherever there is a clear fit to the data being captured, in many places the custom GOV.UK tracking differs from standard 'Enhanced measurement' events and parameters.
+More information about the data collection and GA4 settings can be found on the [GOV.UK GA4 data source page](/data-sources/ga/ga4/).
+
+Please note that the GA4 tracking on GOV.UK has been developed and evolved over time, so you may find inconsistencies or deviations from the below.
+If you spot anything in the GOV.UK GA4 data that appears to be broken, wrong, or unhelpful, please report it to the GOV.UK Analytics team.
+
+
+## GOV.UK GA4 events
+
+There are a few primary categories of events implemented on GOV.UK:
+
+- page views
+- navigation events
+- form events
+- other user interface events
+- ecommerce events
+
+Page view and and ecommcerce events do not have a ['type' value](https://docs.publishing.service.gov.uk/analytics/attribute_type.html).
+Other events can be broken down by the 'type', which typically groups events by their function, location, or the component they are associated with.
+
+### Pageviews
+
+Page view events on GOV.UK use the standard `page_view` event name, and come with most of the standard dimensions that would be expected with a page view - including the URL (or 'page location'), page title, and page referrer.
+[Personally Identifable Information (PII) redaction is applied](/data-sources/ga/ga4/#data-processing-and-modification) to the URL, title and referrer.
+
+Page view events are also sent with a wide range of custom dimensions to provide further information about the page.
+A list of these can be found in the [Implementation Record](https://docs.publishing.service.gov.uk/analytics/event_page_view.html).
+
+### Navigation events
+
+Navigation events fire when a user clicks on a link to navigate to another page. 
+Not all link clicks on GOV.UK fire a navigation event; the tracking has only been applied to outbound links and other links deemed to be of particular interest.
+
+The types of navigation event you will find include:
+
+- generic link: clicks on outbound links that are not covered by another type
+- email: clicks on email links 
+- contents list: clicks on [contents list](https://components.publishing.service.gov.uk/component-guide/contents_list) links
+- previous and next: clicks on [previous and next navigation](https://components.publishing.service.gov.uk/component-guide/previous_and_next_navigation) links
+- attachment: clicks on [attachment](https://components.publishing.service.gov.uk/component-guide/attachment) links
+- homepage: clicks on links on the [GOV.UK homepage](https://www.gov.uk/)
+
+The dimensions collected with navigation events that are likely to be of particular use are whether or not the link is 'outbound', the link domain and URL, and the link text.
+
+
+### Form events 
+
+Tracking on forms all follows a rough pattern:
+
+- `form_start` events: fired when a user ‘starts’ a form (only on long forms with start buttons/pages, such as smart answers)
+- `form_response` OR `form_submit` events. `form_response` events are used to record users’ responses where the user is submitting an answer that we are capturing, whereas `form_submit` events are used simply to capture the act of a form submission
+- `form_change_response` events: fired when a user clicks the link to change one of their responses (only available on smart answers, simple smart answers, and licence transaction forms)
+- `form_error` events: fired when a user triggers an error on the form
+- `form_complete` events: fired on the completion or results page of the form
+- `form_start_again` events: fired when a user clicks the link to start the form again (only available on smart answers and simple smart answers)
+
+On the ‘larger’ forms on GOV.UK, note that `form_response` or `form_submit` events will fire whenever the user clicks (or presses enter) to submit the form or response in question, even if they have triggered an error.
+`form_response` or `form_submit` events should not therefore be taken as an indication of a successful submission.
+To calculate the number of successful responses, you will want to subtract errors or rely on the `form_complete` event.
+
+`form_complete` events will fire on any view of the ‘results’ page.
+This means that multiple `form_complete` events can be triggered by the same user if they refresh the page or navigate away from it and back to it.
+Also, it is possible that some users could trigger a `form_complete` event without having actually responded to or submitted the form themselves, if they are sent the results page.
+
+The above are not the case on feedback form submissions and survey banner form submissions, as these are smaller forms using different components where the user does not navigate between different pages as they complete the form.
+The survey banner only has `form_submit` and `form_complete` events - no error tracking - and feedback form submissions only have submit events.
+
+The values collected on form events are summaried in the following table.
+
+| event_name | type | UI text | response | outcome | section | action | tool_name |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| form_start | smart answer, simple smart answer | <button text> | --- | --- | start page | start | <form name> |
+| form_response | smart answer, simple smart answer, email subscription, contact | --- | <response text> | --- | <question text> | <button text> | <form name> |
+| form_submit | smart answer, simple smart answer, local transaction, special route, licence transaction, place, feedback, email subscription, survey banner | <button text> | --- | --- | <question text> | submit | <form name> |
+| form_error | smart answer, simple smart answer, local transaction, special route, licence transaction, place, email subscription, contact | --- | <error text> | --- | <question text> | error | <form name> |
+| form_complete | smart answer, simple smart answer, local transaction, special route, licence transaction, place, email subscription, survey banner, contact | --- | --- | <result/completion response text> OR <outcome number> (simple smart answer) OR undefined (smart answer) | <heading text> OR undefined | complete | <form name> |
+| form_change_response | smart answer, simple smart answer, licence transaction | <link text> | --- | --- | <question of response to be changed> | change response | <form name> |
+| form_start_again | smart answer, simple smart answer | <link text> | --- | --- | <question text> | start again | <form name> |
+
+
+### Other user interface events 
+
+There are a range of other events which do not fit into the above categories.
+These will have distinct event names and often use additional custom dimensions to capture useful information.
+
+Some of the most notable are:
+
+- `select_content` events: tracking interactions which show or hide pieces of content on GOV.UK (for example, user interactions with accordions)
+- `scroll` events: tracking users' scrolls, using different fields to track scroll depth depending on the [type of scroll tracking](https://docs.publishing.service.gov.uk/analytics/event_scroll_tracking.html) implemented
+- video events (`video_start`, `video_progress`, `video_complete`): tracking users' [progress through videos](https://docs.publishing.service.gov.uk/analytics/event_video.html)
+
+### Ecommerce events 
+
+Ecommerce tracking has been used on GOV.UK to better track usage of site search.
+
+These events are:
+
+- `view_item_list` events: fire on views of search results pages
+- `select_item` events: fire when a user clicks on a search result 
