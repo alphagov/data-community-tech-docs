@@ -1,7 +1,7 @@
 ---
 title: GA4 flattened tables
 weight: 3
-last_reviewed_on: 2024-02-19
+last_reviewed_on: 2024-03-25
 review_in: 6 months
 ---
 
@@ -165,7 +165,7 @@ The code is exectuted via Dataform every morning at 8am UTC and it is stored in 
 | viewport_size | STRING | NULLABLE | The size of the browser window, minus the scroll bars and toolbars |
 | batch_page_id | INTEGER | NULLABLE | |
 | batch_ordering_id | INTEGER | NULLABLE | |
-| timestamp | INTEGER | NULLABLE | The [Unix timestamp](https://docs.publishing.service.gov.uk/analytics/attribute_timestamp.html). This is a custom dimension, pushed with every dataLayer event, unlike the default event_timestamp above |
+| timestamp | INTEGER | NULLABLE | The [Unix timestamp](https://docs.publishing.service.gov.uk/analytics/attribute_timestamp.html) in milliseconds. This is a custom dimension, pushed with every dataLayer event, unlike the default event_timestamp above |
 | copy_length | INTEGER | NULLABLE | The number of characters in text copied ([copy events](https://docs.publishing.service.gov.uk/analytics/event_copy.html) only) |
 | item_list_name | STRING | NULLABLE | The name of the item list - on GOV.UK, this will be the name of a finder (search/search results) page |
 | item_id | STRING | NULLABLE | The URL of the search result item. A maximum of 200 search result items (the first 200) will be sent on longer search results pages |

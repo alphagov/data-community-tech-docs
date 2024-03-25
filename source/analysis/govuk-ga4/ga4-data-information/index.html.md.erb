@@ -1,0 +1,51 @@
+---
+title: What can I learn from the GOV.UK GA4 data?
+weight: 1
+last_reviewed_on: 2024-03-25
+review_in: 6 months
+---
+
+# What can I learn from the GOV.UK GA4 data?
+<span style="color:red">This page is a work in progress.</span>
+
+The [GOV.UK Google Analytics 4 data](/data-sources/ga/ga4/) contains a variety of information on users of GOV.UK, and how those users interacted with various pages on GOV.UK.
+
+## Information about how users interacted with pages on GOV.UK
+
+GA4 data is the primary source of information on how users interacted with pages on GOV.UK.
+
+Things you can learn from the GA4 data include:
+
+- page views: how many times the page in question was viewed
+- sessions: how many sessions included a view of the page. Some pages may be viewed multiple times in the same session, so a count of sessions can sometimes be useful to de-dupe the count of page views. You can also report on the number of times a page was viewed per session
+- users: the number of active users who viewed the page. Although this sounds like an attractive metric to report, this figure does not correspond to the actual number of people viewing a page and is likely to give an inflated idea of the level of use
+- entrances: how often a session started on the page
+- navigation events: whether users clicked on links from the page in question
+- search events: whether users searched from the page in question
+- feedback events: whether users answered the feedback form on the page 
+
+## Information about users of pages on GOV.UK
+
+GA4 data also contains some information on the users of GOV.UK.
+
+Things you can learn from the GA4 data include:
+- device category: whether users were viewing GOV.UK pages from their phone, desktop, tablet, etc
+- session source/medium: how users got to GOV.UK
+- page referrer: what page or external source led the user to this page
+- language: the user's browser language setting
+- location: an indication of where most users seem to be (country, region, etc)
+
+## Information about the pages on GOV.UK
+
+GA4 data also contains some information on GOV.UK pages themselves.
+
+For instance, the GOV.UK GA4 data contains information on: 
+
+- the page's URL. Often, the best dimension to use here is page path and screen class (the URL of the page, excluding the protocol, hostname, and any additional parameters that might be appended to the end of the URL). Other variants of the URL exist in the data but can be more complicated to use in reports
+- page title
+- the page status code. A status code of 200 indicates success, whereas other codes (most commonly, '404' - 'Page not found’) indicate that the page was not served correctly
+- browse topic, taxonomy level 1, taxonomy main topic, taxonomy topics: information on how the page is categorised on GOV.UK
+- publishing organisation IDs: which departments have been tagged as relevant to this page
+- primary publishing organisation: the department which has been tagged as the primary publishing organisation
+- document type, schema name, publishing application, rendering application: technical information on the type of page this is and how it is published to GOV.UK
+
