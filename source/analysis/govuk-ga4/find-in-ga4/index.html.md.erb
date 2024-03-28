@@ -1,0 +1,151 @@
+---
+title: Find things in the GOV.UK GA4 data
+weight: 3
+last_reviewed_on: 2024-03-27
+review_in: 6 months
+---
+
+# Use the GOV.UK GA4 data
+<span style="color:red">This page is a work in progress.</span>
+
+Google Analytics 4 (GA4) is used to collect data on the usage of GOV.UK.
+There are a [variety of different things you can learn from the GA4 data](/analysis/govuk-ga4/ga4-data-information/) about pages and users on GOV.UK.
+
+This page provides some guidance on how to find commonly requested information in the GA4 data.
+
+More information on the data source itself can be found on the [GOV.UK GA4 data source page](/data-sources/ga/ga4/).
+
+Currently, the methods in this document are written to help people using explorations in GA4, but similar steps can also be used in Looker Studio.
+
+
+## Page views
+
+There is a report in the GA4 interface which shows views by page path.
+In explorations and in Looker Studio, you can get numbers of page views either using a count of page_view events or using the ‘views’ metric (which also includes screen views if you have an app).
+
+A count of page_view events in GA4 should provide you with a similar number to the total pageviews figure in Universal Analytics (UA).
+
+‘Unique pageviews’ no longer exists as a metric in GA4, but the ‘sessions’ metric is conceptually similar, telling you how many sessions contained a visit to this page.
+However, the definition of a session has changed in GA4, so the figures produced here will deviate significantly from those in UA.
+
+### Page views by page path
+
+We recommend using ‘page path’ over the ‘page location’ dimension as ‘page location’ is compatible with fewer other dimensions.
+
+The ‘page path’ is the part of the URL after the hostname (not including any query strings) of a page -
+
+#### Method - using the views metric
+
+Steps:
+
+1. In a free form exploration, create a table showing the ‘Page path and screen class’ dimension and the ‘Views’ metric
+2. If you would like to only look at page view data for certain pages, filter the data using the ‘Page path’ dimension to select the paths of the pages you are interested in.  For example, if you were only interested in ‘browse’ pages on GOV.UK, you could filter down to Page path contains ‘/browse’
+3. Change the date range and sort the table however you like
+
+Remember to check the [data quality icons](https://support.google.com/analytics/answer/12856703?hl=en) when using reports or explorations in GA, and to keep an eye open for the impact of our high cardinality data in Looker Studio.
+
+For an example in Looker Studio, see the ‘Top pages’ table in [this sample Looker Studio report](https://lookerstudio.google.com/reporting/d8cdf584-8cc8-4b77-bbef-1d51ed6f66ea/page/gbJuC).
+
+## Navigation (link clicks)
+
+Link clicks are now tracked as events with the event name ‘navigation’.
+External links will be navigation events with the ‘outbound’ parameter/custom dimension set to ‘true’.
+Internal links (links to other pages on GOV.UK) will not have the parameter/custom dimension ‘outbound’ equalling ‘true’.
+Not all internal links have specific tracking on them.
+
+These events should all have dimensions such as the ‘Link URL’, ‘Link text’ and so on which should help you identify which links have been clicked.
+
+### External link clicks on a given page
+
+#### Method 
+
+Steps:
+
+1. In a free form exploration, create a table showing the ‘Link text’ or ‘Link URL’ dimension by the ‘Event count’ metric
+2. Filter the data by the ‘Event name’ dimension to equals/contains ‘navigation’. This selects the navigation event which fires when the user clicks a link
+3. Filter the data by the ‘Outbound’ dimension to equals/contains ‘true’. This selects link clicks away from GOV.UK
+4. Filter the data by the ‘Page path and screen class’ dimension to equal the path of the specific page you want link clicks from. The ‘page path’ is the part of the URL after the hostname (not including any query strings) of a page, so by using it here we are selecting the page the user clicked the link on
+5. Change the date range and sort the table however you like
+
+A basic exploration containing external link clicks from GOV.UK can be [accessed here](https://analytics.google.com/analytics/web/?pli=1#/analysis/p330577055/edit/NghktJ78Rl-bv1LDkdTPjQ).
+See also the ‘External link clicks’ table in [this sample Looker Studio report](https://lookerstudio.google.com/reporting/d8cdf584-8cc8-4b77-bbef-1d51ed6f66ea/page/gbJuC).
+
+## File downloads
+
+File downloads will have the event name ‘file_download’. 
+
+### File downloads on a given page
+
+#### Method 
+
+Steps:
+
+1. In a free form exploration, create a table showing the ‘Link text’ or ‘Link URL’ dimension by the ‘Event count’ metric
+2. Filter the data by the ‘Event name’ dimension to equals/contains ‘file_download’. This selects the file_download event which fires when the user clicks on a link to download a file
+3. Filter the data by the ‘Page path and screen class’ dimension to equal the path of the specific page you want link clicks from. The ‘page path’ is the part of the URL after the hostname (not including any query strings) of a page, so by using it here we are selecting the page the user clicked the link on
+4. Sort the table however you like
+
+## Search terms
+
+A basic exploration containing search terms used on GOV.UK can be [found here](https://analytics.google.com/analytics/web/?pli=1#/analysis/p330577055/edit/uG8LwntYTLW25BF3ILgmBw).
+
+### Search terms from a specific page
+
+There are a couple of different ways that this can be done with the GA4 data.
+
+#### Method one - using the search event
+
+Steps:
+
+1. In a free form exploration, create a table showing the ‘Search term’ dimension by the ‘Event count’ metric
+2. Filter the data by the ‘Event name’ dimension to equals/contains ‘search’. This selects the search event which fires when a user searches
+3. Filter the data by the ‘Page path and screen class’ dimension to equal the path of the specific page you want search terms from. The ‘page path’ is the part of the URL after the hostname (not including any query strings) of a page, so by using it here we are selecting the page the user searched on
+4. Change the date range and sort the table however you like
+
+This should give you a table showing the search terms used from your given page and the number of times each was searched for (the count).
+
+For an example in Looker Studio, see the ‘Top searches from these pages’ table in [this sample Looker Studio report](https://lookerstudio.google.com/reporting/d8cdf584-8cc8-4b77-bbef-1d51ed6f66ea/page/p_ot3jtudu9c).
+
+#### Method two - using the view_item_list (search results) event
+
+Steps:
+
+1. In a free form exploration, create a table showing the ‘Search term’ dimension by the ‘Event count’ metric
+2. Filter the data by the ‘Event name’ dimension to equals/contains ‘view_item_list’. This selects the view_item_list event which fires on views of search results lists
+3. Filter the data by the ‘Page referrer’ dimension to equal the specific page you want search terms from. The ‘page referrer’ is the page which led the user to their present page, so by using it here we are selecting the page before the search results
+4. Change the date range and sort the table
+
+This should give you a table showing the search terms used from your given page and the number of times each was searched for (the count).
+
+If you are unfamiliar with filtering GA4 data, it may be helpful to include the ‘Event name’ and ‘Page referrer’ dimensions in your table to check that your filters have worked correctly.
+You should only be able to see ‘view_item_list’ in the ‘Event name’ column and the specific page you want search terms from in the ‘Page referrer’ column.
+
+## Engagement
+
+There are a variety of metrics available to help you look into user engagement with content on GOV.UK.
+
+### Bounce rate
+
+The definition of a bounce has changed from Universal Analytics to GA4.
+The bounce rate is now the percentage of sessions that are not engaged sessions (the bounce rate is the inverse of the engagement rate).
+Engaged sessions are all sessions that either last longer than 10 seconds, have more than one screen or page view, or contain a conversion event (ordinary events do not count and as of March 2024 [we do not yet have any conversion events set up](/data-sources/ga/ga4/#data-processing-and-modification)). 
+
+It is important to note that the bounce rate can only be used when reporting on landing pages (using the ‘Landing page + query string’ dimension).
+Do not use the bounce rate metric with more general page dimensions (such as ‘Page path and screen class’, ‘Page path + query string’, ‘Page location’ and so on).
+Although GA does not prevent you from adding bounce rate to such reports, the figures reported will not be accurate!
+
+#### Method 
+
+Steps:
+
+1. In a free form exploration, create a table showing the ‘Landing page + query string’ dimension by the ‘Bounce rate’ metric
+2. If you are interested in the bounce rates for specific pages, filter the data by the ‘Landing page + query string’ dimension to equal/contain the path of the specific pages you want. The ‘Landing page + query string dimension’ only uses the path and query string - the part of the URL after the hostname
+3. Change the date range and sort the table however you like
+
+A basic exploration showing the bounce rate on GOV.UK landing pages can be [found here](https://analytics.google.com/analytics/web/?pli=1#/analysis/p330577055/edit/yPJT7K_fRlmfQVv3ceb5JQ).
+
+
+## Sorting and ordering data
+
+You can sort the data in your exploration by clicking on the value column headings you wish to sort the data by.
+
