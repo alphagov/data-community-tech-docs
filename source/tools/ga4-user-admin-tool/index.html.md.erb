@@ -1,23 +1,24 @@
 ---
-title: GA4 USer Admin Tool
+title: GA4 User Admin Tool
 weight: 4
-last_reviewed_on: 2024-02-08
+last_reviewed_on: 2024-04-03
 review_in: 6 months
 ---
 
 # GA4 User Admin Tool
-This is a tool to add and delete users to www.gov.uk production GA data.
-The tool adds a user to www.gov.uk GA4 production as well as Universal Analytics views 1a and 2.
+The GA4 User Admin tool is used to add and delete users' access to www.gov.uk production Google Analytics data.
+The tool adds a user to [www.gov.uk GA4 production data](/data-sources/ga/ga4/) as well as Universal Analytics views 1a and 2.
 
 The tool is located [here](https://34.36.39.60.nip.io/) and is deployed from the [GA4 Analytics project](/gcp).
-To access the tool you will need to be signed into your GDS Google account and be a member of the Google Group 'ga-user-admin'
-The app uses [IAP](https://console.cloud.google.com/security/iap) to grant access
+To access the tool you will need to be signed into your GDS Google account and be a member of the Google Group 'ga-user-admin'.
+The app uses [IAP](https://console.cloud.google.com/security/iap) to grant access.
 
-[Github repository](https://github.com/alphagov/ga4-user-admin)
+The code, and issue management, can be found in the [ga4-user-admin Github repository](https://github.com/alphagov/ga4-user-admin).
 
 ## Adding a user
-When adding a user via this tool they will not be automatically notified by Google, therefore it is important to still send any welcome messaging. The standard message is located in this [Google Doc](https://docs.google.com/document/d/1A7KLTPxxtTPsVK8zzm7B-UqdjTLYxL0ykRyai2Q_01Y/edit#heading=h.xxmc91ktkyr2).
+Users added via this tool will not be automatically notified by Google so it is important to still send any welcome messaging.
+The standard message is located in this [Google Doc](https://docs.google.com/document/d/1A7KLTPxxtTPsVK8zzm7B-UqdjTLYxL0ykRyai2Q_01Y/edit#heading=h.xxmc91ktkyr2).
 
 ## Issues and errors when adding a user
-If in the marketing platform you get an error that says the user does not satisy the organisations user policy then this is related to not having associated their account with Google.
-see [this support article](https://support.google.com/analytics/thread/235084253/new-user-error-this-user-did-not-satisfy-this-organization%E2%80%99s-user-policy?hl=en&sjid=9628882099368924042-EU)
+If you get an error in Marketing Platform stating that the user does not satisy the organisation's user policy this is related to not having associated their account with Google.
+[This support article](https://support.google.com/analytics/thread/235084253/new-user-error-this-user-did-not-satisfy-this-organization%E2%80%99s-user-policy?hl=en&sjid=9628882099368924042-EU) should help you deal with this issue.

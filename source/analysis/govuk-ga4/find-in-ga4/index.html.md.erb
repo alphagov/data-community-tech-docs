@@ -1,11 +1,11 @@
 ---
 title: Find things in the GOV.UK GA4 data
 weight: 3
-last_reviewed_on: 2024-03-27
+last_reviewed_on: 2024-04-03
 review_in: 6 months
 ---
 
-# Use the GOV.UK GA4 data
+# Find things in the GOV.UK GA4 data
 <span style="color:red">This page is a work in progress.</span>
 
 Google Analytics 4 (GA4) is used to collect data on the usage of GOV.UK.
@@ -14,8 +14,6 @@ There are a [variety of different things you can learn from the GA4 data](/analy
 This page provides some guidance on how to find commonly requested information in the GA4 data.
 
 More information on the data source itself can be found on the [GOV.UK GA4 data source page](/data-sources/ga/ga4/).
-
-Currently, the methods in this document are written to help people using explorations in GA4, but similar steps can also be used in Looker Studio.
 
 
 ## Page views
@@ -32,9 +30,9 @@ However, the definition of a session has changed in GA4, so the figures produced
 
 We recommend using ‘page path’ over the ‘page location’ dimension as ‘page location’ is compatible with fewer other dimensions.
 
-The ‘page path’ is the part of the URL after the hostname (not including any query strings) of a page -
+The ‘page path’ is the part of the URL after the hostname (not including any query strings) of a page.
 
-#### Method - using the views metric
+#### Method - using the views metric in an exploration
 
 Steps:
 
@@ -45,6 +43,27 @@ Steps:
 Remember to check the [data quality icons](https://support.google.com/analytics/answer/12856703?hl=en) when using reports or explorations in GA, and to keep an eye open for the impact of our high cardinality data in Looker Studio.
 
 For an example in Looker Studio, see the ‘Top pages’ table in [this sample Looker Studio report](https://lookerstudio.google.com/reporting/d8cdf584-8cc8-4b77-bbef-1d51ed6f66ea/page/gbJuC).
+
+
+#### Method in BigQuery
+
+The following SQL gets a count of page views for the 1st January 2024 from the flattened GOV.UK GA4 dataset
+```
+#Get a count of page views for the 1st January 2024 from the flattened GOV.UK GA4 dataset
+SELECT
+  event_date,
+  COUNT(*) AS pageviews,
+FROM
+  `ga4-analytics-352613.flattened_dataset.flattened_daily_ga_data_*`
+WHERE
+  _TABLE_SUFFIX BETWEEN '20240101'
+  AND '20240101'
+  #Filter to just page_view events
+  AND event_name = 'page_view'
+GROUP BY
+  event_date
+```
+
 
 ## Navigation (link clicks)
 
@@ -57,7 +76,7 @@ These events should all have dimensions such as the ‘Link URL’, ‘Link text
 
 ### External link clicks on a given page
 
-#### Method 
+#### Method in an exploration
 
 Steps:
 
@@ -76,7 +95,7 @@ File downloads will have the event name ‘file_download’.
 
 ### File downloads on a given page
 
-#### Method 
+#### Method in an exploration
 
 Steps:
 
@@ -93,7 +112,7 @@ A basic exploration containing search terms used on GOV.UK can be [found here](h
 
 There are a couple of different ways that this can be done with the GA4 data.
 
-#### Method one - using the search event
+#### Method one - using the search event in an exploration
 
 Steps:
 
@@ -106,7 +125,7 @@ This should give you a table showing the search terms used from your given page 
 
 For an example in Looker Studio, see the ‘Top searches from these pages’ table in [this sample Looker Studio report](https://lookerstudio.google.com/reporting/d8cdf584-8cc8-4b77-bbef-1d51ed6f66ea/page/p_ot3jtudu9c).
 
-#### Method two - using the view_item_list (search results) event
+#### Method two - using the view_item_list (search results) event in an exploration
 
 Steps:
 
@@ -134,7 +153,7 @@ It is important to note that the bounce rate can only be used when reporting on 
 Do not use the bounce rate metric with more general page dimensions (such as ‘Page path and screen class’, ‘Page path + query string’, ‘Page location’ and so on).
 Although GA does not prevent you from adding bounce rate to such reports, the figures reported will not be accurate!
 
-#### Method 
+#### Method in an exploration
 
 Steps:
 

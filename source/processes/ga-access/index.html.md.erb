@@ -1,15 +1,11 @@
 ---
 title: GOV.UK GA access
 weight: 1
-last_reviewed_on: 2024-02-20
+last_reviewed_on: 2024-04-03
 review_in: 6 months
 ---
 
 # GOV.UK GA access
-
-Google Analytics (GA) is not designed for collecting personally identifiable information (PII), and collecting PII is against GA terms and conditions. 
-
-If you notice PII in GA, please raise a Zendesk ticket as quickly as possible.
 
 ## What we provide access to
 Users are able to request access to:
@@ -27,7 +23,7 @@ Departments and organisations that publish on www.gov.uk will be allowed access 
 Access will only be granted to email accounts managed by the department.
 Accounts linked to gmail or other non-Civil Service email addresses will not be allowed access and may be removed without warning.
 
-Every organisation must have an [analytics single point of contact (SPOC)](/processes/spocs/) nominated who raises requests and administers users.
+Every organisation must have an [analytics Single Point of Contact (SPOC)](/processes/spocs/) nominated who raises requests and administers users.
 
 ## Access request process
 The user access request process is as follows:
@@ -37,7 +33,7 @@ graph TD
 A[DEPT: 
 SPOC raises request via SignOn] --> B
 B(Zendesk:
- ticket generated and sent tp Analyst queue) 
+ Ticket generated and sent to Analyst queue) 
 B --> C[User added via the user admin tool] 
 C --> D[User added to Basecamp]
 D --> E[Close ticket]
@@ -70,6 +66,9 @@ Data must only be used for Civil Service work.
 It is OK to authorise tools such as Excel Plugins and Python or R scripts to access GA data provided that the system is running on your local machine. 
 
 Data must not be processed via third-party or cloud-based systems.
+
+Google Analytics (GA) is not designed for collecting personally identifiable information (PII), and collecting PII is against GA terms and conditions. 
+If you notice PII in GA, please raise a Zendesk ticket as quickly as possible.
 
 Google Analytics data itself is management information and not an official statistic. 
 The Government Analysis Function has published [guidance on the use of management information](https://analysisfunction.civilservice.gov.uk/policy-store/national-statisticians-guidance-management-information-and-official-statistics/).
