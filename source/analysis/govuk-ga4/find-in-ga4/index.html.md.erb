@@ -47,21 +47,24 @@ For an example in Looker Studio, see the ‘Top pages’ table in [this sample L
 
 #### Method in BigQuery
 
-The following SQL gets a count of page views for the 1st January 2024 from the flattened GOV.UK GA4 dataset
-```
-#Get a count of page views for the 1st January 2024 from the flattened GOV.UK GA4 dataset
+The following SQL gets a count of page views for the 1st January 2024 from the flattened GOV.UK GA4 dataset:
+
+```SQL
+     
+\#Get a count of page views for the 1st January 2024 from the flattened GOV.UK GA4 dataset
 SELECT
   event_date,
   COUNT(*) AS pageviews,
 FROM
-  `ga4-analytics-352613.flattened_dataset.flattened_daily_ga_data_*`
+\`ga4-analytics-352613.flattened_dataset.flattened_daily_ga_data_*\`
 WHERE
   _TABLE_SUFFIX BETWEEN '20240101'
   AND '20240101'
-  #Filter to just page_view events
+  \#Filter to just page_view events
   AND event_name = 'page_view'
 GROUP BY
   event_date
+    
 ```
 
 
