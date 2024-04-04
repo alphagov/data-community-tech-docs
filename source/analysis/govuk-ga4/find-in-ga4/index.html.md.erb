@@ -1,7 +1,7 @@
 ---
 title: Find things in the GOV.UK GA4 data
 weight: 3
-last_reviewed_on: 2024-04-03
+last_reviewed_on: 2024-04-04
 review_in: 6 months
 ---
 
@@ -47,24 +47,23 @@ For an example in Looker Studio, see the ‘Top pages’ table in [this sample L
 
 #### Method in BigQuery
 
-The following SQL gets a count of page views for the 1st January 2024 from the flattened GOV.UK GA4 dataset:
+The following SQL gets a count of page views by page path ([cleaned_page_location in the flattened dataset](/data-sources/ga/ga4-flat/#schema)) for the 1st January 2024:
 
 ```SQL
-     
-\#Get a count of page views for the 1st January 2024 from the flattened GOV.UK GA4 dataset
 SELECT
-  event_date,
+  cleaned_page_location,
   COUNT(*) AS pageviews,
 FROM
-\`ga4-analytics-352613.flattened_dataset.flattened_daily_ga_data_*\`
+  `ga4-analytics-352613.flattened_dataset.flattened_daily_ga_data_*`
 WHERE
   _TABLE_SUFFIX BETWEEN '20240101'
   AND '20240101'
-  \#Filter to just page_view events
+  #Filter to just page_view events
   AND event_name = 'page_view'
 GROUP BY
-  event_date
-    
+  cleaned_page_location
+ORDER BY
+  pageviews DESC
 ```
 
 
@@ -92,6 +91,32 @@ Steps:
 A basic exploration containing external link clicks from GOV.UK can be [accessed here](https://analytics.google.com/analytics/web/?pli=1#/analysis/p330577055/edit/NghktJ78Rl-bv1LDkdTPjQ).
 See also the ‘External link clicks’ table in [this sample Looker Studio report](https://lookerstudio.google.com/reporting/d8cdf584-8cc8-4b77-bbef-1d51ed6f66ea/page/gbJuC).
 
+#### Method in BigQuery
+
+The following SQL returns external links clicked (and how many times they were clicked) on the ['Child adoption' page](https://www.gov.uk/child-adoption) on 1st January 2024:
+
+```SQL
+SELECT
+  link_url,
+  COUNT(*) AS events,
+FROM
+  `ga4-analytics-352613.flattened_dataset.flattened_daily_ga_data_*`
+WHERE
+  _TABLE_SUFFIX BETWEEN '20240101'
+  AND '20240101'
+  #Filter to just navigation events
+  AND event_name = 'navigation'
+  #Filter to just external link clicks
+  AND outbound = 'true'
+  #Filter to just the page of interest
+  AND cleaned_page_location = '/child-adoption'
+GROUP BY
+  link_url
+ORDER BY
+  events DESC
+```
+
+
 ## File downloads
 
 File downloads will have the event name ‘file_download’. 
@@ -106,6 +131,30 @@ Steps:
 2. Filter the data by the ‘Event name’ dimension to equals/contains ‘file_download’. This selects the file_download event which fires when the user clicks on a link to download a file
 3. Filter the data by the ‘Page path and screen class’ dimension to equal the path of the specific page you want link clicks from. The ‘page path’ is the part of the URL after the hostname (not including any query strings) of a page, so by using it here we are selecting the page the user clicked the link on
 4. Sort the table however you like
+
+#### Method in BigQuery
+
+The following SQL gets a count of file downloads for the different files (using the Link URL) on the ['Apply for a postal vote (paper forms)' page](https://www.gov.uk/government/publications/apply-for-a-postal-vote) on 1st January 2024:
+
+```SQL
+SELECT
+  link_url,
+  COUNT(*) AS file_downloads,
+FROM
+  `ga4-analytics-352613.flattened_dataset.flattened_daily_ga_data_*`
+WHERE
+  _TABLE_SUFFIX BETWEEN '20240101'
+  AND '20240101'
+  #Filter to just file_download events
+  AND event_name = 'file_download'
+  #Filter to just the page of interest
+  AND cleaned_page_location = '/government/publications/apply-for-a-postal-vote'
+GROUP BY
+  link_url
+ORDER BY
+  file_downloads DESC
+```
+
 
 ## Search terms
 
@@ -141,6 +190,7 @@ This should give you a table showing the search terms used from your given page 
 
 If you are unfamiliar with filtering GA4 data, it may be helpful to include the ‘Event name’ and ‘Page referrer’ dimensions in your table to check that your filters have worked correctly.
 You should only be able to see ‘view_item_list’ in the ‘Event name’ column and the specific page you want search terms from in the ‘Page referrer’ column.
+
 
 ## Engagement
 
