@@ -1,16 +1,16 @@
 ---
 title: GOV.UK GA access
 weight: 1
-last_reviewed_on: 2024-04-03
+last_reviewed_on: 2024-04-05
 review_in: 6 months
 ---
 
 # GOV.UK GA access
 
+This page details current policies and processes in place regarding access to web analytics data for www.gov.uk.
+
 ## What we provide access to
 Users are able to request access to:
-
- - Read access to GOV.UK Universal Analytics views 1a and 2
  - Analyst access to the GOV.UK GA4 Production property
  - Read access to GOV.UK GA4 data in BigQuery, [flattened](/data-sources/ga/ga4-flat/) and [raw](/data-sources/ga/ga4-bq/)
  - Read access to GOV.UK Search Console data in BigQuery
@@ -18,12 +18,18 @@ Users are able to request access to:
 Notice that we only provide read access to BigQuery.
 Departments are expected to pay for their queries via their own Google Cloud Project.
 
-## Who is allowed access
-Departments and organisations that publish on www.gov.uk will be allowed access to web analytics.
-Access will only be granted to email accounts managed by the department.
-Accounts linked to gmail or other non-Civil Service email addresses will not be allowed access and may be removed without warning.
+## Who can be granted access
+Employees of public sector organisations can be granted access to GOV.UK analytics data.
+
+Access will only be granted to email accounts managed by the organisation.
+All prospective Google Analytics data users must have their work (non-gmail) email address connected to a Google account.
+[These steps](https://support.google.com/accounts/answer/27441?hl=en#existingemail) can be used to create a Google account using an existing work email address.
+Accounts linked to gmail or other non-public sector organisation email addresses will not be permitted access.
 
 Every organisation must have an [analytics Single Point of Contact (SPOC)](/processes/spocs/) nominated who raises requests and administers users.
+
+There are no limits to the number of users that an organisation can request, but [usage will be monitored](/processes/ga-access/#monitoring-and-reporting) and users who are inactive or whose activity is flagged as suspicious may be removed without warning.
+
 
 ## Access request process
 The user access request process is as follows:
@@ -32,14 +38,20 @@ The user access request process is as follows:
 graph TD 
 A[DEPT: 
 SPOC raises request via SignOn] --> B
-B(Zendesk:
- Ticket generated and sent to Analyst queue) 
+B[Zendesk:
+ Ticket generated and sent to Analyst queue] 
 B --> C[User added via the user admin tool] 
 C --> D[User added to Basecamp]
 D --> E[Close ticket]
 A2[GDS: 
 User raises request via SignOn] --> B
+A3[Organisation without access to SignOn: 
+SPOC raises request via GOV.UK Analytics team] --> C
 </pre>
+
+
+User administration is done within GDS using the Analytics team's [user admin tool](/tools/ga4-user-admin-tool/).
+
 
 ### GDS staff
 
@@ -47,13 +59,16 @@ Requests for access to Google Analytics should be raised by team members themsel
 [GDS Internal IT Support Tool](https://gdshelpdesk.digital.cabinet-office.gov.uk/helpdesk/WebObjects/Helpdesk.woa). 
 Requests should be raised under "GDS IT Requests" -> "People & Accounts" -> "Google Analytics".
 
-### Other departments / government employees
-
-A prospective Google Analytics data user must have their departmental email address linked with 
-[Google](https://accounts.google.com/lifecycle/steps/signup/name?dsh=S-1928776542:1702492718221375&flowEntry=SignUp&flowName=GlifWebSignIn&theme=glif&TL=AHNYTIQQs3IhTlXf196atju3aFJ8jGHmQS5kSgydDsjOlk4Erelk9FUD2RCRv-ix).
-Use [these steps](https://support.google.com/accounts/answer/27441?hl=en#existingemail) if you are unsure how to create a Google account using your work email address.
+### Other government employees
 
 SPOCs should raise a request through the [Analytics Support Form](https://signon.publishing.service.gov.uk/users/sign_in).
+
+If a department does not have a SPOC in place, one can be [nominated](/processes/spocs/#how-to-become-a-spoc).
+
+### Public servants from organisations without access to SignOn
+
+SPOCs should contact the Analytics team with details of user administration requets. 
+
 
 ## Monitoring and reporting
 Usage of Google Analytics data is monitored by the GOV.UK Analytics team and any suspicious activity flagged.
@@ -63,9 +78,9 @@ Audits will be conducted regularly. Users that have been inactive for 6 months m
 
 ## Using the data
 Data must only be used for Civil Service work.
-It is OK to authorise tools such as Excel Plugins and Python or R scripts to access GA data provided that the system is running on your local machine. 
 
 Data must not be processed via third-party or cloud-based systems.
+Tools such as Excel Plugins and Python or R scripts may be authorised to access GA data provided that the system is running on your local machine. 
 
 Google Analytics (GA) is not designed for collecting personally identifiable information (PII), and collecting PII is against GA terms and conditions. 
 If you notice PII in GA, please raise a Zendesk ticket as quickly as possible.
