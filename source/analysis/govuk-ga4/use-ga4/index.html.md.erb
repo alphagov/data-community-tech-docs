@@ -1,7 +1,7 @@
 ---
 title: Use the GOV.UK GA4 data
 weight: 4
-last_reviewed_on: 2024-03-26
+last_reviewed_on: 2024-04-23
 review_in: 6 months
 ---
 
@@ -11,101 +11,15 @@ review_in: 6 months
 Google Analytics 4 (GA4) is used to collect data on the usage of GOV.UK.
 More information about this data can be found on the [GOV.UK GA4 data source page](/data-sources/ga/ga4/).
 
-There are a number of different ways this data can be accessed and used, including:
+There are a number of different ways this data can be accessed, analysed and visualised.
+This section contains information and best practice on how the GOV.UK GA4 data can be accessed by using:
 
-- through the Google Analytics 4 user interface
-- by using the default GA4 data connection in Looker Studio
-- in BigQuery, either using the [raw](/data-sources/ga/ga4-bq/) or the [flattened](/data-sources/ga/ga4-flat/) data
-- connecting to the data stored in BigQuery with Looker Studio
-- using the Google Analytics Data API
-- using Data Services' custom data tools
+- the [Google Analytics 4 user interface](/analysis/govuk-ga4/use-ga4/ga4-interface/)
+- the [default GA4 data connection in Looker Studio](/analysis/govuk-ga4/use-ga4/looker-studio/)
+- [BigQuery](/analysis/govuk-ga4/use-ga4/bigquery/)
+- the [data stored in BigQuery with Looker Studio](/analysis/govuk-ga4/use-ga4/looker-studio/#use-the-bigquery-ga4-data-in-looker-studio)
+- the [Google Analytics Data API](/analysis/govuk-ga4/use-ga4/analytics-data-api/)
 
+The GA4 data can also be acccessed via:
 
-## Use the Google Analytics 4 user interface
-
-The GOV.UK GA4 data can be accessed via the [Google Analytics 4 user interface](https://analytics.google.com/analytics/web/).
-
-If you do not have access to this, please follow the [GOV.UK GA access process](/processes/ga-access/).
-
-### GA4 interface best practice
-
-Pay attention to the [data quality icons](https://support.google.com/analytics/answer/12856703) which can be found throughout the GA4 interface.
-These indicate whether the data in question is [sampled](https://support.google.com/analytics/answer/13331292), has [thresholding](https://support.google.com/analytics/answer/9383630) applied, or is affected by [cardinality](https://support.google.com/analytics/answer/12226705).
-
-In explorations, clicking on the data quality icon in the top right corner will tell you what percentage of the data your report is currently based on.
-In most cases, if you select ‘More detailed results’ in the dropdown, you will be able to get an exploration based on 100% of the raw data without needing to request an unsampled exploration.
-
-## Use GA4 data in Looker Studio
-
-You can easily connect to the GA4 data in Looker Studio using the 'Google Analytics' connector which is built and supported by Looker Studio.
-This connects to the GA4 data using the [Google Analytics Data API](https://developers.google.com/analytics/devguides/reporting/data/v1).
-
-If you are a GDS staff member, please use the [shared data connections](https://trello.com/c/N8C3H9KT/55-looker-studio-data-sources) already set up.
-This is set up with the [correct settings](/tools/looker-studio/#data-connections), and using this connection ensures that reports will not break when the creator leaves GDS. 
-
-Further guidance on Looker Studio data connections can be found on the [Looker Studio tools page](/tools/looker-studio/).
-
-### Looker Studio best pratice 
-
-Watch out for the impact of high [cardinality](https://support.google.com/analytics/answer/12226705) in your reports.
-Pay attention to the [(other) row](https://support.google.com/analytics/answer/13331684) and the totals of tables when filtering.
-Data in (other) can be inadvertently filtered out and result in misleading tables or visualisations.
-
-Be aware that Looker Studio reports that connect to Google Analytics 4 data are subject to [Google Analytics Data API quotas](https://developers.google.com/analytics/devguides/reporting/data/v1/quotas).
-You can use the ‘Google Analytics token usage’ information (which you can find in the menu when you right click whilst editing a dashboard) to assess how many tokens you are using.
-You can also use the ‘pause updates’ feature whilst creating new charts or carrying out a lot of edits on a report to minimise the number of tokens used.
-
-## Use GA4 data in BigQuery
-
-GA4 data is available in BigQuery in the [raw](/data-sources/ga/ga4-bq/) or the [flattened](/data-sources/ga/ga4-flat/) datasets.
-
-The raw and flattened GA4 data in BigQuery is stored as a table of events - each row, or record, represents an event.
-A count of all records on a day will give you the total number of events that were recorded on that day.
-A count of all records on a day filtered to only show records with the event name ‘page_view’ will give you the total number of page views recorded on that day.
-Metrics such as users and sessions are not already available, but need to be calculated.
-
-There are quotas in place on querying in BigQuery to ensure that costs do not get too high.
-More information on these can be found in the [quotas guidance](/gcp/BQ/#quotas).
-Details of the specific quotas set on various projects can be found under each project on the [GCP page](/gcp/).
-
-### Best practice 
-
-Avoid selecting all (`SELECT *`) - there are very few circumstances where you actually need every column from the data source!
-If you would like to see what is in the dataset, you can PREVIEW a table in the BigQuery interface.
-
-Where possible, use the flattened data source. The flattened tables are much more efficient to query, and should be easier to use as well.
-
-If you are running queries in BigQuery or connecting to BigQuery data, make sure to define your date range.
-Using a wildcard in the place of the date at the end of the table queries all the flattened tables (the entire history of the data) and costs can rack up pretty quickly due to the amount of data we are collecting and storing.
-Either specify a date in the tables you are selecting data from or make sure to use a WHERE statement where you define the date (or dates) you want.
-
-Note that using a LIMIT statement does not reduce the amount of data queried, just the amount of rows returned to you. `SELECT * FROM [table] LIMIT 20` and `SELECT * FROM [table]` cost the exact same amount. 
-
-## Use the BigQuery GA4 data in Looker Studio
-
-The GA4 data stored in BigQuery can be used in Looker Studio.
-
-If you are a member of GDS staff, please use the [shared data connections](https://trello.com/c/N8C3H9KT/55-looker-studio-data-sources).
-
-If you cannot use the above shared connection we recommend you use a custom query. You can do this by:
-
-1. Adding a data source (many ways you can do this!)
-2. In the ‘Connect to data’ panel, selecting ‘BigQuery’
-3. In the left-hand menu, selecting ‘Custom query’
-4. Entering your billing project ID
-5. Entering a query to select the fields needed using a WHERE statement to define the date range required
-6. Tick the checkbox to ‘enable date range parameters’ if needed
-7. Selecting ‘Add’ 
-
-### Best practice 
-
-Where possible, use the flattened data source. The flattened tables are much more efficient to query, and should be easier to use as well.
-
-If you are connecting to BigQuery data in Looker Studio, make sure to define your date range.
-If you would like to use a dynamic date range with BigQuery data and are using a custom query, please enable the date range parameters in the connection so that Looker Studio only queries the dates required.
-To do this you will also need to include the date range parameters in your querry - for example, `WHERE _TABLE_SUFFIX BETWEEN @DS_START_DATE AND @DS_END_DATE`.
-
-Use the ‘pause updates’ feature whilst creating new charts or carrying out a lot of edits on a report to minimise the number of queries run.
-
-Avoid creating new connections to BigQuery datasets in Looker Studio as Looker Studio can query the entire dataset whilst connecting it to the Looker Studio dashboard, which can be very expensive.
-Use shared connections where possible. 
+- Data Services' custom data tools
