@@ -21,3 +21,7 @@ These indicate whether the data in question is [sampled](https://support.google.
 
 In explorations, clicking on the data quality icon in the top right corner will tell you what percentage of the data your report is currently based on.
 In most cases, if you select ‘More detailed results’ in the dropdown, you will be able to get an exploration based on 100% of the raw data without needing to request an [unsampled exploration](https://support.google.com/analytics/answer/10896953).
+
+Be particularly careful when using same-day data.
+GA4 data on GOV.UK [takes several hours to be processed](https://support.google.com/analytics/answer/12233314?hl=en&ref_topic=13818299&sjid=14243600463504287898-EU), so same-day data is often very unreliable.
+It is usually better to set your date range to exclude today's data, unless there is a specific reason you need to look at today.

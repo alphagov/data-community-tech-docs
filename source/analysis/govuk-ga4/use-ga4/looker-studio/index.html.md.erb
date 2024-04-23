@@ -37,6 +37,10 @@ These dimensions don't need to be visible in the chart itself - if you filter on
 Neither option is ideal, but a 7-day period sampled at about 75% is a lot more meaningful than some nonsensical metrics for any time period.
 Alternatively, if you want 100% accuracy, try selecting 5 days including at least a Saturday or a Sunday so it includes some representative weekend behaviour.
 
+Be particularly careful when using same-day data.
+GA4 data on GOV.UK [takes several hours to be processed](https://support.google.com/analytics/answer/12233314?hl=en&ref_topic=13818299&sjid=14243600463504287898-EU), so same-day data is often very unreliable.
+It is usually better to set your date range to exclude today's data, unless there is a specific reason you need to look at today.
+
 
 #### Quotas
 
