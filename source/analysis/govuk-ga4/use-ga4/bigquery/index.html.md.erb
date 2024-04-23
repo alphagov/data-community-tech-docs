@@ -1,0 +1,35 @@
+---
+title: BigQuery best practice
+weight: 3
+last_reviewed_on: 2024-04-23
+review_in: 6 months
+---
+
+# BigQuery best practice
+<span style="color:red">This page is a work in progress.</span>
+
+GA4 data is available in BigQuery in the [raw](/data-sources/ga/ga4-bq/) or the [flattened](/data-sources/ga/ga4-flat/) datasets.
+
+The raw and flattened GA4 data in BigQuery is stored as a table of events - each row, or record, represents an event.
+A count of all records on a day will give you the total number of events that were recorded on that day.
+A count of all records on a day filtered to only show records with the event name ‘page_view’ will give you the total number of page views recorded on that day.
+Metrics such as users and sessions are not already available, but need to be calculated.
+
+There are quotas in place on querying in BigQuery to ensure that costs do not get too high.
+More information on these can be found in the [quotas guidance](/gcp/BQ/#quotas).
+Details of the specific quotas set on various projects can be found under each project on the [GCP page](/gcp/).
+
+The GA4 data stored in BigQuery can also be used in Looker Studio. More information on this can be found on the [Looker Studio best practice page](/analysis/govuk-ga4/use-ga4/looker-studio/#use-the-bigquery-ga4-data-in-looker-studio).
+
+## Best practice 
+
+Avoid selecting all (`SELECT *`) - there are very few circumstances where you actually need every column from the data source!
+If you would like to see what is in the dataset, you can PREVIEW a table in the BigQuery interface.
+
+Where possible, use the flattened data source. The flattened tables are much more efficient to query, and should be easier to use as well.
+
+If you are running queries in BigQuery or connecting to BigQuery data, make sure to define your date range.
+Using a wildcard in the place of the date at the end of the table queries all the flattened tables (the entire history of the data) and costs can rack up pretty quickly due to the amount of data we are collecting and storing.
+Either specify a date in the tables you are selecting data from or make sure to use a WHERE statement where you define the date (or dates) you want.
+
+Note that using a LIMIT statement does not reduce the amount of data queried, just the amount of rows returned to you. `SELECT * FROM [table] LIMIT 20` and `SELECT * FROM [table]` cost the exact same amount. 

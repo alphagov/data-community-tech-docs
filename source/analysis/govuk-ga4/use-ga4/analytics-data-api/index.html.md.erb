@@ -1,0 +1,23 @@
+---
+title: Analytics Data API best practice
+weight: 4
+last_reviewed_on: 2024-04-23
+review_in: 6 months
+---
+
+# Analytics Data API best practice
+<span style="color:red">This page is a work in progress.</span>
+
+You can access GOV.UK GA4 data via the [Analytics Data API](https://developers.google.com/analytics/devguides/reporting/data/v1).
+
+### Best pratice 
+
+#### Cardinality and sampling
+
+Data extracted from the API can be subject to issues associated with cardinality and sampling.
+
+If you are trying to figure out whether the results of a certain query are impacted by cardinality or sampling, you can use the `dataLossFromOtherRow` or `samplingMetadatas` fields in metadata of the response.
+
+#### Quotas
+
+Be aware that API queries are subject to the [Google Analytics Data API quotas](https://developers.google.com/analytics/devguides/reporting/data/v1/quotas).
