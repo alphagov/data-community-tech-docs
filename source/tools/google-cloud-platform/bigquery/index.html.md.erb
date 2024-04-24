@@ -1,17 +1,23 @@
 ---
-title: BQ
-weight: 10
-last_reviewed_on: 2024-01-19
+title: Use BigQuery
+weight: 3
+last_reviewed_on: 2024-02-25
 review_in: 6 months
 ---
 
-# BigQuery
+# Use BigQuery
 
-This section contains guidance on using BigQuery, often shortened to BQ.
+<span style="color:red">This page is a work in progress.</span>
+
+
 Google BigQuery is a cloud-based SQL data warehouse.
 
+This section contains guidance on using BigQuery (often shortened to 'BQ').
+
+
 ## Access
-When requesting access please state what data you need access to. If in doubt try the #data-engineering Slack channel. 
+When requesting access please state what data you need access to.
+If in doubt try the #data-engineering Slack channel. 
 
 
 ## Understanding tables, datasets, and projects
@@ -58,17 +64,16 @@ We think that the quota check occurs before a query is moved to Active.
 ### Why is Looker Studio so data hungry?
 Another good question that is under investigation.
 
-Currently Looker does not cache results from BQ, meaning the query has to be run every time. 
+Currently Looker Studio does not cache results from BQ, meaning the query has to be run every time. 
 Caching results is due for general availability release by the end of 2023 (see the [Google documentation](https://cloud.google.com/bigquery/docs/visualize-looker-studio.md#looker-studio-integration)).
 
-
-In addition to not caching results it seems that when creating a new data connection, Looker connects to a sharded set of tables for the first time it runs a series of queries that reference all shards.
+In addition to not caching results it seems that when creating a new data connection, Looker Studio connects to a sharded set of tables for the first time it runs a series of queries that reference all shards.
 The queries are for a small number fields each (4 or 5) and then query all shards and then include a `LIMIT 100` and this is done multiple times untli all fields are done.
 This is essentially a `SELECT * FROM * LIMIT 100`.
 
-This does not appear to be the case when using an existing data connection and Looker respects the table_suffix and default date range within the report.
+This does not appear to be the case when using an existing data connection. In these cases, Looker Studio respects the table_suffix and default date range within the report.
 
-USE SHARED PRE EXISTING DATA CONNECTIONS IN LOOKER
+Where possible, use shared pre-existing data connections in Looker Studio.
 
 ## Roles
 Google Cloud Platform permissions (IAM) can be a mysterious thing.
