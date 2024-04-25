@@ -1,0 +1,57 @@
+---
+title: Understand differences between UA and GA4
+weight: 3
+last_reviewed_on: 2024-04-25
+review_in: 6 months
+---
+
+# Understand differences between UA and GA4
+<span style="color:red">This page is a work in progress.</span>
+
+Universal Analytics (UA) and Google Analytics 4 (GA4) are different in a number of ways.
+
+This page attempts to sum up some of the key differences that will be noticed when using GOV.UK's analytics data.
+
+## Google Analytics data structure
+
+The structure of GA4 data is quite different to that of UA data.
+
+In GA4, everything is an ‘event’ - page views are no longer separated out from other events.
+Events also no longer have a category, action, and label, but are instead sent with a whole range of different custom dimensions.
+
+## GOV.UK's events and dimensions
+
+We have taken the opportunity that comes with the new data structure to redesign our tracking to make our data more logical and consistent.
+This does mean that many events and custom dimensions have changed.
+More information on the structure of our new GA4 data can be found [here](/analysis/govuk-ga4/understand-ga4/).
+
+## Metric definitions 
+
+On top of the changes that come as a result of our re-design of our analytics tracking, there are a number of changes that have been made by Google.
+A number of metrics have changed - there are some new metrics, some metrics that existed in UA but no longer exist in GA4, and some metrics that exist in both but may be defined in different ways.
+
+For example, one change that has a huge impact is the [altered definition of a session](https://support.google.com/analytics/answer/11986666).
+This change has a knock-on effect on all sessionised dimensions and metrics, so you should expect differences in the numbers returned for any metrics connected to sessions.
+We would expect the number of sessions recorded in GA4 to be lower than in UA on average, and the definition change will also have a significant impact on landing pages and the number of visits from various sources.
+
+Likewise, bounce rate is calculated in very different ways in GA4 and UA, so we would expect those numbers to differ.
+
+This are only a couple of examples of the changes.
+
+## Google's data processing 
+
+The processing of analytics data that Google carry out is different in UA and GA4.
+Sampling and [high cardinality dimensions](https://support.google.com/analytics/answer/12226705?hl=en) impact the data in different ways in UA and GA4.
+
+## The Google Analytics interface
+
+GA4 brings with it a new Google Analytics interface, featuring new tools such as [explorations](https://analytics.google.com/analytics/web/?pli=1#/analysis/p330577055).
+
+
+## Which is better or correct - UA or GA4?
+
+Neither UA nor GA4 data is 'correct' - the two datasets are simply very different in terms of what data is being collected and how that data is being processed and structured.
+It is good to remember that Analytics data is not, and has never been, exact.
+
+The UA and GA4 interfaces are very different and at present the GA4 interface does not enable us to do everything we were used to being able to do in UA.
+We are working to find ways around this or put in feature requests to ensure that the tool better meets our needs.
