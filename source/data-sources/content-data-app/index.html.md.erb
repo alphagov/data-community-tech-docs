@@ -1,17 +1,23 @@
 ---
-title: Content Data App BigQuery and Dataform tables
+title: Content Data app
 weight: 9
-last_reviewed_on: 2024-01-22
+last_reviewed_on: 2024-04-25
 review_in: 6 months
 ---
-# Content Data App
-This outlines the steps taking in processing GA4 data into a suitable structure for the content data tool.
+# Content Data app
+
+The Content Data app summarises and displays key statistics on the performance of pages on www.gov.uk.
+
+The app mostly relies on (GA4 data)[/data-sources/ga/ga4/] and is populated via a scheduled query and table in BigQuery, detailed below.
 
 ## Access
-Access to govuk-content-data project is currently limited to individuals that are working on the project.
+The Content Data app itself requires a [Signon account to access](https://content-data.publishing.service.gov.uk/content).
+
+The data which populates the Content data app is stored in BigQuery in the govuk-content-data project.
+Access to this project and dataset is currently limited to individuals that are working on the project.
 
 ### Location
-The table directly connected to the tool can be found in BigQuery under the data set `govuk-content-data.dataform.GA4 dataform`. 
+The table directly connected to the tool can be found in BigQuery under the data set `govuk-content-data.ga4.GA4 dataform`. 
 This table can be found in BigQuery under the data set `govuk-content-data.ga4.ga4_two_years`.
 
 For more information on our Google Cloud Platform projects, see our [GCP project documentation](/gcp/).
@@ -34,52 +40,138 @@ For more information on our Google Cloud Platform projects, see our [GCP project
 | session_engaged | INTEGER | NULLABLE | 
 
 
-
-## Retention
-
-
-
 ## Code for pulling in GA4 data
+
+Presently, the table which populates the Content Data app is generated via a scheduled query. The code for this query can be found below.
+
 ```
-CREATE OR REPLACE TABLE `govuk-content-data.ga4.ga4_two_years` 
- AS 
+WITH
+  CTE1 AS (
+  SELECT
+    user_pseudo_id,
+    (
+    SELECT
+      value.string_value
+    FROM
+      UNNEST(event_params)
+    WHERE
+      KEY = 'search_term') AS search_term,
+    SPLIT(SPLIT(REGEXP_REPLACE((
+          SELECT
+            value.string_value
+          FROM
+            UNNEST(event_params)
+          WHERE
+            KEY = 'page_location'), 'https://www.gov.uk', ''),'?')[SAFE_OFFSET(0)],'#')[SAFE_OFFSET(0)] AS cleaned_page_location,
+    (
+    SELECT
+      value.string_value
+    FROM
+      UNNEST(event_params)
+    WHERE
+      KEY = 'ui_text') AS ui_text,
+    CONCAT(user_pseudo_id, (
+      SELECT
+        value.int_value
+      FROM
+        UNNEST(event_params)
+      WHERE
+        KEY = 'ga_session_id')) AS unique_session_id,
+    (
+    SELECT
+      value.int_value
+    FROM
+      UNNEST(event_params)
+    WHERE
+      KEY = 'entrances') AS entrances,
+    event_name,
+    event_timestamp,
+    FORMAT_DATE('%Y-%m-%d', PARSE_DATE('%Y%m%d', event_date)) AS the_date,
+    IFNULL((CAST((
+          SELECT
+            value.int_value
+          FROM
+            UNNEST(event_params)
+          WHERE
+            KEY = "session_engaged") AS STRING)),(
+      SELECT
+        value.string_value
+      FROM
+        UNNEST(event_params)
+      WHERE
+        KEY = "session_engaged")) AS session_engaged,
+  IF
+    (LEAD(event_name) OVER (PARTITION BY CONCAT(user_pseudo_id, (SELECT value.int_value FROM UNNEST(event_params)
+          WHERE
+            KEY = 'ga_session_id'))
+      ORDER BY
+        event_timestamp) IS NULL, 1, NULL) AS isExit,
+  FROM
+    `ga4-analytics-352613.analytics_330577055.events_*`
+  WHERE
+    _table_suffix = FORMAT_DATE('%Y%m%d', DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)) ),
+  CTE2 AS (
+  SELECT
+    the_date,
+    cleaned_page_location,
+    COUNT(DISTINCT
+      CASE
+        WHEN event_name = 'page_view' THEN unique_session_ID
+    END
+      ) AS unique_page_views,
+    COUNT(CASE
+        WHEN event_name = 'page_view' THEN unique_session_ID
+    END
+      ) AS total_page_views,
+    COUNT(DISTINCT
+      CASE
+        WHEN isexit = 1 THEN unique_session_ID
+    END
+      ) AS exits,
+    COUNT(DISTINCT
+      CASE
+        WHEN entrances = 1 THEN unique_session_ID
+    END
+      ) AS entrances,
+    COUNT(CASE
+        WHEN event_name = 'search' THEN search_term
+    END
+      ) AS total_searches,
+    COUNT(DISTINCT
+      CASE
+        WHEN event_name = 'search' THEN unique_session_id
+    END
+      ) AS unique_search_sessions,
+    COUNT(DISTINCT
+      CASE
+        WHEN event_name = 'search' THEN search_term
+    END
+      ) AS unique_searchterms,
+    COUNT(CASE
+        WHEN event_name = 'form_submit' AND ui_text = 'Yes' THEN unique_session_id
+    END
+      ) AS useful_yes,
+    COUNT(CASE
+        WHEN event_name = 'form_submit' AND ui_text = 'No' THEN unique_session_id
+    END
+      ) AS useful_no,
+    COUNT(DISTINCT
+      CASE
+        WHEN event_name = 'session_start' THEN unique_session_iD
+    END
+      ) AS session_starts,
+    COUNT(DISTINCT
+      CASE
+        WHEN session_engaged = '1' THEN unique_session_id
+    END
+      ) AS session_engaged
+  FROM
+    CTE1
+  GROUP BY
+    cleaned_page_location,
+    the_date )
 SELECT
-  user_pseudo_id, 
-  ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'search_term') AS search_term,
-  SPLIT(SPLIT(REGEXP_REPLACE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), 'https://www.gov.uk', ''),'?')[SAFE_OFFSET(0)],'#')[SAFE_OFFSET(0)] AS cleaned_page_location,
-  (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ui_text') AS ui_text,
-  CONCAT(user_pseudo_id, (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'ga_session_id')) AS unique_session_id,
-  (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'entrances') AS entrances,
-  event_name,
-  event_timestamp,
-  FORMAT_DATE('%Y-%m-%d', PARSE_DATE('%Y%m%d', event_date)) AS the_date,
-  IFNULL((CAST((SELECT value.int_value FROM UNNEST(event_params) WHERE key = "session_engaged") AS STRING)),(SELECT value.string_value FROM UNNEST(event_params) WHERE key = "session_engaged")) AS session_engaged
-,IF(LEAD(event_name) OVER (PARTITION BY CONCAT(user_pseudo_id, (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'ga_session_id')) ORDER BY event_timestamp) IS NULL, 1, NULL) AS isExit, 
-FROM `ga4-analytics-352613.analytics_330577055.events_*` 
-    WHERE _table_suffix BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(CURRENT_DATE(), INTERVAL 21 DAY)) AND FORMAT_DATE('%Y%m%d', DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY))
-```
-
-## Code for restructuring GA4 data in Dataform
-
-```
-SELECT
-  the_date
-  ,cleaned_page_location
-  ,COUNT(DISTINCT CASE WHEN event_name = 'page_view' THEN unique_session_ID END) AS unique_page_views
-  ,COUNT(CASE WHEN event_name = 'page_view' THEN unique_session_ID END) AS total_page_views
-  ,COUNT(DISTINCT CASE WHEN isexit = 1 THEN unique_session_ID END) AS exits
-  ,COUNT(DISTINCT CASE WHEN entrances = 1 THEN unique_session_ID END) AS entrances
-  ,COUNT(CASE WHEN event_name = 'search' THEN search_term END) AS total_searches
-  ,COUNT(DISTINCT CASE WHEN event_name = 'search' THEN unique_session_id END) AS unique_search_sessions
-  ,COUNT(DISTINCT CASE WHEN event_name = 'search' THEN search_term END) AS unique_searchterms
-  ,COUNT(CASE WHEN event_name = 'form_submit' AND ui_text = 'Yes' THEN unique_session_id END) AS useful_yes
-  ,COUNT(CASE WHEN event_name = 'form_submit' AND ui_text = 'No' THEN unique_session_id END) AS useful_no
-  ,COUNT(DISTINCT CASE WHEN event_name = 'session_start' THEN unique_session_iD END) AS session_starts
-  ,COUNT(DISTINCT CASE WHEN session_engaged = '1' THEN unique_session_id END) AS session_engaged
-
-
-  
+  *
 FROM
-  `govuk-content-data.ga4.ga4_two_years` 
-GROUP BY cleaned_page_location, the_date
+  CTE2
 ```
