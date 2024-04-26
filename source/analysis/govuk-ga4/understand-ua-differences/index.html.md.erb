@@ -1,7 +1,7 @@
 ---
 title: Understand differences between UA and GA4
 weight: 3
-last_reviewed_on: 2024-04-25
+last_reviewed_on: 2024-04-26
 review_in: 6 months
 ---
 
@@ -19,24 +19,101 @@ The structure of GA4 data is quite different to that of UA data.
 In GA4, everything is an ‘event’ - page views are no longer separated out from other events.
 Events also no longer have a category, action, and label, but are instead sent with a whole range of different custom dimensions.
 
-## GOV.UK's events and dimensions
+## GOV.UK's events and custom dimensions
 
 We have taken the opportunity that comes with the new data structure to redesign our tracking to make our data more logical and consistent.
 This does mean that many events and custom dimensions have changed.
 More information on the structure of our new GA4 data can be found [here](/analysis/govuk-ga4/understand-ga4/).
 
-## Metric definitions 
+## Dimension and metric definitions 
 
 On top of the changes that come as a result of our re-design of our analytics tracking, there are a number of changes that have been made by Google.
-A number of metrics have changed - there are some new metrics, some metrics that existed in UA but no longer exist in GA4, and some metrics that exist in both but may be defined in different ways.
+A number of dimensions and metrics have changed - there are some new fields, some fields that existed in UA but no longer exist in GA4, and some fields that exist in both but may be defined in different ways.
 
-For example, one change that has a huge impact is the [altered definition of a session](https://support.google.com/analytics/answer/11986666).
+The below is an incomplete list of changes.
+
+### Page views
+
+There is a ‘views’ metric available in Looker Studio and the GA4 user interface, which covers both page views and app screen views.
+Whilst we are not collecting app data into the main GOV.UK GA4 property, this will be equivalent to page views.
+A page view is now a type of event, so you can also calculate page views by using the event count metric and filtering on the event name to only see a count of 'page_view' events.
+
+In theory, page views in GA4 should be the same as total page views in UA, as the definition of a page view has not changed.
+
+'Unique pageviews' no longer exists as a metric in GA4, but a similar number can be obtained by using the 'Sessions' metric which when combined with a page dimension will tell you the number of sessions in which that page was viewed.
+
+More detail on how to get the number of page views of a given page can be found on the ['How to find things in the GOV.UK GA4 data' page](/analysis/govuk-ga4/find-in-ga4/#page-views-by-page-path).
+
+
+### Sessions
+
+The [definition of a session](https://support.google.com/analytics/answer/11986666) has changed in GA4.
+In brief, a session now only ends when there has been more than a 30-minute period of inactivity.
+Sessions are no longer restarted at midnight or when the user's source/attribution information changes, as they were in UA.
+This will have a particular impact on some parts of GOV.UK, as users often have journeys that start on GOV.UK, then go to a service website, then come back to GOV.UK.
+In Universal Analytics, this journey would have counted as two sessions by the same user, whereas in GA4 (providing the user returns to GOV.UK within 30 minutes) this will count as one session.
+
 This change has a knock-on effect on all sessionised dimensions and metrics, so you should expect differences in the numbers returned for any metrics connected to sessions.
-We would expect the number of sessions recorded in GA4 to be lower than in UA on average, and the definition change will also have a significant impact on landing pages and the number of visits from various sources.
+We would expect the number of sessions recorded in GA4 to be lower than in UA, and the definition change will also have a significant impact on landing pages, entrances, and the number of visits from various sources.
 
-Likewise, bounce rate is calculated in very different ways in GA4 and UA, so we would expect those numbers to differ.
+The way the sessions metric functions when used alongside page dimensions has also changed.
+Looking at 'Sessions' for a specific page in GA4 is similar to 'Unique pageviews' in UA, whereas using the 'Sessions' metric in UA for a specific page would give you a number identical to entrances.
 
-This are only a couple of examples of the changes.
+
+### Users
+
+In many reports in the GA4 user interface, ‘Users’ is actually ‘Active users’.
+Active users are users with at least one ‘engaged session’.
+Engaged sessions are sessions that lasted 10 seconds or longer, or had 1 or more conversion events (at the moment we have [no conversion events set up on GOV.UK](/data-sources/ga/ga4/#data-processing-and-modification)), or 2 or more page or screen views. 
+
+‘Total users’ in GA4 is the equivalent of ‘Users’ in UA.
+
+
+### Acquisition information
+
+As a change in source no longer breaks a session (see the section on [sessions](/analysis/govuk-ga4/understand-ua-differences/#sessions) above), one session can have multiple sources.
+The standard 'source'/'medium' dimensions can therefore not be used with the sessions metric, as these dimensions are event-scoped.
+The 'Session source'/'Session medium' dimensions are session-scoped and should instead be used in conjunction with the sessions metric.
+
+The way in which sessions are attributed to different sources has also changed for returning direct sessions in GA4.
+In UA, if a returning user visited the site directly, Google would default to the last known source.
+In GA4, there are many source fields, and so when a user visits the site directly Google defaults to the last source of the last session (not the last session source (the first source of the last session)).
+
+
+### Bounce and engagement
+
+Bounce rate is calculated in very different ways in GA4 and UA, so we would expect those numbers to differ notably.
+
+The bounce rate is now simply the inversion of the engagement rate, and so is the percentage of sessions that are not engaged sessions.
+The engagement rate is the percentage of sessions that are determined to be engaged sessions.
+Engaged sessions are sessions that either last longer than 10 seconds, contain a conversion event, or have more than one screen or page view.
+
+In UA, a bounce represented a session that triggered only a single request to the Analytics server, such as when a user opened a single page on the site and then exited without triggering any other requests during that session.
+In the case of GOV.UK, a common behaviour on some pages would be to land on the page and then click an external link to go to a service.
+In UA, that would not be a bounce because of the interactive external link click event, whereas in GA4 that would be a bounce as the session would not be classed as 'engaged' (there is only one page view, the user left within 10 seconds, and the external link click has not been designated as a conversion).
+
+The bounce and engagement rates are session-scoped, and so should be used with the landing page dimensions rather than the regular page dimensions.
+GA4 does not stop you from using bounce/engagement rates with 'Page path', 'Page title' and similar page dimensions, but the figures reported will not be accurate. 
+
+The 'Engaged sessions per user' metric is slightly misleading, as the Google documentation defines this metric as the ‘average number of engaged sessions per user’, when in fact it appears to be dividing engaged sessions by the number of active users (rather than dividing by the number of total users).
+
+
+### Previous page path/page referrer
+
+In Universal Analytics you could use the 'Previous page path' dimension to get a sense of the user's journey.
+The 'Previous page path' showed the user's previous page hit.
+
+'Previous page path' does not exist in GA4, but similar data could be obtained from the 'Page referrer' dimension.
+However, this is based on the document referrer, and so tells you the page the user clicked a link on to get to the present page - the page that referred the user to the current page.
+This is subtly different, and may sometimes diverge from the 'Previous page path' (see the table below).
+
+| User journey | GA4 Page referrer (document.referrer) | UA Previous page path | 
+| --- | --- | --- |
+| User lands on Page A |  | (entrance) |  
+| User opens Page B in a new tab via a link on Page A | Page A | Page A | 
+| User opens Page C in a new tab via a link on Page A  | Page A | Page B | 
+| User navigates to Page D via a link on Page C | Page C | Page C | 
+| User navigates back to Page C via back button | Page A | Page D | 
 
 ## Google's data processing 
 
