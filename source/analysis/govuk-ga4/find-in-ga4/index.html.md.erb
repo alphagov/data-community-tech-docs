@@ -158,6 +158,16 @@ ORDER BY
 
 ## Search terms
 
+The 'Search term' (or search_term, if using the BigQuery data) dimension is sent with:
+
+- the ‘search’ event - when the user searches
+- the ‘view_item_list’ event (ecommerce tracking) - the view of the search results page
+- the ‘select_item’ event (ecommerce tracking) - when the user selects a search result
+- the ‘page_view’ event - only populated on page views of search results pages
+
+These different events sent with the search term should enable you to analyse which terms users are searching for, and what users do after searching for various terms.
+The fact the search term is sent with many events does however mean you need to filter to the event you are interested in to make sure you are not accidentally double or triple counting the search terms used.
+
 A basic exploration containing search terms used on GOV.UK can be [found here](https://analytics.google.com/analytics/web/?pli=1#/analysis/p330577055/edit/uG8LwntYTLW25BF3ILgmBw).
 
 ### Search terms used to get to a specific destination page
