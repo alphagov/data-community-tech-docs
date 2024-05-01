@@ -1,7 +1,7 @@
 ---
 title: Find things in the GOV.UK GA4 data
 weight: 4
-last_reviewed_on: 2024-04-04
+last_reviewed_on: 2024-05-01
 review_in: 6 months
 ---
 
@@ -159,6 +159,23 @@ ORDER BY
 ## Search terms
 
 A basic exploration containing search terms used on GOV.UK can be [found here](https://analytics.google.com/analytics/web/?pli=1#/analysis/p330577055/edit/uG8LwntYTLW25BF3ILgmBw).
+
+### Search terms used to get to a specific destination page
+
+#### Method in an exploration
+
+Steps:
+
+1. In a free form exploration, create a table showing the ‘Search term’ dimension by the ‘Event count’ metric.
+2. Filter the data by the ‘Event name’ dimension to equals/contains ‘select_item’. This selects the select_item event when a user clicks on a search result.
+3. Filter the data by the ‘Link URL’ dimension to equal the path of the specific destination page you want search terms to. The ‘Link URL’ is the link the user clicked on from the search results, so by using it here we are selecting the search destination page.
+4. Change the date range and sort the table however you like!
+
+This should give you a table showing the search terms used to get to your given page.
+
+If you are unfamiliar with filtering GA4 data, it may be helpful to include the dimensions in your table to check that your filters have worked correctly (you should only be able to see ‘select_item’ in the ‘Event name’ column and the specific page you want search terms from in the ‘Link URL’ column).
+
+For an example in Looker Studio, see the ‘Searches leading to these pages’ table in [this sample Looker Studio report](https://lookerstudio.google.com/reporting/d8cdf584-8cc8-4b77-bbef-1d51ed6f66ea/page/p_ot3jtudu9c).
 
 ### Search terms from a specific page
 
