@@ -234,7 +234,7 @@ WHERE
   _TABLE_SUFFIX BETWEEN '20240101'
   AND '20240101'
   #Filter to just search events
-  event_name = 'search'
+  AND event_name = 'search'
   #Filter to just the page of interest
   AND cleaned_page_location = '/sign-in-universal-credit'
 GROUP BY
