@@ -1,0 +1,43 @@
+---
+title: Migrating assets from UA to GA4
+weight: 1
+last_reviewed_on: 2024-05-01
+review_in: 6 months
+---
+
+# Migrating things from UA to GA4
+<span style="color:red">This page is a work in progress.</span>
+
+Reports and dashboards using Universal Analytics (UA) data will have to be migrated to use Google Analytics 4 (GA4) data if they are to remain functional.
+
+## Migrating a Looker Studio report
+
+High level steps:
+
+1. Make a copy of the report being migrated, or export a PDF/other copy so that you have a reference. If you want to maintain the report URL you will want to edit the original to use GA4 data, but it is helpful to have a copy or reference so that you know what all the tables contained and what filters were used
+2. In the report you want to migrate to GA4, add the GA4 data source
+3. Switch your tables and visualisations to use the GA4 data source. When you do this your tables will break or start to show information very different to what they originally displayed
+4. Go through each table and chart and switch the dimensions and metrics to the correct GA4 equivalent. In some cases these will be very similar (have the same name etc) to the previous UA dimensions and metrics, but in some cases you will need to find an alternative metric as [not all the same dimensions and metrics exist in UA and GA4](/analysis/govuk-ga4/understand-ua-differences/#dimension-and-metric-definitions). You may also need to familiarise yourself with the [GOV.UK GA4 data structure](/analysis/govuk-ga4/understand-ga4/#understand-the-gov-uk-ga4-data-structure) if you are interested in specific events
+5. Test and check the report. Comparing it to the UA version can be interesting but in many places the numbers will be quite different, so you should not expect the GA4 and UA versions to look the same in all places
+
+
+## UA to GA4 dimension and metric exchange
+
+An incomplete list of some commonly used dimensions and metrics in UA and what their GA4 equivalent might be:
+
+| Field in UA | Field in GA4  | Notes | 
+| --- | --- | --- |
+| Previous page path | Page referrer | These two dimensions are technically [quite different](/analysis/govuk-ga4/understand-ua-differences/#previous-page-path-page-referrer) | 
+| Event Category | - | [Event Category no longer exists](/analysis/govuk-ga4/understand-ua-differences/#google-analytics-data-structure) | 
+| Event Action | - | [Event Action no longer exists](/analysis/govuk-ga4/understand-ua-differences/#google-analytics-data-structure) | 
+| Event Label  | - | [Event Label no longer exists](/analysis/govuk-ga4/understand-ua-differences/#google-analytics-data-structure) | 
+| Pageviews  | Views | The 'Views' metric in GA4 would also cover screen views if we were collecting app data into the property. You can also get the total page views number if you use the 'Event count' metric and filter to the event name 'page_view' |  
+| Unique pageviews | Sessions, when used against a page dimension | There is no 'Unique pageviews' metric in GA4. The closest equivalent if you are trying to get a figure for the number of sessions in which a user viewed a page is 'Sessions' | 
+| Total Events  | Event count | |  
+| Unique Events  | - | |  
+| Sessions | Sessions | The total number of sessions in GA4 will be equivalent (though different) to the total number of sessions in UA | 
+| Users | Total users | | 
+| Time on Page | User engagement | These two metrics are collected/calculated in quite different ways | 
+
+
+

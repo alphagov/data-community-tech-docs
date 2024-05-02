@@ -1,7 +1,7 @@
 ---
 title: Find things in the GOV.UK GA4 data
 weight: 4
-last_reviewed_on: 2024-04-04
+last_reviewed_on: 2024-05-01
 review_in: 6 months
 ---
 
@@ -143,6 +143,7 @@ SELECT
 FROM
   `ga4-analytics-352613.flattened_dataset.flattened_daily_ga_data_*`
 WHERE
+  #Filter to the right date
   _TABLE_SUFFIX BETWEEN '20240101'
   AND '20240101'
   #Filter to just file_download events
@@ -158,7 +159,34 @@ ORDER BY
 
 ## Search terms
 
+The 'Search term' (or search_term, if using the BigQuery data) dimension is sent with:
+
+- the ‘search’ event - when the user searches
+- the ‘view_item_list’ event (ecommerce tracking) - the view of the search results page
+- the ‘select_item’ event (ecommerce tracking) - when the user selects a search result
+- the ‘page_view’ event - only populated on page views of search results pages
+
+These different events sent with the search term should enable you to analyse which terms users are searching for, and what users do after searching for various terms.
+The fact the search term is sent with many events does however mean you need to filter to the event you are interested in to make sure you are not accidentally double or triple counting the search terms used.
+
 A basic exploration containing search terms used on GOV.UK can be [found here](https://analytics.google.com/analytics/web/?pli=1#/analysis/p330577055/edit/uG8LwntYTLW25BF3ILgmBw).
+
+### Search terms used to get to a specific destination page
+
+#### Method in an exploration
+
+Steps:
+
+1. In a free form exploration, create a table showing the ‘Search term’ dimension by the ‘Event count’ metric.
+2. Filter the data by the ‘Event name’ dimension to equals/contains ‘select_item’. This selects the select_item event when a user clicks on a search result.
+3. Filter the data by the ‘Link URL’ dimension to equal the path of the specific destination page you want search terms to. The ‘Link URL’ is the link the user clicked on from the search results, so by using it here we are selecting the search destination page.
+4. Change the date range and sort the table however you like!
+
+This should give you a table showing the search terms used to get to your given page.
+
+If you are unfamiliar with filtering GA4 data, it may be helpful to include the dimensions in your table to check that your filters have worked correctly (you should only be able to see ‘select_item’ in the ‘Event name’ column and the specific page you want search terms from in the ‘Link URL’ column).
+
+For an example in Looker Studio, see the ‘Searches leading to these pages’ table in [this sample Looker Studio report](https://lookerstudio.google.com/reporting/d8cdf584-8cc8-4b77-bbef-1d51ed6f66ea/page/p_ot3jtudu9c).
 
 ### Search terms from a specific page
 
@@ -190,6 +218,30 @@ This should give you a table showing the search terms used from your given page 
 
 If you are unfamiliar with filtering GA4 data, it may be helpful to include the ‘Event name’ and ‘Page referrer’ dimensions in your table to check that your filters have worked correctly.
 You should only be able to see ‘view_item_list’ in the ‘Event name’ column and the specific page you want search terms from in the ‘Page referrer’ column.
+
+#### Method in BigQuery
+
+The following SQL gets a count of search terms used in searches on the ['Sign in to your Universal Credit account' page](https://www.gov.uk/sign-in-universal-credit) on 1st January 2024:
+
+```SQL
+SELECT
+  search_term,
+  COUNT(*) AS searches,
+FROM
+  `ga4-analytics-352613.flattened_dataset.flattened_daily_ga_data_*`
+WHERE
+  #Filter to the right date
+  _TABLE_SUFFIX BETWEEN '20240101'
+  AND '20240101'
+  #Filter to just search events
+  AND event_name = 'search'
+  #Filter to just the page of interest
+  AND cleaned_page_location = '/sign-in-universal-credit'
+GROUP BY
+  search_term
+ORDER BY
+  searches DESC
+```
 
 
 ## Engagement

@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA access
 weight: 1
-last_reviewed_on: 2024-04-05
+last_reviewed_on: 2024-05-01
 review_in: 6 months
 ---
 
@@ -12,9 +12,9 @@ This page details current policies and processes in place regarding access to we
 ## What we provide access to
 Users are able to request access to:
 
-- Analyst access to the GOV.UK GA4 Production property
+- Analyst access to the [GOV.UK GA4 Production property](/data-sources/ga/ga4/#gov-uk-ga4)
 - Read access to GOV.UK GA4 data in BigQuery, [flattened](/data-sources/ga/ga4-flat/) and [raw](/data-sources/ga/ga4-bq/)
-- Read access to GOV.UK Search Console data in BigQuery
+- Read access to [GOV.UK Search Console data in BigQuery](/data-sources/gsc/)
 
 Notice that we only provide read access to BigQuery.
 Departments are expected to pay for their queries via their own Google Cloud Project.
@@ -33,26 +33,8 @@ There are no limits to the number of users that an organisation can request, but
 
 
 ## Access request process
-The user access request process is as follows:
 
-<pre class="mermaid">
-graph TD 
-A[DEPT: 
-SPOC raises request via SignOn] --> B
-B[Zendesk:
- Ticket generated and sent to Analyst queue] 
-B --> C[User added via the user admin tool] 
-C --> D[User added to Basecamp]
-D --> E[Close ticket]
-A2[GDS: 
-User raises request via SignOn] --> B
-A3[Organisation without access to SignOn: 
-SPOC raises request via GOV.UK Analytics team] --> C
-</pre>
-
-
-User administration is done within GDS using the Analytics team's [user admin tool](/tools/ga4-user-admin-tool/).
-
+User administration is done within GDS by performance analysts using the [user admin tool](/tools/ga4-user-admin-tool/).
 
 ### GDS staff
 
@@ -62,13 +44,32 @@ Requests should be raised under "GDS IT Requests" -> "People & Accounts" -> "Goo
 
 ### Other government employees
 
-SPOCs should raise a request through the [Analytics Support Form](https://signon.publishing.service.gov.uk/users/sign_in).
+[Analytics SPOCs](/processes/spocs/) should raise a request through the [Analytics access, reports and help form](https://support.publishing.service.gov.uk/analytics_request/new).
 
-If a department does not have a SPOC in place, one can be [nominated](/processes/spocs/#how-to-become-a-spoc).
+If a department does not have an Analytics SPOC in place, one can be [nominated](/processes/spocs/#how-to-become-a-spoc).
 
 ### Public servants from organisations without access to SignOn
 
-SPOCs should contact the Analytics team with details of user administration requets. 
+SPOCs should contact the [Analytics team](/teams/analytics/) with details of user administration requets. 
+
+### Access request process diagram
+
+The user access request process is as follows:
+
+<pre class="mermaid">
+graph TD 
+A[DEPT: 
+Analytics SPOC raises request via Analytics support form behind Signon] --> B
+B[Zendesk:
+ Ticket generated and sent to Analyst queue] 
+B --> C[User added via the user admin tool] 
+C --> D[User added to Basecamp]
+D --> E[Close ticket]
+A2[GDS: 
+User raises request via Signon] --> B
+A3[Organisation without access to Signon: 
+SPOC raises request via GOV.UK Analytics team] --> C
+</pre>
 
 
 ## Monitoring and reporting
