@@ -143,6 +143,7 @@ SELECT
 FROM
   `ga4-analytics-352613.flattened_dataset.flattened_daily_ga_data_*`
 WHERE
+  #Filter to the right date
   _TABLE_SUFFIX BETWEEN '20240101'
   AND '20240101'
   #Filter to just file_download events
@@ -217,6 +218,30 @@ This should give you a table showing the search terms used from your given page 
 
 If you are unfamiliar with filtering GA4 data, it may be helpful to include the ‘Event name’ and ‘Page referrer’ dimensions in your table to check that your filters have worked correctly.
 You should only be able to see ‘view_item_list’ in the ‘Event name’ column and the specific page you want search terms from in the ‘Page referrer’ column.
+
+#### Method in BigQuery
+
+The following SQL gets a count of search terms used in searches on the ['Sign in to your Universal Credit account' page](https://www.gov.uk/sign-in-universal-credit) on 1st January 2024:
+
+```SQL
+SELECT
+  search_term,
+  COUNT(*) AS searches,
+FROM
+  `ga4-analytics-352613.flattened_dataset.flattened_daily_ga_data_*`
+WHERE
+  #Filter to the right date
+  _TABLE_SUFFIX BETWEEN '20240101'
+  AND '20240101'
+  #Filter to just search events
+  event_name = 'search'
+  #Filter to just the page of interest
+  AND cleaned_page_location = '/sign-in-universal-credit'
+GROUP BY
+  search_term
+ORDER BY
+  searches DESC
+```
 
 
 ## Engagement
