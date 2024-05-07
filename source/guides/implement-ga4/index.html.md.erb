@@ -1,7 +1,7 @@
 ---
 title: Implementing GA4: step by step 
 weight: 1
-last_reviewed_on: 2024-04-24
+last_reviewed_on: 2024-05-07
 review_in: 6 months
 ---
 
@@ -88,10 +88,14 @@ The Analytics and GA4 teams can provide you with copies of the GOV.UK container 
 
 If you do not already have a GA4 property set up, you will need to set one up.
 
-There are a range of settings to be edited upon set-up.
+There are a range of settings to be input at property set-up.
 Information on the settings used for the GOV.UK GA4 property can be found on the [GOV.UK GA4 data source](/data-sources/ga/ga4/#ga4-settings) page.
+Most of these settings will not cause too much of an issue if they are incorrect and they can be changed later.
+The most important to get right for your site is probably the timezone (likely 'United Kingdom Time'), as that being incorrect could cause the data to be misinterpreted (when trying to understand what times users are on your site, etc) later on.
 
-As tracking is configured, you may also need to do some light configuration in GA4 itself to ensure the correct custom dimensions are picked up and available in GA4.
+As tracking is configured, you may also need to do some light configuration in GA4 itself to ensure the correct dimensions are picked up and available in GA4.
+If you are using custom dimensions, you will need to [add these in the 'Custom definitions' tab in the Admin area](https://support.google.com/analytics/answer/14239696?sjid=1289703506763673092-EU).
+
 
 ### Test: data being collected
 
