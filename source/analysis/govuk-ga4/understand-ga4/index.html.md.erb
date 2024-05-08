@@ -115,18 +115,21 @@ These events are:
 
 ## GOV.UK GA4 naming conventions 
 
-There are a number of common naming conventions followed in the GOV.UK GA4 data. 
+There are a number of common naming conventions used in the GOV.UK GA4 data. 
+These rules are followed to make the data cleaner and easier to understand, and to reduce potential issues stemming from [high cardinality dimensions](https://support.google.com/analytics/answer/13331684). 
+Some of these are broader GA4 conventions, and some are GOV.UK-specific. 
 
-Some of these are broader GA4 conventions, and some are GOV.UK-specific.
 
-| Field | Rule | Notes |
-| --- | --- | --- | 
-| event_name | Event name is lowercase, with underscores separating words | Following wider [GA4 event naming rules](https://support.google.com/analytics/answer/13316687) | 
-| type | Type is lowercase, with spaces separating words | GOV.UK specific, to tidy the data and reduce cardinality | 
-| action | Action is lowercase, with spaces separating words | GOV.UK specific, to tidy the data and reduce cardinality | 
-| method | Method is lowercase, with spaces separating words | GOV.UK specific, to tidy the data and reduce cardinality | 
-| search term | Search term is lowercase, with spaces separating words and special characters and extra spaces removed | GOV.UK specific, to tidy the data and reduce cardinality | 
-| percent_scrolled | Percentage as a whole number, without a percent symbol | Matching standard [GA4 'enhanced measurement' data collection](https://support.google.com/analytics/answer/9143382?sjid=12324858776558292368-EU#general) | 
+This table details some of these conventions:
+
+| GA4 field name | Parameter name | Rule | Notes |
+| --- | --- | --- | --- | 
+| Event name | event_name | Event name is lowercase, with underscores separating words | Following wider [GA4 event naming rules](https://support.google.com/analytics/answer/13316687) | 
+| Type | type | Type is lowercase, with spaces separating words | GOV.UK specific, to tidy the data and reduce cardinality | 
+| Action | action | Action is lowercase, with spaces separating words | GOV.UK specific, to tidy the data and reduce cardinality | 
+| Method | method | Method is lowercase, with spaces separating words | GOV.UK specific, to tidy the data and reduce cardinality | 
+| Search term | search_term | Search term is lowercase, with spaces separating words and special characters and extra spaces removed | GOV.UK specific, to tidy the data and reduce cardinality | 
+| Per cent scrolled | percent_scrolled | Percentage as a whole number, without a percent symbol | Matching standard [GA4 'enhanced measurement' data collection](https://support.google.com/analytics/answer/9143382?sjid=12324858776558292368-EU#general) | 
 
 
 GA4 imposes a number of [limits on data collection](https://support.google.com/analytics/answer/9267744), such as on the lengths of field names and values, which also impact the data collected. 
