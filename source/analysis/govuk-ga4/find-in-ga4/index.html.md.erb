@@ -121,7 +121,22 @@ ORDER BY
 
 File downloads will have the event name ‘file_download’. 
 
+### File downloads of a given file
+
+You can count downloads of a file, regardless of which page the file was downloaded on, by using the file_download event and Link URL.
+
+#### Method in an exploration
+
+Steps:
+
+1. In a free form exploration, create a table showing the ‘Link URL’ dimension by the ‘Event count’ metric. Alternatively, you could add in the ‘Page path and screen class’ dimension to show you which pages your file is downloaded from, or the 'Link text' dimension to show you which text is clicked to download your file 
+2. Filter the data by the ‘Event name’ dimension to equals/contains ‘file_download’. This selects the file_download event which fires when the user clicks on a link to download a file
+3. Filter the data by the ‘Link URL’ dimension to equal the URL of the specific file you want to find downloads of
+4. Sort the table however you like
+
 ### File downloads on a given page
+
+You can find all file downloads from a given page by using the file_download event and filtering to the desired page path.
 
 #### Method in an exploration
 
@@ -129,7 +144,7 @@ Steps:
 
 1. In a free form exploration, create a table showing the ‘Link text’ or ‘Link URL’ dimension by the ‘Event count’ metric
 2. Filter the data by the ‘Event name’ dimension to equals/contains ‘file_download’. This selects the file_download event which fires when the user clicks on a link to download a file
-3. Filter the data by the ‘Page path and screen class’ dimension to equal the path of the specific page you want link clicks from. The ‘page path’ is the part of the URL after the hostname (not including any query strings) of a page, so by using it here we are selecting the page the user clicked the link on
+3. Filter the data by the ‘Page path and screen class’ dimension to equal the path of the specific page you want downloads from. The ‘page path’ is the part of the URL after the hostname (not including any query strings) of a page, so by using it here we are selecting the page the user clicked the download link on
 4. Sort the table however you like
 
 #### Method in BigQuery
