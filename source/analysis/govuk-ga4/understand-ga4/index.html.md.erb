@@ -1,7 +1,7 @@
 ---
 title: Understand the GOV.UK GA4 data structure
 weight: 2
-last_reviewed_on: 2024-05-01
+last_reviewed_on: 2024-05-08
 review_in: 6 months
 ---
 
@@ -111,3 +111,22 @@ These events are:
 
 - `view_item_list` events: fire on views of search results pages
 - `select_item` events: fire when a user clicks on a search result
+
+
+## GOV.UK GA4 naming conventions 
+
+There are a number of common naming conventions followed in the GOV.UK GA4 data. 
+
+Some of these are broader GA4 conventions, and some are GOV.UK-specific.
+
+| Field | Rule | Notes |
+| --- | --- | --- | 
+| event_name | Event name is lowercase, with underscores separating words | Following wider [GA4 event naming rules](https://support.google.com/analytics/answer/13316687) | 
+| type | Type is lowercase, with spaces separating words | GOV.UK specific, to tidy the data and reduce cardinality | 
+| action | Action is lowercase, with spaces separating words | GOV.UK specific, to tidy the data and reduce cardinality | 
+| method | Method is lowercase, with spaces separating words | GOV.UK specific, to tidy the data and reduce cardinality | 
+| search term | Search term is lowercase, with spaces separating words and special characters and extra spaces removed | GOV.UK specific, to tidy the data and reduce cardinality | 
+| percent_scrolled | Percentage as a whole number, without a percent symbol | Matching standard [GA4 'enhanced measurement' data collection](https://support.google.com/analytics/answer/9143382?sjid=12324858776558292368-EU#general) | 
+
+
+GA4 imposes a number of [limits on data collection](https://support.google.com/analytics/answer/9267744), such as on the lengths of field names and values, which also impact the data collected. 
