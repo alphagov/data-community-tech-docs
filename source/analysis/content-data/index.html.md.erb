@@ -1,0 +1,33 @@
+---
+title: Use the Content Data app
+weight: 32
+last_reviewed_on: 2024-05-16
+review_in: 6 months
+---
+
+# Use the Content Data app
+<span style="color:red">This page is a work in progress.</span>
+
+The [Content Data app](https://docs.publishing.service.gov.uk/apps/content-store.html) helps users find key metrics about the performance of pages on www.gov.uk.
+
+More information on the data source itself can be found on the [Content Data app data source page](/data-sources/content-data-app/#content-data-app).
+
+## Get access to the Content Data app
+
+To access the Content Data app, you should contact your Content SPOC, who can request your access to Signon.
+
+## Content Data data definitions
+
+One of the key data sources supplying the Content Data app changed in late 2023.
+In December 2023, the Content Data app was migrated from Universal Analytics (UA) to use [Google Analytics 4 (GA4) data](/data-sources/ga/ga4/).
+This does mean the exact definition of some metrics has changed.
+The table below reveals potential differences when looking at Content Data over this period.
+
+| Field name | Definition pre-December 2023 (UA) | Definition since December 2023 (GA4) | Notes |
+| --- | --- | --- | --- |
+| Unique page views |  |  | The figures returned will differ between UA and GA4 due to the [change in the definition of a session](/analysis/govuk-ga4/understand-ua-differences/#sessions) |
+| Page views | The total number of page views the selected page received in the given period | The total number of page views the selected page received in the given period | Should be very similar across UA and GA4 |
+| Page views per visit |  |  | The figures returned will differ between UA and GA4 due to the [change in the definition of a session](/analysis/govuk-ga4/understand-ua-differences/#sessions) |
+| Searches from page |  |  | |
+| Number of feedback comments |  |  | |
+| Users who found page useful |  |  | |
