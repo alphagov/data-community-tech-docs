@@ -1,7 +1,7 @@
 ---
 title: Understand the GOV.UK GA4 data structure
 weight: 2
-last_reviewed_on: 2024-05-08
+last_reviewed_on: 2024-05-16
 review_in: 6 months
 ---
 
@@ -105,12 +105,20 @@ Some of the most notable are:
 
 ### Ecommerce events 
 
-Ecommerce tracking has been used on GOV.UK to better track usage of site search.
+Ecommerce tracking has been used on GOV.UK finders to better track usage of site search. 
+It has also been applied to a couple of smart answer results pages to determine which results users are seeing and which they are then selecting.
 
 These events are:
 
 - `view_item_list` events: fire on views of search results pages
 - `select_item` events: fire when a user clicks on a search result
+
+
+Each ecommerce event can have up to 200 items sent with it.
+When searches return more than 200 items, the items sent with each event will be truncated.
+
+In some cases, we have had to limit the number of items sent with each event further, as the number of bytes being sent with each event was too high and was triggering error 413 (Payload Too Large). 
+The maximum amount of bytes we can send to GA4 per event appears to be 16KB, so we have implemented a limit to cut off the ecommerce items array at 15KB, to ensure our events are small enough to send (the additional KB may be needed for other information sent with the event).
 
 
 ## GOV.UK GA4 naming conventions 
