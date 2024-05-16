@@ -1,7 +1,7 @@
 ---
 title: What can I learn from the GOV.UK GA4 data?
 weight: 1
-last_reviewed_on: 2024-03-25
+last_reviewed_on: 2024-05-16
 review_in: 6 months
 ---
 
@@ -16,20 +16,24 @@ GA4 data is the primary source of information on how users interacted with pages
 
 Things you can learn from the GA4 data include:
 
-- page views: how many times the page in question was viewed
+- [page views](/analysis/govuk-ga4/find-in-ga4/#page-views): how many times the page in question was viewed
 - sessions: how many sessions included a view of the page. Some pages may be viewed multiple times in the same session, so a count of sessions can sometimes be useful to de-dupe the count of page views. You can also report on the number of times a page was viewed per session
 - users: the number of active users who viewed the page. Although this sounds like an attractive metric to report, this figure does not correspond to the actual number of people viewing a page and is likely to give an inflated idea of the level of use
 - entrances: how often a session started on the page
-- navigation events: whether users clicked on links from the page in question
-- search events: whether users searched from the page in question
+- [navigation events](/analysis/govuk-ga4/find-in-ga4/#navigation-link-clicks): whether users clicked on links from the page in question
+- [search events](/analysis/govuk-ga4/find-in-ga4/#search-terms): whether users searched from the page in question
 - feedback events: whether users answered the feedback form on the page 
+
+There are a long list of custom events sent on GOV.UK which you can examine.
+If you are interested in whether an event is sent with any given user interaction, you can explore the data, or you may find it useful to download a debugging extension such as [Omnibug](https://chromewebstore.google.com/detail/omnibug/bknpehncffejahipecakbfkomebjmokl?hl=en), interact with elements on GOV.UK, and see what GA4 events are triggered.
+
 
 ## Information about users of pages on GOV.UK
 
 GA4 data also contains some information on the users of GOV.UK.
 
 Things you can learn from the GA4 data include:
-- device category: whether users were viewing GOV.UK pages from their phone, desktop, tablet, etc
+- [device category](/analysis/govuk-ga4/find-in-ga4/#device-category): whether users were viewing GOV.UK pages from their phone, desktop, tablet, etc
 - session source/medium: how users got to GOV.UK
 - page referrer: what page or external source led the user to this page
 - language: the user's browser language setting
