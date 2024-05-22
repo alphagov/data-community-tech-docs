@@ -1,7 +1,7 @@
 ---
 title: BigQuery best practice
 weight: 3
-last_reviewed_on: 2024-04-23
+last_reviewed_on: 2024-05-22
 review_in: 6 months
 ---
 
@@ -12,16 +12,24 @@ GA4 data is available in BigQuery in the [raw](/data-sources/ga/ga4-bq/) or the 
 
 The raw and flattened GA4 data in BigQuery is stored as a table of events - each row, or record, represents an event.
 A count of all records on a day will give you the total number of events that were recorded on that day.
-A count of all records on a day filtered to only show records with the event name ‘page_view’ will give you the total number of page views recorded on that day.
-Metrics such as users and sessions are not already available, but need to be calculated.
+A count of all records on a day filtered to only show records with the event name 'page_view' will give you the total number of page views recorded on that day.
+Metrics such as users and sessions need to be calculated.
+Some example SQL to find common GA4 metrics can be found on the ['Find things in GA4' page](/analysis/govuk-ga4/find-in-ga4/#find-things-in-the-gov-uk-ga4-data).
+
+## Querying GA4 data in BigQuery
+
+If you are unfamiliar with BigQuery, it may help to review Google’s [documentation explaining the BigQuery user interface](https://cloud.google.com/bigquery/docs/bigquery-web-ui#open-ui).
+
+To query GA4 data in BigQuery you will have to have permissions to view the data and to run queries in whichever project you are running the query in.
+If your query fails to run, check whether you are running the query from the right project, and check the error message to see if there was a role or permission error.
+
+You can save queries in BigQuery to return to later.
 
 There are quotas in place on querying in BigQuery to ensure that costs do not get too high.
-More information on these can be found in the [quotas guidance](/gcp/BQ/#quotas).
-Details of the specific quotas set on various projects can be found under each project on the [GCP page](/gcp/).
+More information on these can be found in the [quotas guidance](/tools/google-cloud-platform/bigquery/#quotas).
+Details of the specific quotas set on various projects can be found under each project on the [GCP projects page](/tools/google-cloud-platform/gcp-projects/).
 
-The GA4 data stored in BigQuery can also be used in Looker Studio. More information on this can be found on the [Looker Studio best practice page](/analysis/govuk-ga4/use-ga4/looker-studio/#use-the-bigquery-ga4-data-in-looker-studio).
-
-## Best practice 
+### Best practice 
 
 Avoid selecting all (`SELECT *`) - there are very few circumstances where you actually need every column from the data source!
 If you would like to see what is in the dataset, you can PREVIEW a table in the BigQuery interface.
@@ -33,3 +41,10 @@ Using a wildcard in the place of the date at the end of the table queries all th
 Either specify a date in the tables you are selecting data from or make sure to use a WHERE statement where you define the date (or dates) you want.
 
 Note that using a LIMIT statement does not reduce the amount of data queried, just the amount of rows returned to you. `SELECT * FROM [table] LIMIT 20` and `SELECT * FROM [table]` cost the exact same amount. 
+
+## Using GA4 data stored in BigQuery in other tools
+
+The GA4 data stored in BigQuery can also be queried into visualisation tools or other products built to use this data.
+
+Looker Studio connects very easily to data stored in BigQuery, and so is often used to display BigQuery data within GDS.
+More guidance on this can be found on the [Looker Studio best practice page](/analysis/govuk-ga4/use-ga4/looker-studio/#use-the-bigquery-ga4-data-in-looker-studio).

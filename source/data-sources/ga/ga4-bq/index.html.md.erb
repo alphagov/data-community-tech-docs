@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 (BigQuery export)
 weight: 2
-last_reviewed_on: 2024-04-23
+last_reviewed_on: 2024-05-22
 review_in: 6 months
 ---
 
@@ -19,13 +19,18 @@ More information can be found in our [GA access policy](/processes/ga-access/#wh
 
 ### Location
 There are 3 GA4 datasets. These correspond to the integration, staging, and production or live GOV.UK websites.
-All of these datasets are made up of sharded tables. This means that a new table is created each day with the suffix YYYYMMDD.
-
 The GA4 data for the live GOV.UK site is located in BigQuery in the `ga4-analytics-352613.analytics_330577055` dataset.
 The GA4 data for the staging site is located in BigQuery in the `ga4-analytics-352613.analytics_330580593` dataset.
 The GA4 data for the integration site is located in BigQuery in the `ga4-analytics-352613.analytics_294475112` dataset.
 
-These datasets are all within the [GA4 analytics project](/gcp/#ga4-analytics).
+These datasets are all comprised of sharded tables - a new table is created each day with the suffix YYYYMMDD.
+
+Our Google Analytics properties to export GOV.UK data several times a day.
+The data for the current day is temporarily stored in intraday tables.
+At the end of the day, BigQuery automatically moves the data in the intraday tables to a date table (suffixed `YYYYMMDD`) and deletes the intraday tables in question.
+New intraday tables are created and added to throughout the next day.
+
+The GA4 datasets are all stored within the [GA4 analytics project](/gcp/#ga4-analytics).
 For more information on the Google Cloud Platform projects, see our [GCP Project Documentation](/gcp/).
 
 ## Schema
