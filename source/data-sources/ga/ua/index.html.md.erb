@@ -1,7 +1,7 @@
 ---
 title: GOV.UK Universal Analytics (BigQuery export)
 weight: 4
-last_reviewed_on: 2024-01-19
+last_reviewed_on: 2024-05-23
 review_in: 6 months
 ---
 
@@ -16,7 +16,7 @@ Universal Analytics (UA) sends GOV.UK visitor journey data to the `govuk-bigquer
 - `ga_sessions_intraday_YYYYMMDD` is the table name
 - `YYYYMMDD` is the current date in year-month-day format
 
-At the end of the day, UA automatically:
+At the end of the day, Google automatically:
 
 - moves the data in this intraday table to a `ga_sessions_YYYYMMDD` table
 - deletes this intraday table

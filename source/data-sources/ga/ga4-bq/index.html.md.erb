@@ -1,14 +1,14 @@
 ---
 title: GOV.UK GA4 (BigQuery export)
 weight: 2
-last_reviewed_on: 2024-05-22
+last_reviewed_on: 2024-05-23
 review_in: 6 months
 ---
 
 # GOV.UK GA4 (BigQuery export) 
 We export our [GOV.UK Google Analytics data](/data-sources/ga/ga4/) and store it in Google BigQuery to enable more detailed analysis and the use of this data in other tools.
 
-A [flattened dataset](/data-sources/ga/ga4-flat/) is created from the data on the live site which contains most, but not all, of the same fields.
+A [flattened dataset](/data-sources/ga/ga4-flat/) is created from the live site data. This contains most, but not all, of the same fields as the raw data.
 The flattened dataset is easier and more efficient to query, so should be used for most analysis and reporting.
 
 ## Access
@@ -23,9 +23,9 @@ The GA4 data for the live GOV.UK site is located in BigQuery in the `ga4-analyti
 The GA4 data for the staging site is located in BigQuery in the `ga4-analytics-352613.analytics_330580593` dataset.
 The GA4 data for the integration site is located in BigQuery in the `ga4-analytics-352613.analytics_294475112` dataset.
 
-These datasets are all comprised of sharded tables - a new table is created each day with the suffix YYYYMMDD.
+These datasets are all comprised of date sharded tables - a new table is created each day with the suffix YYYYMMDD.
 
-Our Google Analytics properties to export GOV.UK data several times a day.
+Our Google Analytics properties export GOV.UK data several times a day.
 The data for the current day is temporarily stored in intraday tables.
 At the end of the day, BigQuery automatically moves the data in the intraday tables to a date table (suffixed `YYYYMMDD`) and deletes the intraday tables in question.
 New intraday tables are created and added to throughout the next day.
