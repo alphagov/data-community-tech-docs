@@ -124,6 +124,14 @@ Sampling and [high cardinality dimensions](https://support.google.com/analytics/
 
 GA4 brings with it a new Google Analytics interface, featuring new tools such as [explorations](https://analytics.google.com/analytics/web/?pli=1#/analysis/p330577055).
 
+### Default regex behavior
+
+One difference that you should bear in mind when using reports or explorations in GA4, or using GA4 data in Looker Studio, is that the default regex behaviour has changed with GA4.
+
+As detailed in Google's documentation, in UA the default behaviour was 'partial match', so an expression used would be true if the pattern provided was contained anywhere in the data.
+
+In GA4, the default behaviour is 'full match', so the data must exactly match the pattern provided.
+
 
 ## Which is better or correct - UA or GA4?
 
