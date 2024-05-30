@@ -1,7 +1,7 @@
 ---
 title: Find things in the GOV.UK GA4 data
 weight: 4
-last_reviewed_on: 2024-05-21
+last_reviewed_on: 2024-05-29
 review_in: 6 months
 ---
 
@@ -67,6 +67,24 @@ ORDER BY
   pageviews DESC
 ```
 
+
+### Page views filtered to a certain publishing organisation
+
+In GA4, there are two custom dimensions you can use to identify different organisations:
+
+1. Publishing organisations IDs, which uses the organisation codes. However, each document can be tagged to multiple organisations. These tags are added by publishers
+2. Primary publishing organisation. This is the long form official name of the organisation. Only one organisation can be added per document. The long text is used in this dimension to make reports more easily understandable to those who does not recognise the codes
+
+#### Method - using the views metric in an exploration
+
+Steps:
+
+1. Create a blank [exploration](https://analytics.google.com/analytics/web/#/analysis/p330577055), and add in the ‘Page path and screen class’ and 'Primary publishing organsation' dimensions, along with the 'Views' metric, using the '+' buttons in the 'Variables' tab
+2. Add the ‘Page path and screen class’ dimension and the ‘Views’ metric to the table. You can do this by either dragging and dropping/selecting the 'Page path' dimension in the 'Rows' area in the 'Settings' tab, and doing the same to the 'Views' metric for the 'Values' area, or by just double-clicking on the dimension and metrics you want to use (they should automatically be assigned to be a row and a value in the table settings when you do this)
+2. Filter the data using the ‘Primary publishing organisation’ dimension to select the organisation you are interested in.  For example, if you were only interested in Home Office pages on GOV.UK, you could filter down to 'Primary publishing organisation' exactly matches ‘Home Office’
+3. Change the date range and sort the table however you like
+
+Remember to check the [data quality icons](https://support.google.com/analytics/answer/12856703?hl=en) when using reports or explorations in GA, and to keep an eye open for the impact of our high cardinality data in Looker Studio.
 
 ## Navigation (link clicks)
 
@@ -306,3 +324,10 @@ Steps:
 
 You can sort the data in your exploration by clicking on the value column headings you wish to sort the data by.
 
+## Using regex
+
+Regular expressions are very useful as they can help you create filters with more flexible definitions. 
+For example, if you wanted to find all pages with a document type of either 'taxon' or 'topic', you could do this using the pipe character (|), which specifes an OR condition - so 'taxon|topic' means 'taxon OR topic' and will select pages with either document type.
+
+[Google's documentation](https://support.google.com/analytics/answer/1034324) lists the metacharacters that can be used in regular expressions within Google Analytics. 
+Note that the default regex behaviour in GA4 is 'full match', so the data must exactly match the pattern you provide.
