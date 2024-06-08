@@ -1,7 +1,7 @@
 ---
-title: Use BigQuery
+title: BigQuery
 weight: 3
-last_reviewed_on: 2024-05-22
+last_reviewed_on: 2024-06-08
 review_in: 6 months
 ---
 
@@ -35,38 +35,36 @@ These table names end with the suffix `YYYYMMDD`, representing the date in year-
 [Partitioned tables](https://cloud.google.com/bigquery/docs/partitioned-tables) are in use in other datasets. 
 
 ## Quotas
-Several projects have quotas set up to limit the amount of data that can be queried. 
-The aim of this is twofold. Firstly, this limits our exposure to unlimited costs from queries.
-Secondly, this provides a safety net for those working with the data, as you can only wrack up so much in query costs.
+Several projects have quotas in place to limit the amount of data that can be queried. 
+This limits our exposure to high costs from large queries and provides a safety net for those working with the data, as you can only wrack up so much in query costs.
 
-The aim is not to be a hindrance to the need to use the data we store so please contact the #data-engineering Slack channel to discuss your needs if the quotas are getting in the way of work.
+The aim of these quotas is not to inhibit use of the data we store.
+Please post in the #data-engineering Slack channel or contact the [Analytics team](/teams/analytics/) to discuss your needs if quotas appear to be getting in the way of your work.
 
-Specific quotas can be found detailed under the project name on the [GCP page](https://docs.data-community.publishing.service.gov.uk/gcp/).
+Details of specific quotas can be found under the project name on the [GCP page](/gcp/).
 
 
 ### How did I query more data than permitted by my quota?
-This is a very good question that we are still investigating.
+Sometimes, users can trigger queries which surpass quotas in place.
 
-Our current thinking is that the dynamic concurrent query queue could be loaded with queries before the quota is breached.
-We think that the quota check occurs before a query is moved to Active.
-
-[Google documentation on query queues](https://cloud.google.com/bigquery/docs/query-queues)
-
+We believe that this happens when a number of queries (which individually do not pass the quota, but do together) are added to the queue and run concurrently by BigQuery.
+BigQuery uses [dynamic concurrency](https://cloud.google.com/bigquery/docs/query-queues#:~:text=BigQuery%20automatically%20determines%20the%20number,until%20processing%20resources%20become%20available), so a number of queries can be run simultaneously.
+We think that the quota check occurs before a query is moved to 'Active'.
 
 
-### Why is Looker Studio so data hungry?
-Another good question that is under investigation.
+### How did I hit a quota so quickly when using Looker Studio?
+[Looker Studio](/tools/looker-studio/#looker-studio), alongside other reporting or visualisation tools, seems to be very 'data hungry'.
 
-Currently Looker Studio does not cache results from BQ, meaning the query has to be run every time. 
-Caching results is due for general availability release by the end of 2023 (see the [Google documentation](https://cloud.google.com/bigquery/docs/visualize-looker-studio.md#looker-studio-integration)).
+One issue occurs when setting up new data connections.
+When Looker Studio connects to a sharded set of tables for the first time, it runs a series of queries that references all shards.
+The queries are for a small number fields each (4 or 5), and these queries are run multiple times until all fields have been retrieved - essentially running `SELECT * FROM * LIMIT 100`.
 
-In addition to not caching results it seems that when creating a new data connection, Looker Studio connects to a sharded set of tables for the first time it runs a series of queries that reference all shards.
-The queries are for a small number fields each (4 or 5) and then query all shards and then include a `LIMIT 100` and this is done multiple times untli all fields are done.
-This is essentially a `SELECT * FROM * LIMIT 100`.
+This does not appear to be the case when using an existing data connection.
+When using an existing data connection, Looker Studio respects the table_suffix and default date range within the report.
 
-This does not appear to be the case when using an existing data connection. In these cases, Looker Studio respects the table_suffix and default date range within the report.
+For this reason, we recommend that where possible shared pre-existing data connections are used in Looker Studio.
 
-Where possible, use shared pre-existing data connections in Looker Studio.
+Some best practice for using Looker Studio with BigQuery data can be found on the [Looker Studio best practice page](/analysis/govuk-ga4/use-ga4/looker-studio/#use-the-bigquery-ga4-data-in-looker-studio-best-practice) (written for those using GA4 data, but the advice is likely to hold true for other large datasets).
 
 ## Roles
 
@@ -74,7 +72,7 @@ A role is a set of permissions. Users should only have the specific role or perm
 
 Contact the Data Engineering community on Slack to ask for a role, permission or service account.
 
-Common permissions we use include:
+Common permissions we use for BigQuery access include:
 
 - BigQuery Data Viewer 
 - BigQuery Job User

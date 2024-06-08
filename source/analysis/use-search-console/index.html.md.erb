@@ -1,0 +1,81 @@
+---
+title: Use the GOV.UK Search Console data
+weight: 33
+last_reviewed_on: 2024-06-08
+review_in: 6 months
+---
+
+# Use the GOV.UK Search Console data
+<span style="color:red">This page is a work in progress.</span>
+
+Google Search Console provides data on searches that result in a page from www.gov.uk being displayed as part of the Google search results.
+This data can help you understand what terms users use to find content on GOV.UK, and how well certain pages perform on the search results page.
+
+This page provides some guidance on how to use the GOV.UK Search Console data, stored in [BigQuery](/tools/google-cloud-platform/bigquery/).
+
+More information on the data source itself can be found on the [data source page](/data-sources/gsc/).
+
+## Use the GOV.UK Search Console data in BigQuery
+
+You can choose to access and query the Search Console data directly in BigQuery.
+
+To do this, you will need access to view and query the data. 
+All users who are granted [permissions to access GOV.UK GA4 data](/processes/ga-access/) are also granted permissions to access the Search Console data. 
+GDS users will be able to run queries in a range of projects in BigQuery, such as the [GA4 analytics project](/tools/google-cloud-platform/gcp-projects/#ga4-analytics) where the data is stored.
+Users from other organisations will need to query the data from a Google Cloud Platform project with billing owned by their organisation.
+
+If you are new to BigQuery, you may find it helpful to review Google’s [documentation explaining the BigQuery user interface](https://cloud.google.com/bigquery/docs/bigquery-web-ui#open-ui).
+
+### Example query
+
+For example, if you wanted to get a list of GOV.UK URLs with the search terms used to surface them, and the number of impressions and clicks these terms led to, you could query something like the following:
+
+```SQL
+SELECT
+  url,
+  query,
+  impressions,
+  clicks,
+FROM
+  `ga4-analytics-352613.searchconsole_wwwgovuk.searchdata_url_impression`
+WHERE
+  data_date = "2024-01-01"
+ORDER BY
+  clicks DESC,
+  impressions DESC
+```
+
+
+## Use the GOV.UK Search Console data in Looker Studio
+
+The Search Console data stored in BigQuery can be used in Looker Studio (and other reporting tools).
+To do this, you will need the ID of a Google Cloud Platform project with billing enabled that is owned by your organisation.
+
+### Connecting to the BigQuery data
+
+If you are a member of GDS staff, please use the [shared data connections](https://trello.com/c/N8C3H9KT/55-looker-studio-data-sources).
+
+If you are a member of another organsiation, we recommend you use a custom query to connect to BigQuery.
+You can do this in Looker Studio by:
+
+1. Clicking to [add a data source](https://support.google.com/looker-studio/answer/6300774?hl=en)
+2. In the ‘Connect to data’ panel, selecting ‘BigQuery’
+3. In the left-hand menu, selecting ‘Custom query’
+4. Entering your billing project ID
+5. Entering a query to select the fields needed using a WHERE statement to define the date range required (see example below)
+6. Tick the checkbox to 'enable date range parameters'
+7. Selecting ‘Add’ 
+
+An example of a SQL query that could be used in step 5 above is: 
+
+```SQL
+SELECT
+  *
+FROM
+  `ga4-analytics-352613.searchconsole_wwwgovuk.searchdata_site_impression`
+WHERE data_date BETWEEN PARSE_DATE("%Y%m%d", @DS_START_DATE) AND PARSE_DATE("%Y%m%d", @DS_END_DATE)
+```
+
+### Using the data
+
+Once the connection is set up, you should be able to see all the fields available, similar to how you would see and use any other dataset.
