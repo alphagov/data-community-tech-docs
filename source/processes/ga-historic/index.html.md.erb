@@ -1,26 +1,28 @@
 ---
-title: Historic GA data
+title: Historic GA (UA) data
 weight: 7
-last_reviewed_on: 2024-02-13
+last_reviewed_on: 2024-06-28
 review_in: 6 months
-hide_in_navigation: true
 ---
 
 # Historic GA data
-<span style="color:red">**This page is a draft policy**</span>.
 
 Historic Google Analytics data is stored for a number of agreed GDS Universal Analytics properties.
+An inexhaustive list of these properties can be found on the [historic UA data sources page](/data-sources/ga/historic-ua/#content).
 This includes the [Universal Analytics data for www.gov.uk](/data-sources/ga/ua/).
 
+## What we provide access to
+Users are able to request access to:
+
+- Read access to the historic UA data in BigQuery, including any flattened/processed tables where available
+
+Departments are expected to pay for their queries via their own Google Cloud Project.
+
+For GDS staff, we have built a [Looker Studio report](https://lookerstudio.google.com/reporting/833939e2-2cfb-4ed3-a202-90498bf9daff/page/p_fg5xyapmid) which contains similar tables to some of the most frequently used reports in the UA interface.
+We are investigating ways to share reports with other public servants.
+
 ## Access
-Access to this historic data is currently heavily limited. 
-The access processes and policies for both GDS and cross-government users will be determined in the next few months.
+To be granted access to this data, please contact the [GA4 support inbox](mailto:govuk-ga4-support@digital.cabinet-office.gov.uk), specifying which dataset you are interested in.
 
 Notice that we only provide read (data viewer) access to BigQuery.
-Departments are expected to pay for their own queries via their own Google Cloud Project.
-
-### Location
-The various historic Google Analytics datasets are primarily located in BigQuery in the `gds-ga-archive` project.
-Two datasets are currently stored in other projects and will be moved to the `gds-ga-archive` project in due course.
-
-Information on the quotas applicable to this project can be found in the information on [GCP](/gcp/#gds-ga-archive).
+Departments are expected to pay for their queries via their own Google Cloud Project.
