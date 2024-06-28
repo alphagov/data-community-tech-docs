@@ -1,0 +1,34 @@
+---
+title: Historic analytics (Universal Analytics) data
+weight: 4
+last_reviewed_on: 2024-06-28
+review_in: 6 months
+---
+
+# Historic analytics (UA) data
+The previous version of Google Analytics, Universal Analytics, was sunset at the end of June 2024.
+Before this sunset, we exported several of our GOV.UK Universal Analytics properties' data and stored it in Google BigQuery.
+This data can be used for more long-term analysis.
+
+Guidance on how to use this can be found in the [analysis section](/analysis/ga-ua-data/).
+
+## Content
+
+There are several historic UA datasets. These include:
+
+- [UA data for www.gov.uk](/data-sources/ga/ua/)
+- UA data for the GOV.UK blog platform
+- UA data for goverment publishing apps and sites
+- UA data for other GDS-owned product sites
+
+## Access
+To be granted access to this data, please contact the [GA4 support inbox](mailto:govuk-ga4-support@digital.cabinet-office.gov.uk).
+
+### Location
+Most of the various historic Google Analytics datasets are stored in BigQuery in the `gds-ga-archive` project.
+Any datasets currently stored in other projects and will be moved to the `gds-ga-archive` project in due course.
+
+Information on the quotas applicable to this project can be found in the information on [GCP](/gcp/#gds-ga-archive).
+
+## Schema
+The [UA BigQuery Export schema](https://support.google.com/analytics/answer/3437719?hl=en) defines the schema of these tables. 

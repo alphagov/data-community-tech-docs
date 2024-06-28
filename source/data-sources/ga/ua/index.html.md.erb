@@ -1,33 +1,28 @@
 ---
 title: GOV.UK Universal Analytics (BigQuery export)
-weight: 4
-last_reviewed_on: 2024-05-23
+weight: 5
+last_reviewed_on: 2024-06-28
 review_in: 6 months
 ---
 
 # GOV.UK Universal Analytics (BigQuery export)
-We export our GOV.UK Universal Analytics data and store it in Google BigQuery.
-This enables more detailed analysis and the use of GOV.UK UA data by other tools.
+From 2014 to 2024, we used Universal Analytics (UA) to collect analytics data on GOV.UK.
 
-Universal Analytics (UA) sends GOV.UK visitor journey data to the `govuk-bigquery-analytics.87773428.ga_sessions_intraday_YYYYMMDD` table 3 times a day, where:
+We are currently storing this historic GOV.UK Universal Analytics data in Google BigQuery.
+This enables detailed, long-term analysis and the use of GOV.UK UA data by other tools.
 
-- `govuk-bigquery-analytics` is the project ID
-- `87773428` is the dataset name
-- `ga_sessions_intraday_YYYYMMDD` is the table name
-- `YYYYMMDD` is the current date in year-month-day format
+## Content
 
-At the end of the day, Google automatically:
-
-- moves the data in this intraday table to a `ga_sessions_YYYYMMDD` table
-- deletes this intraday table
-- creates a new intraday table for the next day
-
+This dataset contains data collected between 2014 and June 2024.
 
 ## Access
 Everyone with a @digital.cabinet-office.gov.uk account (all GDS staff) has access to the data.
 
+Other public servants can request access to this data - see our [historic data policy](/processes/ga-historic/).
+
 ### Location
-This data is stored in BigQuery in the `govuk-bigquery-analytics.87773428` dataset. 
+This data is stored in BigQuery in the `govuk-bigquery-analytics.87773428` dataset.
+This dataset is made up of sharded tables, where each table is named `YYYYMMDD` after the date that data was collected on in year-month-day format.
 Like all of our data, this is located in the europe-west2 GCP region.
 
 For more information on our Google Cloud Platform projects, see our [GCP project documentation](/gcp/#universal-analytics).
