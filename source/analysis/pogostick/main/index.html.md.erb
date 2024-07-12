@@ -1,9 +1,9 @@
 ---
 title: Using the main pogo-sticking dashboard
 weight: 39.41
-last_reviewed_on: 2022-02-23
+last_reviewed_on: 2024-07-11
 review_in: 6 months
-hide_in_navigation: true
+hide_in_navigation: false
 ---
 
 # Using the main pogo-sticking dashboard
@@ -17,13 +17,9 @@ There are 2 types of pogo-sticking:
 - internal, which is navigating quickly back and forth from a GOV.UK page to other GOV.UK pages
 - external, which is navigating quickly back and forth from an external search result page, such as Google, to GOV.UK pages
 
-The [main pogo-sticking dashboard](https://datastudio.google.com/u/0/reporting/28806d62-5478-4fe2-95d6-be80facf03c0/page/iOQ7B) shows the internal and external pogo-sticking rate for GOV.UK pages.
+The [main pogo-sticking dashboard](https://lookerstudio.google.com/reporting/c3a7a188-548e-46f6-9864-bcc220c4c105/page/iOQ7B) shows the internal and external pogo-sticking rate for GOV.UK pages. This dashboard does not track when users pogo-stick between different smart answer results.
 
 You can view the pogo-sticking dashboard if you have a Google account which uses the @digital.cabinet-office.gov.uk email domain.
-
-This dashboard does not track when users pogo-stick between different smart answer results. You can track this behaviour using the [pogo-sticking between ‘smart answer clicked’ pages dashboard](https://datastudio.google.com/u/0/reporting/398d305d-faf0-452e-88b5-210932e4775c/page/YR8MC).
-
-See the [pogo-sticking SQL query documentation](https://github.com/alphagov/user-journey-metrics/blob/main/README-pogo-sticking-app.md#queries-that-are-run) for more information on how we calculate the internal and external pogo-sticking rates.
 
 ## Selecting the date range and page path
 
@@ -35,19 +31,15 @@ To get pogo-sticking metrics, you must specify 2 variables.
 
 1. Select a date or date range in the top right hand corner.
 
-1. Enter a page path in the __Page equals__ field. The input text must match the page path exactly.
+2. Enter a page path in the __Page equals__ field. The input text must match the page path exactly, and URLs must start with the domain, e.g. `www.gov.uk/find-a-job`.    
     
-    If you want the pogo-sticking metrics for before 01-Nov-2022, URLs must not include the domain, e.g. `/find-a-job`.
-    
-    If you want the pogo-sticking metrics for after 01-Nov-2022, URLs must start with the domain, e.g. `www.gov.uk/find-a-job`.    
-    
-1. Within the internal and external sections, these sections are split between the original page of interest, and a page to compare that original page to.
+Within the internal and external sections, these sections are split between the original page of interest, and a page to compare that original page to.
 
   You can also enter a page path in the __Page equals__ field under __Comparisons with another page__.
 
 You can now view the pogo-sticking metrics.
 
-If you have any issues with the dashboard, [email the Data Products team](mailto:data-products@digital.cabinet-office.gov.uk).
+If you have any issues with the dashboard, [email the Analytics team](mailto:analytics-team@digital.cabinet-office.gov.uk).
 
 ## Metrics
 
