@@ -1,0 +1,57 @@
+---
+title: Use the GOV.UK blogs GA4 data
+weight: 32
+last_reviewed_on: 2024-07-17
+review_in: 6 months
+---
+
+# Use the GOV.UK blogs GA4 data
+<span style="color:red">This page is a work in progress.</span>
+
+Google Analytics 4 (GA4) is used to collect data on the usage of the [GOV.UK blogs](https://www.blog.gov.uk/).
+
+More information about the different GOV.UK GA4 data sources can be found on the [GOV.UK GA4 data source pages](/data-sources/ga/blogs-ga4/).
+
+## Get access to GOV.UK blogs GA4 data
+
+Blog editors should be able to grant users access to the blogs GA4 property. 
+
+If you have any issues, please contact the [GOV.UK GA4 support inbox](mailto:govuk-ga4-support@digital.cabinet-office.gov.uk).
+
+## How to use the GOV.UK blogs GA4 data
+
+The blogs GA4 data can be viewed in the GA4 interface, or it can be used in various reporting or data visualisation tools (such as Looker Studio).
+
+## Find things in the GOV.UK blogs GA4 data
+
+In Universal Analytics, we used 'views' to separate out the data associated with each blog site. 
+'Views' do not exist in GA4, so all of the data from all blogs is stored together.
+This will mean you will need to filter to the blog or blogs you are interested in to see only stats relevant to your blogs.
+
+### Page views by blog (hostname)
+
+There is a report in the GA4 interface which shows views by page path.
+In explorations and in Looker Studio, you can get numbers of page views either using a count of page_view events or using the ‘views’ metric.
+
+A count of page_view events in GA4 should provide you with a similar number to the total pageviews figure in Universal Analytics (UA).
+
+‘Unique pageviews’ no longer exists as a metric in GA4, but the ‘sessions’ metric is conceptually similar, telling you how many sessions contained a visit to this page.
+However, the definition of a session has changed in GA4, so the figures produced here will deviate significantly from those in UA.
+
+### Page views by hostname
+
+We recommend using ‘page path’ over the ‘page location’ as the 'page' dimension as ‘page location’ is compatible with fewer other dimensions.
+
+The ‘page path’ is the part of the URL after the hostname (not including any query strings) of a page.
+
+Steps in an exploration:
+
+1. Create a blank [exploration](https://analytics.google.com/analytics/web/#/analysis/p436727455), and add in the ‘Page path and screen class’ and 'Hostname' dimensions, along with the 'Views' metric, using the '+' buttons in the 'Variables' tab
+2. Add the ‘Page path and screen class’ dimension and the ‘Views’ metric to the table. You can do this by either dragging and dropping/selecting the 'Page path' dimension in the 'Rows' area in the 'Settings' tab, and doing the same to the 'Views' metric for the 'Values' area, or by just double-clicking on the dimension and metrics you want to use (they should automatically be assigned to be a row and a value in the table settings when you do this)
+2. Filter the data using the 'Hostname' dimension to select the blog(s) you are interested in.  For example, if you were only interested in views of GDS blog pages, you could filter down to 'Hostname' contains 'gds.blog.gov.uk'. Note that if you filtered to just 'Hostname' contains 'gds' you would get page views both of gds.blog.gov.uk pages and gdsengagement.blog.gov.uk pages
+3. Change the date range and sort the table however you like
+
+An example exploration showing GDS blog page views can be [accessed here](https://analytics.google.com/analytics/web/#/analysis/p436727455/edit/NM1gscgjRkygWLN-Es2gww).
+
+Remember to check the [data quality icons](https://support.google.com/analytics/answer/12856703?hl=en) when using reports or explorations in GA, and to keep an eye open for the impact of our high cardinality data in Looker Studio.
+
