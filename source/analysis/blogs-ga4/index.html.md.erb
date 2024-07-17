@@ -10,7 +10,7 @@ review_in: 6 months
 
 Google Analytics 4 (GA4) is used to collect data on the usage of the [GOV.UK blogs](https://www.blog.gov.uk/).
 
-More information about the different GOV.UK GA4 data sources can be found on the [GOV.UK GA4 data source pages](/data-sources/ga/blogs-ga4/).
+More information about the GOV.UK blogs GA4 data source can be found on the [GOV.UK blogs GA4 data source page](/data-sources/ga/blogs-ga4/).
 
 ## Get access to GOV.UK blogs GA4 data
 
@@ -22,13 +22,18 @@ If you have any issues, please contact the [GOV.UK GA4 support inbox](mailto:gov
 
 The blogs GA4 data can be viewed in the GA4 interface, or it can be used in various reporting or data visualisation tools (such as Looker Studio).
 
+Much of the same advice for using the GOV.UK GA4 data is relevant to using the GOV.UK blogs GA4 data, so you may wish to review the guidance on:
+
+- [Google Analytics 4 user interface best practice](/analysis/govuk-ga4/use-ga4/ga4-interface/#google-analytics-4-user-interface-best-practice)
+- [Looker Studio best practice](/analysis/govuk-ga4/use-ga4/looker-studio/#looker-studio-best-practice)
+
 ## Find things in the GOV.UK blogs GA4 data
 
 In Universal Analytics, we used 'views' to separate out the data associated with each blog site. 
-'Views' do not exist in GA4, so all of the data from all blogs is stored together.
-This will mean you will need to filter to the blog or blogs you are interested in to see only stats relevant to your blogs.
+'Views' do not exist in GA4, so all of the blogs data is stored together.
+This means you will need to filter to the blog or blogs you are interested in to see only the data about your blogs.
 
-### Page views by blog (hostname)
+### Page views
 
 There is a report in the GA4 interface which shows views by page path.
 In explorations and in Looker Studio, you can get numbers of page views either using a count of page_view events or using the ‘views’ metric.
@@ -38,7 +43,7 @@ A count of page_view events in GA4 should provide you with a similar number to t
 ‘Unique pageviews’ no longer exists as a metric in GA4, but the ‘sessions’ metric is conceptually similar, telling you how many sessions contained a visit to this page.
 However, the definition of a session has changed in GA4, so the figures produced here will deviate significantly from those in UA.
 
-### Page views by hostname
+#### Page views by blog (hostname)
 
 We recommend using ‘page path’ over the ‘page location’ as the 'page' dimension as ‘page location’ is compatible with fewer other dimensions.
 
