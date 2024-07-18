@@ -1,16 +1,17 @@
 ---
-title: Use the forward page path tool
+title: Use the forward and reverse page path tools
 weight: 39.1
-last_reviewed_on: 2022-02-23
+last_reviewed_on: 2024-07-18
 review_in: 6 months
-hide_in_navigation: true
 ---
 
-# Using the forward page path tool
+# Use the forward and reverse page path tools
 
-The forward page path tool shows the pages a user visits after visiting a page of interest on GOV.UK.
+The forward and reverse page path tools show the pages a user visits before (reverse) or after (forward) visiting a page of interest on GOV.UK.
 
-This tool has 4 outputs:
+These tools were developed within Data Services for use by analysts within GDS, and can be found in the 'Path tools' folder in the 'Performance and Data Analysts Community' shared Google Drive.
+
+The tools have 4 outputs:
 
 - a CSV file with the count and proportion of user sessions visiting distinct, subsetted journeys
 - a CSV file with the count of user sessions visiting page paths at each step, regardless of the other pages in the subsetted journey
@@ -21,51 +22,25 @@ A subsetted journey is a part of a user's journey rather than the entire journey
 
 A distinct journey is a unique journey that is not the same as any other journey that user has taken.
 
-To use the forward page path tool, you must do the following.
+To use the forward or reverse page path tools, you must do the following.
 
-1. Download the forward page path tool notebook.
-1. Open the tool notebook in Google Colab.
-1. Run the notebook.
-1. View the outputs.
-
-## Download the forward page path tool
-
-Download the notebook from GitHub.
-
-1. Go to the [`govuk-user-journey-analysis-tools` GitHub repo](https://github.com/alphagov/govuk-user-journey-analysis-tools).
-1. Select __Code__ and then select __Download Zip__.
-1. Unzip the __govuk-user-journey-analysis-tools__ folder and go to the __notebooks__ folder.
-1. Save the __forward-path-tool__ Jupyter notebook to your Google Drive account.
-
-## Opening the tool notebook in Google Colab
-
-1. Go to [Google Colab](https://colab.research.google.com/). You will see a window to open a notebook.
-1. Select the __Google Drive__ tab and open the __forward-path-tool__ notebook.
-
-To open a Jupyter notebook in Google Colab from Google Drive for the first time, you must associate Jupyter notebooks with Google Colab.
-
-1. Right-click anywhere in Google Drive and select __More__.
-1. Select __Connect more apps__ and then __Google Colaboratory__.
-1. Accept any required permissions.
-
-Once you have associated Jupyter notebooks with Google Colab, you can open a Jupyter notebook in Google Colab from Google Drive.
+1. Copy the page path tool notebook
+2. Open your copy of the page path tool notebook in Google Colab
+3. Run the notebook
+4. View the outputs
 
 ## Running the tool notebook
 
 To run the notebook, you must do the following.
 
 1. Authenticate your access.
-1. Set the query parameters.
+2. Set the query parameters.
 
 ### Authenticating your access
 
-1. Hover your cursor over the cell that starts with the code `from datetime import datetime` to show the run icon. Select the run icon to start the authentication process.
-1. Select the authentication link in the text box and then select your Google account.
-1. Follow the on screen prompts, selecting __Allow__ when prompted, and copy the __Sign in code__ when this code appears.
-1. Go back to the text box in the notebook and paste the sign in code into the __Enter verification code__ field.
-1. Select __Enter__ to complete authentication.
-
-If you receive a warning message saying "The notebook was not authored by Google", select __Run Anyway__.
+1. Run the cells in order. When running cell 2 - `auth.authenticate_user()` - you will see a pop-up asking you to authenticate
+2. Follow the on screen prompts, selecting your account and __Allow__ when prompted
+3. The cell will show as successfully run - with a small green tick - when you have successfully authenticated
 
 ### Setting the query parameters
 
@@ -79,10 +54,9 @@ You set the query parameters in the __Set query parameters__ cell.
   - use the first or last hit to the desired page in the session for the subsetted journey
   - device categories to include
 
-1. You can set the following optional query parameters on whether to:
+2. You can set the following optional query parameters on whether to:
   - remove query strings from the page path of interest
   - append event-associated page paths with an __[E]__
-  - append event-associated page paths with the event category, event action, and/or event label suffixes
   - flag journeys that include the entrance page
   - flag journeys that include the exit page
   - remove refreshes of the page of interest
@@ -99,7 +73,7 @@ There are 4 outputs from running the notebook:
 - a raw CSV data file
 - a CSV data file summarising the most popular pages at each step
 - a Plotly visualisation of a Sankey diagram
-- a Google Sheets table of the top 10 forward page path tool results
+- a Google Sheets table of the top 10 page path tool results
 
 After you select __Runtime__ and then __Run after__, the notebook should automatically scroll to the cell that starts with __Initialise a Google BigQuery client, and define the query parameters__.
 
@@ -119,13 +93,13 @@ The query then downloads those files into the __Downloads_ folder on your local 
 
 If the query does not generate these CSV files, check the end of the URL search bar. If you see a download icon with a red cross, select the icon and change the option to __Always allow...__, and then select __Done__.
 
-Finally, running the query also creates the Sankey diagram, which is a visualisation of the forward page path from the page of interest.
+Finally, running the query also creates the Sankey diagram, which is a visualisation of the forward/reverse page path from the page of interest.
 
 To download the Sankey diagram, select the camera icon in the top right of the diagram, labelled __Download plot as a png__. This will download a PNG file to your __Downloads__ folder.
 
-### The top 10 forward page path tool results
+### The top 10 path tool results
 
-The __Presenting results in Google sheets__ cells create a Google Sheet of the top 10 forward page path journeys.
+The __Presenting results in Google sheets__ cells create a Google Sheet of the top 10 forward/reverse page path journeys.
 
 Select and run the cell that starts __Compile a message, and flag to the user for a response; if not "yes", terminate execution__.
 
@@ -135,17 +109,13 @@ If you are happy to create the Google Sheet, enter "yes" into the user input box
 
 The query will create the Google Sheet and provide a link to this spreadsheet under the __Create google sheet in Product and Technology Directorate/Data Services/Data Products/16 User Journey tools/Path tools: google sheet result tables__ cell.
 
-This Google Sheet follows the [forward page path template](https://docs.google.com/spreadsheets/d/1kISyKu2jVzINCxwPe8ydQM8cibgEX2a3WCPxkJM9W80/edit#gid=1115034830).
+## Original SQL query 
 
-You have now viewed all the outputs from the forward page path tool.
-
-Check the __Original SQL query__ cell for the original SQL for the forward page path tool.
+Check the __Original SQL query__ cell at the bottom of the notebooks for the original SQL for the forward and reverse page path tools.
 
 ## Assumptions and caveats
 
 This log contains a list of assumptions and caveats used in the forward page path tool analysis.
-
-### Definitions
 
 Assumptions are red-amber-green (RAG) rated according to the following definitions for quality and impact.
 
@@ -220,8 +190,8 @@ The user must have a good understanding of what the `ENTRANCE_FLAG` represents, 
 
 ### If `EXIT_PAGE` is `FALSE`, each journey contains both instances where the exit page is included, and is not included
 
-Quality: Green
-Impact: Red
+* Quality: Green
+* Impact: Red
 
 If `EXIT_PAGE` is `TRUE`, these 2 instances, when the exit page is included compared to when the exit page is not included, will be considered 2 separate journeys.
 
