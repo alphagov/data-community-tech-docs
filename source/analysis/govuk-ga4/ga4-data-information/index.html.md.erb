@@ -1,7 +1,7 @@
 ---
 title: What can I learn from the GOV.UK GA4 data?
 weight: 2
-last_reviewed_on: 2024-05-30
+last_reviewed_on: 2024-07-24
 review_in: 6 months
 ---
 
@@ -15,7 +15,7 @@ The [GOV.UK Google Analytics 4 (GA4) data](/data-sources/ga/ga4/) contains a var
 GA4 data is only collected on GOV.UK when users consent to cookies that measure website use. 
 
 Data collection also relies on the [analytics JavaScript code](https://github.com/alphagov/govuk_publishing_components/blob/main/docs/analytics-ga4/analytics.md), and will only occur on browsers we are supporting.
-Browsers such as Internet Explorer 11 are not supported (see the [RFC on removing support for legacy browsers](https://github.com/alphagov/govuk-rfcs/blob/rfc-168/rfc-171-remove-legacy-browser-js-support.md#loss-of-analytics-for-legacy-browsers)).
+Browsers such as Internet Explorer 11 are not supported (see the [RFC on removing support for legacy browsers](https://github.com/alphagov/govuk-rfcs/blob/main/rfc-171-remove-legacy-browser-js-support.md)).
 
 
 ## Information about how users interacted with pages on GOV.UK
@@ -31,6 +31,7 @@ Things you can learn from the GA4 data include:
 - [navigation events](/analysis/govuk-ga4/find-in-ga4/#navigation-link-clicks): whether users clicked on links from the page in question
 - [search events](/analysis/govuk-ga4/find-in-ga4/#search-terms): whether users searched from the page in question
 - feedback events: whether users answered the feedback form on the page 
+- [user engagement](/analysis/govuk-ga4/find-in-ga4/#engaged-sessions): how long users were engaged with various pages, and which landing pages led to engaged sessions
 
 There are a long list of custom events sent on GOV.UK which you can examine.
 If you are interested in whether an event is sent with any given user interaction, you can explore the data, or you may find it useful to download a debugging extension such as [Omnibug](https://chromewebstore.google.com/detail/omnibug/bknpehncffejahipecakbfkomebjmokl?hl=en), interact with elements on GOV.UK, and see what GA4 events are triggered.
@@ -41,6 +42,7 @@ If you are interested in whether an event is sent with any given user interactio
 GA4 data also contains some information on the users of GOV.UK.
 
 Things you can learn from the GA4 data include:
+
 - [device category](/analysis/govuk-ga4/find-in-ga4/#device-category): whether users were viewing GOV.UK pages from their phone, desktop, tablet, etc
 - session source/medium: how users got to GOV.UK
 - page referrer: what page or external source led the user to this page

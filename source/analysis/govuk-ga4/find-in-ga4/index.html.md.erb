@@ -1,7 +1,7 @@
 ---
 title: Find things in the GOV.UK GA4 data
 weight: 5
-last_reviewed_on: 2024-05-30
+last_reviewed_on: 2024-07-24
 review_in: 6 months
 ---
 
@@ -282,13 +282,116 @@ ORDER BY
 
 There are a variety of metrics available to help you look into user engagement with content on GOV.UK.
 
+### User engagement time
+
+The 'User engagement' and 'Average engagement time' metrics help you to understand how long a user has spent with your web page in focus.
+
+This engaged time is calculated using the user_engagement events which fire any time the user changes page or ‘focuses away from the page’.
+Google compares the times that user_engagement events are sent with page load times to calculate the amount of time a user has been 'engaged' with a given page.
+[Google’s documentation on user engagement](https://support.google.com/analytics/answer/11109416?hl=en&ref_topic=11151952&sjid=3385997860959047604-EU) contains further information.
+
+### Engaged sessions 
+
+Engaged sessions are all sessions that either last longer than 10 seconds, have more than one screen or page view, or contain a conversion event (ordinary events do not count and as of July 2024 [we do not yet have any conversion events set up](/data-sources/ga/ga4/#data-processing-and-modification)).
+
+The 'Engaged sessions' should only be used with the 'Landing page + query string' page dimension (if you wish to use a page dimension - other dimensions such as device and source should work fine) as this is a 'session-scoped' metric tied to the session’s landing page.
+If you use this metric with another page dimension, such as page path, the GA4 interface will show you a figure but it will not be correct.
+
+#### Method in BigQuery
+
+Engagement metrics can be quite complicated to calculate from the raw data in BigQuery.
+
+Whether or not a session is engaged is particularly complicated, because there is both a string value and an integer value provided for the 'session_engaged' flag.
+We believe that the string value is what Google collect in the raw analytics data as users are on the site (key ‘seg’ in the payload you can see in the Network tab).
+The integer value is then calculated and attached to the session_start event to be used for the engaged session and engagement rate metric calculations.
+
+A session is engaged when the 'session_engaged' integer flag is '1' (true) on that session’s landing page (the page where the session_start event fired). 
+
+The following SQL gets a count of sessions and engaged sessions by country for the 1st July 2024. This uses the flattened dataset:
+
+```SQL
+SELECT
+  country,
+  COUNT(DISTINCT unique_session_id) AS sessions,
+  COUNT(DISTINCT
+    CASE
+      WHEN session_engaged = '1' THEN unique_session_id
+  END
+    ) AS engaged_sessions
+FROM
+  `ga4-analytics-352613.flattened_dataset.flattened_daily_ga_data_*`
+WHERE
+  _TABLE_SUFFIX BETWEEN '20240701'
+  AND '20240701'
+GROUP BY
+  country
+ORDER BY
+  engaged_sessions DESC
+```
+
+The following SQL gets the same count of sessions and engaged sessions by country for the 1st July 2024, but using the raw dataset:
+
+```SQL
+WITH DATA AS (
+  SELECT
+    geo.country AS country,
+    CONCAT(user_pseudo_id, (
+      SELECT
+        value.int_value
+      FROM
+        UNNEST(event_params)
+      WHERE
+        KEY = 'ga_session_id')) AS unique_session_id,
+    (
+    SELECT
+      value.string_value
+    FROM
+      UNNEST(event_params)
+    WHERE
+      KEY = 'session_engaged') AS session_engaged
+  FROM
+    `ga4-analytics-352613.analytics_330577055.events_*`
+  WHERE
+    _TABLE_SUFFIX BETWEEN '20240701'
+    AND '20240701' )
+SELECT
+  country,
+  COUNT(DISTINCT unique_session_id) AS sessions,
+  COUNT(DISTINCT
+    CASE
+      WHEN session_engaged = '1' THEN unique_session_id
+  END
+    ) AS engaged_sessions
+FROM
+  DATA
+GROUP BY
+  country
+ORDER BY
+  engaged_sessions DESC
+```
+
+### Engagement rate
+
+Engagement rate is a new metric in GA4, and represents the [number of sessions which are engaged](/analysis/govuk-ga4/find-in-ga4/#engaged-sessions).
+
+It is important to note that the engagement rate can only be used when reporting on landing pages (using the ‘Landing page + query string’ dimension).
+Do not use the engagement rate metric with more general page dimensions (such as ‘Page path and screen class’, ‘Page path + query string’, ‘Page location’ and so on).
+Although GA does not prevent you from adding engagement rate to such reports, the figures reported will not be accurate.
+
+#### Method in an exploration
+
+Steps:
+
+1. In an [exploration](https://analytics.google.com/analytics/web/#/analysis/p330577055), create a table showing the ‘Landing page + query string’ dimension by the 'Engagement rate' metric
+2. If you are interested in the session engagement rates from specific pages, filter the data by the ‘Landing page + query string’ dimension to equal/contain the path of the specific pages you want. The ‘Landing page + query string dimension’ only uses the path and query string - the part of the URL after the hostname
+3. Change the date range and sort the table however you like
+
 ### Bounce rate
 
 The definition of a bounce has changed from Universal Analytics to GA4.
-The bounce rate is now the percentage of sessions that are not engaged sessions (the bounce rate is the inverse of the engagement rate).
-Engaged sessions are all sessions that either last longer than 10 seconds, have more than one screen or page view, or contain a conversion event (ordinary events do not count and as of March 2024 [we do not yet have any conversion events set up](/data-sources/ga/ga4/#data-processing-and-modification)). 
+The bounce rate is now the percentage of sessions that are not [engaged sessions](/analysis/govuk-ga4/find-in-ga4/#engaged-sessions) (the bounce rate is the inverse of the engagement rate).
 
-It is important to note that the bounce rate can only be used when reporting on landing pages (using the ‘Landing page + query string’ dimension).
+As with engaged sessions and the engagement rate, is important to note that the bounce rate can only be used when reporting on landing pages (using the ‘Landing page + query string’ dimension).
 Do not use the bounce rate metric with more general page dimensions (such as ‘Page path and screen class’, ‘Page path + query string’, ‘Page location’ and so on).
 Although GA does not prevent you from adding bounce rate to such reports, the figures reported will not be accurate!
 
