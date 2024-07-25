@@ -68,3 +68,32 @@ This table uses the default [GA4 BigQuery Export schema](https://support.google.
 ## Retention
 
 The integration and staging GA4 datasets have a default table expiry in BigQuery of 30 days.
+
+## Processing
+
+The raw data recieved from Google is sharded into daily tables. We process these into a partitioned table that is partitioned on event_date and clustered on event_name, we then flatten this into a partitioned flattened table.
+
+This processing occurs within DataForm
+
+<pre class="mermaid">
+graph TD 
+A[Raw sharded data from Google] --> B
+B[Partitioned raw event data] 
+B --> C[Partitioned flattened data] 
+
+</pre>
+
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+        mainBkg: '#ffffff',
+        primaryColor: '#f3f2f1',
+        primaryTextColor: '#0b0c0c',
+        secondaryTextColor: '#505a5f'
+    } 
+    });
+</script>
