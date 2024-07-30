@@ -1,0 +1,31 @@
+---
+title: GA4 Data Processing
+weight: 10
+last_reviewed_on: 2024-07-30
+review_in: 6 months
+---
+
+# GA4 Data Processing
+
+The raw data we get from Google Analytics is processed to make it more useful for our needs. Specifically we transform the data from sharded tables to a partitioned table and also flatten the data from it's initial nested structure.
+
+The processing takes place in the Google Cloud Project `https://console.cloud.google.com/welcome?project=gds-bq-reporting` using Dataform.
+
+A link to the specific Dataform repository is here: https://console.cloud.google.com/bigquery/dataform/locations/europe-west2/repositories/ga4_production_partitioning/details/workspaces?project=gds-bq-reporting
+
+
+## Sharded to Partitioned tables
+
+This process takes a date sharded table (ending YYYYMMDD) and copies it as a new partition into `ga4-analytics-352613.analytics_330577055.partitioned_events`.
+The partitioning is done on `event_date` which means that this field is transformed from a string into a timestamp. The table is also clustered on `event_name`
+
+
+## Flattened table creation
+
+The flattened GA4 data is created from the partitioned table and it is also partitioned on `event_date` and clustered on `event_name` and is saved as `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
+
+
+## Re-running the pipeline
+
+If the raw data arrives after 8am UTC then data will be missing until the pipeline has been manually run.
+To perfrom a manual execution click on the start execution button here https://console.cloud.google.com/bigquery/dataform/locations/europe-west2/repositories/ga4_production_partitioning/details/release-scheduling?project=gds-bq-reporting and select the Production release configuration and all actions to run.
