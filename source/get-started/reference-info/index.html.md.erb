@@ -53,20 +53,9 @@ To access SOP:
 
 HR requests are made using the GDS Business Operations Tool (GBOT). For more information on GBOT ask your line manager or your business operations team.
 
-The GBOT HR Approvals tool can be used to make requests, such as:  
-* Career Break
-* Expression of Interest (EOI)
-* FTA extension
-* Higher Starting Salary
-* Loan or Secondment
-* Permanency
-* Recruitment and Retention Allowance (RRA)
-* Short Term Fixed Term Appointment (STFTA)
-* Temporary Duties Allowance (TDA)
-
 ## The GDS Way
 
-[The GDS Way](https://gds-way.cloudapps.digital/) is a public-facing website that documents the specific technology, tools, and processes used at GDS and CDDO.
+[The GDS Way](https://gds-way.digital.cabinet-office.gov.uk/) is a public-facing website that documents the specific technology, tools, and processes used at GDS and CDDO.
 
 Although software developer-focused, some useful pages include:
 
@@ -96,7 +85,7 @@ This data is itself useful for your colleagues across GDS and also for the Infor
 
 ## GOV.UK Confluence
 
-[Contact the GOV.UK Data Products delivery manager](https://gds.slack.com/archives/CHR4UQKU4) and ask for access to the [GOV.UK Confluence workspace](https://gov-uk.atlassian.net/wiki/spaces/GOVUK/).
+Ask your delivery manager for access to the [GOV.UK Confluence workspace](https://gov-uk.atlassian.net/wiki/spaces/GOVUK/).
 
 Once you have access to GOV.UK Confluence, go to the [Analytics on GOV.UK Confluence page](https://gov-uk.atlassian.net/wiki/spaces/GOVUK/pages/23855552/Analytics+on+GOV.UK). This page has [definitions on the custom dimensions](https://gov-uk.atlassian.net/wiki/spaces/GOVUK/pages/23855552/Analytics+on+GOV.UK#AnalyticsonGOV.UK-customDimensionsCustomdimensions) used in [Google BigQuery analytics tables](https://docs.google.com/document/d/1MPFvIkAc_0HhujOl-hXSfUimP2EWBWNq1IddWFhKN9k/edit?pli=1#heading=h.xxvwzmxv8f62).
 
@@ -133,7 +122,7 @@ Quality analysis needs to be the following:
 
 In particular, it is important to accept that uncertainty is inherent within the inputs and outputs of any piece of analysis. It is important to establish how much we can rely upon the analysis for a given problem.
 
-These principles must be considered when undertaking any work involving data/models. When setting up a project, use `govcookiecutter` to help concurrently set up all AQA documentation. Note this only sets up the documentation. You still need to perform the AQA itself.
+These principles must be considered when undertaking any work involving data/models.
 
 Note that AQA is not just about software quality assurance. It can also include dealing with ethical considerations, reasons for choosing the method/technique, and validating analytical assumptions and caveats.
 
@@ -149,9 +138,9 @@ Note that AQA is not just about software quality assurance. It can also include 
 
 See the [documentation on document types on GOV.UK](https://docs.publishing.service.gov.uk/document-types.html) for information on the various document types present on GOV.UK. This list may be incomplete.
 
-See the [documentation on content schemas](https://docs.publishing.service.gov.uk/content-schemas.html) for more information on schema used for different content items on the Content Store.
+The [documentation on the analytics (GA4) implementation on GOV.UK](https://docs.publishing.service.gov.uk/manual/analytics.html) may also be of interest, providing information on how we collect GA4 data. 
 
-This page is useful if you are working with the Content Store as it tells you what fields are available for different content document types again. This list may be incomplete.
+The [GOV.UK GA4 implementation record](https://docs.publishing.service.gov.uk/analytics/) documents the dataLayer pushes implemented on GOV.UK, which provide the majority of the information sent to GA4.
 
 ## View the JSON of a GOV.UK page
 
@@ -161,17 +150,6 @@ You can view the JSON on a GOV.UK page by either:
 - adding `/api/content` into a page URL, for example, you can change `https://www.gov.uk/browse/benefits/disability` to `https://www.gov.uk/api/content/browse/benefits/disability`
 
 Using either of these methods lets you view the A and B versions of a page.
-
-## Pre-existing code to reuse
-
-GOV.UK Data Products has worked on many projects, and has developed code and features you can reuse.
-
-The following table has links to code that you can reuse.
-
-| Location | Notes |
-| :--- | :--- |
-| [2020-01-08 Possible Data Engineering problems to solve](https://docs.google.com/document/d/1fVdq3bfXZRAyL4f_6AiUyQ9gC0yO8mhsKOvy9TRewiY/) | Google Doc listing useful features, and data engineering-related thoughts. Mostly for Google BigQuery. |
-| [alphagov/modular_sql/src/tools](https://github.com/alphagov/modular_sql/tree/master/src/tools) <br> [alphagov/modular_sql/tests](https://github.com/alphagov/modular_sql/tree/master/tests)| Scripts and associated tests for logging, setting up Google BigQuery clients, parsing SQL scripts into Python, and loading YAML configuration files |
 
 ## Code examples
 
