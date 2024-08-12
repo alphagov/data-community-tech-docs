@@ -1,7 +1,7 @@
 ---
 title: Start a new data science project
 weight: 40
-last_reviewed_on: 2021-09-09
+last_reviewed_on: 2024-08-12
 review_in: 6 months
 ---
 
@@ -10,7 +10,7 @@ review_in: 6 months
 When starting a new data science project, you should:
 
 - store your project in GitHub
-- set up your project using `govcookiecutter`
+- (optional) set up your project using `govcookiecutter`
 - organise your workload using Trello
 
 ## Store your projects in GitHub
@@ -22,14 +22,11 @@ See the [GOV.UK developer documentation on setting up your GitHub account](https
 You should follow best practice when storing projects in GitHub:
 
 - store GOV.UK projects in [`alphagov` organisation](https://github.com/alphagov) repos
-- store non-GOV.UK projects in [`ukgovdatascience` organisation](https://github.com/ukgovdatascience) repos
 - do not store repos under your GitHub username
 - set your repo to public where possible as the GOV.UK Data Products team likes to code in the open
 - when naming your repo, use hyphens instead of underscores to separate words.
 - to make sure colleagues have access to repo if the repo owner leaves, grant the following GitHub teams access to your `alphagov` repositories:
-  - admin access: `gov-uk-data`
-- for `ukgovdatascience` repos, grant the following GitHub teams access:
-  - write access: `gdsdatascience`
+- admin access: `gov-uk-data`
 
 By default, GitHub organisation owners have admin access to all repos. If you cannot access a repo, speak to the owner for access.
 
@@ -49,7 +46,7 @@ You must add branch protection rules to the `main` branch of your repo to preven
 
 ## Set up your project using `govcookiecutter`
 
-You should use `govcookiecutter` to set up your data science project.
+You can use `govcookiecutter` to set up your data science projects.
 
 [`govcookiecutter`](https://github.com/ukgovdatascience/govcookiecutter) is a template for data science projects in HM Government and the wider public sector.
 
@@ -70,16 +67,10 @@ For more information, see the:
 
 ## Organise your workload using Trello
 
-GOV.UK Data Products adopts [Agile ways of working](https://agilemanifesto.org/). We use Trello to maintain a team-wide [Kanban-style way of working](https://en.wikipedia.org/wiki/Kanban_(development)), although specific projects may adopt other methodologies such as [Scrum](https://scrumguides.org/index.html).
+GOV.UK Data Services adopts [Agile ways of working](https://agilemanifesto.org/).
+We use Trello to maintain a team-wide [Kanban-style way of working](https://en.wikipedia.org/wiki/Kanban_(development)), although specific projects may adopt other methodologies such as [Scrum](https://scrumguides.org/index.html).
 
-To make sure all projects are visible to the team, you should write and update cards on Trello. GOV.UK Data Products has two Trello boards:
-
-- the [Data Products doing board](https://trello.com/b/FMptFIIw/data-labs-doing-board), a Trello board for all tasks in the current sprint
-- the [Data Products planning board](https://trello.com/b/s6TGpjeA/data-labs-planning-board), a Trello board for all planned tasks for future sprints
-
-For new epics, create an epic using the __Epic template__ card and summarise the epic.
-
-For new and existing projects, create stories using the __Story template__ card.
+To make sure all projects are visible to the team, you should write and update cards on Trello.
 
 Stories should cover a specific task that has a valid acceptance criteria. Acceptance criteria are your “definition of done”. You should make the minimum developments to meet this criteria.
 
