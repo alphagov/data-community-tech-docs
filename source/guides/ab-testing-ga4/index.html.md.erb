@@ -1,0 +1,22 @@
+---
+title: A/B testing in GA4
+weight: 3
+last_reviewed_on: 2024-08-14
+review_in: 6 months
+---
+
+# A/B testing in GA4
+
+An A/B test is a type of experiment in which you split your traffic into multiple groups and show each group a different version of your web page or app.
+By doing this, you can compare the ways the user groups interact with each version of the page or app to determine which version is the most succesful.
+A/B testing can be a useful tool to test the efficacy of design or content changes to a product.
+
+## A/B testing on GOV.UK
+
+There is documentation in the GOV.UK developer docs on [how A/B testing works](https://docs.publishing.service.gov.uk/manual/ab-testing.html) and on [how to run an A/B or multivariate test](https://docs.publishing.service.gov.uk/manual/run-ab-test.html) from the technical perspective.
+
+When developers implement A/B tests, the `"govuk:ab-test"` meta tag will be populated.
+The content of this meta tag is picked up and sent to GA4 (and to BigQuery) in the `ab_test` custom parameter, and will appear in GA4 in the 'AB test' custom dimension.
+Analysts can use this dimension to obtain and compare metrics for each version of the page being tested.
+
+Note that [the register of A/B tests](https://docs.google.com/spreadsheets/d/1h4vGXzIbhOWwUzourPLIc8WM-iU1b6WYOVDOZxmU1Uo/edit?gid=254065189#gid=254065189) must be updated whenever an A/B test is run.
