@@ -98,7 +98,3 @@ These are the basic steps to generate temporary credentials in `boto3` via Assum
     buckets = [bucket.name for bucket in s3_resource.buckets.all()]
     print(buckets)
     ```
-
-## Helper functions for `boto3`
-
-You can find examples of helpers functions (wrappers for the steps above) in [github.com/alphagov/govuk-content-metadata/src/utils/helpers_aws.py](https://github.com/alphagov/govuk-content-metadata/blob/main/src/utils/helpers_aws.py). 
