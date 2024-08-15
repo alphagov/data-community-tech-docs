@@ -15,7 +15,7 @@ The production version of the app is available at [https://gov-search.service.go
 
 ## Technology
 
-GovSearch runs on GCP (Google Cloud Platform).  Most of the data is obtained from GOV.UK via the [GOV.UK S3 Mirror](/engineering/govuk-s3-mirror/), which fetches nightly GOV.UK database backups and makes them available in a GCP bucket.
+GovSearch runs on GCP (Google Cloud Platform).  Most of the data is obtained from GOV.UK via the [GOV.UK S3 Mirror](/data-sources/govuk-s3-mirror), which fetches nightly GOV.UK database backups and makes them available in a GCP bucket.
 
 The website is written in Typescript, using the Express framework.  It fetches search results from BigQuery.
 
@@ -29,7 +29,7 @@ The  source code of the website is [alphagov/govuk-knowledge-graph-search](https
 
 Every day:
 
-- New backups of the GOV.UK Content Store and the Publishing API become available in the [govuk-s3-mirror_govuk-integration-database-backups](https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-integration-database-backups;tab=objects?prefix=&forceOnObjectsSortingFiltering=false) Bucket, as a result of the [S3 Mirror copy process](/engineering/govuk-s3-mirror/).
+- New backups of the GOV.UK Content Store and the Publishing API become available in the [govuk-s3-mirror_govuk-integration-database-backups](https://console.cloud.google.com/storage/browser/govuk-s3-mirror_govuk-integration-database-backups;tab=objects?prefix=&forceOnObjectsSortingFiltering=false) Bucket, as a result of the [S3 Mirror copy process](/data-sources/govuk-s3-mirror).
 
 - A GCP Workflow (defined in the govuk-knowledge-graph project) is triggered by the mirror's Pub/Sub topic and creates two virtual machines, one running MongoDB to recreate an instance of the content store, and one running Postgres to recreate an instance of the Publishing API.
 
@@ -41,7 +41,7 @@ Every day:
 
 While Gov Search is the normal way to use the service, the Neo4j frontend allows for more complex searches using the Cypher language.
 
-See the documentation of the [Knowledge Graph Data Pipeline](../../engineering/knowledge-graph-pipeline-v2) for more information about the batch data updates.
+See the documentation of the [Knowledge Graph Data Pipeline](/tools/govgraph) for more information about the batch data updates.
 
 ## Hosting
 
