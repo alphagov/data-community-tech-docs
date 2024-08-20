@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4
 weight: 1
-last_reviewed_on: 2024-07-26
+last_reviewed_on: 2024-08-19
 review_in: 6 months
 ---
 
@@ -58,9 +58,14 @@ Granular location and device data collection is enabled to allow reporting on th
 
 ### Data processing and modification
 
-At present, we have not created any custom events or designated any events as conversions within GA4.
+At present, we have not created any custom events or designated any events as key events (formerly known as conversions) within GA4.
+We have so far decided to not implement any key events as:
+
+- they might require the creation of an additional event, to be designated as the key event, and this would increase our data collection and storage costs as well as issues with high cardinality and sampling when using our data
+- they would have an impact on our engagement rates
+
 We have tested the custom event data import feature to ensure that it would meet our needs to join additional metadata to the events we collect, and may use this in future. 
-If you are interested in adding custom events, conversions, or data imports to the GOV.UK GA4 data, please contact the [GA4 support inbox](mailto:govuk-ga4-support@digital.cabinet-office.gov.uk).
+If you are interested in adding custom events, key events, or data imports to the GOV.UK GA4 data, please contact the [GA4 support inbox](mailto:govuk-ga4-support@digital.cabinet-office.gov.uk).
 
 [Expanded datasets](/analysis/govuk-ga4/use-ga4/ga4-expanded-datasets/) are being used to reduce the impact of cardinality on various key reports.
 You can use the [steps in this guidance](/analysis/govuk-ga4/use-ga4/ga4-expanded-datasets/) to view the expanded datasets we have set up and to request new expanded datasets.
