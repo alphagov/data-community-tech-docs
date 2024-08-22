@@ -1,7 +1,7 @@
 ---
 title: Use the GOV.UK Search Console data
 weight: 35
-last_reviewed_on: 2024-06-08
+last_reviewed_on: 2024-08-21
 review_in: 6 months
 ---
 
@@ -25,6 +25,13 @@ GDS users will be able to run queries in a range of projects in BigQuery, such a
 Users from other organisations will need to query the data from a Google Cloud Platform project with billing owned by their organisation.
 
 If you are new to BigQuery, you may find it helpful to review Google’s [documentation explaining the BigQuery user interface](https://cloud.google.com/bigquery/docs/bigquery-web-ui#open-ui).
+
+### Tables and fields
+
+Information on the two Search Console tables can be found on the [data source page](/data-sources/gsc/).
+
+Queries can be returned with `null` values if they are rare. In these cases, the 'is_anonymized_query' field should be marked with this bool.
+The query field will be `null` when it is true to protect the privacy of users making the query. More information on this can be found in [Google's documentation on Search Console performance data filtering and limits](https://developers.google.com/search/blog/2022/10/performance-data-deep-dive#privacy-filtering).
 
 ### Example query
 
