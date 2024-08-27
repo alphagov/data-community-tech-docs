@@ -1,7 +1,7 @@
 ---
 title: Find things in the GOV.UK GA4 data
 weight: 6
-last_reviewed_on: 2024-08-13
+last_reviewed_on: 2024-08-27
 review_in: 6 months
 ---
 
@@ -276,6 +276,26 @@ GROUP BY
 ORDER BY
   searches DESC
 ```
+
+## Users journeys
+
+There are different ways you can investigate users' journeys.
+
+In the interface, you can look at users' page locations and page referrers, but otherwise you are quite limited.
+
+Using the BigQuery data, however, you can view users' whole journeys.
+
+### Using the custom `timestamp`
+
+In the absence of a hit number sent with each GA4 event, we implemented a custom timestamp which can be used to order a user's events.
+
+We implemented this in January 2024, so this cannot be used to order events before then.
+
+### Using the built-in `batch_event_index`
+
+Google added batch ordering IDs to the GA4 dataset in [mid-July 2024](https://support.google.com/analytics/answer/9164320#071624).
+
+Google give some sample code indicating how you can use these IDs to order users' events in [their guidance](https://developers.google.com/analytics/bigquery/basic-queries#sequence_of_pageviews).
 
 
 ## Engagement
