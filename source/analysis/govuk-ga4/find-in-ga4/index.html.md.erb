@@ -281,9 +281,12 @@ ORDER BY
 
 There are different ways you can investigate users' journeys.
 
-In the interface, you can look at users' page locations and page referrers, but otherwise you are quite limited.
+In the interface, you can look at users' page locations and page referrers.
 
-Using the BigQuery data, however, you can view users' whole journeys.
+You can also use funnel explorations to examine users' flow through pre-defined steps.
+Google have published some information on how to use [funnel explorations here](https://support.google.com/analytics/answer/9327974).
+
+Using the BigQuery data, however, you can view users' journeys in much more detail.
 
 ### Using the custom `timestamp`
 
@@ -291,11 +294,35 @@ In the absence of a hit number sent with each GA4 event, we implemented a custom
 
 We implemented this in January 2024, so this cannot be used to order events before then.
 
+#### Method in BigQuery
+
+The following SQL gets all page views on 26th August 2024, with a calculated 'session ID' and 'hit number', ordered by the session ID and custom timestamp:
+
+```SQL
+SELECT
+  #Create a session ID
+  CONCAT(user_pseudo_id,"-", ga_sessionid) AS session_id,
+  page_location,
+  timestamp,
+  #Calculate a 'hit number' based on the timestamp
+  ROW_NUMBER() OVER (PARTITION BY CONCAT(user_pseudo_id, "-", ga_sessionid) ORDER BY timestamp ASC) AS hit_number,
+FROM
+  `ga4-analytics-352613.flattened_dataset.flattened_daily_ga_data_20240826`
+WHERE
+  #Page views only
+  event_name="page_view"
+ORDER BY
+  session_id,
+  timestamp
+```
+
+The result of this query could be further manipulated to enable analysis of users' journeys.
+
 ### Using the built-in `batch_event_index`
 
 Google added batch ordering IDs to the GA4 dataset in [mid-July 2024](https://support.google.com/analytics/answer/9164320#071624).
 
-Google give some sample code indicating how you can use these IDs to order users' events in [their guidance](https://developers.google.com/analytics/bigquery/basic-queries#sequence_of_pageviews).
+Google provide some sample code indicating how you can use these IDs to order users' events in [their guidance](https://developers.google.com/analytics/bigquery/basic-queries#sequence_of_pageviews).
 
 
 ## Engagement
