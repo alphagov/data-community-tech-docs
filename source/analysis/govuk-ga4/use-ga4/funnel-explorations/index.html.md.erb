@@ -1,0 +1,70 @@
+---
+title: Using Funnel Explorations in GA4
+weight: 6
+last_reviewed_on: 2024-09-12
+review_in: 6 months
+---
+
+# What is a Funnel Exploration?
+
+GA4 funnel explorations are one of the standard exploration report types available to users in the GA4 interface. They allow you to visualise and analyse the sequence of steps users take to complete a task or journey. It can help you see where users drop off and optimise those points.
+Here's a guide on how to use GA4 funnel explorations in the GOV.UK GA4 Property:
+
+# Creating a Funnel Exploration
+
+Follow these steps to create a funnel in GA4:
+
+## Step 1: Navigate to Funnel Explorations
+
+In the left-hand menu, click on "Explore". After this, choose "Funnel exploration" from the template gallery.
+
+
+## Step 2: Clearing Predefined Funnel Examples
+
+There will be two columns on the left hand side of the screen - ‘Variables’ and ‘Settings’. In the ‘Variables’ column you select all the segments, dimensions and metrics that you might want to use from the GA4 data, and you drag these into the ‘Settings’ column to visualise them in your funnel.
+
+When you first arrive on the funnel exploration screen, there may be a pre-populated funnel exploration example. You are able to build your own funnel exploration by changing these predefined steps and removing the items underneath the ‘Steps’ section in the Settings column - to do this click the ‘x’ symbol next to any items in this list. If there are any other items under the ‘Segment Comparisons’, ‘Breakdown’ or ‘Next Action’ sections, remove these too.
+
+
+## Step 3: Create Your Funnel Exploration - GOV.UK Example
+
+Let’s imagine we want to create a funnel which shows the number of users who arrive on the GOV.UK homepage, next navigate to the Universal Credit sign in page, and then hit the ‘Sign in’ button on this page. Let’s say we also want to find out the split of devices that users are using to make this journey.
+It may be helpful to refer to the completed example funnel exploration as described above [here](https://analytics.google.com/analytics/web/#/analysis/p330577055/edit/WfwKo2xcQ_-5uii4uShtzg)
+
+Set up explanation:
+
+- First, click the pencil icon next to the ‘Steps’ section under the ‘Settings’ column. This is where you will configure the steps in your funnel.
+
+- __Step one:__ Define step one as page views of the GOV.UK homepage by selecting the first step as a ‘page_view’ event, and set the page_location parameter for this event to = https://www.gov.uk/.
+
+- __Step two:__ To define step two, repeat the above process, but because we want to look for users who then go on to view the Universal Credit page, set the page_location parameter = https://www.gov.uk/sign-in-universal-credit 
+
+- __Step three:__ For the third and final step in our funnel exploration, we want to see how many users click the ‘Sign in’ button on the above page. This means that we want to set step three as a ‘navigation’ event, and set the link text parameter to = ‘Sign in’ to make sure that we’re capturing clicks on the correct button. We can also set a page_location parameter on this event of https://www.gov.uk/sign-in-universal-credit to be doubly sure that this step is showing only users who click on the Sign in button on this specific page.
+
+- Finally, we can drag ‘Device category’ from the ‘Dimensions’ section under the Variables column into the ‘Breakdown’ section of the Settings column to split our funnel to show data for different devices.
+
+ 
+## Step 4: Choose the Scope of the Funnel
+
+You are able to toggle between having an ‘open’ or ‘closed’ funnel under the ‘Visualisation’ section of the ‘Settings’ column.
+
+- __Open Funnel:__ Users can enter at any step without following a strict order.
+- __Closed Funnel:__ Users must follow the steps in the defined sequence to be counted.
+
+
+## Step 5: Apply Filters (Optional)
+
+You can apply filters to include/exclude specific user segments, like only showing data for users from a particular country or device type.
+
+# Analysing and Sharing Funnel Data
+
+This guidance is by no means exhaustive, but some general tips for analysing your funnel explorations:
+
+- __Abandonments and completions:__ Once your funnel is set up, you’ll be able to see where users drop off between steps. This is referred to into Abandonments and Abandonments rate columns underneath your funnel exploration. You’ll also be able to see ‘Completion rates’ - the completion rate at each step gives you insights into how well users are progressing through your funnel.
+- __Breakdown by Dimension:__ You can add dimensions (like source/medium, country, or device) to your funnel to get more granular insights into different user groups.
+
+Once you've built a useful funnel, you can:
+
+- __Save it__ for future analysis. If you would like to share with other users, make sure to click the ‘Share exploration’ button in the top right corner of the page when viewing the funnel exploration. This will enable you to share your exploration with other users by sharing the URL
+- __Export the Data__ as a sheets, CSV file or as a PDF
+
