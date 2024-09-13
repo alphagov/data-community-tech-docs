@@ -1,0 +1,23 @@
+---
+title: Modifying GOV.UK GA4 data
+weight: 3
+last_reviewed_on: 2024-09-13
+review_in: 6 months
+---
+
+# Modifying GOV.UK GA4 data
+
+It is possible to modify the [GOV.UK GA4 data](/data-sources/ga/ga4/) within the GA4 interface.
+
+## Key events
+
+Key events are set up within the interface.
+
+## GA4 event modifications
+
+Event modifications can be set up within the GA4 interface.
+
+This feature will only be used when there is no sensible way for developers to implement the same change to event tracking.
+
+All regex used in GA4 event modifications should be audited by developers to ensure it will not worsen page load times.
+This is because there is a risk that complicated regex used might be slowing down the user's experience, as it is the user's computer which is doing the calculation.
