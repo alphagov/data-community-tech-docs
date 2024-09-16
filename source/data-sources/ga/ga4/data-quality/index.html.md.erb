@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 data quality
 weight: 1
-last_reviewed_on: 2024-09-09
+last_reviewed_on: 2024-09-16
 review_in: 6 months
 ---
 
@@ -21,6 +21,9 @@ We are currently developing a spreadsheet and Looker Studio report which contain
 
 ## Known issues with the GOV.UK GA4 data
 
+Note: this is a list of some larger scale issues which impact our data collection. 
+Shorter term bugs and issues with our tracking can be found in the above spreadsheet and Looker Studio.
+
 ### Data quality variance and content over time 
 
 Data was first collected into this property on 23/09/22.
@@ -39,12 +42,24 @@ We know a chunk of our users do not accept analytics cookies so we do not collec
 Some users may also be using ad blockers which inhibit Google Analytics from functioning.
 
 ### Incorrect event tracking
-#### Duplicate tracking on some navigation and copy events
+#### Assumptions in navigation tracking
 
-Due to the way navigation events have been implemented (firing on all right clicks on links), users who right click and select to ‘Copy’ a link will trigger both navigation and copy events.
+In order to capture users clicking on links in ways other than the usual left or primary click, we set up navigation (link) tracking so that all clicks on links trigger a navigation event to fire.
+
+This may mean some false positives in the data, as some right (secondary) clicks or other clicks may not necessarily lead to the user navigating through the link in question.
+For example, a user might be right clicking on a link to copy it or inspect it.
+If data users would like to exclude these clicks from their dataset, they can do so using the 'method' custom dimension.
+
+This is also why some duplicate tracking may be occuring with the navigation and copy tracking, as users who right click and select to ‘Copy’ a link will trigger both navigation and copy events.
 
 
-### Incorrect meta information in custom dimensions  
+### Incorrect information in custom dimensions  
+#### Issues with link information on pages with mistyped URLs
+When there is an extra / in the URL, the 'Link domain' information is incorrect, coming through as the first part of the path instead of the domain.
+This can be seen on the live site, for example if you interact with links on the `https://www.gov.uk//guidance/cost-of-living-payment#low-income-benefits-and-tax-credits-cost-of-living-payment-eligibility` page.
+Strictly, this URL should not be valid, but it (and many other incorrect URLs) do work to load content on GOV.UK. 
+Use of URLs like this is rare and so this should not cause too much of a data quality issue.
+
 #### Issues with publication and update dates
 The `first_published_at`, `public_updated_at` and `updated_at` dates sent with page view events may be misleading.
 

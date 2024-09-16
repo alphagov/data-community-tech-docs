@@ -1,7 +1,7 @@
 ---
 title: Modifying GOV.UK GA4 data
 weight: 3
-last_reviewed_on: 2024-09-13
+last_reviewed_on: 2024-09-16
 review_in: 6 months
 ---
 
@@ -13,11 +13,41 @@ It is possible to modify the [GOV.UK GA4 data](/data-sources/ga/ga4/) within the
 
 Key events are set up within the interface.
 
+At present, we have not created any custom events or designated any events as key events (formerly known as conversions) within GA4.
+We have so far decided to not implement any key events as:
+
+- they might require the creation of an additional event, to be designated as the key event, and this would increase our data collection and storage costs as well as issues with high cardinality and sampling when using our data
+- they would have an impact on our engagement rates
+
+If you are interested in designating any events as key events in the GOV.UK GA4 data, please contact the [GA4 support inbox](mailto:govuk-ga4-support@digital.cabinet-office.gov.uk).
+
 ## GA4 event modifications
 
-Event modifications can be set up within the GA4 interface.
+Events collected can be modified (parameter values changed or new parameters added) in the GA4 interface.
+Google have published some details on event modifications in their [support information](https://support.google.com/analytics/answer/12844695).
 
-This feature will only be used when there is no sensible way for developers to implement the same change to event tracking.
+This feature will only be used when there is no sensible way for developers to implement the same change to event tracking in the dataLayer.
 
 All regex used in GA4 event modifications should be audited by developers to ensure it will not worsen page load times.
 This is because there is a risk that complicated regex used might be slowing down the user's experience, as it is the user's computer which is doing the calculation.
+
+If event modifications are to be used, the following process should be followed:
+
+1. Event modification requested
+2. Need for and value of requested changes evaluated by the Analytics team
+3. Schema for proposed changes drawn up by the Analytics team and those requesting the changes
+4. Regex and/or other changes required written up in implementation guidance by the Analytics team and those requesting the changes
+5. Regex/changes checked by developers
+6. Changes tested by analysts in a testing environment
+7. Changes deployed to the live property by the Analytics team
+8. Changes documented and advertised by the Analytics team 
+
+If you are interested in modifying any events in the GOV.UK GA4 data, please contact the [GA4 support inbox](mailto:govuk-ga4-support@digital.cabinet-office.gov.uk).
+
+## Custom data imports
+
+We have tested the custom event data import feature to ensure that it would meet our needs to join additional metadata to the events we collect.
+This feature is not currently in use, but may be used in future. 
+
+If you are interested in adding data imports to the GOV.UK GA4 data, please contact the [GA4 support inbox](mailto:govuk-ga4-support@digital.cabinet-office.gov.uk).
+
