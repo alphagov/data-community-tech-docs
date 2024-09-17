@@ -1,32 +1,45 @@
 ---
 title: Looker Studio
 weight: 3
-last_reviewed_on: 2023-11-29
+last_reviewed_on: 2024-08-09
 review_in: 6 months
 ---
 
 # Looker Studio
 
-Looker Studio is a dashboarding tool from Google.
+Looker Studio is an online dashboarding tool from Google.
+
+Looker Studio is the primary tool used within GDS for data visualisations and reporting.
 
 ## Report creation
 
-When creating a new report, use one of the standard data connections listed [here](https://trello.com/c/N8C3H9KT/55-looker-studio-data-sources).
+If you are a member of GDS staff, please use one of the standard data connections listed [here](https://trello.com/c/N8C3H9KT/55-looker-studio-data-sources) when creating a new report.
+If your data source is not listed there, it may not have a standard data connection.
+If that is the case, please follow the instructions on data connections below, or ask the Data Engineering channel for support.
 
-You should also add the Looker Studio [GA4 property ID](https://trello.com/c/N8C3H9KT/55-looker-studio-data-sources) to the report to track usage.
+Make sure to add the Looker Studio [GA4 property ID](https://trello.com/c/N8C3H9KT/55-looker-studio-data-sources) to your report to track usage.
 
-## Data connections
+## Data sources and connections
 
-When making a new data connection that is to be shared you should:
+### Creating new data connections
+
+When creating a new data connection to be shared, you should:
 
 - Turn off Community Visualisations
+- Set the 'Data credentials' used to the viewer's
 - Add the Google Group 'data-connection-editors@digital.cabinet-office.gov.uk' as editor
-- Share with the GDS domain as viewer so others can use your connection
+- Share with the GDS domain as viewer so that others can use your connection
 
-The reason for turning off community visualisations is that we have not done a DPIA on them to assess the risk of data loss.
+Community visualisations must be turned off because a DPIA has not been carried out on them to assess the potential risk of data loss.
 
 If you are connecting to a BigQuery dataset, it is better to connect using a custom SQL query with date range parameters than to connect to the table directly.
-This is because most of our data is stored in sharded tables, and Looker Studio queries all shards when direct connections are established. This can be quite costly given the size of our datasets.
+This is because most of our data is stored in sharded tables, and Looker Studio queries all shards when direct connections are established.
+This can be quite costly given the size of our datasets.
 
 When setting up the connection, ensure you select the appropriate billing project. 
 For most shared reports that will be [the GDS BQ reporting project](https://docs.google.com/spreadsheets/d/1_FQUVLNA_TYYCvI9WIuI6mOdFJTNsykSWJcNlv6SPrU/edit#gid=608928265).
+
+## Sharing reports 
+
+Do not make your reports 'unlisted' or 'public' to share them.
+You can either share your reports with anyone on the GDS email domain, or with specified individuals or Google groups.

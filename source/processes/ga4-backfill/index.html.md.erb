@@ -1,0 +1,54 @@
+---
+title: GA4 backfill processes
+weight: 9
+last_reviewed_on: 2024-09-03
+review_in: 6 months
+---
+
+# GA4 Backfill Processes
+
+Each morning we receive yesterday's [GOV.UK GA4](/data-sources/ga/ga4/) data in [BigQuery](/data-sources/ga/ga4-bq/). 
+
+The sending of this data is administered by Google, and on occasion the data can arrive relatively late in the day. When this happens, several processes we use to transform the data fail, and the transformed data needs to be backfilled when it does arrive.
+
+This page aims to summarise the backfilling processes undertaken by the Analytics team when GOV.UK GA4 data arrives late.
+
+## Flattened sharded GA4 data
+
+- First, delete the affected empty sharded table from the GA4 flattened dataset
+- Run the [flattened sharded backfill SQL query](https://console.cloud.google.com/bigquery?ws=!1m7!1m6!12m5!1m3!1sgds-bq-reporting!2seurope-west2!3s61268eb8-7bc7-459e-a966-0da90771c7e9!2e1&project=ga4-analytics-352613), making sure to change the date at the top of the query.
+- Once the query has run, view the results and save them to a BigQuery table. Save them to the 'ga4-analytics-352613' project, and data set 'flattened_dataset'. The name of the backfilled table will be 'flattened_daily_ga_data_YYYYMMDD' replacing YYYYMMDD with the date of your backfilled data at the end of the table name, e.g. 'flattened_daily_ga_data_20240902'
+
+## Pogo-sticking
+
+The data for the [pogo-sticking dashboard](https://docs.data-community.publishing.service.gov.uk/analysis/pogostick/main/) relies on the flattened GOV.UK GA4 data arriving on time. If this is late, then it will need to be backfilled. Only steps 8, 9 and 10 need to be backfilled for the dashboard to function.
+
+The process for backfilling the data for this dashboard is as follows:
+
+- First, delete the affected empty table(s) which will be blank from steps 8, 9 and 10 in the GA4_PogoSticking dataset in the gds-bq-data project.
+- Then run the below queries (changing to the correct date at the beginning) and save the results with the correct table names to their corresponding tables in the aforementioned dataset. E.g. if you were backfilling the data for step 9 for the 2nd of September 2024, you would run the backfill query and save the results to the 'gds-bq-data' project, the 'GA4_PogoSticking' data set, and your table name would be 'PogoStickStepNine_20240902'
+
+### Step 8
+
+[Pogo-sticking step 8 backfill query](https://console.cloud.google.com/bigquery?ws=!1m7!1m6!12m5!1m3!1sga4-analytics-352613!2seurope-west2!3sdc7118b6-e26e-4ebf-87f4-239831e54eb8!2e1&project=gds-bq-data)
+
+### Step 9
+
+[Pogo-sticking step 9 backfill query](https://console.cloud.google.com/bigquery?ws=!1m7!1m6!12m5!1m3!1sga4-analytics-352613!2seurope-west2!3sa418d1b9-095f-4de9-890a-64ab5e2bc372!2e1&project=gds-bq-data)
+
+### Step 10
+
+[Pogo-sticking step 10 backfill query](https://console.cloud.google.com/bigquery?ws=!1m7!1m6!12m5!1m3!1sga4-analytics-352613!2seurope-west2!3sb279f588-b387-47b3-8e20-ea329c6ba249!2e1&project=gds-bq-data)
+
+
+## Partitioning
+
+The two partitioned tables built from GOV.UK GA4 data have been set up to automatically backfill, even if the raw data arrives late. However, for reference, find links to the backfill queries for each below.
+
+### Raw Partitioning
+
+[Raw partitioning backfill query](https://console.cloud.google.com/bigquery?ws=!1m7!1m6!12m5!1m3!1sgds-bq-reporting!2seurope-west2!3s64061087-0673-47de-b9f1-40259ac9390e!2e1&project=ga4-analytics-352613)
+
+### Flattened Partitioning
+
+[Flattened partitioning backfill query](https://console.cloud.google.com/bigquery?ws=!1m7!1m6!12m5!1m3!1sgds-bq-reporting!2seurope-west2!3s187c3874-37ed-4014-9821-19e73b2fe35b!2e1&project=ga4-analytics-352613)

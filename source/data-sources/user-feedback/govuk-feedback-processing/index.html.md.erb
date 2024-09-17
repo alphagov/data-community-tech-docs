@@ -51,9 +51,6 @@ capture all prompts and their associated responses against a single record for a
 The table is [partitioned](https://cloud.google.com/bigquery/docs/partitioned-tables) by feedback record creation date.
 Queries against the table **must** contain a filter on the field containing the record creation date (`created`).
 
-- [Resource definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L16)
-- [Schema definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/feedback_data_schema.json)
-
 ### Networking Components
 
 It is necessary to create 'Virtual Private Cloud' (VPC) in order to enable secure communication between components
@@ -77,8 +74,7 @@ database instance is not acccessible for the purposes of data analysis.
 
 Backup files for that database instance are taken daily and stored in S3 cloud object storage. Access to this object
 storage has been granted to enable the contents to be mirrored in equivalent cloud object storage in Google Cloud.
-The [GOVUK S3 Mirror](https://alphagov.github.io/data-community-tech-docs/engineering/govuk-s3-mirror/) project
-assumes responsibility for copying backup files between the AWS and Google Cloud environments.
+The GOVUK S3 Mirror project assumes responsibility for copying backup files between the AWS and Google Cloud environments.
 
 The files use a proprietary, non-human-readable format which necessitates that they are restored into Postgres database
 instance before the data they contain can be queried and read.
@@ -108,9 +104,7 @@ kept (`govuk-s3-mirror_govuk-integration-database-backups`) and the component us
 (`propogate-support-api`).
 
 Support API database backup files are copied from GOV.UK AWS to a Google Cloud Storage bucket
-(`govuk-s3-mirror_govuk-integration-database-backups`) by the
-[GOV.UK S3 Mirror](https://alphagov.github.io/data-community-tech-docs/engineering/govuk-s3-mirror/). This process
-happens daily.
+(`govuk-s3-mirror_govuk-integration-database-backups`) by the GOV.UK S3 Mirror. This process happens daily.
 
 The Cloud Storage bucket is [configured](https://github.com/alphagov/govuk-s3-mirror/blob/main/terraform/pubsub.tf#L107)
 to publish a notification into the `support-api-backup-staging` queue when the creation of a new file is completed in
@@ -161,10 +155,6 @@ cloud functions in sequence. The process is run daily at 07:00AM, and is trigger
 The workflow creates an internal `type` variable and sets the value of the variable to "SmartSurvey". This variable is
 passed as input to each called cloud function which requires `type` as an input.
 
-- Resource definition:
-  - [Workflow cloud resource](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L314)
-  - [Workflow YAML definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/workflows/smart-survey-workflow.yaml)
-
 #### Support API Workflow
 
 The `support-api-workflow` is used to:
@@ -182,10 +172,6 @@ Support API Datastore backup file is created in the S3 Mirror Cloud Storage buck
 
 The workflow creates an internal `type` variable and sets the value of the variable to "SupportAPI". This variable is
 passed as input to each called cloud function which requires `type` as an input.
-
-- Resource definition:
-  - [Workflow cloud resource](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/main.tf#L299)
-  - [Workflow YAML definition](https://github.com/alphagov/govuk-feedback-processing/blob/main/workflows/support-api-workflow.yaml)
 
 ### Cloud Functions
 
@@ -267,8 +253,7 @@ The `process-raw-feedback` function is used to:
 
 1. Read a specified 'raw' feedback JSON file from the staging Cloud Storage bucket
 2. Process the 'raw' feedback data:
-  - Re-format the data to adhere to the output
-    [feedback data schema](https://github.com/alphagov/govuk-feedback-processing/blob/main/terraform/feedback_data_schema.json)
+  - Re-format the data to adhere to the output feedback data schema
   - Remove instances of profanity from feedback text
   - Remove instances of personally identifiable information (PII)
 3. Output the data to BigQuery

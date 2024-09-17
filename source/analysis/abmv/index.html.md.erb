@@ -1,9 +1,8 @@
 ---
 title: A/B and multivariate testing
 weight: 47
-last_reviewed_on: 2022-05-12
+last_reviewed_on: 2024-08-14
 review_in: 6 months
-hide_in_navigation: true
 ---
 
 # A/B and multivariate testing
@@ -91,6 +90,16 @@ While the test is live, you can restrict access to live conversion metrics to st
 Check the test is working correctly and recording your metrics.
 
 You should confirm who has the authority to stop the test and make sure that any on-call developers can switch off tests in case of bugs identified outside working hours.
+
+### A/B testing on GOV.UK
+
+There is GOV.UK-specific documentation in the GOV.UK developer docs on [how A/B testing works](https://docs.publishing.service.gov.uk/manual/ab-testing.html) and on [how to run an A/B or multivariate test](https://docs.publishing.service.gov.uk/manual/run-ab-test.html) from the technical perspective.
+
+When developers implement A/B tests, the `"govuk:ab-test"` meta tag will be populated.
+The content of this meta tag is picked up and sent to [Google Analytics 4 (GA4)](/data-sources/ga/ga4/) in the `ab_test` custom parameter, and will appear in GA4 in the 'AB test' custom dimension.
+Analysts can use this dimension to obtain and compare metrics for each version of the page being tested.
+
+Note that [the register of A/B tests](https://docs.google.com/spreadsheets/d/1h4vGXzIbhOWwUzourPLIc8WM-iU1b6WYOVDOZxmU1Uo/edit?gid=254065189#gid=254065189) must be updated whenever an A/B test is run on GOV.UK.
 
 ## Analyse the results
 

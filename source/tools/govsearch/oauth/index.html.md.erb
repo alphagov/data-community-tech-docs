@@ -11,7 +11,7 @@ review_in: 6 months
 
 GOV.UK Signon is a single sign-on system used by GOV.UK publishing applications, such as Whitehall or Publisher. The application running it is called [signon](https://docs.publishing.service.gov.uk/repos/signon.html) and manages accounts for the users of those applications across government. This includes credential managements and access rights (e.g. what applications a specific user has access to).
 
-signon implements the OAuth2 standard, which means that any application that supports the standard can connect to signon (if registered). Most of the GOV.UK applications use the [gds-sso](support OAuth2) client implementation to easily connect to signon without having to look into the details of OAuth. Since GovGraphSearch is an express.js application, it uses another implementation called [Passport](https://www.passportjs.org/concepts/authentication/oauth/).
+signon implements the OAuth2 standard, which means that any application that supports the standard can connect to signon (if registered). Most of the GOV.UK applications use the gds-sso client implementation to easily connect to signon without having to look into the details of OAuth. Since GovGraphSearch is an express.js application, it uses another implementation called [Passport](https://www.passportjs.org/concepts/authentication/oauth/).
 
 The signon developers have decided to stick to version 22 of OAuth2. However the Passport documentation doesn't indicate what Passport version that corresponds to. There's a certain amount of risk that the two versions may not be 100% compatible.
 
@@ -45,7 +45,7 @@ The GovSearch code has three HTTP endpoints:
 
 * `https://gov-search.service.gov.uk/auth/gds/callback`: upon successful authentication, signon is configured to send the user back to that endpoint. GovSearch then check if indeed the request has a valid authentication cookie, and in that case redirects the browser to the app's homepage (`/`).
 
-The code for those 3 enpoints is in the application [main source file](https://github.com/alphagov/govuk-knowledge-graph-search/blob/main/app.ts#L54)
+The code for those 3 enpoints is in the application [main source file](https://github.com/alphagov/govuk-knowledge-graph-search)
 
 
 ### Direct search links

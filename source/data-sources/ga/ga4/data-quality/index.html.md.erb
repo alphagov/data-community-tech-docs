@@ -1,0 +1,56 @@
+---
+title: GOV.UK GA4 data quality
+weight: 1
+last_reviewed_on: 2024-09-09
+review_in: 6 months
+---
+
+# GOV.UK GA4 data quality
+<span style="color:red">This page is a work in progress.</span>
+
+Google Analytics 4 (GA4) is used to collect data on the usage of GOV.UK.
+
+Information on how to understand and use this data can be found in the [Analysis section of this site](/analysis/govuk-ga4/).
+
+There are a few known issues with this data, which are detailed below.
+
+
+## Data quality notes and annotations 
+
+We are currently developing a spreadsheet and Looker Studio report which contain annotations of our GOV.UK GA4 data. 
+
+## Known issues with the GOV.UK GA4 data
+
+### Data quality variance and content over time 
+
+Data was first collected into this property on 23/09/22.
+The events captured have changed significantly over time, and so early data quality may be patchy. 
+
+### Bot traffic 
+
+In GA4, [traffic from known bots is automatically excluded](https://support.google.com/analytics/answer/9888366?hl=en).
+
+We do not know how much other bot traffic is being recorded in our data.
+
+### Users we miss 
+
+We know a chunk of our users do not accept analytics cookies so we do not collect any data from them.
+
+Some users may also be using ad blockers which inhibit Google Analytics from functioning.
+
+### Incorrect event tracking
+#### Duplicate tracking on some navigation and copy events
+
+Due to the way navigation events have been implemented (firing on all right clicks on links), users who right click and select to ‘Copy’ a link will trigger both navigation and copy events.
+
+
+### Incorrect meta information in custom dimensions  
+#### Issues with publication and update dates
+The `first_published_at`, `public_updated_at` and `updated_at` dates sent with page view events may be misleading.
+
+This is particularly likely to be the case for content items published between 11pm and 1am (an hour either side of midnight) depending on whether the item is published during Greenwich Mean Time (GMT) or British Summer Time (BST).
+This is because to extract the date, which we record in the custom dimension, we strip out the time information from the Content API timestamp to leave the date in YYYY-MM-DD format. 
+
+Previous work looking into timestamps associated with Whitehall Publisher CSVs identified that the Content API timestamps are in GMT, so for example an item timestamped as '2014-08-31 23:00:00' is actually displayed on the page as '1 September 2014' (published at midnight BST).
+
+We have not yet investigated whether this has an impact on these GA4 dimensions.

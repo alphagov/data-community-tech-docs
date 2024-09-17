@@ -1,0 +1,63 @@
+---
+title: GOV.UK Publishing GA4
+weight: 4
+last_reviewed_on: 2024-08-16
+review_in: 6 months
+---
+
+# GOV.UK Publishing GA4
+<span style="color:red">This page is a work in progress.</span>
+
+Google Analytics 4 (GA4) is used to collect data on the usage of GOV.UK Publishing apps.
+
+This data can be accessed via the Google Analytics 4 user interface, the GA4 Looker Studio connection, and the Google Analytics Data API.
+
+This data is also exported to BigQuery.
+
+## Content
+
+The usage data for all Publishing apps is sent to the one property.
+
+## Access
+
+Contact a GOV.UK Publishing performance analyst for access to the Publishing GA4 data.
+
+### Location
+
+There are two GOV.UK Publishing GA4 properties. These correspond to the integration and production or live GOV.UK Publishing apps.
+
+## GA4 settings
+### Property set-up
+At set-up, we chose the following reporting options:
+
+- Reporting timezone of United Kingdom - (GMT+01:00) United Kingdom Time
+- Currency is British Pound (£)
+- Industry category of Law and Government 
+- Business size - Very Large
+- When asked about our business objectives (which determines which standard reports GA4 will provide in the property), we chose 'Get baseline reports' 
+
+No [subproperties](https://support.google.com/analytics/answer/11525732) are set up for the GOV.UK Publishing GA4 properties.
+Instead, we are using BigQuery and Looker Studio to clean, filter, and control access to the data.
+
+### Data collection
+
+GA4's inbuilt 'Enhanced measurement' feature is not in use on GOV.UK Publishing apps as it was determined that it would not meet our data collection needs.
+However, default GA4 dimensions have been used wherever there is a clear fit to the event being captured to ensure that GDS will benefit from any default reporting functionality associated with those events and dimensions.
+Tracking has been implemented across GOV.UK Publishing apps using custom dataLayer pushes which are sent to GA4 with Google Tag Manager. 
+
+Google Signals data collection and Ads personalisation is disabled for GDS GA4 properties within the interface.
+Both of these options are also disabled in Google Tag Manager, to ensure that these settings cannot be accidentally changed.
+
+Granular location and device data collection is enabled to allow reporting on the city-level location and devices used by our users.
+
+### Data processing and modification
+
+At present, we have not created any custom events or designated any events as conversions within GA4.
+
+We are also not using GA4's inbuilt data redaction feature on GOV.UK.
+Instead, we are applying redaction to strip out potential Personally Identifable Information (PII) from values before they are pushed to the dataLayer (see our [documentation on this in GitHub](https://github.com/alphagov/govuk_publishing_components/blob/main/docs/analytics-ga4/pii-remover.md)).
+Additional PII redaction is also applied in Google Tag Manager as a fail-safe.
+
+### Retention
+
+The data retention period for this data is set in the GA4 user interface to 38 months in the GA4 user interface.

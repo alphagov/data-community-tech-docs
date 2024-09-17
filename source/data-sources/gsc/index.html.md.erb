@@ -24,12 +24,13 @@ More information can be found in our [GA access policy](/processes/ga-access/#wh
 
 ### Location
 
-GSC data for the www.gov.uk site is located in BigQuery in the `ga4-analytics-352613.searchconsole_wwwgovuk` dataset.
+GSC data for the www.gov.uk site is located in BigQuery in the `ga4-analytics-352613.searchconsole_wwwgovuk` dataset, within the [GA4 analytics project](/tools/google-cloud-platform/gcp-projects/#ga4-analytics).
+There are two partitioned tables: `searchdata_site_impression` and `searchdata_url_impression`. 
+The `searchdata_site_impression` table contains performance data for our GOV.UK property aggregated at the site/property level.
+The `searchdata_url_impression` table contains performance data for aggregated by URL.
+More information on Search Console data can be found in [Google's documentation](https://support.google.com/webmasters/answer/12917991?hl=en).
 
-This is within the [GA4 analytics project](/gcp/#ga4-analytics).
-There are 2 partitioned tables: `searchdata_site_impression` and `searchdata_url_impression`.
-
-For more information on the Google Cloud Platform projects, see our [GCP Project Documentation](/gcp/).
+For more information on the Google Cloud Platform projects, see our [GCP Project Documentation](/tools/google-cloud-platform/gcp-projects).
 
 
 ## Schema

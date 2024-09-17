@@ -1,7 +1,7 @@
 ---
 title: Google Analytics
 weight: 1
-last_reviewed_on: 2024-01-19
+last_reviewed_on: 2024-08-19
 review_in: 6 months
 ---
 
@@ -9,21 +9,42 @@ review_in: 6 months
 
 Google Analytics is the tool we use to collect data from users about how they use our digital products and services.
 
+## Accounts and properties
+
+Google Analytics properties - the datasets associated with a given tracking code/measurement ID - are grouped under accounts.
+
+In the Government Digital Service, we have a number of accounts, grouping properties by the function of the websites they correspond to or the directorate that owns them.
+Key accounts include:
+
+- 'www.gov.uk' - under which properties related to the 'main' www.gov.uk site (including development websites) and GOV.UK app sit
+- 'GDS - GOV.UK - Publishing' - under which properties related to the GOV.UK Publishing apps sit
+- 'GOV.UK - Blogs' - which houses the [GOV.UK Blogs property](./blogs-ga4/)
+
+Access at account level is generally restricted to named users with specific needs and certain senior performance analysts with admin roles.
+The majority of access is granted at property level.
 
 ## 360
 360 is Google's premium or enterprise tier. GDS has an active 360 contract.
 
-All GDS accounts and properties should be created at this tier.
+All GDS GA4 properties should be created at this tier.
 This is to ensure data collected is covered by our 360 contract terms.
+
+Google Analytics 360 also has a number of advantages over the free tier, providing higher limits on data collection, reporting, retention, and export to BigQuery.
+More information on the differences between free Google Analytics and Google Analytics 360 can be found on Google's [support pages](https://support.google.com/analytics/answer/11202874).
 
 If you have created a new GDS Google Analytics property and need to upgrade it to 360, please contact the Analytics team.
 
 
 ## Google Analytics data sources
-- [GA settings database](./ga-settings/)
+
 - [www.gov.uk GA4 data](./ga4/)
 - [www.gov.uk GA4 data in BigQuery](./ga4-bq/)
 - [www.gov.uk flattened GA4 data in BigQuery](./ga4-flat/)
+- [GOV.UK Publishing GA4](./publishing-ga4/)
+- [GOV.UK Blogs GA4](./blogs-ga4/)
 - [GA4 usage logs](./ga4-logs/)
-- [www.gov.uk Universal Analytics data](./ua/)
+- [Historic GOV.UK analytics data](./historic-ua/)
+- [www.gov.uk Universal Analytics data in BigQuery](./ua/)
 - [www.gov.uk flattened Universal Analytics data in BigQuery](./ua-flat/)
+- [GA4 access logs](./ga4-logs/)
+- [GA settings database](./ga-settings/)
