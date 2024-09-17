@@ -17,19 +17,22 @@ Everyone with a @digital.cabinet-office.gov.uk email address (all GDS staff) has
 In addition, everyone who requests and is granted access to the GOV.UK GA4 data will be given access to query this flattened dataset.
 More information can be found in our [GA access policy](/processes/ga-access/#what-we-provide-access-to).
 
+## Using the data
+The data is partitioned on `event_date` and requires a `WHERE` clause like `WHERE event_date = "2024-09-12"`
+
 ### Location
 This data can be found in BigQuery in the `ga4-analytics-352613.flattened_dataset` dataset.
-Each daily table is sharded in the format flattened_daily_ga_data_YYYYMMDD.
+`ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
 
 For more information on our Google Cloud Platform projects, see our [GCP project documentation](tools/google-cloud-platform/).
 
 ## Production process
-The code is exectuted via Dataform every morning at 8am UTC.
+The code is exectuted via Dataform every morning at 8am local UK time.
 
 ## Schema
 | field name | type | mode | description |
 | --- | --- | --- | --- |
-| event_date | STRING | NULLABLE | The date when the event was logged, formatted as YYYYMMDD |
+| event_date | DATE | NULLABLE | The date when the event was logged, formatted as YYYYMMDD |
 | user_pseudo_id | STRING | NULLABLE | The pseudonymous ID for a user on a particular client |
 | event_name | STRING | NULLABLE | The [name of the event](https://docs.publishing.service.gov.uk/analytics/attribute_event_name.html) |
 | event_timestamp | INTEGER | NULLABLE | The time (in microseconds, UTC) when the event was logged |
