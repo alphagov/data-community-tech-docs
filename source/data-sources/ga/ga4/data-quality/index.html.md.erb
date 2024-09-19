@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 data quality
 weight: 1
-last_reviewed_on: 2024-09-16
+last_reviewed_on: 2024-09-18
 review_in: 6 months
 ---
 
@@ -53,18 +53,30 @@ If data users would like to exclude these clicks from their dataset, they can do
 This is also why some duplicate tracking may be occuring with the navigation and copy tracking, as users who right click and select to ‘Copy’ a link will trigger both navigation and copy events.
 
 
-### Incorrect information in custom dimensions  
+### Incorrect information in dimensions  
+#### Inconsistencies in 'outbound' values in attachment events
+
+On pages with attachment links, clicks on different links to download files come through with the `outbound` dimensions equalling 'true' as would be expected (as these files are hosted on https://assets.publishing.service.gov.uk).
+However, clicks on the preview link (to 'View online') come through with the `outbound` value of 'false' even through the preview is also hosted on https://assets.publishing.service.gov.uk.
+
+This is because in the source HTML the second link only has the page path, and is being redirected to the assets domain.
+
+
 #### Issues with users accessing GOV.UK in different languages  
 
-We capture what language a page was written in in the `content_language` dimension. The user's browser language is captured in the `language` dimension.
-However, there are a number of other ways users can translate page content - for example, using browser add-ons. 
-If the browser is translating the page content after the `page_view` event is sent, then the `page_view` will be sent with details in the original language (in most cases, English), though subsequent link clicks might be translated.
-However, there are some links (related content, amongst others) that we have hard-coded into the English to make them easier to analyse.
+We capture what language a page was written in in the `content_language` dimension. The majority of pages on GOV.UK are written in English, although there are a few pages in [Ukrainian](https://www.gov.uk/guidance/apply-for-a-ukraine-family-scheme-visa.uk), [Russian](https://www.gov.uk/guidance/apply-for-a-ukraine-family-scheme-visa.ru), and other languages.
+
+Separately, the user's browser language is captured in the `language` dimension.
+However, there are a number of ways users can translate page content - for example, using browser add-ons.
+If the browser is translating the page content after the `page_view` event is sent, then the `page_view` will be sent with details in the original language (in most cases, English), though the text and other dimensions sent with subsequent interactions on that page might be translated.
+
+There are a few dimensions that we have hard-coded in English to make them easier to analyse, for example the 'section' value on related content link clicks, but in most cases this was not possible due to the way content is surfaced via the Content API on GOV.UK.
 
 #### Issues with link domain information in navigation tracking on pages with mistyped URLs
 When there is an extra / in the URL, the 'Link domain' information is incorrect, coming through as the first part of the path instead of the domain.
-This can be seen on the live site, for example if you interact with links on the `https://www.gov.uk//guidance/cost-of-living-payment#low-income-benefits-and-tax-credits-cost-of-living-payment-eligibility` page.
-Strictly, this URL should not be valid, but it (and many other incorrect URLs) do work to load content on GOV.UK. 
+This can be seen on the live site, for example if you interact with the Contents links on the `https://www.gov.uk//guidance/cost-of-living-payment#low-income-benefits-and-tax-credits-cost-of-living-payment-eligibility` page.
+Strictly, this URL should not be valid, but it (and many other incorrect URLs) do work to load content on GOV.UK.
+
 Use of URLs like this is rare and so this should not cause too much of a data quality issue.
 
 #### Issues with publication and update dates
