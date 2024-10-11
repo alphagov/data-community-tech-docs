@@ -36,7 +36,7 @@ If you are connecting to a BigQuery dataset, it is better to connect using a cus
 This is because some of our data is stored in sharded tables, and Looker Studio queries all shards when direct connections are established.
 This can be quite costly given the size of our datasets.
 
-For some data, hwoever, we have now created partitioned tables which are more efficient to use than sharded tables. For example, we have a partitioned flattened table for GOV.UK GA4 data. These can also be used in custom SQL queries to connect Looker Studio to BigQuery.
+For some data, however, we have now created partitioned tables which are more efficient to use than sharded tables. For example, we have a partitioned flattened table for GOV.UK GA4 data. These can also be used in custom SQL queries to connect Looker Studio to BigQuery.
 
 For SQL examples showing how to connect to both partitioned and sharded data sources with date parameters, please refer to our guidance on[Looker Studio best practice](https://docs.data-community.publishing.service.gov.uk/analysis/govuk-ga4/use-ga4/looker-studio/)
 
