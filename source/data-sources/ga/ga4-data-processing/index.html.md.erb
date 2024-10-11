@@ -29,5 +29,19 @@ The flattened GA4 data is created from the partitioned table and it is also part
 
 ## Re-running the pipeline
 
-If the raw data arrives after 8am UTC then data will be missing until the pipeline has been manually run.
-To perfrom a manual execution click on the start execution button here https://console.cloud.google.com/bigquery/dataform/locations/europe-west2/repositories/ga4_production_partitioning/details/release-scheduling?project=gds-bq-reporting and select the Production release configuration and all actions to run.
+To perform a manual execution click on the start execution button here https://console.cloud.google.com/bigquery/dataform/locations/europe-west2/repositories/ga4_production_partitioning/details/release-scheduling?project=gds-bq-reporting and select the Production release configuration and all actions to run.
+
+## Updating the Partitioned table schema
+
+Occasionally Google will change the schema of the data it sends to BigQuery. This will cause the processing to fail.
+To update the schema run the following:
+
+This command produces a schema file based on what Google is now sending, change YYYYMMDD to reflect yesterday
+
+`bq show schema format=prettyjson ga4-analytics-352613:analytics_330577055.events_YYYYMMDD > new_schema.json`
+
+You will then need to change the `event_date` to a `DATE` and save the modified file.
+
+`bq update ga4-analytics-352613:analytics_330577055.partitioned_events new_schema.json`
+
+Then see the steps on re running the pipeline above.
