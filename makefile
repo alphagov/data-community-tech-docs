@@ -4,8 +4,8 @@
 ## init
 init:
 	brew install rbenv ruby-build
-	rbenv install 2.7.6
-	rbenv shell 2.7.6
+	rbenv install 3.1.0
+	rbenv shell 3.1.0
 	rbenv exec gem install contracts -v 0.16.1
 	rbenv exec gem install middleman
 	rbenv exec bundle install
