@@ -1,7 +1,7 @@
 ---
 title: Content Data app
 weight: 9
-last_reviewed_on: 2024-05-16
+last_reviewed_on: 2024-10-16
 review_in: 6 months
 ---
 # Content Data app
@@ -9,11 +9,12 @@ review_in: 6 months
 The Content Data app summarises and displays key statistics on the performance of pages on www.gov.uk.
 
 The app mostly relies on [GA4 data](/data-sources/ga/ga4/) and is populated via a scheduled query and table in BigQuery, detailed below.
+Some additional data comes from Feedex/the Feedback explorer tool.
 
 ## Access
 The Content Data app itself requires a [Signon account to access](https://content-data.publishing.service.gov.uk/content).
 
-The data which populates the Content data app is stored in BigQuery in the govuk-content-data project.
+Most of the data which populates the Content data app is stored in BigQuery in the govuk-content-data project.
 Access to this project and dataset is currently limited to individuals that are working on the project.
 
 ### Location
