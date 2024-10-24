@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 flattened tables
 weight: 3
-last_reviewed_on: 2024-05-23
+last_reviewed_on: 2024-10-24
 review_in: 6 months
 ---
 
@@ -17,17 +17,38 @@ Everyone with a @digital.cabinet-office.gov.uk email address (all GDS staff) has
 In addition, everyone who requests and is granted access to the GOV.UK GA4 data will be given access to query this flattened dataset.
 More information can be found in our [GA access policy](/processes/ga-access/#what-we-provide-access-to).
 
-## Using the data
-The data is partitioned on `event_date` and requires a `WHERE` clause like `WHERE event_date = "2024-09-12"`
-
-### Location
+## Location
 This data can be found in BigQuery in the `ga4-analytics-352613.flattened_dataset` dataset.
 `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
 
 For more information on our Google Cloud Platform projects, see our [GCP project documentation](tools/google-cloud-platform/).
 
+## Using the data
+
+The GOV.UK GA4 flattened data is stored in a partitioned table, which introduces some differences in how queries are structured compared to the previous method of working with sharded tables.
+
+### Querying a specific date  
+
+The data, partitioned on `event_date`, requires a `WHERE` clause like `WHERE event_date = "2024-09-12"`
+
+### Querying yesterday's data
+
+To select yesterday's data, the `WHERE` clause would be written as: `WHERE event_date = DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)`
+
+### Querying dates using a `DATE` variable
+
+Finally, if your preference is to select dates using declared variables, these would now be written as follows:
+
+```SQL
+DECLARE backfill_date DATE DEFAULT "2024-10-20";
+
+SELECT *
+FROM `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
+WHERE event_date = backfill_date
+```
+
 ## Production process
-The code is exectuted via Dataform every morning at 8am local UK time.
+The code is exectuted via Dataform, and is scheduled to run at regular intervals every morning from 8am local UK time. 
 
 ## Schema
 | field name | type | mode | description |
