@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 flattened tables
 weight: 3
-last_reviewed_on: 2024-05-23
+last_reviewed_on: 2024-10-31
 review_in: 6 months
 ---
 
@@ -176,6 +176,8 @@ The code is exectuted via Dataform every morning at 8am local UK time.
 | item_name | STRING | NULLABLE | |
 | item_list_index | STRING | NULLABLE | The index of the search result item. A maximum of 200 search result items (the first 200) will be sent on longer search results pages |
 | item_content_id | STRING | NULLABLE | The content ID of the search result item |
+| emergency_banner | STRING | NULLABLE | Value is true if the user is served the emergency banner |
+| global_bar | STRING | NULLABLE | Value is set to true when a user is shown the global bar - e.g. when it reminded users to register to vote |
 
 
 
