@@ -1,7 +1,7 @@
 ---
 title: Find things in the GOV.UK GA4 data
 weight: 6
-last_reviewed_on: 2024-08-27
+last_reviewed_on: 2024-10-31
 review_in: 6 months
 ---
 
@@ -16,6 +16,7 @@ This page provides some guidance on how to find commonly requested information i
 More information on the data source itself can be found on the [GOV.UK GA4 data source page](/data-sources/ga/ga4/).
 Information on best practice accessing and using GA4 data can be found in the ['Use the GA4 data' section](/analysis/govuk-ga4/use-ga4/).
 
+The BigQuery SQL examples provided on this page make use of the [GOV.UK GA4 flattened partitioned dataset](https://docs.data-community.publishing.service.gov.uk/data-sources/ga/ga4-flat/) which is easier and more efficient to query, so should be used for most analysis and reporting.
 
 ## Page views
 
@@ -55,10 +56,10 @@ SELECT
   cleaned_page_location,
   COUNT(*) AS pageviews,
 FROM
-  `ga4-analytics-352613.flattened_dataset.flattened_daily_ga_data_*`
+  `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
 WHERE
-  _TABLE_SUFFIX BETWEEN '20240101'
-  AND '20240101'
+  event_date BETWEEN '2024-01-01'
+  AND '2024-01-01'
   #Filter to just page_view events
   AND event_name = 'page_view'
 GROUP BY
@@ -119,10 +120,10 @@ SELECT
   link_url,
   COUNT(*) AS events,
 FROM
-  `ga4-analytics-352613.flattened_dataset.flattened_daily_ga_data_*`
+  `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
 WHERE
-  _TABLE_SUFFIX BETWEEN '20240101'
-  AND '20240101'
+  event_date BETWEEN '2024-01-01'
+  AND '2024-01-01'
   #Filter to just navigation events
   AND event_name = 'navigation'
   #Filter to just external link clicks
@@ -175,11 +176,11 @@ SELECT
   link_url,
   COUNT(*) AS file_downloads,
 FROM
-  `ga4-analytics-352613.flattened_dataset.flattened_daily_ga_data_*`
+  `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
 WHERE
   #Filter to the right date
-  _TABLE_SUFFIX BETWEEN '20240101'
-  AND '20240101'
+  event_date BETWEEN '2024-01-01'
+  AND '2024-01-01'
   #Filter to just file_download events
   AND event_name = 'file_download'
   #Filter to just the page of interest
@@ -262,11 +263,11 @@ SELECT
   search_term,
   COUNT(*) AS searches,
 FROM
-  `ga4-analytics-352613.flattened_dataset.flattened_daily_ga_data_*`
+  `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
 WHERE
   #Filter to the right date
-  _TABLE_SUFFIX BETWEEN '20240101'
-  AND '20240101'
+  event_date BETWEEN '2024-01-01'
+  AND '2024-01-01'
   #Filter to just search events
   AND event_name = 'search'
   #Filter to just the page of interest
@@ -307,10 +308,11 @@ SELECT
   #Calculate a 'hit number' based on the timestamp
   ROW_NUMBER() OVER (PARTITION BY CONCAT(user_pseudo_id, "-", ga_sessionid) ORDER BY timestamp ASC) AS hit_number,
 FROM
-  `ga4-analytics-352613.flattened_dataset.flattened_daily_ga_data_20240826`
+  `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
 WHERE
   #Page views only
   event_name="page_view"
+  AND event_date = '2024-08-26'
 ORDER BY
   session_id,
   timestamp
@@ -366,10 +368,10 @@ SELECT
   END
     ) AS engaged_sessions
 FROM
-  `ga4-analytics-352613.flattened_dataset.flattened_daily_ga_data_*`
+  `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
 WHERE
-  _TABLE_SUFFIX BETWEEN '20240701'
-  AND '20240701'
+  event_date BETWEEN '2024-07-01'
+  AND '2024-07-01'
 GROUP BY
   country
 ORDER BY
