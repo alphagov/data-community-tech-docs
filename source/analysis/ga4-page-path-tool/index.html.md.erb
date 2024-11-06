@@ -1,0 +1,60 @@
+---
+title: Use the GA4 Page Path Tool
+weight: 39.2
+last_reviewed_on: 2024-11-06
+review_in: 6 months
+---
+
+# Using the GA4 Page Path Tool
+
+The [GA4 Page Path Tool](https://lookerstudio.google.com/reporting/8529fbac-32d9-4d61-9623-512237e358da/page/p_285z8fl8ld) provides insights into user journeys on GOV.UK, allowing you to analyse navigation patterns from specific start and/or end page URLs. The tool is organised into two tabs: the Session Path Tool and the Page Sequence Tool. Built using GA4 ‘page_view’ event data in BigQuery, it updates each morning to include data from the previous day.
+
+
+## Session Path Tool Tab
+
+The Session Path Tool displays complete session journeys, starting from the user’s entry page through to their exit page.
+
+- Each row represents a unique session journey. On the right, a count of the number of sessions following each specific journey is displayed.
+
+- You are able to use the tool in the reverse - by only submitting a final page URL to view journeys which lead to the final page of user sessions, regardless of starting page.
+
+- Additional filters enable you to view data by device type, session length (in terms of page count), and include an intermediary URL if you want to ensure a particular page appears in the session journey.
+
+## Page Sequence Tool Tab
+
+The Page Sequence Tool focuses on the most common page sequences originating from a specific URL, regardless of its position in the session.
+
+- Each row shows a different sequence of pages visited, starting from your specified page. A count of the sessions that followed each sequence is displayed.
+
+- You are able to use the tool in the reverse - by only submitting a final page URL to view journeys which lead to the final page of a page sequence, regardless of starting page.
+
+- Similar to the Session Path Tool, this tab includes controls for filtering by device type, session length, and an intermediary URL, ensuring that specified pages appear within the sequence.
+
+## Caveats and interpreting the outputs
+
+The GA4 Page Path Tool is designed to indicate the relative frequency of popular session journeys and sequences between specified pages rather than to provide exact counts of session occurrences. Due to the data processing required to build the tool, some sessions may be omitted from the results. This means that the outputs reflect common patterns and trends but are not a complete representation of all sessions.
+
+Other caveats to bear in mind when using the tool are:
+
+- Sessions with user_id values set to ‘false’ are removed from the data
+- Sessions containing smart answer journeys are omitted
+- For data clarity, sessions featuring consecutive page views within the first five pages are excluded due to limitations with the cleaned_page_location dimension and anomalies in repeat page view events
+- Only sessions with 10 or fewer page views are included in the analysis
+
+## The code & how it has been built
+
+Find the code [here](https://docs.google.com/presentation/d/1hiyQbvEGdxcKEEBZsaMpCshAefbQ4vZsEVYZjBdMRSs/edit#slide=id.p) and [here](https://docs.google.com/presentation/d/1XjfcBBXZ2CmEr93afQ3b5x7yw3P6ZMuREzFKZtn4_Go/edit#slide=id.p) which processes data to create structured outputs for both the Session Path Tool and the Page Sequence Tool. 
+
+To summarise, the following steps outline the approach taken for each tab:
+
+### Session Path Tool data process
+
+1. Retrieves page views by session, ordered by event timestamp
+2. Arranges these page views into sequential columns, ensuring that they follow the correct chronological order
+3. Returns only full session journeys, where each row represents one complete session. This enables the tool to count how many unique sessions followed identical journeys starting from a shared page and ending at a shared page
+
+### Page Sequence Tool data process
+
+1. Retrieves page views by session, ordered by event timestamp
+2. Arranges the page views in sequential columns, with each "shift" in the session represented in a new row
+3. Breaks each journey into smaller, distinct sequences. Each session is divided into chunks, with each chunk given a sequence number; for example, a session with three page views would contain one 3-page sequence and two 2-page sequences. By identifying the endpoint of each sequence, we can count the number of unique sessions that followed specific sequences between two pages
