@@ -1,0 +1,45 @@
+---
+title: GOV.UK display screen
+weight: 51
+last_reviewed_on: 2024-11-11
+review_in: 6 months
+---
+
+# GOV.UK display screen
+<span style="color:red">This page is a work in progress.</span>
+
+The GOV.UK display screen provides a snapshot of recent activity on [GOV.UK](www.gov.uk), including:
+
+- the number of users on GOV.UK in the last 30 minutes
+- recent searches
+- the most popular content in the last 7 days
+- recently published pages
+
+The display screen was [first created in May 2013](https://github.com/alphagov/govuk-display-screen/commits/main/?after=0f3376bc1a053c70d29cda193a004f657ad7800e+309).
+The screen was broken and then deprecated for a period in 2023-24 and the [original repository was archived](https://github.com/alphagov/govuk-display-screen).
+
+However, in late 2024 the display screen was fixed and reinstated by the Insights and Analytics team, who created a [new repository for the work](https://github.com/alphagov/govuk-display-screen-2024).
+
+## Using the display screen
+### Get access to the GOV.UK display screen
+
+The GOV.UK display screen is on display in the GDS London office.
+
+### Display screen data definitions
+
+| Field name | Definition | Notes |
+| --- | --- | --- | 
+| Users on GOV.UK in the last 30 minutes |  |  |
+| Live Searches |  |  |
+| Popular in the last 7 days |  |  | 
+| Recently Published | | |
+
+Recent searches are extracted from page titles due to limitations with the Google Analytics Data API's realtime reporting.
+
+## How the GOV.UK display screen works 
+
+The up-to-date GOV.UK display screen code can be found on GitHub in the [govuk-display-screen-2024 repository](https://github.com/alphagov/govuk-display-screen-2024).
+
+### Data sources
+
+The GOV.UK display screen queries the Google Analytics Data API to obtain realtime Google Analytics data.
