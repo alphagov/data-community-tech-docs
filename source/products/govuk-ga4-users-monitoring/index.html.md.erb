@@ -1,0 +1,40 @@
+---
+title: GOV.UK GA4 users monitoring
+weight: 55
+last_reviewed_on: 2024-11-11
+review_in: 6 months
+---
+
+# GOV.UK GA4 users monitoring
+<span style="color:red">This page is a work in progress.</span>
+
+The [GOV.UK GA4 users monitoring Looker Studio report](https://lookerstudio.google.com/reporting/2a6e53cc-34e7-459f-820a-949918ea02e3) provides information on users of GOV.UK GA4 data, including:
+
+- the total number of users and service accounts with access to the GOV.UK GA4 data
+- the number of users with unrecognised email addresses, or with [disallowed email domains](/processes/ga-access/#who-can-be-granted-access)
+- the number of users who have not accessed the data in the last six months
+
+This report was [first created in November 2024](https://trello.com/c/xZRqzIgu/47-flag-non-legit-emails-that-have-access-to-ga-data) to support the GOV.UK GA4 user administration carried out by the GOV.UK Insights and Analytics team.
+
+## Using the GOV.UK GA4 users monitoring report
+### Get access to the GOV.UK GA4 users monitoring report
+
+[The report](https://lookerstudio.google.com/reporting/2a6e53cc-34e7-459f-820a-949918ea02e3) can be viewed by anyone in the GDS performance analysts Google group.
+
+Those in the GOV.UK Insights and Analytics Google group are automatically granted 'Edit' permissions.
+
+## How the GOV.UK GA4 users monitoring works 
+
+### Data sources
+
+The GOV.UK GA4 users monitoring report uses a custom query which pulls together data from a few different data sources:
+
+- the `all_users` table in the dataset created by the [GA4 user admin tool](/tools/ga4-user-admin-tool/#ga4-user-admin-tool) 
+- the `user_admin_log` table in the dataset created by the [GA4 user admin tool](/tools/ga4-user-admin-tool/#ga4-user-admin-tool) 
+- the [GA4 access logs data](/data-sources/ga/ga4-logs/)
+- the `spocs` table in the user admin tool dataset, pulling organisation and [SPOC information](/processes/ga-access/spocs/) from a Google Sheet
+
+The `all_users` table is filtered so that only users with GOV.UK GA4 data access are included in this dataset.
+The GA4 access logs data is filtered to the Looker Studio date parameters.
+
+This data source is very similar to the [GOV.UK GA4 SPOC user report Looker Studio data source](/products/govuk-ga4-users-monitoring/), but has been created as a separate Looker Studio data source as it does not use viewer email filtering.
