@@ -1,0 +1,38 @@
+---
+title: GOV.UK GA4 annotations
+weight: 53
+last_reviewed_on: 2024-11-12
+review_in: 6 months
+---
+
+# GOV.UK GA4 annotations
+<span style="color:red">This page is a work in progress.</span>
+
+The [GOV.UK GA4 annotations report](https://lookerstudio.google.com/reporting/306f1e28-a2c1-4d3a-b03c-ae03ac0c9484) provides information on users of GOV.UK GA4 data to [SPOCs](/processes/ga-access/spocs/).
+
+The data provided includes:
+
+- the dates of changes to the GOV.UK GA4 data collection
+- the dates of external events which could impact use of GOV.UK
+
+This report was first created in mid 2024 by the GOV.UK Insights and Analytics team to support users of the GOV.UK GA4 data.
+
+## Using the GOV.UK GA4 annotations report
+### Get access to the GOV.UK GA4 annotations report
+
+[The report](https://lookerstudio.google.com/reporting/306f1e28-a2c1-4d3a-b03c-ae03ac0c9484) can be viewed by anyone with a GDS email address.
+
+Those in the GOV.UK Insights and Analytics team Google group and in the GDS Performance Analysts Google group are automatically granted 'Edit' permissions.
+
+## How the GOV.UK GA4 SPOCs reporting works 
+
+### Data sources
+
+The GOV.UK GA4 annotations reporting Looker Studio report uses a custom query which pulls together data from a few different data sources in the `ga4_annotations` dataset:
+
+- the `data_quality_notes` table, which pulls information on changes to the GA4 data collection from a Google Sheet 
+- the `govuk_timeline` and `planning_message_calendar` tables, which pull information on external events from two Google Sheets
+
+The custom query unions each of these tables together after adding in the 'Category' and 'Issue name' fields and ensuring that only appropriate rows (where events have specific dates) are pulled in.
+
+The whole data source (the table created by the union) is filtered by the Looker Studio date parameters.
