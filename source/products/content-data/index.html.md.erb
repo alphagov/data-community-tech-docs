@@ -1,22 +1,27 @@
 ---
-title: Use the Content Data app
+title: Content Data app
 weight: 34
-last_reviewed_on: 2024-10-21
+last_reviewed_on: 2024-11-11
 review_in: 6 months
 ---
 
-# Use the Content Data app
-<span style="color:red">This page is a work in progress.</span>
+# Content Data app
 
 The [Content Data app](https://docs.publishing.service.gov.uk/apps/content-store.html) helps users find key metrics about the performance of pages on www.gov.uk.
 
-More information on the data source itself can be found on the [Content Data app data source page](/data-sources/content-data-app/#content-data-app).
+The app mostly relies on [GA4 data](/data-sources/ga/ga4/) and is populated via a scheduled query and table in BigQuery, detailed below.
+Some additional data comes from Feedex/the Feedback explorer tool.
 
-## Get access to the Content Data app
+## Using the Content Data app
+### Get access to the Content Data app
 
-To access the Content Data app, you should contact your Content SPOC, who can request your access to Signon.
+The Content Data app itself requires a [Signon account to access](https://content-data.publishing.service.gov.uk/content).
+To get access, you should contact your Content SPOC, who can request your access to Signon.
 
-## Content Data data definitions
+Most of the data which populates the Content data app is stored in BigQuery in the govuk-content-data project.
+Access to this project and dataset is currently limited to individuals that are working on the project.
+
+### Content Data data definitions
 
 One of the key data sources supplying the Content Data app changed in late 2023, when the Content Data app was migrated from Universal Analytics (UA) to use [Google Analytics 4 (GA4) data](/data-sources/ga/ga4/).
 The app previously extracted Universal Analytics data from the Google Analytics Reporting API v4, but as of December 2023 it now draws on a table of metrics stored in BigQuery, based on the [raw GA4 data](/data-sources/ga/ga4-bq/).
@@ -32,7 +37,41 @@ The table below reveals potential differences when looking at Content Data over 
 | Number of feedback comments | The number of [Feedex comments returned from the support API](https://github.com/alphagov/content-data-api/blob/main/app/domain/etl/feedex/service.rb#L44) | No change | Data from Feedex - not impacted by the migration to GA4 |
 | Users who found page useful | The events with `Event action` 'ffYesClick' divided by the [events with the `Event action` 'ffNoClick' and 'ffYesClick' returned from the API](https://github.com/alphagov/content-data-api/pull/2044/files#diff-0577c687acdad31adaf559e2a057f9170259c1a0d1da8168aceb111578f22d1fL79) | The form_submit events with ui_text 'Yes' [divided by all the 'Yes' and 'No' form_submit events](https://github.com/alphagov/content-data-api/blob/main/app/domain/etl/ga/user_feedback_processor.rb#L49) | |
 
-## CSV export
+### CSV export
 
 You can also export a CSV of data from the app's [search results page](https://content-data.publishing.service.gov.uk/content).
 This contains all the metrics stored (GA4, feedback and word count/reading time) on the pages returned by your search as well as each page's title, organisation and document type.
+
+## How the Content Data app works
+
+The Content Data app is a Ruby on Rails app which imports page performance metrics into a data warehouse.
+These metrics are then exposed via an API and displayed in scorecards and charts on a website for easy use by civil servants across govermnment.
+Further technical documentation can be found on the [Developer docs](https://docs.publishing.service.gov.uk/repos/content-data-api.html) site.
+
+The table supplying the Content Data app with GA4 data can be found in BigQuery under the data set `govuk-content-data.ga4.GA4 dataform`. 
+This is updated every day with the previous day's data via a scheduled query ('Daily content data') in the same project.
+This query is currently scheduled to run at 9:00am.
+
+A script then imports yesterday's data from the `GA4 dataform` table into Content Data every day at 9:10am UTC.
+
+If the import fails for any reason, it needs to be manually re-run. The process and SQL code to used can be found on the [Content Data backfilling page](/products/content-data/content-data-processing/).
+Once the `GA4 dataform` table in BigQuery has been updated, the GOV.UK Platform Engineering team need to be alerted to re-run the import.
+
+### GA4 dataform table schema
+| field name | type | mode |
+| --- | --- | --- |
+| the_date | STRING | NULLABLE | 
+| cleaned_page_location | STRING | NULLABLE |
+| unique_page_views | INTEGER | NULLABLE |
+| total_page_views | INTEGER | NULLABLE |
+| exits | INTEGER | NULLABLE |
+| entrances | INTEGER | NULLABLE | 
+| total_searches | INTEGER | NULLABLE | 
+| unique_search_sessions | INTEGER | NULLABLE | 
+| unique_searchterms | INTEGER | NULLABLE | 
+| useful_yes | INTEGER | NULLABLE | 
+| useful_no | INTEGER | NULLABLE | 
+| session_starts | INTEGER | NULLABLE | 
+| session_engaged | INTEGER | NULLABLE | 
+
+

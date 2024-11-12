@@ -1,0 +1,33 @@
+---
+title: GA Settings Database report
+weight: 54
+last_reviewed_on: 2024-11-12
+review_in: 6 months
+---
+
+# GA Settings Database report
+<span style="color:red">This page is a work in progress.</span>
+
+The [GA Settings Database Looker Studio report](https://lookerstudio.google.com/reporting/623bb323-2484-472e-916c-93e43ea40ad7) provides information on the settings applied across GDS Google Analytics accounts and properties.
+
+This report was first created in August 2023 to support the administration of the GDS GA environment, carried out by the GOV.UK Insights and Analytics team.
+
+## Using the GA Settings Database report
+### Get access to the GA Settings Database report
+
+[The report](https://lookerstudio.google.com/reporting/623bb323-2484-472e-916c-93e43ea40ad7) can be viewed by anyone in the GDS performance analysts Google group.
+
+Those in the GOV.UK Insights and Analytics team Google group are automatically granted 'Edit' permissions.
+
+## How the GA Settings Database report works 
+
+### Data sources
+
+The GA Settings Database report uses a custom query which pulls together data from a number of tables in the [GA Settings Database](/data-sources/ga/ga-settings/) dataset:
+
+- the `ga4_accounts` table
+- the `ga4_properties` table 
+- the `ga4_audiences` table 
+- the `ga4_data_streams` table 
+
+All tables are filtered by the Looker Studio date parameters.

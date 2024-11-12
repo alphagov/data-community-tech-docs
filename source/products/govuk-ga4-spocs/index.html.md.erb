@@ -1,0 +1,43 @@
+---
+title: GOV.UK GA4 SPOCs reporting
+weight: 56
+last_reviewed_on: 2024-11-11
+review_in: 6 months
+---
+
+# GOV.UK GA4 SPOCs reporting
+<span style="color:red">This page is a work in progress.</span>
+
+The [GOV.UK GA4 SPOCs Looker Studio report](https://lookerstudio.google.com/reporting/3efb1388-9c6f-4265-beea-caea6b5a89fb) provides information on users of GOV.UK GA4 data to [SPOCs](/processes/ga-access/spocs/).
+
+The data provided includes:
+
+- the number of users the viewer is the SPOC for
+- the usage of users the viewer is the SPOC for 
+
+This report was first created in early 2024 to support SPOCs by what is now the GOV.UK Insights and Analytics team.
+
+## Using the GOV.UK GA4 SPOCs reporting
+### Get access to the GOV.UK GA4 SPOCs reporting
+
+[The report](https://lookerstudio.google.com/reporting/3efb1388-9c6f-4265-beea-caea6b5a89fb) can be viewed by anyone, but will only work for those who are documented as being SPOCs.
+
+Viewers will have to give Google consent to read their account's email address in order to view the report.
+
+Those in the GOV.UK Insights and Analytics team Google group are automatically granted 'Edit' permissions.
+
+## How the GOV.UK GA4 SPOCs reporting works 
+
+### Data sources
+
+The GOV.UK GA4 SPOCs reporting Looker Studio report uses a custom query which pulls together data from a few different data sources:
+
+- the `all_users` table in the dataset created by the [GA4 user admin tool](/tools/ga4-user-admin-tool/#ga4-user-admin-tool) 
+- the `user_admin_log` table in the dataset created by the [GA4 user admin tool](/tools/ga4-user-admin-tool/#ga4-user-admin-tool) 
+- the [GA4 access logs data](/data-sources/ga/ga4-logs/)
+- the `spocs` table in the user admin tool dataset, pulling organisation and [SPOC information](/processes/ga-access/spocs/) from a Google Sheet
+
+The `all_users` table is filtered so that only users with GOV.UK GA4 data access are included in this dataset, and the GA4 access logs data is also filtered to the Looker Studio date parameters.
+The whole data source is filtered by the viewer's email address, so that SPOCs can only see their organisation's users' data.
+
+This data source is very similar to the [GOV.UK GA4 users monitoring Looker Studio data source](/products/govuk-ga4-users-monitoring/), but that data source does not use the viewer email filter.
