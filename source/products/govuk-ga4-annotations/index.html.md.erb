@@ -35,4 +35,131 @@ The GOV.UK GA4 annotations reporting Looker Studio report uses a custom query wh
 
 The custom query unions each of these tables together after adding in the 'Category' and 'Issue name' fields and ensuring that only appropriate rows (where events have specific dates) are pulled in.
 
-The whole data source (the table created by the union) is filtered by the Looker Studio date parameters.
+Date range parameters are enabled and the whole data source (the result of the union of the above tables) is filtered by the Looker Studio date parameters.
+
+The custom query is as follows:
+
+```SQL
+WITH
+  dq_notes AS (
+  SELECT
+    What_date_did_the_thing_start_ AS start_date,
+    What_date_did_the_thing_end___if_relevant_ AS end_date,
+    Category AS category,
+    Issue_name AS issue_name,
+    Details AS details,
+    Impacted_event_name_s____comma_separated AS impacted_event_names,
+    Impacted_event_type_s____comma_separated AS impacted_event_types
+  FROM
+    `ga4-analytics-352613.ga4_annotations.data_quality_notes` ),
+  first_event_date AS (
+  SELECT
+    event_name,
+    type,
+    first_date
+  FROM
+    `ga4-analytics-352613.ga4_annotations.event_first_recorded_date` ),
+  govuk_timeline AS(
+  SELECT
+    PARSE_DATETIME("%A %e %B %Y", date) AS date,
+    CASE
+      WHEN other_events IS NOT NULL THEN "External event"
+      WHEN covid_events IS NOT NULL THEN "Covid event"
+      WHEN govuk_changes IS NOT NULL THEN "GOV.UK change"
+      ELSE NULL
+  END
+    AS issue_name,
+    other_events,
+    covid_events,
+    govuk_changes
+  FROM
+    `ga4-analytics-352613.ga4_annotations.govuk_timeline` ),
+  message_calendar AS(
+  SELECT
+    PARSE_DATETIME("%e %B %Y", CONCAT(date, year)) AS date,
+    CASE
+      WHEN national_events IS NOT NULL THEN "National event"
+      WHEN fixed_service_deadlines IS NOT NULL THEN "Fixed service deadline"
+      WHEN government_announcements IS NOT NULL THEN "Government annonucement"
+      WHEN political_calendar IS NOT NULL THEN "Political event"
+      WHEN government_events IS NOT NULL THEN "Government event"
+      WHEN external_events IS NOT NULL THEN "External event"
+      WHEN emotional_calendar IS NOT NULL THEN "Emotional event"
+      ELSE NULL
+  END
+    AS issue_name,
+    national_events,
+    fixed_service_deadlines,
+    government_announcements,
+    political_calendar,
+    government_events,
+    external_events,
+    emotional_calendar
+  FROM
+    `ga4-analytics-352613.ga4_annotations.planning_message_calendar` 
+    WHERE
+    REGEXP_CONTAINS(date, '^[0-9]{1,2}.[a-z]*') 
+    ),
+  union_table AS (
+  SELECT
+    start_date,
+    end_date,
+    category,
+    issue_name,
+    details,
+    impacted_event_names,
+    impacted_event_types
+  FROM
+    dq_notes
+  UNION ALL
+  SELECT
+    first_date,
+    NULL,
+    'Created',
+    CONCAT(type, " ", event_name, " event added"),
+    CONCAT("New event type added - name: ", CONCAT(event_name, CONCAT(", type: ", type))),
+    event_name,
+    type
+  FROM
+    first_event_date
+  UNION ALL
+  SELECT
+    DATE(date),
+    NULL,
+    'Information',
+    govuk_timeline.issue_name,
+    CONCAT(IFNULL(govuk_timeline.other_events,""), CONCAT(IFNULL(govuk_timeline.covid_events,""), IFNULL(govuk_timeline.govuk_changes, ""))) AS details,
+    NULL,
+    NULL
+  FROM
+    govuk_timeline
+  WHERE
+    govuk_timeline.issue_name IS NOT NULL 
+    UNION ALL
+  SELECT
+    DATE(date),
+    NULL,
+    'Information',
+    message_calendar.issue_name,
+    CONCAT(IFNULL(message_calendar.national_events,""), CONCAT(IFNULL(message_calendar.fixed_service_deadlines,""), CONCAT(IFNULL(message_calendar.government_announcements, ""), CONCAT(IFNULL(message_calendar.political_calendar, ""), CONCAT(IFNULL(message_calendar.government_events, ""), CONCAT(IFNULL(message_calendar.external_events, ""), IFNULL(message_calendar.emotional_calendar, ""))))))) AS details,
+    NULL,
+    NULL
+  FROM
+    message_calendar
+  WHERE
+    message_calendar.issue_name IS NOT NULL)
+SELECT
+  *
+FROM
+  union_table
+WHERE
+    (start_date BETWEEN PARSE_DATE('%Y%m%d', @DS_START_DATE)
+      AND PARSE_DATE('%Y%m%d', @DS_END_DATE))
+    OR (end_date BETWEEN PARSE_DATE('%Y%m%d', @DS_START_DATE)
+      AND PARSE_DATE('%Y%m%d', @DS_END_DATE))
+    OR ( --date in middle of issue range
+      start_date <= PARSE_DATE('%Y%m%d', @DS_START_DATE)
+      AND end_date >= PARSE_DATE('%Y%m%d', @DS_END_DATE) AND end_date IS NOT NULL)
+ORDER BY
+  start_date
+```
