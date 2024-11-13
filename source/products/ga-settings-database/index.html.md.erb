@@ -1,14 +1,13 @@
 ---
 title: GA Settings Database report
 weight: 55
-last_reviewed_on: 2024-11-12
+last_reviewed_on: 2024-11-13
 review_in: 6 months
 ---
 
 # GA Settings Database report
-<span style="color:red">This page is a work in progress.</span>
 
-The [GA Settings Database Looker Studio report](https://lookerstudio.google.com/reporting/623bb323-2484-472e-916c-93e43ea40ad7) provides information on the settings applied across GDS Google Analytics accounts and properties.
+The [GA Settings Database Looker Studio report](https://lookerstudio.google.com/reporting/623bb323-2484-472e-916c-93e43ea40ad7) provides information on the settings applied across GDS Google Analytics (GA) accounts and properties.
 
 This report was first created in August 2023 to support the administration of the GDS GA environment, carried out by the GOV.UK Insights and Analytics team.
 
@@ -30,4 +29,125 @@ The GA Settings Database report uses a custom query which pulls together data fr
 - the `ga4_audiences` table 
 - the `ga4_data_streams` table 
 
+The query selects fields from each table and joins them on the date and on account/property IDs. 
 All tables are filtered by the Looker Studio date parameters.
+
+The custom query is as follows:
+
+```SQL
+WITH
+  ga4_accounts AS (
+  SELECT
+    TIMESTAMP_TRUNC(_PARTITIONTIME, DAY) AS date,
+    REGEXP_EXTRACT(name, r'^accounts/(.*)$') AS name,
+    deleted,
+    update_time,
+    create_time,
+    display_name
+  FROM
+    `ga4-analytics-352613.analytics_settings_database.ga4_accounts`
+  WHERE
+    FORMAT_DATE("%Y%m%d",TIMESTAMP_TRUNC(_PARTITIONTIME, DAY)) BETWEEN @DS_START_DATE
+    AND @DS_END_DATE),
+  ga4_properties AS (
+  SELECT
+    TIMESTAMP_TRUNC(_PARTITIONTIME, DAY) AS date,
+    name,
+    google_signals_settings.state,
+    time_zone,
+    display_name,
+    REGEXP_EXTRACT(account, r'^accounts/(.*)$') AS account,
+    industry_category,
+    update_time,
+    create_time,
+    property_type,
+    data_sharing_settings.reset_user_data_on_new_activity AS reset_user_data_state,
+    data_sharing_settings.event_data_retention AS event_data_retention_period,
+    service_level,
+    currency_code
+  FROM
+    `ga4-analytics-352613.analytics_settings_database.ga4_properties`
+  WHERE
+    FORMAT_DATE("%Y%m%d",TIMESTAMP_TRUNC(_PARTITIONTIME, DAY)) BETWEEN @DS_START_DATE
+    AND @DS_END_DATE),
+  ga4_audiences AS (
+  SELECT
+    TIMESTAMP_TRUNC(_PARTITIONTIME, DAY) AS date,
+    property,
+    name,
+    display_name,
+    description,
+    membership_duration_days,
+    event_trigger.event_name,
+    exclusion_duration_mode
+  FROM
+    `ga4-analytics-352613.analytics_settings_database.ga4_audiences`
+  WHERE
+    FORMAT_DATE("%Y%m%d",TIMESTAMP_TRUNC(_PARTITIONTIME, DAY)) BETWEEN @DS_START_DATE
+    AND @DS_END_DATE),
+  ga4_data_streams AS (
+  SELECT
+    TIMESTAMP_TRUNC(_PARTITIONTIME, DAY) AS date,
+    property,
+    name,
+    display_name,
+    type,
+    create_time,
+    update_time,
+    web_stream_data.measurement_id AS web_measurement_id,
+    android_app_stream_data.firebase_app_id AS android_firebase_id,
+    ios_app_stream_data.firebase_app_id AS ios_firebase_id
+  FROM
+    `ga4-analytics-352613.analytics_settings_database.ga4_data_streams`
+  WHERE
+    FORMAT_DATE("%Y%m%d",TIMESTAMP_TRUNC(_PARTITIONTIME, DAY)) BETWEEN @DS_START_DATE
+    AND @DS_END_DATE)
+  SELECT
+    PARSE_TIMESTAMP('%Y%m%d %H:%M:%S', CONCAT(@DS_START_DATE, " ", "23:59:59")) as ds_start_date,
+    PARSE_TIMESTAMP('%Y%m%d %H:%M:%S', CONCAT(@DS_END_DATE, " ", "23:59:59")) as ds_end_date,
+    ga4_accounts.date AS date,
+    CAST(ga4_accounts.name AS INTEGER) AS account_id,
+    ga4_accounts.display_name AS account_display_name,
+    ga4_accounts.create_time AS account_create_time,
+    ga4_accounts.update_time AS account_update_time,
+    ga4_accounts.deleted AS account_deleted,
+    ga4_properties.name AS ga4_property_id,
+    ga4_properties.display_name AS ga4_property_display_name,
+    ga4_properties.state AS ga4_property_signals_state,
+    ga4_properties.time_zone AS ga4_property_timezone,
+    ga4_properties.industry_category AS ga4_property_industry_category,
+    ga4_properties.create_time AS ga4_property_create_time,
+    ga4_properties.update_time AS ga4_property_last_update_time,
+    ga4_properties.property_type AS ga4_property_type,
+    ga4_properties.reset_user_data_state AS ga4_property_reset_user_data_state,
+    ga4_properties.event_data_retention_period AS ga4_property_event_data_retention_period,
+    ga4_properties.service_level AS ga4_property_service_level,
+    ga4_properties.currency_code AS ga4_property_currency_code,
+    ga4_audiences.name AS ga4_audience_id,
+    ga4_audiences.display_name AS ga4_audience_display_name,
+    ga4_audiences.description AS ga4_audience_description,
+	ga4_data_streams.name AS ga4_data_stream_name,
+  	ga4_data_streams.display_name AS ga4_data_stream_display_name,
+  	ga4_data_streams.create_time AS ga4_data_stream_create_time,
+  	ga4_data_streams.update_time AS ga4_data_stream_update_time,
+  	ga4_data_streams.name AS ga4_data_stream_name,
+  	ga4_data_streams.type AS ga4_data_stream_type,
+  	CONCAT(IFNULL(ga4_data_streams.web_measurement_id, ""), IFNULL(ga4_data_streams.android_firebase_id, ""), IFNULL(ga4_data_streams.ios_firebase_id, "")) AS ga4_data_stream_id
+  FROM
+    ga4_accounts
+  FULL JOIN
+    ga4_properties
+  ON
+    ga4_accounts.date = ga4_properties.date
+    AND ga4_accounts.name = ga4_properties.account
+  FULL JOIN
+    ga4_audiences
+  ON
+    ga4_accounts.date = ga4_audiences.date
+    AND ga4_properties.name = ga4_audiences.property 
+  FULL JOIN
+  	ga4_data_streams
+  ON
+  	ga4_accounts.date = ga4_data_streams.date
+  	AND ga4_properties.name = ga4_data_streams.property
+```
