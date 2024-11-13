@@ -31,78 +31,78 @@ To use the forward or reverse page path tools, you should create your own copy o
 
 To run the notebook, you must do the following.
 
-    1. Authenticate your access
-    2. Set the query parameters
-    3. Run the cells in order. When running cell 2 - `auth.authenticate_user()` - you will see a pop-up asking you to authenticate
-    4. Follow the on screen prompts, selecting your account and __Allow__ when prompted
-    5. The cell will show as successfully run - with a small green tick - when you have successfully authenticated
+1. Authenticate your access
+2. Set the query parameters
+3. Run the cells in order. When running cell 2 - `auth.authenticate_user()` - you will see a pop-up asking you to authenticate
+4. Follow the on screen prompts, selecting your account and __Allow__ when prompted
+5. The cell will show as successfully run - with a small green tick - when you have successfully authenticated
     
 #### Setting the query parameters
     
-    You set the query parameters in the __Set query parameters__ cell.
+You set the query parameters in the __Set query parameters__ cell.
     
-    1. You must set the following mandatory query parameters:
-      - start and end dates for the analysis
-      - desired page path of interest
-      - the number of pages or events the user journeys will be subsetted by
-      - whether to include page and/or event hits
-      - use the first or last hit to the desired page in the session for the subsetted journey
-      - device categories to include
+1. You must set the following mandatory query parameters:
+- start and end dates for the analysis
+- desired page path of interest
+- the number of pages or events the user journeys will be subsetted by
+- whether to include page and/or event hits
+- use the first or last hit to the desired page in the session for the subsetted journey
+- device categories to include
     
-    2. You can set the following optional query parameters on whether to:
-      - remove query strings from the page path of interest
-      - append event-associated page paths with an __[E]__
-      - flag journeys that include the entrance page
-      - flag journeys that include the exit page
-      - remove refreshes of the page of interest
-      - have search pages only show the search content type and search keywords
+2. You can set the following optional query parameters on whether to:
+- remove query strings from the page path of interest
+- append event-associated page paths with an __[E]__
+- flag journeys that include the entrance page
+- flag journeys that include the exit page
+- remove refreshes of the page of interest
+- have search pages only show the search content type and search keywords
     
-    Once you are happy with the query parameters, select the cell and first select __Runtime__ in the top menu, and then __Run after__.
+Once you are happy with the query parameters, select the cell and first select __Runtime__ in the top menu, and then __Run after__.
     
-    The notebook will run each cell after the __Set query parameters__ cell one at a time.
+The notebook will run each cell after the __Set query parameters__ cell one at a time.
     
-    #### Viewing the outputs
+#### Viewing the outputs
     
-    There are 4 outputs from running the notebook:
+There are 4 outputs from running the notebook:
     
-    - a raw CSV data file
-    - a CSV data file summarising the most popular pages at each step
-    - a Plotly visualisation of a Sankey diagram
-    - a Google Sheets table of the top 10 page path tool results
+- a raw CSV data file
+- a CSV data file summarising the most popular pages at each step
+- a Plotly visualisation of a Sankey diagram
+- a Google Sheets table of the top 10 page path tool results
     
-    After you select __Runtime__ and then __Run after__, the notebook should automatically scroll to the cell that starts with __Initialise a Google BigQuery client, and define the query parameters__.
+After you select __Runtime__ and then __Run after__, the notebook should automatically scroll to the cell that starts with __Initialise a Google BigQuery client, and define the query parameters__.
     
-    Manually scroll to this cell if the notebook does not automatically scroll to it.
+Manually scroll to this cell if the notebook does not automatically scroll to it.
     
-    This cell first estimates the number of gigabytes read by the query and shows you the amount.
+This cell first estimates the number of gigabytes read by the query and shows you the amount.
     
-    If you are happy to run the query, enter "yes" into the user input box.
+If you are happy to run the query, enter "yes" into the user input box.
     
-    If you leave the input box blank or enter something other than "yes", the query will not run.
+If you leave the input box blank or enter something other than "yes", the query will not run.
     
-    ##### The raw data file, summary, and Sankey diagram
+##### The raw data file, summary, and Sankey diagram
     
-    The query first generates the raw CSV data file and a CSV file of the most popular pages at each step, regardless of the subsetted journey.
+The query first generates the raw CSV data file and a CSV file of the most popular pages at each step, regardless of the subsetted journey.
     
-    The query then downloads those files into the __Downloads_ folder on your local machine.
+The query then downloads those files into the __Downloads_ folder on your local machine.
     
-    If the query does not generate these CSV files, check the end of the URL search bar. If you see a download icon with a red cross, select the icon and change the option to __Always allow...__, and then select __Done__.
+If the query does not generate these CSV files, check the end of the URL search bar. If you see a download icon with a red cross, select the icon and change the option to __Always allow...__, and then select __Done__.
     
-    Finally, running the query also creates the Sankey diagram, which is a visualisation of the forward/reverse page path from the page of interest.
+Finally, running the query also creates the Sankey diagram, which is a visualisation of the forward/reverse page path from the page of interest.
     
-    To download the Sankey diagram, select the camera icon in the top right of the diagram, labelled __Download plot as a png__. This will download a PNG file to your __Downloads__ folder.
+To download the Sankey diagram, select the camera icon in the top right of the diagram, labelled __Download plot as a png__. This will download a PNG file to your __Downloads__ folder.
     
-    ##### The top 10 path tool results
+##### The top 10 path tool results
     
-    The __Presenting results in Google sheets__ cells create a Google Sheet of the top 10 forward/reverse page path journeys.
+The __Presenting results in Google sheets__ cells create a Google Sheet of the top 10 forward/reverse page path journeys.
     
-    Select and run the cell that starts __Compile a message, and flag to the user for a response; if not "yes", terminate execution__.
+Select and run the cell that starts __Compile a message, and flag to the user for a response; if not "yes", terminate execution__.
     
-    You will see a box asking if you are happy to create the Google Sheet.
+You will see a box asking if you are happy to create the Google Sheet.
     
-    If you are happy to create the Google Sheet, enter "yes" into the user input box. If you leave the input box blank or enter something other than "yes", the query will not run.
+If you are happy to create the Google Sheet, enter "yes" into the user input box. If you leave the input box blank or enter something other than "yes", the query will not run.
     
-    The query will create the Google Sheet and provide a link to this spreadsheet under the __Create google sheet in Product and Technology Directorate/Data Services/Data Products/16 User Journey tools/Path tools: google sheet result tables__ cell.
+The query will create the Google Sheet and provide a link to this spreadsheet under the __Create google sheet in Product and Technology Directorate/Data Services/Data Products/16 User Journey tools/Path tools: google sheet result tables__ cell.
 
 ### Forward and reverse path tool data definitions
 
