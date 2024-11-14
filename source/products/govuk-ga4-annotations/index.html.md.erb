@@ -1,13 +1,11 @@
 ---
 title: GOV.UK GA4 annotations
 weight: 53
-last_reviewed_on: 2024-11-12
+last_reviewed_on: 2024-11-14
 review_in: 6 months
 ---
 
 # GOV.UK GA4 annotations
-<span style="color:red">This page is a work in progress.</span>
-
 The [GOV.UK GA4 annotations report](https://lookerstudio.google.com/reporting/306f1e28-a2c1-4d3a-b03c-ae03ac0c9484) provides information on users of GOV.UK GA4 data to [SPOCs](/processes/ga-access/spocs/).
 
 The data provided includes:
@@ -24,11 +22,26 @@ This report was first created in mid 2024 by the GOV.UK Insights and Analytics t
 
 Those in the GOV.UK Insights and Analytics team Google group and in the GDS Performance Analysts Google group are automatically granted 'Edit' permissions.
 
-## How the GOV.UK GA4 SPOCs reporting works 
+### GOV.UK GA4 annotations data definitions
+
+| Field name | Definition | Notes |
+| --- | --- | --- | 
+| start_date | The date the issue happened or started on |  |
+| end_date | If present, the date the issue was resolved or stopped occuring | Only present for annotations pulled from the `data_quality_notes` table |
+| category | The type of annotation - for example, if the annotation provides 'Information' or tells you when something was 'Changed', 'Created' or 'Broken' | Always 'Information' for the `govuk_timeline` and `planning_message_calendar` tables |
+| issue_name | The 'title' of the issue | Calculated in the custom query for the `govuk_timeline` and `planning_message_calendar` tables |
+| details | A more detailed explanation of the issue | Calculated in the custom query for the `govuk_timeline` and `planning_message_calendar` tables |
+| duration | The difference between the start and end dates | A calculated field added to the data source |
+| impacted_event_names | The event_name value for the GOV.UK GA4 events that might be impacted by this issue - 'null' if all events or unknown | Always 'null' for the `govuk_timeline` and `planning_message_calendar` tables |
+| impacted_event_types | The type value for the GOV.UK GA4 events that might be impacted by this issue - 'null' if all events or unknown | Always 'null' for the `govuk_timeline` and `planning_message_calendar` tables |
+| Record Count | A count of the records (rows) in the table | Default Looker Studio field |
+
+## How the GOV.UK GA4 annotations report works 
 
 ### Data sources
 
-The GOV.UK GA4 annotations reporting Looker Studio report uses a custom query which pulls together data from a few different data sources in the `ga4_annotations` dataset:
+The GOV.UK GA4 annotations reporting Looker Studio report uses the 'GOV.UK GA4 annotations' data source.
+This is a custom query which pulls together data from a few different data sources in the `ga4_annotations` dataset:
 
 - the `data_quality_notes` table, which pulls information on changes to the GA4 data collection from a Google Sheet 
 - the `govuk_timeline` and `planning_message_calendar` tables, which pull information on external events from two Google Sheets

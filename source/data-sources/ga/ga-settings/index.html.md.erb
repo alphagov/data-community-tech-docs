@@ -1,7 +1,7 @@
 ---
 title: GA Settings Database
 weight: 10
-last_reviewed_on: 2024-05-23
+last_reviewed_on: 2024-11-24
 review_in: 6 months
 ---
 
@@ -10,6 +10,7 @@ The Settings Database contains a daily download of all the account settings of G
 The purpose of this data is to enable monitoring of changes to the configuration of our GA accounts and properties.
 
 This [GitHub repository](https://github.com/alphagov/analytics-settings-database) contains the code used to query, structure, and save this data.
+Google Cloud Functions set up using this code query the [Google Analytics Admin API](https://developers.google.com/analytics/devguides/config/admin/v1) and save the settings returned on a given date in a series of tables in BigQuery.
 
 For an example of this data in use, see the [GA Settings Database Looker Studio dashboard](https://lookerstudio.google.com/reporting/623bb323-2484-472e-916c-93e43ea40ad7/page/PQpTD).
 
