@@ -1,11 +1,11 @@
 ---
-title: Use the spider diagram tool
-weight: 39.3
-last_reviewed_on: 2024-08-19
+title: Spider diagram tool
+weight: 46
+last_reviewed_on: 2024-11-13
 review_in: 6 months
 ---
 
-# Use the spider diagram tool
+# Spider diagram tool
 
 The spider diagram tool is a visualisation tool that shows which pages users:
 
@@ -18,7 +18,14 @@ This data is over a date range and is broken down by:
 - internal/external links
 - individual entry/exit pages paired with the count and proportion of page views
 
-This tool was developed within Data Services for use by analysts within GDS, and can be found in the 'Path tools' folder in the 'Performance and Data Analysts Community' shared Google Drive.
+This tool was developed within Data Services for use by analysts within GDS.
+
+## Using the spider diagram tool
+### Get access to the spider diagram tool
+
+The spider diagram tool can be found in the 'Path tools' folder in the 'Performance and Data Analysts Community' shared Google Drive.
+
+### Running the spider diagram tool
 
 To use the spider diagram tool, you must do the following:
 
@@ -27,9 +34,7 @@ To use the spider diagram tool, you must do the following:
 1. Run the tool notebook.
 1. View the outputs and save a local copy of the data.
 
-## Run the tool notebook
-
-To run the notebook, you must do the following.
+To run the notebook, you must do the following:
 
 1. Authenticate your access.
 1. Set the input variables.
@@ -37,8 +42,7 @@ To run the notebook, you must do the following.
 1. Run the __Execute queries__ cell.
 1. Create and download the visualisation.
 
-
-### Authenticating your access
+To authenticate your access, you should:
 
 1. Run the cells in order. When running cell 1 - `auth.authenticate_user()` - you will see a pop-up asking you to authenticate
 2. Follow the on screen prompts, selecting your account and __Allow__ when prompted
@@ -46,25 +50,26 @@ To run the notebook, you must do the following.
 
 If you receive a warning message saying "The notebook was not authored by Google", select __Run Anyway__.
 
-### Set the input variables
+#### Set the input variables
 
 You must complete and run the cells in the __Input Variables__ section.
 
 1. Complete the __Set Input Variables Form__ by entering the following fields:
 
-  - `start_date` and `end_date` - the date range you want to look at, in `YYYY/MM/DD` format
-  - `page_path` - the URL for the page of interest which always starts with `/`, for example `/brexit`
-  - `path_or_title` - whether the visualisation will show the page paths or page titles, for example `/find-a-job` or __Find a job__
-  - `remove_query_string` - check this box if you want to remove the query string from the URL, for example if you've input an answer into a smart answer field
-  - device categories - you must select at least one device type from __Desktop__, __Mobile__ or __Tablet__, otherwise the code will not run and will raise a `ValueError`
+- `start_date` and `end_date` - the date range you want to look at, in `YYYY/MM/DD` format
+- `page_path` - the URL for the page of interest which always starts with `/`, for example `/brexit`
+- `path_or_title` - whether the visualisation will show the page paths or page titles, for example `/find-a-job` or __Find a job__
+- `remove_query_string` - check this box if you want to remove the query string from the URL, for example if you've input an answer into a smart answer field
+- device categories - you must select at least one device type from __Desktop__, __Mobile__ or __Tablet__, otherwise the code will not run and will raise a `ValueError`
 
-  You do not need to change the following fields:
-  - `project_id` - this is always `gds-bq-reporting`
-  - `ga_dataset` - this is always `analytics_330577055` - the [GOV.UK GA4 Production dataset](/data-sources/ga/ga4-bq/)
+You do not need to change the following fields:
+
+- `project_id` - this is always `gds-bq-reporting`
+- `ga_dataset` - this is always `analytics_330577055` - the [GOV.UK GA4 Production dataset](/data-sources/ga/ga4-bq/)
 
 1. Select __Runtime__ and then __Run after__ to run all the cells in the __Input Variables__ section.
 
-### Run the query cells
+#### Run the query cells
 
 Run the following cells in the following order.
 
@@ -72,7 +77,7 @@ Run the following cells in the following order.
 1. __Query -- Acquisition Source__.
 1. __Query -- Next Page Path__.
 
-### Run the __Execute queries__ cell
+#### Run the __Execute queries__ cell
 
 The __Execute queries__ cell estimates and shows you the amount of data read by the query in gigabytes.
 
@@ -80,13 +85,13 @@ If you’re happy to run the query, enter "yes" into the user input box.
 
 If you leave the input box blank or type in something other than "yes", the query will not run.
 
-### Create and download the visualisation
+#### Create and download the visualisation
 
 Once the __Input Variables__ query and __Execute queries__ cells have finished running, the notebook generates the interactive Plotly figure visualisation.
 
 To download the plot as a .png, hover your cursor over the figure and select the camera icon located in the top right-hand menu.
 
-## Save a local copy of the data
+#### Save a local copy of the data
 
 Once the __Input Variables__ query and __Execute queries__ cells have finished running, the notebook downloads the following files to your local machine:
 
@@ -97,11 +102,17 @@ Once the __Input Variables__ query and __Execute queries__ cells have finished r
 If none or only some of the files are downloaded, check the end of the URL search bar. If you see a download icon with a red cross, select the icon and change the option to __Always allow...__, and then select __Done__.
 
 
-## Assumptions and caveats
+## How the spider diagram tool works
+
+### Data sources
+
+The spider diagram tool uses the [GOV.UK GA4 data as stored in BigQuery](/data-sources/ga/ga4-bq/).
+
+The full query is detailed in the tool notebook, and the original SQL can be found in the __Original SQL query__ cell at the bottom of the notebook.
+
+### Assumptions and caveats
 
 This log contains a list of assumptions and caveats used in the Forward Path tool analysis.
-
-### Definitions
 
 Assumptions are Red-Amber-Green (RAG)-rated according to the following definitions for quality and impact.
 
@@ -113,7 +124,7 @@ Assumptions are Red-Amber-Green (RAG)-rated according to the following definitio
 
 Thank you to the Home Office Analytical Quality Assurance team for these definitions.
 
-### Group all pages that have less than 2.5% of sessions to `(other)`
+#### Group all pages that have less than 2.5% of sessions to `(other)`
 
 * Quality: Green (for visualisation purposes)
 * Impact: Green (for visualisation purposes)
@@ -124,7 +135,7 @@ To mitigate this, all pages with less than 2.5% of overall sessions are aggregat
 
 As this is strictly for visualisation purposes, it is acceptable. However, any downstream analysis of the outputs is obviously limited due to this aggregation. As such, outputs of this tool should not be used for further quantitative analysis without a thorough understanding of this assumption's implications.
 
-### Notebook tool excludes URL query parameters and anchors from page paths
+#### Notebook tool excludes URL query parameters and anchors from page paths
 
 * Quality: Green
 * Impact: Green
