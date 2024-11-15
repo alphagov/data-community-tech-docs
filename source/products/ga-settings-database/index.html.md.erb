@@ -1,7 +1,7 @@
 ---
 title: GA Settings Database report
 weight: 55
-last_reviewed_on: 2024-11-13
+last_reviewed_on: 2024-11-14
 review_in: 6 months
 ---
 
@@ -17,6 +17,44 @@ This report was first created in August 2023 to support the administration of th
 [The report](https://lookerstudio.google.com/reporting/623bb323-2484-472e-916c-93e43ea40ad7) can be viewed by anyone in the GDS performance analysts Google group.
 
 Those in the GOV.UK Insights and Analytics team Google group are automatically granted 'Edit' permissions.
+
+
+### GA Settings Database data definitions
+
+| Field name | Definition | Notes |
+| --- | --- | --- | 
+| account_create_time | Time when this account was originally created |  |
+| account_deleted | Indicates whether this Account is soft-deleted or not (boolean) |  |
+| account_display_name | Human-readable display name for the account |  |
+| account_id | Resource name of the account |  |
+| account_update_time | Time when this account was last updated |  |
+| account_update_in_selected_date_range | Whether or not the account_update_time falls within the Looker Studio date range selected | A calculated field added to the data source |
+| date | Date the data was collected (also, the partition date) |  |
+| ds_end_date | The end date set in the Looker Studio date range |  |
+| ds_start_date | The start date set in the Looker Studio date range |  |
+| ga4_audience_description |  |  |
+| ga4_audience_display_name |  |  |
+| ga4_audience_id |  |  |
+| ga4_data_stream_create_time | Time when this stream was originally created |  |
+| ga4_data_stream_display_name | Human-readable display name for the Data Stream |  |
+| ga4_data_stream_id |  |  |
+| ga4_data_stream_name | Resource name of this Data Stream |  |
+| ga4_data_stream_type | The type of the data stream - Web, Android, iOS, etc |  |
+| ga4_data_stream_update_time | Time when this stream was last updated |  |
+| ga4_property_create_time | Time when the property was originally created |  |
+| ga4_property_currency_code | The currency type used in any reports involving monetary values for this property |  |
+| ga4_property_display_name | Human-readable display name for this property |  |
+| ga4_property_event_data_retention_period | Data retention period set for this property - for example, 'THIRTY_EIGHT_MONTHS' |  |
+| ga4_property_id | Resource name of the property |  |
+| ga4_property_industry_category | Industry associated with this property - for example, 'LAW_AND_GOVERNMENT' |  |
+| ga4_property_last_update_time | Time when the property fields were last updated |  |
+| ga4_property_reset_user_data_state | Whether or not this property is set up so that the user data retention period is reset for each user on new activity |  |
+| ga4_property_service_level | The Google Analytics service level that applies to this property - for example, 'GOOGLE_ANALYTICS_360' |  |
+| ga4_property_signals_state | The Google Signals settings applied to this property - for example, 'GOOGLE_SIGNALS_DISABLED' |  |
+| ga4_property_timezone | The property's Reporting Time Zone, used as the day boundary for reports, regardless of where the data originates |  |
+| ga4_property_type | The property type for this property |  |
+| property_update_in_selected_date_range | Whether or not the ga4_property_last_update_time falls within the Looker Studio date range selected | A calculated field added to the data source |
+| Record Count | A count of the records (rows) in the table | Default Looker Studio field |
 
 ## How the GA Settings Database report works 
 
@@ -130,7 +168,6 @@ WITH
   	ga4_data_streams.display_name AS ga4_data_stream_display_name,
   	ga4_data_streams.create_time AS ga4_data_stream_create_time,
   	ga4_data_streams.update_time AS ga4_data_stream_update_time,
-  	ga4_data_streams.name AS ga4_data_stream_name,
   	ga4_data_streams.type AS ga4_data_stream_type,
   	CONCAT(IFNULL(ga4_data_streams.web_measurement_id, ""), IFNULL(ga4_data_streams.android_firebase_id, ""), IFNULL(ga4_data_streams.ios_firebase_id, "")) AS ga4_data_stream_id
   FROM
