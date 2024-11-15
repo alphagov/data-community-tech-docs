@@ -38,8 +38,8 @@ Other caveats to bear in mind when using the tool are:
 
 - Sessions with user_id values set to ‘false’ are removed from the data
 - Sessions containing smart answer journeys are omitted
-- For data clarity, sessions featuring consecutive page views within the first five pages are excluded due to limitations with the cleaned_page_location dimension and anomalies in repeat page view events
-- Only sessions with 10 or fewer page views are included in the analysis
+- To clean up the data, both tools look at consecutive distinct page_view events within a session, ignoring duplicate consecutive page views. 
+- Only sessions with 5 or fewer page views are included in the analysis for the Session Path tool. The Page Sequence tool looks at sessions of all lengths.
 
 ## The code & how it has been built
 
