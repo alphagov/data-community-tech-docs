@@ -1,0 +1,85 @@
+---
+title: Use the GA4 Query Costs Dashboard
+weight: 85
+last_reviewed_on: 2024-11-15
+review_in: 6 months
+---
+
+# GA4 Query Costs Dashboard
+
+The [GA4 Query Costs Dashboard](https://lookerstudio.google.com/reporting/9fb2f7d6-efc9-40e2-a25e-d9071867bcd4/page/PQpTD) uses BigQuery log data to show queries and processing costs from jobs which have been run in GDS-owned GCP projects.
+
+The report is split into several pages, breaking down the data by various dimensions including jobs by user, jobs by project, and by specific query.
+
+By monitoring this report, we can spot any jobs which result in unusually large query costs, and other changes or activity that is unexpected.
+
+## Using the GA4 Query Costs Dashboard
+
+### Get access to the GA4 Query Costs Dashboard
+
+The [report](https://lookerstudio.google.com/reporting/9fb2f7d6-efc9-40e2-a25e-d9071867bcd4/page/PQpTD) can be viewed by anyone with a @digital.cabinet-office.gov.uk email address.
+
+It can be edited by anyone in the GDS performance analysts Google group.
+
+## How the GA4 Query Costs Dashboard works
+
+### Data sources
+
+The GA4 Query Costs Dashboard uses the ‘BigQuery use across projects’ data source. This is a custom query which pulls together data from a couple of different sources:
+
+- the `_AllLogs` table in the ‘all_gcp_logs’ dataset which contains log data from all GDS-owned GCP projects
+- the `exchange_rate` table in the ‘exchange_rate’ dataset which contains a USD to GBP conversion rate 
+
+The custom query which powers the charts in the dashboard works by first, in the first CTE, extracting various fields relating to GCP jobs from the `_AllLogs` table, filtering the logs to select only those related to BigQuery resources. Primarily it gets the timestamp, the user who executed the job, the total billed data (in TiB and MiB), and the contents of the SQL query. It also classifies queries as originating from either Looker or BigQuery based on identifiers in the query text, and captures the project ID and referenced tables.
+
+The second CTE pulls in exchange rate values from the exchange rate table, and in the final step, the query combines the outputs of these two CTEs and calculates an estimated cost in USD based on a fixed cost rate of approximately $7.16 per TiB of data processed. This is roughly the rate we are paying for our data processing costs, in accordance with the rates determined by [Google].(https://cloud.google.com/bigquery/pricing/?gad_source=1&gclid=Cj0KCQiA_9u5BhCUARIsABbMSPsOhQfApchT868JwNFBAhPXJ77XAKNffQVfnY9lfN0ZUAWZLJYAcOYaAl4-EALw_wcB&gclsrc=aw.ds#analysis_pricing_models) The results include details like the user, project, and query classification, along with the aggregated data usage and cost, providing an overview of BigQuery resource consumption and associated expenses.
+
+### The custom query in full
+
+```SQL
+WITH cte AS (
+  SELECT 
+  	FORMAT_TIMESTAMP("%Y-%m-%d", TIMESTAMP) AS formatted_timestamp,
+    proto_payload.audit_log.authentication_info.principal_email as user, 
+    CAST(replace(JSON_VALUE(proto_payload.audit_log.service_data.jobCompletedEvent.job.jobStatistics.totalBilledBytes), '"','') AS INT64)/1024/1024/1024/1024 as TiB,
+  CAST(replace(JSON_VALUE(proto_payload.audit_log.service_data.jobCompletedEvent.job.jobStatistics.totalBilledBytes), '"','') AS INT64)/1024/1024 as MiB,
+    replace(JSON_VALUE(proto_payload.audit_log.service_data.jobCompletedEvent.job.jobConfiguration.query.query), '\\n','') as query,
+    IF (replace(JSON_VALUE(proto_payload.audit_log.service_data.jobCompletedEvent.job.jobConfiguration.query.query), '\\n','') LIKE '%t0%','Looker','BQ') as type,
+    JSON_VALUE(resource.labels,'$.project_id') as project,
+    proto_payload.audit_log.service_data.jobCompletedEvent.job.jobStatistics.referencedTables,
+  	JSON_VALUE(proto_payload.audit_log.service_data.jobCompletedEvent.job.jobStatus.state) as job_status
+  FROM
+     `gds-bq-reporting.all_gcp_logs._AllLogs`
+  WHERE 
+    resource.type = "bigquery_resource" 
+  AND
+    severity = "INFO" 
+  AND
+    JSON_VALUE(proto_payload.audit_log.service_data.jobCompletedEvent.job.jobStatistics.totalBilledBytes) IS NOT null
+  AND
+  	proto_payload.audit_log.method_name ="jobservice.jobcompleted"
+  AND
+  	JSON_VALUE(proto_payload.audit_log.service_data.jobCompletedEvent.job.jobStatistics.billingTier)="1"
+
+),
+
+exchange_rate AS (
+  SELECT SUM(exchange_rate) as exchange_rate 
+  FROM `gds-bq-reporting.exchange_rate.exchange_rate`
+)
+
+SELECT
+  GENERATE_UUID() AS uuid,
+  formatted_timestamp, 
+  user, 
+  type,
+  project, 
+  query,
+  job_status,
+  e.exchange_rate,
+  sum(MiB) AS MiB, 
+  sum(TiB) AS TiB,
+  sum(TiB * 7.16)  AS Estimated_USD_Cost 
+FROM cte, exchange_rate e
+GROUP BY uuid, formatted_timestamp, user, type, project, query, job_status, e.exchange_rate
+```
