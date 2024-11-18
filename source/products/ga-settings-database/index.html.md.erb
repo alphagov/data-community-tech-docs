@@ -1,7 +1,7 @@
 ---
 title: GA Settings Database report
 weight: 55
-last_reviewed_on: 2024-11-14
+last_reviewed_on: 2024-11-15
 review_in: 6 months
 ---
 
@@ -32,14 +32,14 @@ Those in the GOV.UK Insights and Analytics team Google group are automatically g
 | date | Date the data was collected (also, the partition date) |  |
 | ds_end_date | The end date set in the Looker Studio date range |  |
 | ds_start_date | The start date set in the Looker Studio date range |  |
-| ga4_audience_description |  |  |
-| ga4_audience_display_name |  |  |
-| ga4_audience_id |  |  |
-| ga4_data_stream_create_time | Time when this stream was originally created |  |
+| ga4_audience_description | The description of the GA4 Audience |  |
+| ga4_audience_display_name | The display name of the GA4 Audience |  |
+| ga4_audience_id | The resource name for the GA4 Audience |  |
+| ga4_data_stream_create_time | Time when this Data Stream was originally created |  |
 | ga4_data_stream_display_name | Human-readable display name for the Data Stream |  |
-| ga4_data_stream_id |  |  |
+| ga4_data_stream_id | The resource name for the Data Stream |  |
 | ga4_data_stream_name | Resource name of this Data Stream |  |
-| ga4_data_stream_type | The type of the data stream - Web, Android, iOS, etc |  |
+| ga4_data_stream_type | The type of the Data Stream - Web, Android, iOS, etc |  |
 | ga4_data_stream_update_time | Time when this stream was last updated |  |
 | ga4_property_create_time | Time when the property was originally created |  |
 | ga4_property_currency_code | The currency type used in any reports involving monetary values for this property |  |
@@ -67,7 +67,8 @@ The GA Settings Database report uses a custom query which pulls together data fr
 - the `ga4_audiences` table 
 - the `ga4_data_streams` table 
 
-The query selects fields from each table and joins them on the date and on account/property IDs. 
+The query selects fields from each table and joins them on the date and on account/property IDs.
+The query also selects the Looker Studio date range parameters as distinct dimensions so they can be used in calculated fields.
 All tables are filtered by the Looker Studio date parameters.
 
 The custom query is as follows:

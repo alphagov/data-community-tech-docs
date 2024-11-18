@@ -1,13 +1,11 @@
 ---
 title: GOV.UK display screen
 weight: 40
-last_reviewed_on: 2024-11-11
+last_reviewed_on: 2024-11-15
 review_in: 6 months
 ---
 
 # GOV.UK display screen
-<span style="color:red">This page is a work in progress.</span>
-
 The GOV.UK display screen provides a snapshot of recent activity on [GOV.UK](www.gov.uk), including:
 
 - the number of users on GOV.UK in the last 30 minutes
@@ -29,12 +27,13 @@ The GOV.UK display screen is on display in the GDS London office.
 
 | Field name | Definition | Notes |
 | --- | --- | --- | 
-| Users on GOV.UK in the last 30 minutes |  |  |
-| Live Searches |  |  |
-| Popular in the last 7 days |  |  | 
-| Recently Published | | |
+| Users on GOV.UK in the last 30 minutes | The number of `activeUsers` in the last 30 minutes | Data refreshed every 30 seconds |
+| Live Searches | Search terms extracted from the `unifiedScreenName` of the most popular pages | This only indicates the most popular recent search terms. Data is updated every minute |
+| Popular in the last 7 days | The top 10 pages on GOV.UK by `screenPageViews` in the last 7 days | Data refreshed every three hours | 
+| Recently Published | Recently published content, pulled from [the GOV.UK RSS feed](https://www.gov.uk/government/feed) | Data updated every minute |
 
 Recent searches are extracted from page titles due to limitations with the Google Analytics Data API's realtime reporting.
+The search term dimension is not available, so instead the query returns the 2000 most popular pages on GOV.UK and extracts the search terms from the page titles of the search results pages within that 2000.
 
 ## How the GOV.UK display screen works 
 
@@ -43,3 +42,6 @@ The up-to-date GOV.UK display screen code can be found on GitHub in the [govuk-d
 ### Data sources
 
 The GOV.UK display screen queries the Google Analytics Data API to obtain realtime Google Analytics data.
+The GA4 Data API queries can be found in the [GA4_handlers](https://github.com/alphagov/govuk-display-screen-2024/tree/main/GA4_handlers) folder of the GitHub repository.
+
+The list of recently published content is pulled from the [https://www.gov.uk/government/feed](https://www.gov.uk/government/feed) RSS feed.
