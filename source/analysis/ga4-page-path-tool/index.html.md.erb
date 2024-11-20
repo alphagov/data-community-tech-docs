@@ -43,7 +43,286 @@ Other caveats to bear in mind when using the tool are:
 
 ## The code & how it has been built
 
-Find the code [here](https://docs.google.com/presentation/d/1hiyQbvEGdxcKEEBZsaMpCshAefbQ4vZsEVYZjBdMRSs/edit#slide=id.p) and [here](https://docs.google.com/presentation/d/1XjfcBBXZ2CmEr93afQ3b5x7yw3P6ZMuREzFKZtn4_Go/edit#slide=id.p) which processes data to create structured outputs for both the Session Path Tool and the Page Sequence Tool. 
+Find the code below which each morning processes the data for the previous day, creating structured outputs for both the Session Path Tool and the Page Sequence Tool. 
+
+### Session Path Tool Code
+
+```SQL
+WITH
+  page_view_sessions AS (
+  SELECT
+    event_date,
+    unique_session_id,
+    cleaned_page_location,
+    event_timestamp,
+    event_name,
+    category as device
+  FROM
+    `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
+  WHERE
+  event_date = DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)
+    AND event_name = 'page_view'
+    AND unique_session_id NOT LIKE '%false%'),
+
+page_view_counter as (
+
+  SELECT 
+    unique_session_id,
+    COUNT(cleaned_page_location) AS page_views_per_session
+  FROM 
+    page_view_sessions
+  GROUP BY 
+    unique_session_id),
+
+smart_answer_check as (
+SELECT *,
+    CASE WHEN cleaned_page_location LIKE '%/y/%' THEN 'smart_answer_session' END AS smart_answer,
+ FROM
+page_view_sessions
+
+),
+
+five_pages_only as (
+
+SELECT unique_session_id from page_view_counter
+WHERE page_views_per_session <= 5),
+
+ordered as (
+    SELECT *,
+        ROW_NUMBER() OVER (PARTITION BY unique_session_id ORDER BY event_timestamp) AS ordered_page_views
+    FROM page_view_sessions
+    WHERE unique_session_id IN (SELECT unique_session_id FROM five_pages_only)
+    AND NOT EXISTS (
+        SELECT 1
+        FROM smart_answer_check sac
+        WHERE sac.unique_session_id = page_view_sessions.unique_session_id
+        AND sac.smart_answer IS NOT NULL
+   )
+    ORDER BY event_date, unique_session_id, ordered_page_views),
+
+no_duplicates as (
+  SELECT 
+    event_date,
+    unique_session_id,
+    device,
+    cleaned_page_location,
+    event_timestamp,
+    ROW_NUMBER() OVER (PARTITION BY unique_session_id ORDER BY event_timestamp ASC) AS row_num,
+    LAG(cleaned_page_location) OVER (PARTITION BY unique_session_id ORDER BY event_timestamp ASC) AS prev_page
+  FROM ordered),
+
+  ordered_pages as (
+
+  SELECT 
+  event_date, 
+  unique_session_id, 
+  device, 
+  cleaned_page_location AS page_1,
+  LEAD(cleaned_page_location, 1) OVER (PARTITION BY unique_session_id ORDER BY event_timestamp ASC) AS page_2,
+  LEAD(cleaned_page_location, 2) OVER (PARTITION BY unique_session_id ORDER BY event_timestamp ASC) AS page_3,
+  LEAD(cleaned_page_location, 3) OVER (PARTITION BY unique_session_id ORDER BY event_timestamp ASC) AS page_4,
+  LEAD(cleaned_page_location, 4) OVER (PARTITION BY unique_session_id ORDER BY event_timestamp ASC) AS page_5,
+  row_num
+FROM no_duplicates
+WHERE cleaned_page_location != prev_page OR prev_page IS NULL
+ORDER BY unique_session_id, event_timestamp),
+
+pre_pruning as (
+SELECT * FROM
+ordered_pages
+WHERE row_num = 1
+),
+
+page_pruning as (
+SELECT DISTINCT * FROM pre_pruning
+WHERE page_2 IS NOT NULL 
+),
+
+  penultimate_cte as (
+SELECT *,
+CASE 
+    WHEN page_1 IS NOT NULL AND page_2 IS NOT NULL AND page_3 IS NOT NULL AND page_4 IS NOT NULL AND page_5 IS NOT NULL THEN 5
+    WHEN page_1 IS NOT NULL AND page_2 IS NOT NULL AND page_3 IS NOT NULL AND page_4 IS NOT NULL THEN 4
+    WHEN page_1 IS NOT NULL AND page_2 IS NOT NULL AND page_3 IS NOT NULL THEN 3
+    WHEN page_1 IS NOT NULL AND page_2 IS NOT NULL THEN 2
+    WHEN page_1 IS NOT NULL THEN 1
+    ELSE 0
+  END AS how_many_pages_in_journey,
+CASE
+    WHEN page_5 IS NOT NULL THEN page_5
+    WHEN page_4 IS NOT NULL THEN page_4
+    WHEN page_3 IS NOT NULL THEN page_3
+    WHEN page_2 IS NOT NULL THEN page_2
+    WHEN page_1 IS NOT NULL THEN page_1
+    ELSE NULL
+  END AS exit_page
+from page_pruning)
+
+SELECT DISTINCT * from penultimate_cte 
+```
+
+### Page Sequence Tool Code
+
+```SQL
+WITH
+  page_view_sessions AS (
+  SELECT
+    category as device,
+    event_date,
+    unique_session_id,
+    cleaned_page_location,
+    event_timestamp,
+    event_name
+  FROM
+    `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
+  WHERE
+   event_date = DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)
+    AND event_name = 'page_view'
+    AND unique_session_id NOT LIKE '%false%'
+ ),
+
+    smart_answer_check as (
+SELECT *,
+    CASE WHEN cleaned_page_location LIKE '%/y/%' THEN 'smart_answer_session' END AS smart_answer,
+ FROM
+page_view_sessions
+
+),
+
+ordered as (
+SELECT
+*,
+ROW_NUMBER() OVER(PARTITION BY unique_session_id ORDER BY event_timestamp) AS ordered_page_views
+FROM page_view_sessions
+WHERE NOT EXISTS (
+        SELECT 1
+        FROM smart_answer_check sac
+        WHERE sac.unique_session_id = page_view_sessions.unique_session_id
+        AND sac.smart_answer IS NOT NULL
+   )
+    ORDER BY event_date, unique_session_id, ordered_page_views
+),
+
+no_duplicates as (
+  SELECT 
+    event_date,
+    unique_session_id,
+    device,
+    cleaned_page_location,
+    event_timestamp,
+    ROW_NUMBER() OVER (PARTITION BY unique_session_id ORDER BY event_timestamp ASC) AS row_num,
+    LAG(cleaned_page_location) OVER (PARTITION BY unique_session_id ORDER BY event_timestamp ASC) AS prev_page
+  FROM ordered),
+
+Ordered_pages as (
+
+SELECT event_date, device, unique_session_id, cleaned_page_location as page_1,
+LEAD (cleaned_page_location,1) OVER (PARTITION BY unique_session_id ORDER BY event_timestamp asc) as page_2,
+LEAD (cleaned_page_location,2) OVER (PARTITION BY unique_session_id ORDER BY event_timestamp asc) as page_3,
+LEAD (cleaned_page_location,3) OVER (PARTITION BY unique_session_id ORDER BY event_timestamp asc) as page_4,
+LEAD (cleaned_page_location,4) OVER (PARTITION BY unique_session_id ORDER BY event_timestamp asc) as page_5,
+ROW_NUMBER() OVER (PARTITION BY unique_session_id ORDER BY event_timestamp ASC) AS row_num
+FROM no_duplicates
+WHERE cleaned_page_location != prev_page OR prev_page IS NULL
+ORDER BY unique_session_id, event_timestamp),
+
+two_pages AS (
+  SELECT 
+    event_date, 
+    unique_session_id,
+    device,
+    CAST(page_1 AS STRING) AS page_1, 
+    CAST(page_2 AS STRING) AS page_2, 
+    CAST(NULL AS STRING) AS page_3, 
+    CAST(NULL AS STRING) AS page_4, 
+    CAST(NULL AS STRING) AS page_5, 
+  FROM ordered_pages
+),
+
+three_pages AS (
+  SELECT 
+    event_date, 
+    unique_session_id,
+    device,
+    CAST(page_1 AS STRING) AS page_1, 
+    CAST(page_2 AS STRING) AS page_2, 
+    CAST(page_3 AS STRING) AS page_3, 
+    CAST(NULL AS STRING) AS page_4, 
+    CAST(NULL AS STRING) AS page_5, 
+  FROM ordered_pages
+),
+
+four_pages AS (
+  SELECT 
+    event_date, 
+    unique_session_id,
+    device,
+    CAST(page_1 AS STRING) AS page_1, 
+    CAST(page_2 AS STRING) AS page_2, 
+    CAST(page_3 AS STRING) AS page_3, 
+    CAST(page_4 AS STRING) AS page_4, 
+    CAST(NULL AS STRING) AS page_5, 
+  FROM ordered_pages
+),
+
+five_pages AS (
+  SELECT 
+    event_date, 
+    unique_session_id,
+    device,
+    CAST(page_1 AS STRING) AS page_1, 
+    CAST(page_2 AS STRING) AS page_2, 
+    CAST(page_3 AS STRING) AS page_3, 
+    CAST(page_4 AS STRING) AS page_4, 
+    CAST(page_5 AS STRING) AS page_5, 
+  FROM ordered_pages
+),
+
+-- Combine all paths into a single table
+
+combined_cte as (
+
+  SELECT * FROM two_pages
+  UNION ALL
+  SELECT * FROM three_pages
+  UNION ALL
+  SELECT * FROM four_pages
+  UNION ALL
+  SELECT * FROM five_pages),
+
+page_pruning as (
+SELECT DISTINCT * FROM combined_cte
+WHERE page_1 IS NOT NULL 
+),
+
+page_pruning_2 as (
+SELECT DISTINCT * FROM page_pruning
+WHERE page_2 IS NOT NULL 
+),
+
+penultimate_cte as (
+SELECT *,
+CASE 
+    WHEN page_1 IS NOT NULL AND page_2 IS NOT NULL AND page_3 IS NOT NULL AND page_4 IS NOT NULL AND page_5 IS NOT NULL THEN 5
+    WHEN page_1 IS NOT NULL AND page_2 IS NOT NULL AND page_3 IS NOT NULL AND page_4 IS NOT NULL THEN 4
+    WHEN page_1 IS NOT NULL AND page_2 IS NOT NULL AND page_3 IS NOT NULL THEN 3
+    WHEN page_1 IS NOT NULL AND page_2 IS NOT NULL THEN 2
+    WHEN page_1 IS NOT NULL THEN 1
+    ELSE 0
+  END AS how_many_pages_in_journey,
+CASE
+    WHEN page_5 IS NOT NULL THEN page_5
+    WHEN page_4 IS NOT NULL THEN page_4
+    WHEN page_3 IS NOT NULL THEN page_3
+    WHEN page_2 IS NOT NULL THEN page_2
+    WHEN page_1 IS NOT NULL THEN page_1
+    ELSE NULL
+  END AS exit_page
+
+ from page_pruning_2)
+
+ SELECT DISTINCT * from penultimate_cte
+```
 
 To summarise, the following steps outline the approach taken for each tab:
 
