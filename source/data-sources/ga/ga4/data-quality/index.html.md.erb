@@ -1,13 +1,11 @@
 ---
 title: GOV.UK GA4 data quality
 weight: 1
-last_reviewed_on: 2024-11-12
+last_reviewed_on: 2024-11-20
 review_in: 6 months
 ---
 
 # GOV.UK GA4 data quality
-<span style="color:red">This page is a work in progress.</span>
-
 Google Analytics 4 (GA4) is used to collect data on the usage of GOV.UK.
 
 Information on how to understand and use GOV.UK GA4 data can be found in the [Analysis section of this site](/analysis/govuk-ga4/).
@@ -32,11 +30,19 @@ Shorter term bugs and issues with our tracking can be found in the above Looker 
 Data was first collected into this property on 23/09/22.
 The events captured have changed significantly over time, and so early data quality may be patchy. 
 
+The [GOV.UK GA4 data annotations Looker Studio report](https://lookerstudio.google.com/reporting/306f1e28-a2c1-4d3a-b03c-ae03ac0c9484) contains information on when GOV.UK GA4 events were created.
+
 ### Bot traffic 
 
 In GA4, [traffic from known bots is automatically excluded](https://support.google.com/analytics/answer/9888366?hl=en).
 
 We do not know how much other bot traffic is being recorded in our data.
+
+#### Smokey tests
+
+Some [smoke tests](https://en.wikipedia.org/wiki/Smoke_testing_(software)) are run on Production GOV.UK, and sometimes the [smokey test](https://github.com/alphagov/smokey) bot triggers analytics data collection.
+
+These can be found and removed from the data by using the 'Test data filter name' dimension, which will be populated with 'Smokey' if the data is from a smokey test IP address. 
 
 ### Users we miss 
 
@@ -55,8 +61,30 @@ If data users would like to exclude these clicks from their dataset, they can do
 
 This is also why some duplicate tracking may be occuring with the navigation and copy tracking, as users who right click and select to ‘Copy’ a link will trigger both navigation and copy events.
 
+#### 'Error' in form_complete tracking 
+
+form_complete events will fire on any view of the ‘results’ page.
+This means that multiple form_complete events can be triggered by the same user if they refresh the page or navigate away from it and back to it.
+Also, it is possible that some users could trigger a form_complete event without having actually responded to or submitted the form themselves, if they are sent the link to a results page.
+This is because we were not technically able to limit form_complete events to firing conditionally depending on users' activity on other pages.
+
+Further information on how and when form events are used can be found in our information on the [GOV.UK GA4 data structure](/analysis/govuk-ga4/understand-govuk-ga4/#form-events).
+
+
+#### Truncated ecommerce (view_item_list) tracking on search results pages
+
+Each ecommerce event (view_item_list) can have up to 200 items sent with it.
+When searches return more than 200 items, the items sent with each event will be truncated.
+
+In some cases, we have had to limit the number of items sent with each event further, as the number of bytes being sent with each event was too high and was triggering error 413 (Payload Too Large).
+The maximum amount of bytes we can send to GA4 per event appears to be 16KB, so we have implemented a limit to cut off the ecommerce items array at 15KB, to ensure our events are small enough to send (the additional KB may be needed for other information sent with the event).
 
 ### Incorrect information in dimensions  
+#### Parameter character count limits 
+GA4 limits all parameters (custom dimensions) to a maximum length of 500 characters (for [360 properties](/tools/ga/#google-analytics-360)).
+
+The only exception to this is the page_location parameter which [must be 1,000 characters or fewer](https://support.google.com/analytics/answer/11202874?sjid=2282331191126577240-EU).
+
 #### Inconsistencies in 'outbound' values in attachment events
 
 On pages with attachment links, clicks on different links to download files come through with the `outbound` dimensions equalling 'true' as would be expected (as these files are hosted on https://assets.publishing.service.gov.uk).
