@@ -1,7 +1,7 @@
 ---
 title: GA4 PII process
 weight: 5
-last_reviewed_on: 2024-08-27
+last_reviewed_on: 2024-11-21
 review_in: 6 months
 ---
 
@@ -9,12 +9,15 @@ review_in: 6 months
 
 Personally Identifable Information (PII) is data that could potentially identify a specific individual.
 
-We [apply redaction](/data-sources/ga/ga4/#data-processing-and-modification) to try to ensure that we do not collect any PII into Google Analytics, but it is still possible that some slips through on occasion.
+We apply redaction to try to ensure that we do not collect any PII into Google Analytics.
+Details of the redaction applied can be found on [data source pages](/data-sources/).
+For example, for our [GOV.UK GA4 data](/data-sources/ga/ga4/#data-processing-and-modification), we apply redaction in both the dataLayer and Google Tag Manager. 
+However, it is still possible that some unwanted data slips through on occasion.
     
-If you notice any PII in GOV.UK GA4, please raise a Zendesk ticket as quickly as possible.
+If you notice any PII in GDS-owned GA4 data, please raise a Zendesk ticket as quickly as possible.
 
 ## Process
-The Analytics team will:
+The Insights and Analytics team will:
 
  - Confirm whether the data identified is Personally Identifable Information 
  - Ascertain how long and why this data has been collected
