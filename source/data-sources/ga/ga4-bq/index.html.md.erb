@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 (BigQuery export)
 weight: 2
-last_reviewed_on: 2024-05-23
+last_reviewed_on: 2024-11-22
 review_in: 6 months
 ---
 
@@ -14,28 +14,31 @@ The flattened dataset is easier and more efficient to query, so should be used f
 ## Access
 Everyone with a @digital.cabinet-office.gov.uk account (all GDS staff) has access to this data by default.
 
-In addition, everyone who requests and is granted access to the GOV.UK GA4 data will be given access to query this raw dataset.
+In addition, everyone who requests and is granted access to the GOV.UK GA4 data will be given access to query this dataset.
 More information can be found in our [GA access policy](/processes/ga-access/#what-we-provide-access-to).
 
 ### Location
-There are 3 GA4 datasets. These correspond to the integration, staging, and production or live GOV.UK websites.
-The GA4 data for the live GOV.UK site is located in BigQuery in the `ga4-analytics-352613.analytics_330577055` dataset.
-The GA4 data for the staging site is located in BigQuery in the `ga4-analytics-352613.analytics_330580593` dataset.
-The GA4 data for the integration site is located in BigQuery in the `ga4-analytics-352613.analytics_294475112` dataset.
+There are 3 raw GOV.UK GA4 datasets, which correspond to the integration, staging, and production GOV.UK websites.
+All of these datasets are in the [GA4 Analytics project](/tools/google-cloud-platform/gcp-projects/#ga4-analytics).
+These datasets are:
+
+- the `ga4-analytics-352613.analytics_330577055` dataset, which holds raw GA4 data for the GOV.UK production site
+- the `ga4-analytics-352613.analytics_330580593` dataset, which holds raw GA4 data for the GOV.UK staging site
+- the `ga4-analytics-352613.analytics_294475112` dataset, which holds raw GA4 data for the GOV.UK integration site
 
 These datasets are all comprised of date sharded tables - a new table is created each day with the suffix YYYYMMDD.
+
+## Set-up
+### Data collection and processing
 
 Our Google Analytics properties export GOV.UK data several times a day.
 The data for the current day is temporarily stored in intraday tables.
 At the end of the day, BigQuery automatically moves the data in the intraday tables to a date table (suffixed `YYYYMMDD`) and deletes the intraday tables in question.
 New intraday tables are created and added to throughout the next day.
 
-The GA4 datasets are all stored within the GA4 analytics project which is [linked from here](/tools/google-cloud-platform/gcp-projects/) along with our other GCP projects.
-For more information on the Google Cloud Platform projects, see our [GCP Documentation](https://docs.data-community.publishing.service.gov.uk/tools/google-cloud-platform/).
+### Schema
 
-## Schema
-
-This table uses the default [GA4 BigQuery Export schema](https://support.google.com/analytics/answer/7029846):
+These tables use the default [GA4 BigQuery Export schema](https://support.google.com/analytics/answer/7029846):
 
 | field name | type | mode |
 | --- | --- | --- |
@@ -65,36 +68,7 @@ This table uses the default [GA4 BigQuery Export schema](https://support.google.
 | collected_traffic_source | RECORD | NULLABLE | 
 | is_active_user | BOOLEAN | NULLABLE | 
 
-## Retention
+### Retention
 
 The integration and staging GA4 datasets have a default table expiry in BigQuery of 30 days.
-
-## Processing
-
-The raw data recieved from Google is sharded into daily tables. We process these into a partitioned table that is partitioned on event_date and clustered on event_name, we then flatten this into a partitioned flattened table.
-
-This processing occurs within DataForm in the gds-bq-reporting project and writes data back to the ga4-analytics-352613 project.
-The DataForm is compiled at 7am UTC and ran at 8am UTC.
-
-<pre class="mermaid">
-graph TD 
-A[Raw sharded data from Google] --> B
-B[Partitioned raw event data] 
-B --> C[Partitioned flattened data] 
-
-</pre>
-
-
-<script type="module">
-import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-mermaid.initialize({ 
-    startOnLoad: true,
-    theme: 'base',
-    themeVariables: {
-        mainBkg: '#ffffff',
-        primaryColor: '#f3f2f1',
-        primaryTextColor: '#0b0c0c',
-        secondaryTextColor: '#505a5f'
-    } 
-    });
-</script>
+The production dataset does not currently have a set table expiry.

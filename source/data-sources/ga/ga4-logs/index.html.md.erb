@@ -1,14 +1,16 @@
 ---
 title: GOV.UK GA4 access logs
 weight: 9
-last_reviewed_on: 2024-11-21
+last_reviewed_on: 2024-11-22
 review_in: 6 months
 ---
 
 # GOV.UK GA4 access logs
-## Content
 The GOV.UK GA4 access logs data details usage of the [GOV.UK Google Analytics GA4 data](/data-sources/ga/ga4/) via the Google Analytics Data API.
 This includes usage of the GOV.UK GA4 user interface and Looker Studio connections, as well as direct querying of the API, but does not include usage of the data [exported to BigQuery](/data-sources/ga/ga4-bq/).
+
+## Content
+Data was first collected into this dataset on the 18th July 2023.
 
 The fields in this dataset and their descriptions can be seen in the [schema table below](/data-sources/ga/ga4-logs/#schema).
 
@@ -30,7 +32,7 @@ A Google Cloud Run function is triggered by a Cloud Scheduler job to run every d
 
 ### Schema
 | field name | type | mode | description |
-| --- | --- | --- |
+| --- | --- | --- | --- |
 | epoch_time_micros | TIMESTAMP | NULLABLE | The unix microseconds since the epoch that the GA user accessed GA reporting data |
 | user_email | STRING | NULLABLE | The user's email address |
 | access_mechanism | STRING | NULLABLE | The mechanism through which a user accessed GA reporting data, for example 'Google Analytics User Interface' or 'Google Analytics API' |
