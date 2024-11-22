@@ -1,35 +1,34 @@
 ---
-title: Use the GA4 Project Use Dashboard
+title: GA4 project use dashboard
 weight: 89
-last_reviewed_on: 2024-11-18
+last_reviewed_on: 2024-11-21
 review_in: 6 months
 ---
 
-# GA4 Project Use Dashboard
+# GA4 project use dashboard
 
-The [GA4 Project Use Dashboard](https://lookerstudio.google.com/reporting/90c992bc-5473-4e27-a662-b100d36b22d3/page/fSyIE) uses log data to show what BigQuery datasets and tables in the `ga4-analytics-352613` project are being accessed from users across Government. 
+The [GA4 project use dashboard](https://lookerstudio.google.com/reporting/90c992bc-5473-4e27-a662-b100d36b22d3/page/fSyIE) uses log data to show what BigQuery datasets and tables in the `ga4-analytics-352613` project are being accessed from users across Government. 
 
 The report is a single page, and provides visualisations to show the most frequently referenced tables and datasets, and from which departments these are being accessed. The report’s main table breaks down the data by dataset, table name, the email address of the user running the query, and what organisation they belong to. For some queries it is possible to ascertain which connector was used, and this information will be displayed in the connector_type column
 
 By monitoring this report, we can monitor the use of the datasets and tables contained within the GA4 GCP project, even from users who sit outside of GDS.
 
-## Using the GA4 Project Use Dashboard
+## Using the GA4 project use dashboard
 
-### Get access to the GA4 Project Use Dashboard
+### Get access to the GA4 project use dashboard
 
 The [report](https://lookerstudio.google.com/reporting/90c992bc-5473-4e27-a662-b100d36b22d3/page/fSyIE) can be viewed by anyone with a @digital.cabinet-office.gov.uk email address.
 
 It can be edited by anyone in the GDS performance analysts Google group.
 
-## How the GA4 Project Use Dashboard works
+## How the GA4 project use dashboard works
 
 ### Data sources
 
-The GA4 Project Use Dashboard uses a pre-aggregated BigQuery table as its data source. This table is called `log_test_4` and can be found in the `ga4_log_data dataset` within the `gds-bq-data` project.
+The GA4 project use dashboard uses a pre-aggregated BigQuery table as its data source.
+This table is called `log_test_4` and can be found in the `ga4_log_data dataset` within the `gds-bq-data` project.
 
 The table is updated each day from a scheduled query, and processes information from stored BigQuery logs.
-
-### The scheduled query in full
 
 The scheduled query used to build the table is as follows:
 
@@ -87,6 +86,8 @@ ORDER BY date ASC)
 SELECT distinct principal_email, dataset_name, table_name_clean, date, connector_type, TO_JSON_STRING(service_data) as service_data  FROM data_2
 ```
 
-It works by grabbing various fields from the `_AllLogs` table, extracting with REGEX the dataset and table names from the auth_info.resource field. It also determines the user’s email and timestamp, as well as the connection type (scheduled query, Google Sheets, Looker Studio or other) from the log’s service_data field. 
+This works by grabbing various fields from the `_AllLogs` table, extracting with REGEX the dataset and table names from the auth_info.resource field. 
+The query also determines the user’s email and timestamp, as well as the connection type (scheduled query, Google Sheets, Looker Studio or other) from the log’s service_data field. 
+Finally, the results are filtered to include only distinct references to resources where the method is either 'jobservice.insert' or 'jobservice.query'.
 
-Finally, the results are filtered to include only distinct references to resources where the method is either 'jobservice.insert' or 'jobservice.query'. This processing means that the table is then connected directly to the charts in Looker Studio without having to create a Looker Studio custom query.
+This processing means that the table can be connected to directly using the Looker Studio BigQuery connector, without the need for a custom query.

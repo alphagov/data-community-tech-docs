@@ -1,23 +1,24 @@
 ---
 title: GOV.UK GA4
 weight: 1
-last_reviewed_on: 2024-11-12
+last_reviewed_on: 2024-11-21
 review_in: 6 months
 ---
 
 # GOV.UK GA4
 Google Analytics 4 (GA4) is used to collect data on the usage of GOV.UK.
 
-This data can be accessed via the Google Analytics 4 user interface, the GA4 Looker Studio connection, and the Google Analytics Data API.
+This data can be accessed via the [Google Analytics 4 user interface](/analysis/govuk-ga4/use-ga4/ga4-interface/), the [GA4 Looker Studio connection](/analysis/govuk-ga4/use-ga4/looker-studio/), and the [Google Analytics Data API](/analysis/govuk-ga4/use-ga4/analytics-data-api/).
 
 This data is also exported to [BigQuery](/data-sources/ga/ga4-bq/).
 
 Information on how to understand and use this data can be found in the [Analysis section of this site](/analysis/govuk-ga4/).
 
-## Content
+## Data source contents
 
 Data was first collected into this property on 23/09/22.
 The events captured have changed significantly over time, and so early data quality may be patchy. 
+Data quality notes and a dashboard containing annotations can be found on the [GOV.UK GA4 data quality page](/data-sources/ga/ga4/data-quality/#gov-uk-ga4-data-quality).
 
 Data is collected from dataLayer pushes using [Google Tag Manager](/processes/gtm/), which applies any appropriate transformations to the data and then sends it to GA4.
 More information on the dataLayer pushes implemented on GOV.UK can be found in the [Implementation record](https://docs.publishing.service.gov.uk/analytics/events.html).
@@ -30,7 +31,7 @@ Organisations without SPOCs should contact the [Analytics and Insights team](mai
 For more information, see [the GA access policy](/processes/ga-access/).
 
 ### Location
-There are three GA4 GOV.UK properties. These correspond to the integration, staging, and production or live GOV.UK websites.
+There are three GA4 GOV.UK properties. These correspond to the integration, staging, and production GOV.UK websites.
 
 ## GA4 settings
 ### Property set-up
@@ -42,14 +43,14 @@ At set-up, we chose the following reporting options:
 - Business size - Very Large
 - When asked about our business objectives (which determines which standard reports GA4 will provide in the property), we chose 'Get baseline reports' 
 
-No [subproperties](https://support.google.com/analytics/answer/11525732) are set up for the GOV.UK GA4 properties.
+No [subproperties](https://support.google.com/analytics/answer/11525732) have been set up for the GOV.UK GA4 properties.
 Instead, we are using BigQuery and Looker Studio to clean, filter, and control access to the data.
 
 ### Data collection
 
 GA4's inbuilt 'Enhanced measurement' feature is not in use on GOV.UK as it was determined that it would not meet our data collection needs.
-However, default GA4 dimensions have been used wherever there is a clear fit to the event being captured to ensure that GDS will benefit from any default reporting functionality associated with those events and dimensions.
-Tracking has been implemented on GOV.UK using custom dataLayer pushes which are sent to GA4 with Google Tag Manager. 
+However, default GA4 event names and dimensions have been used wherever there is a clear fit to the information being captured to ensure that GDS will benefit from any default reporting functionality associated with those events and dimensions.
+Tracking has been implemented on GOV.UK using custom dataLayer pushes which are sent to GA4 via Google Tag Manager. 
 More information on this approach can be found in our [Implementation record](https://docs.publishing.service.gov.uk/analytics/).
 
 Google Signals data collection and Ads personalisation is disabled for GDS GA4 properties within the interface.
@@ -60,20 +61,22 @@ Granular location and device data collection is enabled to allow reporting on th
 ### Data processing and modification
 
 At present, we have not created any custom events or designated any events as key events (formerly known as conversions) within GA4.
-We have tested the custom event data import feature to ensure that it would meet our needs to join additional metadata to the events we collect, but have not yet implemented any custom data imports.
+We are using the custom event data import feature to join additional metadata to the events we collect.
 More information on GOV.UK GA4 data modifications can be found in the [Policies and processes section](/processes/ga-modifications/). 
 
 [Expanded datasets](/analysis/govuk-ga4/use-ga4/ga4-expanded-datasets/) are being used to reduce the impact of cardinality on various key reports.
 You can use the [steps in this guidance](/analysis/govuk-ga4/use-ga4/ga4-expanded-datasets/) to view the expanded datasets we have set up and to request new expanded datasets.
 
-We are also not using GA4's inbuilt data redaction feature on GOV.UK.
+We are not using GA4's inbuilt data redaction feature on GOV.UK.
 Instead, we are applying redaction to strip out potential Personally Identifable Information (PII) from values before they are pushed to the dataLayer (see our [documentation on this in GitHub](https://github.com/alphagov/govuk_publishing_components/blob/main/docs/analytics-ga4/pii-remover.md)).
-Additional PII redaction is also applied in Google Tag Manager as a fail-safe.
+Additional PII redaction is also applied in Google Tag Manager as a precaution.
 If you spot any PII or other data that should not be present in the GA4 datasets, please raise a Zendesk ticket or contact the [GA4 support inbox](mailto:govuk-ga4-support@digital.cabinet-office.gov.uk).
+Our PII process is documented in the [Policies and processes section](/processes/ga-pii/).  
 
 ### Retention
 
-A data retention period for this data is set in the GA4 user interface. For the integration, staging, and production GOV.UK sites, this is set to 38 months.
+A data retention period for this data is set in the GA4 user interface.
+For the integration, staging, and production GOV.UK sites, this is set to 38 months.
 
 ## Governance
 

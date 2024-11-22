@@ -1,7 +1,7 @@
 ---
 title: Content Data app
 weight: 34
-last_reviewed_on: 2024-11-13
+last_reviewed_on: 2024-11-21
 review_in: 6 months
 ---
 
@@ -56,9 +56,9 @@ Further technical documentation can be found on the [Developer docs](https://doc
 
 The table supplying the Content Data app with GA4 data can be found in BigQuery under the data set `govuk-content-data.ga4.GA4 dataform`. 
 This is updated every day with the previous day's data via a scheduled query ('Daily content data') in the same project (see the code below).
-This query is currently scheduled to run at 9:00am.
+This query is currently scheduled to run at 9:30am.
 
-A script then imports yesterday's data from the `GA4 dataform` table into Content Data every day at 9:10am UTC.
+A script then imports yesterday's data from the `GA4 dataform` table into Content Data every day at 9:40am UTC.
 
 If the import fails for any reason, it needs to be manually re-run. The process and SQL code to used can be found on the [Content Data backfilling page](/products/content-data/content-data-processing/).
 Once the `GA4 dataform` table in BigQuery has been updated, the GOV.UK Platform Engineering team need to be alerted to re-run the import.

@@ -1,27 +1,27 @@
 ---
-title: Use the GA4 Query Costs Dashboard
+title: GA4 query costs dashboard
 weight: 85
-last_reviewed_on: 2024-11-15
+last_reviewed_on: 2024-11-21
 review_in: 6 months
 ---
 
-# GA4 Query Costs Dashboard
+# GA4 query costs dashboard
 
-The [GA4 Query Costs Dashboard](https://lookerstudio.google.com/reporting/9fb2f7d6-efc9-40e2-a25e-d9071867bcd4/page/PQpTD) uses BigQuery log data to show queries and processing costs from jobs which have been run in GDS-owned GCP projects.
+The [GA4 query costs dashboard](https://lookerstudio.google.com/reporting/9fb2f7d6-efc9-40e2-a25e-d9071867bcd4/page/PQpTD) uses BigQuery log data to show queries and processing costs from jobs which have been run in GDS-owned GCP projects.
 
 The report is split into several pages, breaking down the data by various dimensions including jobs by user, jobs by project, and by specific query.
 
 By monitoring this report, we can spot any jobs which result in unusually large query costs, and other changes or activity that is unexpected.
 
-## Using the GA4 Query Costs Dashboard
+## Using the GA4 query costs dashboard
 
-### Get access to the GA4 Query Costs Dashboard
+### Get access to the GA4 query costs dashboard
 
 The [report](https://lookerstudio.google.com/reporting/9fb2f7d6-efc9-40e2-a25e-d9071867bcd4/page/PQpTD) can be viewed by anyone with a @digital.cabinet-office.gov.uk email address.
 
 It can be edited by anyone in the GDS performance analysts Google group.
 
-## How the GA4 Query Costs Dashboard works
+## How the GA4 query costs dashboard works
 
 ### Data sources
 
@@ -30,11 +30,15 @@ The GA4 Query Costs Dashboard uses the ‘BigQuery use across projects’ data s
 - the `_AllLogs` table in the ‘all_gcp_logs’ dataset which contains log data from all GDS-owned GCP projects
 - the `exchange_rate` table in the ‘exchange_rate’ dataset which contains a USD to GBP conversion rate 
 
-The custom query which powers the charts in the dashboard works by first, in the first CTE, extracting various fields relating to GCP jobs from the `_AllLogs` table, filtering the logs to select only those related to BigQuery resources. Primarily it gets the timestamp, the user who executed the job, the total billed data (in TiB and MiB), and the contents of the SQL query. It also classifies queries as originating from either Looker or BigQuery based on identifiers in the query text, and captures the project ID and referenced tables.
+The custom query which powers the charts in the dashboard works by first, in the first CTE, extracting various fields relating to GCP jobs from the `_AllLogs` table, and filtering the logs to select only those related to BigQuery resources.
+This gets the timestamp, the user who executed the job, the total billed data (in TiB and MiB), the contents of the SQL query, the project ID and referenced tables.
+And `IF` statement also classifies queries as originating from either Looker or BigQuery based on identifiers in the query text.
 
-The second CTE pulls in exchange rate values from the exchange rate table, and in the final step, the query combines the outputs of these two CTEs and calculates an estimated cost in USD based on a fixed cost rate of approximately $7.16 per TiB of data processed. This is roughly the rate we are paying for our data processing costs, in accordance with the rates determined by [Google](https://cloud.google.com/bigquery/pricing/?gad_source=1&gclid=Cj0KCQiA_9u5BhCUARIsABbMSPsOhQfApchT868JwNFBAhPXJ77XAKNffQVfnY9lfN0ZUAWZLJYAcOYaAl4-EALw_wcB&gclsrc=aw.ds#analysis_pricing_models) The results include details like the user, project, and query classification, along with the aggregated data usage and cost, providing an overview of BigQuery resource consumption and associated expenses.
+The second CTE pulls in exchange rate values from the exchange rate table, and, in the final step, the query combines the outputs of these two CTEs and calculates an estimated cost in USD based on a fixed cost rate of approximately $7.16 per TiB of data processed.
+This is roughly the rate we are paying for our data processing costs, in accordance with the [rates determined by Google](https://cloud.google.com/bigquery/pricing/?gad_source=1&gclid=Cj0KCQiA_9u5BhCUARIsABbMSPsOhQfApchT868JwNFBAhPXJ77XAKNffQVfnY9lfN0ZUAWZLJYAcOYaAl4-EALw_wcB&gclsrc=aw.ds#analysis_pricing_models).
+The results include details like the user, project, and query classification, along with the aggregated data usage and cost, providing an overview of BigQuery resource consumption and associated expenses.
 
-### The custom query in full
+The full custom query is as follows:
 
 ```SQL
 WITH cte AS (
