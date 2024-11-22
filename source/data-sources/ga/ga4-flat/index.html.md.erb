@@ -1,15 +1,22 @@
 ---
 title: GOV.UK GA4 flattened tables
 weight: 3
-last_reviewed_on: 2024-10-31
+last_reviewed_on: 2024-11-22
 review_in: 6 months
 ---
 
 # GOV.UK GA4 flattened tables
-The GA4 flattened tables contain [GOV.UK GA4](/data-sources/ga/ga4/) data processed into a flat format.
+The GA4 flattened tables contain production [GOV.UK GA4](/data-sources/ga/ga4/) data processed into a flat format.
 
 These tables are created from the [raw data exported into BigQuery](/data-sources/ga/ga4-bq/) and contain most, but not all, of the same fields.
 This flattened dataset is easier and more efficient to query, so should be used for most analysis and reporting.
+
+## Content
+The first date for which there is data in this dataset is the 27th Septemeber 2022.
+Note that the [quality of the early data may be lower than desired](/data-sources/ga/ga4/#contents) as our GA4 implementation was still in development.
+
+This data is partitioned on `event_date`.
+A `WHERE` clause to specify which partitions are needed is required when querying this dataset - for example, `WHERE event_date = "2024-09-12"`.
 
 ## Access
 Everyone with a @digital.cabinet-office.gov.uk email address (all GDS staff) has access to the data by default.
@@ -17,19 +24,45 @@ Everyone with a @digital.cabinet-office.gov.uk email address (all GDS staff) has
 In addition, everyone who requests and is granted access to the GOV.UK GA4 data will be given access to query this flattened dataset.
 More information can be found in our [GA access policy](/processes/ga-access/#what-we-provide-access-to).
 
-## Using the data
-The data is partitioned on `event_date` and requires a `WHERE` clause like `WHERE event_date = "2024-09-12"`
-
 ### Location
-This data can be found in BigQuery in the `ga4-analytics-352613.flattened_dataset` dataset.
-`ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
+This data can be found in BigQuery in the `ga4-analytics-352613.flattened_dataset` dataset, in the table `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`.
 
-For more information on our Google Cloud Platform projects, see our [GCP project documentation](tools/google-cloud-platform/).
+As with the rest of our GOV.UK GA4 BigQuery data, this is located in the [GA4 Analytics project](/tools/google-cloud-platform/gcp-projects/#ga4-analytics).
 
-## Production process
-The code is exectuted via Dataform every morning at 8am local UK time.
+## Set-up
+### Data collection and processing
+The flattened tables are the result of several steps of processing:
 
-## Schema
+1. The GOV.UK GA4 production raw data is received from Google. This arrives sharded into daily tables, and the data within these tables is nested. We store this [raw data in BigQuery](/data-sources/ga/ga4-bq/)
+2. The raw data is processed into a partitioned table that is partitioned on event_date and clustered on event_name (though the data is still nested)
+3. The partitioned nested data is flattened into the partitioned flattened table detailed on this page
+
+<pre class="mermaid">
+graph TD 
+A[Raw sharded data from Google] --> B
+B[Partitioned raw event data] 
+B --> C[Partitioned flattened data] 
+
+</pre>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+        mainBkg: '#ffffff',
+        primaryColor: '#f3f2f1',
+        primaryTextColor: '#0b0c0c',
+        secondaryTextColor: '#505a5f'
+    } 
+    });
+</script>
+
+This processing occurs within DataForm in the [gds-bq-reporting project](/tools/google-cloud-platform/gcp-projects/#gds-bigquery-reporting) and writes data back to the [ga4-analytics-352613 project](/tools/google-cloud-platform/gcp-projects/#ga4-analytics).
+The DataForm script is compiled at 7am UTC and run at 8am UTC. The code used can be viewed on [GitHub](https://github.com/alphagov/ga4-dataform).
+
+### Schema
 | field name | type | mode | description |
 | --- | --- | --- | --- |
 | event_date | DATE | NULLABLE | The date when the event was logged, formatted as YYYYMMDD |
@@ -134,7 +167,7 @@ The code is exectuted via Dataform every morning at 8am local UK time.
 | campaign_id | STRING | NULLABLE |  |
 | index_section | INTEGER | NULLABLE | The index of the section that was interacted with e.g. if the third tab was clicked the index would be '3' |
 | index_section_total | INTEGER | NULLABLE | The total number of sections within a feature e.g. if there are five tabs in total this would be '5' |
-| tool_name | INTEGER | NULLABLE | The name of the tool (the smart answer or form)|
+| tool_name | STRING | NULLABLE | The name of the tool (the smart answer or form)|
 | response | STRING | NULLABLE | The user's reponse to a form question or error message |
 | ab_test | STRING | NULLABLE | The [content attribute of the `<meta name="govuk:ab-test">` tag](https://docs.publishing.service.gov.uk/analytics/attribute_ab_test.html) |
 | navigation_list_type | STRING | NULLABLE | The content attribute of the `<meta name="govuk:navigation-list-type">` tag |
@@ -178,281 +211,11 @@ The code is exectuted via Dataform every morning at 8am local UK time.
 | item_content_id | STRING | NULLABLE | The content ID of the search result item |
 | emergency_banner | STRING | NULLABLE | Value is true if the user is served the emergency banner |
 | global_bar | STRING | NULLABLE | Value is set to true when a user is shown the global bar - e.g. when it reminded users to register to vote |
+| page_tool_name | STRING | NULLABLE |  |
+| autocomplete_input | STRING | NULLABLE |  |
+| autocomplete_suggestions | STRING | NULLABLE |  |
+| autocomplete_count | INTEGER | NULLABLE |  |
 
 
-
-## Retention
-At present, there is no default table expiry set up for these tables and no agreed data retention period.
-
-
-## Code for flattening GA4 raw data
-```sql
-config {
-    type: "table",
-    name: constants.tableName()
-}
-
-WITH 
-cte1 AS ( 
-    SELECT 
-        event_date AS event_date, 
-        user_pseudo_id, 
-        event_name, 
-        event_timestamp, 
-        CONCAT(user_pseudo_id, ( SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'ga_session_id')) AS unique_session_id, 
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_title') AS page_title, 
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location') AS page_location, 
-        SPLIT(SPLIT(REGEXP_REPLACE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), 'https://www.gov.uk', ''),'?')[SAFE_OFFSET(0)],'#')[SAFE_OFFSET(0)] AS cleaned_page_location, 
-        (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') AS ga_sessionid, 
-        (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'ga_session_number') AS ga_session_number, 
-        LAST_VALUE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'primary_publishing_organisation') IGNORE NULLS) OVER (PARTITION BY user_pseudo_id, 
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), 
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS primary_publishing_organisation, 
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_referrer') AS page_referrer, 
-        SPLIT(REGEXP_REPLACE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_referrer'), 'https://www.gov.uk', ''),'?')[SAFE_OFFSET(0)] AS cleaned_page_referrer, 
-        LAST_VALUE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'content_id') IGNORE NULLS) OVER (PARTITION BY user_pseudo_id, (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), 
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS content_id, 
-        LAST_VALUE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'browse_topic') IGNORE NULLS) OVER (PARTITION BY user_pseudo_id, (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), 
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS browse_topic, 
-        LAST_VALUE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'publishing_app') IGNORE NULLS) OVER (PARTITION BY user_pseudo_id, 
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), 
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS publishing_app,
-        LAST_VALUE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'public_updated_at') IGNORE NULLS) OVER (PARTITION BY user_pseudo_id, 
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), 
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS public_updated_at, 
-        LAST_VALUE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'updated_at') IGNORE NULLS) OVER (PARTITION BY user_pseudo_id, (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS updated_at, 
-        LAST_VALUE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'first_published_at') IGNORE NULLS) OVER (PARTITION BY user_pseudo_id, (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS first_published_at, 
-        LAST_VALUE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_ids') IGNORE NULLS) OVER (PARTITION BY user_pseudo_id, (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS taxonomy_all_ids_DEPRECATED, 
-        LAST_VALUE(( SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'status_code') IGNORE NULLS) OVER (PARTITION BY user_pseudo_id, (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS status_code, 
-        LAST_VALUE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'withdrawn') IGNORE NULLS) OVER (PARTITION BY user_pseudo_id, (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS withdrawn, 
-        LAST_VALUE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'document_type') IGNORE NULLS) OVER (PARTITION BY user_pseudo_id, (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS document_type, 
-        LAST_VALUE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'history') IGNORE NULLS) OVER (PARTITION BY user_pseudo_id, (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS history, 
-        LAST_VALUE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_main_id') IGNORE NULLS) OVER (PARTITION BY user_pseudo_id, (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS taxonomy_main_id, 
-        LAST_VALUE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all') IGNORE NULLS) OVER (PARTITION BY user_pseudo_id, (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS taxonomy_all_DEPRECATED, 
-        LAST_VALUE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_main') IGNORE NULLS) OVER (PARTITION BY user_pseudo_id, (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS taxonomy_main, 
-        LAST_VALUE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_level1') IGNORE NULLS) OVER (PARTITION BY user_pseudo_id, (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS taxonomy_level_1,
-
-        LAST_VALUE(
-            (CASE WHEN (CONCAT ( (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_1') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_1') ELSE '' END ), 
-            (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_2') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_2') ELSE '' END ), 
-            (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_3') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_3') ELSE '' END ), 
-            (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_4') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_4') ELSE '' END ), 
-            (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_5') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_5') ELSE '' END ) )) = '' THEN NULL ELSE 
-            (CONCAT ( (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_1') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_1') ELSE '' END ), (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_2') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_2') ELSE '' END ), (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_3') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_3') ELSE '' END ), (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_4') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_4') ELSE '' END ), (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_5') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_5') ELSE '' END ) )) 
-            END) IGNORE NULLS) OVER (PARTITION BY user_pseudo_id, (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) 
-            AS full_taxonomy, 
-
-        LAST_VALUE(
-            (CASE WHEN (CONCAT ( (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_ids_1') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_ids_1') ELSE '' END ), 
-            (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_ids_2') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_ids_2') ELSE '' END ), 
-            (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_ids_3') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_ids_3') ELSE '' END ), 
-            (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_ids_4') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_ids_4') ELSE '' END ), 
-            (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_ids_5') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_ids_5') ELSE '' END ) )) = '' THEN NULL ELSE 
-            (CONCAT ( (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_ids_1') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_ids_1') ELSE '' END ), (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_ids_2') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_ids_2') ELSE '' END ), (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_ids_3') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_ids_3') ELSE '' END ), (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_ids_4') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_ids_4') ELSE '' END ), (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_ids_5') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'taxonomy_all_ids_5') ELSE '' END ) )) 
-            END) IGNORE NULLS) OVER (PARTITION BY user_pseudo_id, (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) 
-            AS full_taxonomy_ids, 
-
-        LAST_VALUE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'rendering_app') IGNORE NULLS) OVER (PARTITION BY user_pseudo_id, (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS rendering_app, 
-        LAST_VALUE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'organisations') IGNORE NULLS) OVER (PARTITION BY user_pseudo_id, (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS organisations, 
-
-
-        IFNULL((CAST((SELECT value.int_value FROM UNNEST(event_params) WHERE key = "session_engaged") AS STRING)),(SELECT value.string_value FROM UNNEST(event_params) WHERE key = "session_engaged")) AS session_engaged,
-        LAST_VALUE(
-            (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'schema_name') IGNORE NULLS) OVER (PARTITION BY user_pseudo_id, 
-            (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) 
-            AS schema_name, 
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'method') AS method, 
-        (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'engagement_time_msec') AS engagement_time_msec, 
-        --IFNULL(LAST_VALUE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'campaign')) OVER (PARTITION BY user_pseudo_id, (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING),"(not set)") AS event_campaign, 
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'campaign') AS event_campaign,
-
-        LAST_VALUE(
-            (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'content_language') IGNORE NULLS) OVER (PARTITION BY user_pseudo_id, 
-            (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) 
-            AS content_language, 
-    
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'type') AS type, 
-        --IFNULL(LAST_VALUE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'source')) OVER (PARTITION BY user_pseudo_id, (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING), "direct") AS event_source,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'source') AS event_source,
-
-        IFNULL(FIRST_VALUE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'source')) OVER (PARTITION BY user_pseudo_id, ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING),"direct") AS session_source, 
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_text') AS link_text, 
-        LAST_VALUE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'term') IGNORE NULLS) OVER (PARTITION BY user_pseudo_id, (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS term, 
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_url') AS link_url,
-        --IFNULL(LAST_VALUE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'medium')) OVER (PARTITION BY user_pseudo_id, (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING),"(none)") AS event_medium, 
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'medium') AS event_medium,
-
-        IFNULL(FIRST_VALUE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'medium')) OVER (PARTITION BY user_pseudo_id, (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id'), ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING),"(none)") AS session_medium, 
-
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_domain') AS link_domain, 
-        event_previous_timestamp, 
-        event_bundle_sequence_id, 
-        event_server_timestamp_offset, 
-        user_id, 
-        user_first_touch_timestamp, 
-        device.category, 
-        device.mobile_brand_name, 
-        device.mobile_model_name, 
-        device.mobile_marketing_name, 
-        device.mobile_os_hardware_model, 
-        device.operating_system, 
-        device.operating_system_version, 
-        device.language, 
-        device.is_limited_ad_tracking, 
-        device.time_zone_offset_seconds, 
-        device.browser AS device_browser, 
-        device.browser_version AS device_browser_version, 
-        device.web_info.browser, 
-        device.web_info.browser_version,
-        device.web_info.hostname, 
-        geo.continent, 
-        geo.country, 
-        geo.region, 
-        geo.city, 
-        geo.sub_continent, 
-        geo.metro, 
-        traffic_source.name AS first_user_campaign,
-        traffic_source.medium AS first_user_medium, 
-        traffic_source.source AS first_user_source, 
-        stream_id, platform, 
-        event_dimensions.hostname AS event_dimensions_hostname, 
-        CASE WHEN (CONCAT ( (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_domain') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_domain') ELSE '' END ), (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_path_parts_1') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_path_parts_1') ELSE '' END ), (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_path_parts_2') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_path_parts_2') ELSE '' END ), (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_path_parts_3') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_path_parts_3') ELSE '' END ), (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_path_parts_4') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_path_parts_4') ELSE '' END ), (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_path_parts_5') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_path_parts_5') ELSE '' END ) )) = '' THEN NULL ELSE (CONCAT ( (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_domain') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_domain') ELSE '' END ), (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_path_parts_1') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_path_parts_1') ELSE '' END ), (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_path_parts_2') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_path_parts_2') ELSE '' END ), (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_path_parts_3') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_path_parts_3') ELSE '' END ), (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_path_parts_4') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_path_parts_4') ELSE '' END ), (CASE WHEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_path_parts_5') != "" THEN ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'link_path_parts_5') ELSE '' END ) )) END AS full_link_URL, 
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'search_sort') AS search_sort, 
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'search_term') AS search_term, 
-        (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'search_results') AS search_results ,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ui_text') AS ui_text, 
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'section') AS section, 
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'action') AS action, 
-        (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'index') AS index, 
-        (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'index_total') AS index_total, 
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'political_status') AS political_status, 
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'publishing_government') AS publishing_government, 
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'world_locations') AS world_locations ,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'dclid') AS dclid,
-        (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'debug_mode') AS debug_mode,
-        (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'engaged_session_event') AS engaged_session_event,
-        (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'entrances') AS entrances,
-        (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'firebase_conversion') AS firebase_conversion,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'gclid') AS gclid,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'gclsrc') AS gclsrc,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ignore_referrer') AS ignore_referrer, 
-
-        LAST_VALUE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'content') IGNORE NULLS) OVER (PARTITION BY user_pseudo_id, (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS content, 
-        LAST_VALUE(( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'campaign_id') IGNORE NULLS) OVER (PARTITION BY user_pseudo_id, (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location'), ( SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ga_session_id') ORDER BY event_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS campaign_id,
-        (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'index_section') AS index_section ,
-        (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'index_section_total') AS index_section_total,
-        (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'tool_name') AS tool_name,
-        (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'response') AS response,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'ab_test') AS ab_test,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'navigation_list_type') AS navigation_list_type,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'navigation_page_type') AS navigation_page_type,
-        (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'percent_scrolled') AS percent_scrolled,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'sfmc_activity_id') AS sfmc_activity_id,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'sfmc_activity_name') AS sfmc_activity_name,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'sfmc_asset_id') AS sfmc_asset_id,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'sfmc_channel') AS sfmc_channel,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'sfmc_journey_id') AS sfmc_journey_id,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'sfmc_journey_name') AS sfmc_journey_name,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'step_navs') AS step_navs,
-        collected_traffic_source.manual_campaign_id,
-        collected_traffic_source.manual_campaign_name,
-        collected_traffic_source.manual_source,
-        collected_traffic_source.manual_medium,
-        collected_traffic_source.manual_term,
-        collected_traffic_source.manual_content,
-        is_active_user,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'video_title') AS video_title,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'video_url') AS video_url,
-        (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'video_duration') AS video_duration,
-        (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'video_current_time') AS video_current_time,
-        (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'video_percent') AS video_percent,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'cookie_banner') AS cookie_banner,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'devolved_nations_banner') AS devolved_nations_banner,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'intervention') AS intervention,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'phase_banner') AS phase_banner,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'outbound') AS outbound,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'query_string') AS query_string,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'spelling_suggestion') AS spelling_suggestion,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'outcome') AS outcome,
-        (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'viewport_size') AS viewport_size,
-        (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'batch_page_id') AS batch_page_id,
-        (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'batch_ordering_id') AS batch_ordering_id,
-        (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'timestamp') AS timestamp,
-        (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'copy_length') AS copy_length
-
-    
-    FROM `ga4-analytics-352613.analytics_330577055.events*` 
-    WHERE _table_suffix = CONCAT("_",${constants.getYesterday()})
-),
-    
-cte2 AS ( 
-    SELECT 
-      event_date AS event_date, 
-      user_pseudo_id, 
-      event_name, 
-      event_timestamp, 
-      CONCAT(user_pseudo_id, (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'ga_session_id')) AS unique_session_id, 
-      (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'ga_session_number') AS ga_session_number, 
-      items.item_list_name 
-      
-    FROM `ga4-analytics-352613.analytics_330577055.events*`, UNNEST(items) AS items 
-    WHERE _table_suffix = CONCAT("_",${constants.getYesterday()})
-),
-
-cte3 AS (
-    SELECT 
-        event_date AS event_date, 
-        user_pseudo_id, 
-        event_name, 
-        event_timestamp, 
-        CONCAT(user_pseudo_id, (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'ga_session_id')) AS unique_session_id, 
-        (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'ga_session_number') AS ga_session_number, 
-        items.item_id, 
-        item_name, 
-        items.item_list_index,
-        (SELECT value.string_value FROM UNNEST(item_params) WHERE key='item_content_id') AS item_content_id
-        
-    FROM `ga4-analytics-352613.analytics_330577055.events*`, UNNEST(items) AS items 
-    WHERE _table_suffix = CONCAT("_",${constants.getYesterday()})
-    AND event_name = 'select_item' 
-), 
-        
-cte4 AS (
-    SELECT 
-        a.*, 
-        b.item_id, 
-        b.item_name, 
-        b.item_list_index ,
-        b.item_content_id
-        
-    FROM cte2 A 
-    LEFT JOIN cte3 B 
-        ON a.event_date=b.event_date 
-        AND a.user_pseudo_id=b.user_pseudo_id 
-        AND a.event_name=b.event_name 
-        AND a.event_timestamp=b.event_timestamp 
-        AND a.unique_session_id=b.unique_session_id 
-        AND a.ga_session_number=b.ga_session_number 
-    GROUP BY a.event_date, A.user_pseudo_id, A.event_name, a.event_timestamp, a.unique_session_id, a.ga_session_number, a.item_list_name, b.item_id, b.item_name, b.item_list_index, b.item_content_id 
-), 
-
-final_cte AS (
-    SELECT 
-        a.*, 
-        b.item_list_name, 
-        b.item_id, 
-        b.item_name, 
-        b.item_list_index ,
-        b.item_content_id
-            
-    FROM cte1 a 
-    LEFT JOIN cte4 b 
-        ON a.event_date=b.event_date 
-        AND a.user_pseudo_id=b.user_pseudo_id 
-        AND a.event_name=b.event_name 
-        AND a.event_timestamp=b.event_timestamp 
-        AND a.unique_session_id=b.unique_session_id 
-        AND a.ga_session_number=b.ga_session_number) 
-
-SELECT DISTINCT * FROM final_cte
-```
+### Retention
+At present, there is no default table expiry set up for this table, and no agreed data retention period.
