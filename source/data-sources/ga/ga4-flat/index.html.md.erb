@@ -1,22 +1,22 @@
 ---
-title: GOV.UK GA4 flattened tables
+title: GOV.UK GA4 flattened table
 weight: 3
 last_reviewed_on: 2024-11-22
 review_in: 6 months
 ---
 
-# GOV.UK GA4 flattened tables
-The GA4 flattened tables contain production [GOV.UK GA4](/data-sources/ga/ga4/) data processed into a flat format.
+# GOV.UK GA4 flattened table
+The GA4 flattened table contains production [GOV.UK GA4](/data-sources/ga/ga4/) data processed into a flat format.
 
-These tables are created from the [raw data exported into BigQuery](/data-sources/ga/ga4-bq/) and contain most, but not all, of the same fields.
+This table is created from the [raw data exported into BigQuery](/data-sources/ga/ga4-bq/) and contains most, but not all, of the same fields.
 This flattened dataset is easier and more efficient to query, so should be used for most analysis and reporting.
 
 ## Content
-The first date for which there is data in this dataset is the 27th Septemeber 2022.
-Note that the [quality of the early data may be lower than desired](/data-sources/ga/ga4/#contents) as our GA4 implementation was still in development.
+The first date for which there is data in the flattened table is the 27th Septemeber 2022.
+Note that the [quality of the early data may be lower than desired](/data-sources/ga/ga4/#contents) as our GA4 implementation was still in active development until early 2024.
 
-This data is partitioned on `event_date`.
-A `WHERE` clause to specify which partitions are needed is required when querying this dataset - for example, `WHERE event_date = "2024-09-12"`.
+This table is a partitioned table, and is partitioned on `event_date`.
+A `WHERE` clause to specify which partitions are needed is required when querying this table - for example, `WHERE event_date = "2024-09-12"`.
 
 ## Access
 Everyone with a @digital.cabinet-office.gov.uk email address (all GDS staff) has access to the data by default.
@@ -25,13 +25,13 @@ In addition, everyone who requests and is granted access to the GOV.UK GA4 data 
 More information can be found in our [GA access policy](/processes/ga-access/#what-we-provide-access-to).
 
 ### Location
-This data can be found in BigQuery in the `ga4-analytics-352613.flattened_dataset` dataset, in the table `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`.
+This data can be found in BigQuery in the `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events` table.
 
 As with the rest of our GOV.UK GA4 BigQuery data, this is located in the [GA4 Analytics project](/tools/google-cloud-platform/gcp-projects/#ga4-analytics).
 
 ## Set-up
 ### Data collection and processing
-The flattened tables are the result of several steps of processing:
+This flattened table is the result of several steps of processing:
 
 1. The GOV.UK GA4 production raw data is received from Google. This arrives sharded into daily tables, and the data within these tables is nested. We store this [raw data in BigQuery](/data-sources/ga/ga4-bq/)
 2. The raw data is processed into a partitioned table that is partitioned on event_date and clustered on event_name (though the data is still nested)
@@ -59,8 +59,11 @@ mermaid.initialize({
     });
 </script>
 
-This processing occurs within DataForm in the [gds-bq-reporting project](/tools/google-cloud-platform/gcp-projects/#gds-bigquery-reporting) and writes data back to the [ga4-analytics-352613 project](/tools/google-cloud-platform/gcp-projects/#ga4-analytics).
-The DataForm script is compiled at 7am UTC and run at 8am UTC. The code used can be viewed on [GitHub](https://github.com/alphagov/ga4-dataform).
+This processing occurs within DataForm in the [gds-bq-reporting project](/tools/google-cloud-platform/gcp-projects/#gds-bigquery-reporting), but the data is written back into the [ga4-analytics-352613 project](/tools/google-cloud-platform/gcp-projects/#ga4-analytics).
+The DataForm script is compiled at 7am UTC and run at 8am UTC. The full code used can be [viewed in Github](https://github.com/alphagov/ga4-dataform/branches).
+
+
+More information on the processing can be found in the [Policies and processes section](/processes/ga4-data-processing/).
 
 ### Schema
 | field name | type | mode | description |

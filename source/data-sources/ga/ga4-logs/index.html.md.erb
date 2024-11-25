@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 access logs
 weight: 9
-last_reviewed_on: 2024-11-22
+last_reviewed_on: 2024-11-25
 review_in: 6 months
 ---
 
@@ -23,7 +23,7 @@ However, the [GA4 usage report](/products/ga4-usage-dashboard/) which visualises
 ### Location
 The data is located in BigQuery under the `ga4-analytics-352613.ga4_logs` dataset, in the [GA4 Analytics project](/tools/google-cloud-platform/gcp-projects/#ga4-analytics).
 
-The data is partitioned on the `epoch_time_micros` timestamp.
+This is a partitioned table, and is partitioned on the `epoch_time_micros` timestamp.
 
 ## Set-up
 ### Data collection

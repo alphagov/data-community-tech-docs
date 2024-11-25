@@ -1,14 +1,15 @@
 ---
 title: GOV.UK GA4 (BigQuery export)
 weight: 2
-last_reviewed_on: 2024-11-22
+last_reviewed_on: 2024-11-25
 review_in: 6 months
 ---
 
 # GOV.UK GA4 (BigQuery export) 
-We export our [GOV.UK Google Analytics data](/data-sources/ga/ga4/) and store it in Google BigQuery to enable more detailed analysis and the use of this data in other tools.
+We export our [GOV.UK Google Analytics data](/data-sources/ga/ga4/) and store it in Google BigQuery to enable more detailed analysis than is possible in the GA4 user interface.
+This data can also be queried and used in other tools.
 
-A [flattened dataset](/data-sources/ga/ga4-flat/) is created from the live site data. This contains most, but not all, of the same fields as the raw data.
+A [flattened dataset](/data-sources/ga/ga4-flat/) is created from the raw production GOV.UK data. This contains most, but not all, of the same fields as the raw data.
 The flattened dataset is easier and more efficient to query, so should be used for most analysis and reporting.
 
 ## Access

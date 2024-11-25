@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 BigQuery data processing
 weight: 7
-last_reviewed_on: 2024-11-22
+last_reviewed_on: 2024-11-25
 review_in: 6 months
 ---
 
@@ -20,6 +20,8 @@ The `gds-bq-reporting` project was used to ensure that this processing did not c
 The one Dataform repository contains all of the code for the partitioning and flattening of GOV.UK GA4 data, as well as for the generation of a table of summary metrics. 
 The workflow is scheduled to run six times a day - at every hour between 8am and 12pm, and then again at 2pm.
 This is to ensure that yesterday's raw data is processed promptly, regardless of when it arrives, and means that any historic gaps in the data will be backfilled speedily (the code processes one day of data each time it runs).
+
+The full code used can be [viewed in Github](https://github.com/alphagov/ga4-dataform/branches).
 
 ### Partitioning
 
@@ -75,7 +77,7 @@ There are several steps to follow when making changes to the SQL in the Dataform
 1. Make your change to the SQL in the 'Code' tab of the Dataform development workspace
 2. Commit your change using the button in the top left of the 'Code' tab. Make sure to add a clean and useful commit message. This saves your changes to the code in Dataform, but the code still needs to be synced with the Github repository before it can be run
 3. To send your changes to Github, you need to push your changes, again using the button in the top left of the 'Code' tab in Dataform
-4. In the Github repository, create a pull request using the [branch](/ga4-dataform/branches) you have just pushed your changes to (likely called 'workspace'). You should get someone else to check and approve your changes before merging
+4. [In the Github repository](https://github.com/alphagov/ga4-dataform), create a pull request using the branch you have just pushed your changes to (likely called 'workspace'). You should get someone else to check and approve your changes before merging
 5. In Dataform, pull your changes from the default branch ('main'), again using the button in the top left of the 'Code' tab
 6. Before you can execute the code, you will need to re-compile the code. This can be done using the 'New compilation' button in the release configuration details. These can be found by clicking on the name of the release configuration (in this case, 'production') in the 'Releases and scheduling' tab. If you don't need to manually execute the code now, you can leave this as the code is scheduled to re-compile every day at 7am before the regular workflow runs
 7. If you wish to manually re-run the code, you can now manually trigger a run using the 'Start execution' button next to the 'Release configurations' heading under the 'Releases and scheduling' tab
