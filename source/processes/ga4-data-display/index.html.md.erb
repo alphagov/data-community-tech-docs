@@ -1,0 +1,47 @@
+---
+title: GOV.UK GA4 data display settings
+weight: 4
+last_reviewed_on: 2024-11-25
+review_in: 6 months
+---
+
+# GOV.UK GA4 data display settings
+
+## Audiences
+
+Audiences in GA4 assist you in segmenting different groups of users.
+
+Property editors or administrators can create audiences within the property's Admin area.
+See [Google's documentation](https://support.google.com/analytics/answer/9267572?hl=en#create-an-audience&zippy=%2Cin-this-article) for further information on how to do this.
+
+## Expanded data sets
+
+'Expanded data sets' are a feature available in [Google Analytics 360](/tools/ga/#google-analytics-360) which allow you to view more data in your analytics reports.
+They allow you to expand on reports which return rows labelled as '(other)' and view up to 2 million rows of data in a report or exploration - removing the cardinality limits set by Google Analytics when viewing standard reports. 
+
+'(other)' rows appear because, once the number of rows in a table exceeds the table's row limit, a standard report will surface only the most common dimension values, and condense less common values under '(other)'.
+Expanded data sets allow you to see more data by triggering the expansion of this (other) row.
+
+In addition to changing what data appears in the GA4 interface, expanded data sets also impact what data can be accessed using the Google Analytics API and via the default (API) Looker Studio connection.
+
+Expanded datasets do have a [number of limitations](https://support.google.com/analytics/answer/12867885?hl=en#request&zippy=%2Climits-and-caveats%2Cin-this-article).
+The main limits are:
+
+    - We are only able to create a maximum of 100 expanded data sets per GA4 360 property - you can check the number of expanded data sets already created in the property Admin section as detailed above
+    - Expanded datasets are limited to no more than 6 dimensions or 12 mentrics per report
+    - If the expanded data exceeds 2 million rows, reports can still include an '(other)' row.     
+
+Property editors or administrators can view a list of expanded data sets which have already been created within the property's Admin area.
+See [Google's documentation](https://support.google.com/analytics/answer/12867885?hl=en#request&zippy=%2Csee-expanded-data-set-configurations) for further information on how to do this.
+
+To request an expanded data set, you need to have Editor or Administrator roles on the property and follow the steps below. 
+
+- Identify a GA4 report that features an '(other)' row
+- Select your preferred primary and/or secondary dimensions and add any filters or comparisons
+- Click the data quality icon located at the top of the report
+- Choose ‘Expand this data’
+- On the Expanded data details page, fill in a name and a description
+- Click ‘Create’
+- Wait for 48 hours, then return to the report to see the expanded data
+
+If you do not have the correct permissions, please contact the [GOV.UK Insights and Analytics team](mailto:govuk-ga4-support@digital.cabinet-office.gov.uk).

@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA access
 weight: 1
-last_reviewed_on: 2024-05-01
+last_reviewed_on: 2024-11-25
 review_in: 6 months
 ---
 
@@ -10,14 +10,14 @@ review_in: 6 months
 This page details current policies and processes in place regarding access to web analytics data for www.gov.uk.
 
 ## What we provide access to
-Users are able to request access to:
+When users request access to GOV.UK GA4 data, we grant:
 
-- Analyst access to the [GOV.UK GA4 Production property](/data-sources/ga/ga4/#gov-uk-ga4)
-- Read access to GOV.UK GA4 data in BigQuery, [flattened](/data-sources/ga/ga4-flat/) and [raw](/data-sources/ga/ga4-bq/)
+- Analyst access to the [GOV.UK GA4 Production property](/data-sources/ga/ga4/)
+- Read access to GOV.UK GA4 data in BigQuery, [raw](/data-sources/ga/ga4-bq/) and [flattened](/data-sources/ga/ga4-flat/)
 - Read access to [GOV.UK Search Console data in BigQuery](/data-sources/gsc/)
 
 Notice that we only provide read access to BigQuery.
-Departments are expected to pay for their queries via their own Google Cloud Project.
+Departments are expected to pay for their queries via their own Google Cloud project.
 
 ## Who can be granted access
 Employees of public sector organisations can be granted access to GOV.UK analytics data.
@@ -27,10 +27,9 @@ All prospective Google Analytics data users must have their work (non-gmail) ema
 [These steps](https://support.google.com/accounts/answer/27441?hl=en#existingemail) can be used to create a Google account using an existing work email address.
 Accounts linked to gmail or other non-public sector organisation email addresses will not be permitted access.
 
-Every organisation must have an [analytics Single Point of Contact (SPOC)](/processes/spocs/) nominated who raises requests and administers users.
+Every organisation should have an [analytics Single Point of Contact (SPOC)](/processes/spocs/) nominated who raises requests and administers users.
 
 There are no limits to the number of users that an organisation can request, but [usage will be monitored](/processes/ga-access/#monitoring-and-reporting) and users who are inactive or whose activity is flagged as suspicious may be removed without warning.
-
 
 ## Access request process
 
@@ -44,9 +43,9 @@ Requests should be raised under "GDS IT Requests" -> "People & Accounts" -> "Goo
 
 ### Other government employees
 
-[Analytics SPOCs](/processes/spocs/) should raise a request through the [Analytics access, reports and help form](https://support.publishing.service.gov.uk/analytics_request/new).
+[Analytics SPOCs](/processes/ga-access/spocs/) should raise a request through the [Analytics access, reports and help form](https://support.publishing.service.gov.uk/analytics_request/new).
 
-If a department does not have an Analytics SPOC in place, one can be [nominated](/processes/spocs/#how-to-become-a-spoc).
+If a department does not have an Analytics SPOC in place, [one can be nominated](/processes/spocs/#how-to-become-a-spoc).
 
 ### Public servants from organisations without access to SignOn
 
@@ -74,7 +73,7 @@ SPOC raises request via GOV.UK Analytics team] --> C
 
 ## Monitoring and reporting
 Usage of Google Analytics data is monitored by the GOV.UK Analytics team and any suspicious activity flagged.
-Reports will be provided to SPOCs showing the usage of their organisation's users.
+Reports will be provided to SPOCs showing the GOV.UK GA4 data usage of their organisation's users.
 
 Audits will be conducted regularly. Users that have been inactive for 6 months may be removed without warning.
 
@@ -86,10 +85,10 @@ Tools such as Excel Plugins and Python or R scripts may be authorised to access 
 
 Google Analytics (GA) is not designed for collecting personally identifiable information (PII), and collecting PII is against GA terms and conditions. 
 If you notice PII in GA, please raise a Zendesk ticket as quickly as possible.
+More information on how we handle PII can be found in our (PII process)[/processes/ga-pii/].
 
-Google Analytics data itself is management information and not an official statistic. 
-The Government Analysis Function has published [guidance on the use of management information](https://analysisfunction.civilservice.gov.uk/policy-store/national-statisticians-guidance-management-information-and-official-statistics/).
-
+Google Analytics data is management information and not an official statistic. 
+The Government Analysis Function has published [guidance on the use of management information](https://analysisfunction.civilservice.gov.uk/policy-store/national-statisticians-guidance-management-information-and-official-statistics/) which may be of use.
 
 <script type="module">
 import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
