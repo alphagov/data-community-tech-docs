@@ -1,22 +1,20 @@
 ---
 title: What can I learn from the GOV.UK GA4 data?
 weight: 2
-last_reviewed_on: 2024-07-24
+last_reviewed_on: 2024-11-25
 review_in: 6 months
 ---
 
 # What can I learn from the GOV.UK GA4 data?
-<span style="color:red">This page is a work in progress.</span>
-
 The [GOV.UK Google Analytics 4 (GA4) data](/data-sources/ga/ga4/) contains a variety of information on users of GOV.UK, and how those users interacted with various pages on GOV.UK.
 
 ## Limitations of GA4 data collection
-
 GA4 data is only collected on GOV.UK when users consent to cookies that measure website use. 
 
 Data collection also relies on the [analytics JavaScript code](https://github.com/alphagov/govuk_publishing_components/blob/main/docs/analytics-ga4/analytics.md), and will only occur on browsers we are supporting.
 Browsers such as Internet Explorer 11 are not supported (see the [RFC on removing support for legacy browsers](https://github.com/alphagov/govuk-rfcs/blob/main/rfc-171-remove-legacy-browser-js-support.md)).
 
+There are a range of other [data quality issues](/data-sources/ga/ga4/data-quality/) that should be considered when doing more detailed analysis.
 
 ## Information about how users interacted with pages on GOV.UK
 
@@ -36,9 +34,7 @@ Things you can learn from the GA4 data include:
 There are a long list of custom events sent on GOV.UK which you can examine.
 If you are interested in whether an event is sent with any given user interaction, you can explore the data, or you may find it useful to download a debugging extension such as [Omnibug](https://chromewebstore.google.com/detail/omnibug/bknpehncffejahipecakbfkomebjmokl?hl=en), interact with elements on GOV.UK, and see what GA4 events are triggered.
 
-
 ## Information about users of pages on GOV.UK
-
 GA4 data also contains some information on the users of GOV.UK.
 
 Things you can learn from the GA4 data include:
@@ -50,7 +46,6 @@ Things you can learn from the GA4 data include:
 - location: an indication of where most users seem to be (country, region, etc)
 
 ## Information about the pages on GOV.UK
-
 GA4 data also contains some information on GOV.UK pages themselves.
 
 For instance, the GOV.UK GA4 data contains information on: 
@@ -62,4 +57,3 @@ For instance, the GOV.UK GA4 data contains information on:
 - publishing organisation IDs: which departments have been tagged as relevant to this page
 - primary publishing organisation: the department which has been tagged as the primary publishing organisation
 - document type, schema name, publishing application, rendering application: technical information on the type of page this is and how it is published to GOV.UK
-
