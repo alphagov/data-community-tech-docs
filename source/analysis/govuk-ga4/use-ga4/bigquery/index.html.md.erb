@@ -1,16 +1,15 @@
 ---
 title: BigQuery best practice
 weight: 3
-last_reviewed_on: 2024-05-22
+last_reviewed_on: 2024-11-25
 review_in: 6 months
 ---
 
 # BigQuery best practice
-<span style="color:red">This page is a work in progress.</span>
-
 GA4 data is available in BigQuery in the [raw](/data-sources/ga/ga4-bq/) dataset or the [flattened](/data-sources/ga/ga4-flat/) dataset, which is stored in a partitioned table.
 
-The raw and flattened GA4 data in BigQuery is stored as a table of events - each row, or record, represents an event. Both the raw and flattened GA4 data are stored in partitioned tables, which are more efficient to query than sharded tables.
+The raw and flattened GA4 data in BigQuery is stored as a table of events - each row, or record, represents an event.
+Both the raw and flattened GA4 data are stored in partitioned tables, which are more efficient to query than sharded tables.
 A count of all records on a day will give you the total number of events that were recorded on that day.
 A count of all records on a day filtered to only show records with the event name 'page_view' will give you the total number of page views recorded on that day.
 Metrics such as users and sessions need to be calculated.
@@ -30,33 +29,27 @@ More information on these can be found in the [quotas guidance](/tools/google-cl
 Details of the specific quotas set on various projects can be found under each project on the [GCP projects page](/tools/google-cloud-platform/gcp-projects/).
 
 ### Best practice 
+#### Do not `SELECT *`
 
 Avoid selecting all (`SELECT *`) - there are very few circumstances where you actually need every column from the data source!
 If you would like to see what is in the dataset, you can PREVIEW a table in the BigQuery interface.
 
-Where possible, use the flattened data source. The flattened tables are much more efficient to query, and should be easier to use as well.
+#### Use flattened data sources
 
+Where possible, use the [flattened data source](/data-sources/ga/ga4-flat/). The flattened tables are much more efficient to query, and should be easier to use as well.
+
+#### Always define date ranges
 If you are running queries in BigQuery or connecting to BigQuery data, make sure to define your date range.
 Using a wildcard in the place of the date at the end of the table queries all the flattened tables (the entire history of the data) and costs can rack up pretty quickly due to the amount of data we are collecting and storing.
-Either specify a date in the tables you are selecting data from or make sure to use a WHERE statement where you define the date (or dates) you want.
+Either specify a date in the tables you are selecting data from or make sure to use a `WHERE` statement where you define the date (or dates) you want.
 
-Note that using a LIMIT statement does not reduce the amount of data queried, just the amount of rows returned to you. `SELECT * FROM [table] LIMIT 20` and `SELECT * FROM [table]` cost the exact same amount. 
+Our partitioned tables, such as the GOV.UK GA4 flattened data, have been set up to require a `WHERE` clause specifying the dates being queried.
 
-### Selecting dates best practice (partitioned tables)
-
-The GOV.UK GA4 flattened data is stored in a partitioned table, which introduces some differences in how queries are structured compared to the previous method of working with sharded tables.
-
-#### Querying a specific date
-
-The data, partitioned on `event_date`, requires a `WHERE` clause like `WHERE event_date = "2024-09-12"`
-
-#### Querying yesterday's data
+To query a specific date, the `WHERE` clause would look like: `WHERE event_date = "2024-09-12"`
 
 To select yesterday's data, the `WHERE` clause would be written as: `WHERE event_date = DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)`
 
-#### Querying dates using a `DATE` variable
-
-Finally, if your preference is to select dates using declared variables, these would now be written as follows:
+If your preference is to select dates using declared variables, these would be written as follows:
 
 ```SQL
 DECLARE backfill_date DATE DEFAULT "2024-10-20";
@@ -64,6 +57,10 @@ SELECT *
 FROM `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
 WHERE event_date = backfill_date
 ```
+
+#### A note on `LIMIT`
+
+Note that using a `LIMIT` statement does not reduce the amount of data queried, just the amount of rows returned to you. `SELECT * FROM [table] LIMIT 20` and `SELECT * FROM [table]` cost the exact same amount. 
 
 ## Using GA4 data stored in BigQuery in other tools
 

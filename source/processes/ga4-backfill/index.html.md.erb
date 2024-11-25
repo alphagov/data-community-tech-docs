@@ -29,19 +29,9 @@ The process for backfilling the data for this dashboard is as follows:
 
 - First, delete the affected empty tables from steps 8, 9 and 10 in the `gds-bq-data.GA4_PogoSticking` dataset
 - Run the below queries (changing to the correct date at the beginning) and save the results with the correct table names to their corresponding tables in the aforementioned dataset. For example, if you were backfilling the data for step 9 for the 2nd of September 2024, you would run the backfill query and save the results to the 'gds-bq-data' project, the 'GA4_PogoSticking' dataset, and your table name would be 'PogoStickStepNine_20240902'
-
-### Step 8
-
-[Pogo-sticking step 8 backfill query](https://console.cloud.google.com/bigquery?ws=!1m7!1m6!12m5!1m3!1sga4-analytics-352613!2seurope-west2!3sdc7118b6-e26e-4ebf-87f4-239831e54eb8!2e1&project=gds-bq-data)
-
-### Step 9
-
-[Pogo-sticking step 9 backfill query](https://console.cloud.google.com/bigquery?ws=!1m7!1m6!12m5!1m3!1sga4-analytics-352613!2seurope-west2!3sa418d1b9-095f-4de9-890a-64ab5e2bc372!2e1&project=gds-bq-data)
-
-### Step 10
-
-[Pogo-sticking step 10 backfill query](https://console.cloud.google.com/bigquery?ws=!1m7!1m6!12m5!1m3!1sga4-analytics-352613!2seurope-west2!3sb279f588-b387-47b3-8e20-ea329c6ba249!2e1&project=gds-bq-data)
-
+    - [Pogo-sticking step 8 backfill query](https://console.cloud.google.com/bigquery?ws=!1m7!1m6!12m5!1m3!1sga4-analytics-352613!2seurope-west2!3sdc7118b6-e26e-4ebf-87f4-239831e54eb8!2e1&project=gds-bq-data)
+    - [Pogo-sticking step 9 backfill query](https://console.cloud.google.com/bigquery?ws=!1m7!1m6!12m5!1m3!1sga4-analytics-352613!2seurope-west2!3sa418d1b9-095f-4de9-890a-64ab5e2bc372!2e1&project=gds-bq-data)
+    - [Pogo-sticking step 10 backfill query](https://console.cloud.google.com/bigquery?ws=!1m7!1m6!12m5!1m3!1sga4-analytics-352613!2seurope-west2!3sb279f588-b387-47b3-8e20-ea329c6ba249!2e1&project=gds-bq-data)
 
 ## Partitioned tables
 

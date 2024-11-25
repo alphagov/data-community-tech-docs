@@ -54,7 +54,7 @@ This could be due to Google changing the schema of the data it sends to BigQuery
 These changes will cause the processing to fail.
 
 Simple changes to the schema (adding new, non-nested fields) can be achieved in the BigQuery interface. 
-More complicated changes may however require use of the command line.
+More complicated changes may require use of the command line.
 
 Should you need to update the schema of the `partitioned_events` table (duplicating the schema of the raw nested data), you will have to produce a copy of the raw nested schema, edit it, and save it as the schema of the partitioned nested table.
 
@@ -75,9 +75,9 @@ Periodically, changes may also be required to the flattening code - for example,
 There are several steps to follow when making changes to the SQL in the Dataform workspace:
 
 1. Make your change to the SQL in the 'Code' tab of the Dataform development workspace
-2. Commit your change using the button in the top left of the 'Code' tab. Make sure to add a clean and useful commit message. This saves your changes to the code in Dataform, but the code still needs to be synced with the Github repository before it can be run
+2. Commit your change using the button in the top left of the 'Code' tab. Make sure to add a useful commit message. This saves your changes to the code in Dataform, but the code still needs to be synced with the Github repository before it can be run
 3. To send your changes to Github, you need to push your changes, again using the button in the top left of the 'Code' tab in Dataform
-4. [In the Github repository](https://github.com/alphagov/ga4-dataform), create a pull request using the branch you have just pushed your changes to (likely called 'workspace'). You should get someone else to check and approve your changes before merging
+4. [In the Github repository](https://github.com/alphagov/ga4-dataform), create a pull request using the branch you have just pushed your changes to (the branch will likely be called 'workspace'). You should get someone else to check and approve your changes before merging
 5. In Dataform, pull your changes from the default branch ('main'), again using the button in the top left of the 'Code' tab
 6. Before you can execute the code, you will need to re-compile the code. This can be done using the 'New compilation' button in the release configuration details. These can be found by clicking on the name of the release configuration (in this case, 'production') in the 'Releases and scheduling' tab. If you don't need to manually execute the code now, you can leave this as the code is scheduled to re-compile every day at 7am before the regular workflow runs
 7. If you wish to manually re-run the code, you can now manually trigger a run using the 'Start execution' button next to the 'Release configurations' heading under the 'Releases and scheduling' tab
