@@ -1,13 +1,11 @@
 ---
 title: Looker Studio best practice
 weight: 2
-last_reviewed_on: 2024-10-10
+last_reviewed_on: 2024-11-25
 review_in: 6 months
 ---
 
 # Looker Studio best practice
-<span style="color:red">This page is a work in progress.</span>
-
 You can visualise GOV.UK GA4 data in Looker Studio via the standard 'Google Analytics' connector or by connecting to the GA4 data stored in BigQuery.
 
 ## Using the GA4 (Data API) Looker Studio connector
@@ -43,7 +41,6 @@ Be particularly careful when using same-day data.
 GA4 data on GOV.UK [takes several hours to be processed](https://support.google.com/analytics/answer/12233314?hl=en&ref_topic=13818299&sjid=14243600463504287898-EU), so same-day data is often very unreliable.
 It is usually better to set your date range to exclude today's data, unless there is a specific reason you need to look at today.
 
-
 #### Quotas
 
 Be aware that Looker Studio reports that connect to Google Analytics 4 data are subject to [Google Analytics Data API quotas](https://developers.google.com/analytics/devguides/reporting/data/v1/quotas).
@@ -69,32 +66,25 @@ If you are not GDS staff, we recommend you use a custom query. You can do this b
 
 An example of a SQL query that could be used in step 5 above is: 
 
-#### Partitioned data source (the go-to GA4 connection)
-
 ```SQL
 SELECT *
 FROM `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
 WHERE event_date >= PARSE_DATE('%Y%m%d', @DS_START_DATE) and event_date <= PARSE_DATE('%Y%m%d', @DS_END_DATE)
 ```
 
-#### Sharded data source (our legacy GA4 connection)
-
-```SQL
-SELECT * 
-FROM `ga4-analytics-352613.flattened_dataset.flattened_daily_ga_data_*`
-WHERE _TABLE_SUFFIX BETWEEN @DS_START_DATE AND @DS_END_DATE
-```
-
-
 ### Best practice 
+#### Use flattened data sources
+Where possible, use the partitioned flattened data source.
+The partitioned flattened tables are more efficient to query than the sharded tables, and because the fields have been flattened, they are much easier to use than the nested raw data.
 
-Where possible, use the partitioned flattened data source. The partitioned flattened tables are more efficient to query than the sharded tables, and because the fields have been flattened, they are much easier to use than the nested raw data.
-
+#### Always define your date ranges
 If you are connecting to BigQuery data in Looker Studio, make sure to define your date range.
 If you would like to use a dynamic date range with BigQuery data and are using a custom query, please enable the date range parameters in the connection so that Looker Studio only queries the dates required.
-To do this you will also need to include the date range parameters in your querry - for example, with a our partitioned flattened GA4 tables (which have been partitioned on the event_date field), use `WHERE event_date >= PARSE_DATE('%Y%m%d', @DS_START_DATE) and event_date <= PARSE_DATE('%Y%m%d', @DS_END_DATE)`. If you are using a data source comprised of sharded tables, the syntax is slightly different, and you would qualify your query with something like: `WHERE _TABLE_SUFFIX BETWEEN @DS_START_DATE AND @DS_END_DATE`.
+To do this you will also need to include the date range parameters in your query - for example, with a our partitioned flattened GA4 tables (which have been partitioned on the event_date field), use `WHERE event_date >= PARSE_DATE('%Y%m%d', @DS_START_DATE) and event_date <= PARSE_DATE('%Y%m%d', @DS_END_DATE)`. If you are using a data source comprised of sharded tables, the syntax is slightly different, and you would qualify your query with something like: `WHERE _TABLE_SUFFIX BETWEEN @DS_START_DATE AND @DS_END_DATE`.
 
+#### Pause updates
 Use the ‘pause updates’ feature whilst creating new charts or carrying out a lot of edits on a report to minimise the number of queries run.
 
+#### Use shared Looker Studio data sources 
 Avoid creating new connections to BigQuery datasets in Looker Studio as Looker Studio can query the entire dataset whilst connecting it to the Looker Studio dashboard, which can be very expensive.
 Use shared connections where possible. 
