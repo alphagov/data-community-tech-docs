@@ -1,7 +1,7 @@
 ---
 title: GA4 data deletions
 weight: 5
-last_reviewed_on: 2024-11-25
+last_reviewed_on: 2024-11-27
 review_in: 6 months
 ---
 
@@ -36,14 +36,12 @@ This is because the risks associated with deleting raw data are not worth the be
 3. Analysts figure out which datasets are impacted by the unwanted data collection, and determine using the criteria above whether it is possible and desirable to delete the unwanted data
 4. Relevant owners and/or Leads are informed of the recommendation on data deletion and asked to approve/feedback
 5. Unwanted data is deleted from the GA4 Data API using the GA4 data deletion feature, if this is possible and desirable
-
-    a. Data deletion request is scheduled. Data scheduled to be deleted must be at least 12 days old so the team may need to wait a fortnight to action this
-    b. Data deletion is checked during the preview/grace period  
-    c. Successful data deletion is checked and confirmed after the deletion request shows as processed. A data deletion request can take anything from 7 to 63 days, so this may take some time
+    - a) Data deletion request is scheduled. Data scheduled to be deleted must be at least 12 days old so the team may need to wait a fortnight to action this
+    - b) Data deletion is checked during the preview/grace period  
+    - c) Successful data deletion is checked and confirmed after the deletion request shows as processed. A data deletion request can take anything from 7 to 63 days, so this may take some time
 6. Unwanted data is deleted from the relevant BigQuery datasets, if this is possible and desirable, using a soft deletion or quarantine process. Note that data will only be deleted from the raw GA4 dataset if absolutely necessary (if the data was collected without consent or has to be deleted for data protection or privacy reasons) 
-
-    a. The data being deleted is moved out of the original source dataset into a quarantine dataset, and then deleted from the source dataset
-    b. If the data deletion has been checked and confirmed to be successful then the quarantine dataset is also deleted
+    - a) The data being deleted is moved out of the original source dataset into a quarantine dataset, and then deleted from the source dataset
+    - b) If the data deletion has been checked and confirmed to be successful then the quarantine dataset is also deleted
 7. A notice on the data deletion is shared with the analyst community/data users and/or added to the GA4 data annotations table 
 
 ## Owners and staff members’ responsibilities
