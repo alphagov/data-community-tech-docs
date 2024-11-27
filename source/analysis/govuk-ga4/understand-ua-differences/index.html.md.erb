@@ -1,16 +1,20 @@
 ---
 title: Understand differences between UA and GA4
 weight: 4
-last_reviewed_on: 2024-09-18
+last_reviewed_on: 2024-11-27
 review_in: 6 months
 ---
 
 # Understand differences between UA and GA4
 <span style="color:red">This page is a work in progress.</span>
 
-Universal Analytics (UA) and Google Analytics 4 (GA4) are different in a number of ways.
+## Universal Analytics deprecation
 
-This page attempts to sum up some of the key differences that will be noticed when using GOV.UK's analytics data.
+Universal Analytics (UA), the previous version of Google Analytics, was sunset on 1st July 2024. GA4 is the current version of Google Analytics, and this is what we are now using for web analytics on GOV.UK. For usage data beyond 1st July 2024, this will exist in GA4 only. GA4 was set up in parallel with UA, so we began recording data in GA4 from late 2022 onwards.
+
+The UA interface can no longer be accessed since its deprecation, so we are currently storing this historic [GOV.UK UA data in Google BigQuery](​​https://docs.data-community.publishing.service.gov.uk/data-sources/ga/ua/#gov-uk-universal-analytics-bigquery-export). This enables detailed, long-term analysis and the use of GOV.UK UA data by other tools.
+
+When using Google Analytics 4 (GA4), it’s important to note that its data differs from UA in a number of ways. This page attempts to sum up some of the key differences that will be noticed when using GOV.UK's analytics data.
 
 ## Google Analytics data structure
 
@@ -132,14 +136,19 @@ As detailed in Google's documentation, in UA the default behaviour was 'partial 
 
 In GA4, the default behaviour is 'full match', so the data must exactly match the pattern provided.
 
-
 ## Which is better or correct - UA or GA4?
 
 Neither UA nor GA4 data is 'correct' - the two datasets are simply very different in terms of what data is being collected and how that data is being processed and structured.
 It is good to remember that Analytics data is not, and has never been, exact.
 
 The UA and GA4 interfaces are very different and at present the GA4 interface does not enable us to do everything we were used to being able to do in UA.
-We are working to find ways around this or put in feature requests to ensure that the tool better meets our needs.
+
+
+It is often the case that specific information and analyses are more easily extracted from GA4 data stored in BigQuery. For the GOV.UK UA data, this is the only way the data can be accessed following the deprecation of the UA interface on 1 July 2024. Information about how to access the UA data held in BigQuery can be found [here](https://docs.data-community.publishing.service.gov.uk/analysis/ga-ua-data/#use-the-historic-analytics-ua-data)
+
+Alternatively, we have created a Looker Studio dashboard which replicates the Universal Analytics interface, providing as close as possible some like-for-like reports. You can find a link to this dashboard, and how it was created [here](https://docs.data-community.publishing.service.gov.uk/products/gov-uk-historic-data-dashboard/)
+
+For additional guidance on how to analyse GA4 data using BigQuery, please refer to our documentation on how to [find commonly requested information in the GA4 data here](https://docs.data-community.publishing.service.gov.uk/analysis/govuk-ga4/find-in-ga4/#find-things-in-the-gov-uk-ga4-data)
 
 ## Other resources
 ### From GDS
