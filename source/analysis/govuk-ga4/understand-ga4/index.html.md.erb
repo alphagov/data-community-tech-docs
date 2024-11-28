@@ -16,10 +16,10 @@ The page URL is available in various forms in GA4:
 
 | Dimension name in user interface | Dimension name in Looker Studio | Dimension name in raw BigQuery data | Dimension name in flattened dataset | Dimension name in API | Description |
 | --- | --- | --- | --- | --- | --- |
-| Page location | - | UNNEST(event_params) WHERE key = "page_location" | page_location | pageLocation | Full URL with the protocol, hostname, page path and query string. In BigQuery, page_location has data type 'string' |
-| - | Full page URL | - | - | fullPageUrl | The hostname, page path, and query string for web pages visited - does not contain the protocol (whereas page location does) |
-| - | Page path | - | cleaned_page_location | pagePath | Page path (value after the domain/hostname) does not include query string. This is being calculated in BigQuery for the flattened dataset |
-| Page path + query string | Page path + query string | - | - | pagePathPlusQueryString | Hostname, page path and query string (without 'https://') |
+| Page location | - | UNNEST(event_params) WHERE key = "page_location" | page_location | pageLocation | Full URL with the protocol, hostname, page path and query string |
+| - | Full page URL | - | - | fullPageUrl | The hostname, page path, and query string for web pages visited - does not contain the protocol |
+| - | Page path | - | cleaned_page_location | pagePath | Page path (value after the domain/hostname), does not include query string |
+| Page path + query string | Page path + query string | - | - | pagePathPlusQueryString | Hostname, page path and query string |
 | Page path and screen class | Page path and screen class | - | - | unifiedPagePathScreen | The page path (web) or screen class (app) on which the event was logged |
 
 Not all page dimensions were created equal: [Google announced](https://developers.google.com/analytics/devguides/reporting/data/v1/announcements/20221201-compatibility-changes) that dimensions that include the query string such as pagePathPlusQueryString are only compatible with a limited set of dimensions and metrics.
@@ -76,3 +76,18 @@ If John Smith visits GOV.UK in the same browser on his laptop on Friday and Satu
 
 GA4 data is structured around [events](https://support.google.com/analytics/answer/9322688?hl=en#zippy=%2Crealtime-report%2Cdebugview-report).
 The event count represents a non-distict count of events.
+
+### Engagement metrics
+
+The engagement rate is the percentage of sessions that are deemed to be engaged sessions.
+Engaged sessions are sessions that either last longer than 10 seconds, contain a conversion event, or have more than one screen or page view.
+The bounce rate is the inversion of the engagement rate, and so is the percentage of sessions that are not engaged sessions.
+
+A common behaviour on some pages on GOV.UK is to land on the page and then click an external link to go to a service.
+In GA4 this would be clasisified as a bounce or a non-engaged session as there is only one page view, the user left within 10 seconds, and the external link click has not been designated as a conversion.
+
+The bounce and engagement rates are session-scoped, and so should be used with the landing page dimensions rather than the regular page dimensions.
+GA4 does not stop you from using bounce/engagement rates with 'Page path', 'Page title' and similar page dimensions, but the figures reported will not be accurate. 
+
+The 'Engaged sessions per user' metric is slightly misleading, as the Google documentation defines this metric as the ‘average number of engaged sessions per user’, when in fact it appears to be dividing engaged sessions by the number of active users (rather than dividing by the number of total users).
+

@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 flattened table
 weight: 3
-last_reviewed_on: 2024-11-22
+last_reviewed_on: 2024-11-28
 review_in: 6 months
 ---
 
@@ -214,10 +214,10 @@ More information on the processing can be found in the [Policies and processes s
 | item_content_id | STRING | NULLABLE | The content ID of the search result item |
 | emergency_banner | STRING | NULLABLE | Value is true if the user is served the emergency banner |
 | global_bar | STRING | NULLABLE | Value is set to true when a user is shown the global bar - e.g. when it reminded users to register to vote |
-| page_tool_name | STRING | NULLABLE |  |
-| autocomplete_input | STRING | NULLABLE |  |
-| autocomplete_suggestions | STRING | NULLABLE |  |
-| autocomplete_count | INTEGER | NULLABLE |  |
+| page_tool_name | STRING | NULLABLE | A tool_name value sent with the page_view event |
+| autocomplete_input | STRING | NULLABLE | The user's input used to generate search autocomplete suggestions |
+| autocomplete_suggestions | STRING | NULLABLE | The last list of suggestions offered by the autocomplete feature |
+| autocomplete_count | INTEGER | NULLABLE | The number of autocomplete suggestions shown |
 
 
 ### Retention
