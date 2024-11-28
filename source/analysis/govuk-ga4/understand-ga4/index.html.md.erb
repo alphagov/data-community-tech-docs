@@ -1,40 +1,78 @@
 ---
 title: Understand key GA4 dimensions and metrics
 weight: 3
-last_reviewed_on: 2024-11-25
+last_reviewed_on: 2024-11-28
 review_in: 6 months
 ---
 
 # Understand key GA4 dimensions and metrics
-This page contains information on key GA4 dimensions and metrics and how to use them.
+This page contains information on key Google Analytics 4 (GA4) dimensions and metrics and how to use them.
 
 Information on the GOV.UK-specific elements of our analytics implementation can be found on [the page on understanding the GOV.UK GA4 data structure](/analysis/govuk-ga4/understand-ga4/).
 
+## Key GA4 dimensions
+### Page dimensions
+The page URL is available in various forms in GA4:
+
+| Dimension name in user interface | Dimension name in Looker Studio | Dimension name in raw BigQuery data | Dimension name in flattened dataset | Dimension name in API | Description |
+| --- | --- | --- | --- | --- | --- |
+| Page location | - | UNNEST(event_params) WHERE key = "page_location" | page_location | pageLocation | Full URL with the protocol, hostname, page path and query string. In BigQuery, page_location has data type 'string' |
+| - | Full page URL | - | - | fullPageUrl | The hostname, page path, and query string for web pages visited - does not contain the protocol (whereas page location does) |
+| - | Page path | - | cleaned_page_location | pagePath | Page path (value after the domain/hostname) does not include query string. This is being calculated in BigQuery for the flattened dataset |
+| Page path + query string | Page path + query string | - | - | pagePathPlusQueryString | Hostname, page path and query string (without 'https://') |
+| Page path and screen class | Page path and screen class | - | - | unifiedPagePathScreen | The page path (web) or screen class (app) on which the event was logged |
+
+Not all page dimensions were created equal: [Google announced](https://developers.google.com/analytics/devguides/reporting/data/v1/announcements/20221201-compatibility-changes) that dimensions that include the query string such as pagePathPlusQueryString are only compatible with a limited set of dimensions and metrics.
+For this reason, we also collect the query string in a custom dimension named `query_string`.
+
+### Page referrer
+The 'Page referrer' in GA4 is based on the document referrer, and tells you the page the user clicked a link on to get to the present page - the page that referred the user to the current page.
+This is not necessarily the previous page the user opened or looked at.
+Note that this is [different to the 'Previous page path' field in Universal Analytics](/analysis/govuk-ga4/understand-ua-differences/#previous-page-path-page-referrer).
+
+### Acquisition dimensions
+One session can have multiple sources/mediums (this is a [change from Universal Analytics](/analysis/govuk-ga4/understand-ua-differences/#sessions)).
+The standard 'source'/'medium' dimensions are event-scoped, and should not be used with the sessions metric.
+These are primarily to be used to determine the attribution information for key events, which we have [not implemented on GOV.UK](/processes/ga-modifications/#key-events).
+
+The 'Session source'/'Session medium' dimensions are session-scoped and should instead be used in conjunction with the sessions metric.
+These session-scoped dimensions show you where users are coming from when they start new sessions.
+When a user visits the site directly (when there is no source information for the current session), Google will default to the last known source of the last session (not the last session source (the first source of the last session)).
+This information is surfaced by Google Analytics in the [Traffic acquisition report](https://analytics.google.com/analytics/web/#/p330577055/reports/explorer?params=_u..nav%3Dmaui&r=lifecycle-traffic-acquisition-v2&ruid=lifecycle-traffic-acquisition-v2,life-cycle,acquisition&collectionId=4445620817).
+
+There are also user-scoped acquisition dimensions available, such as 'First user source' and 'First user medium'.
+These user-scoped dimensions show you where your new users are coming from.
+This information is surfaced by Google Analytics in the [User acquisition report](https://analytics.google.com/analytics/web/#/p330577055/reports/explorer?params=_u..nav%3Dmaui&r=lifecycle-user-acquisition-v2&ruid=lifecycle-user-acquisition-v2,life-cycle,acquisition&collectionId=4445620817).
 
 ## Key GA4 metrics
 ### Users
 Colleagues often ask for analytics data about a page or a service so that they can get a sense of scale, most frequently through a desire to understand the count of people or users: “How many users visited service XXX this year?”. 
 
-Though this seems like a sensible question that Google Analytics (GA) should be able to answer, the notion of counting users is fraught with problems.
+Though this seems like a sensible question that Google Analytics should be able to answer, the notion of counting users is fraught with problems.
 In many stakeholders' minds a “user” is a single human, a named person i.e. John Smith working from his laptop or his mobile phone. 
 
 This is not how Google Analytics defines a user.
-Broadly speaking, in GA4, a GA user is a device and browser or app combination. A user is a client ID - a cookie value assigned to a browser which allows Google Analytics to identify a unique user across browsing sessions, but it cannot identify unique users across different browsers or devices i.e. John Smith working on his laptop is a different “user” to John Smith on his mobile phone.
-This problem is exacerbated depending on the operating system and browser used. For example, iOS and Safari automatically delete cookies after seven days i.e. if John Smith working on his laptop with his iPhone could be counted as five “users” in one month using the naive approach (this multiple counting of these “users” is suggested by the data).
-There is currently no way of deduplicating devices for users, so the user count is overinflated.
+Broadly speaking, in GA4, a GA user is a device and browser or app combination. A user is a client ID - a cookie value assigned to a browser which allows Google Analytics to identify a unique user across browsing sessions, but it cannot identify unique users across different browsers or devices.
+John Smith working on his laptop is a different “user” to John Smith on his mobile phone.
+This problem is exacerbated depending on the operating system and browser used, as iOS and Safari automatically delete cookies after seven days.
+This means that John Smith working on his iPhone could be counted as four “users” if each time he is only returning after seven day have passed.
+The user count can therefore be reliably assumed to be inflated, particularly over longer periods of time.
 
 We recommend that in most cases session counts are used rather than the misleading “user” figures. 
 
 If you are using the 'users' metric, bear in mind that in many reports in the GA4 user interface ‘Users’ is actually ‘Active users’.
 Active users are users with at least one ‘engaged session’.
 Engaged sessions are sessions that lasted 10 seconds or longer, or had 1 or more conversion events (at the moment we have [no conversion events set up on GOV.UK](/data-sources/ga/ga4/#data-processing-and-modification)), or 2 or more page or screen views. 
-‘Total users’ in GA4 is the equivalent of ‘Users’ in UA.
+‘Total users’ is the GA4 metric to use to capture all users.
 
 ### Sessions
 A session in Google Analytics is defined as a group of user interactions with a website that take place within a given time frame (a session ends when there has been more than a 30-minute period of inactivity).
 If a user leaves www.gov.uk to go to another website but returns to www.gov.uk within 30 minutes, this activity will all count as one session.
-A single user can open multiple sessions, e.g. if John Smith visits GOV.UK on his laptop on Friday and Saturday, that will be counted as one “user” having two sessions. 
+
+A single user can open multiple sessions.
+If John Smith visits GOV.UK in the same browser on his laptop on Friday and Saturday, that will be counted as one “user” having two sessions.
 
 ### Event count
 
 GA4 data is structured around [events](https://support.google.com/analytics/answer/9322688?hl=en#zippy=%2Crealtime-report%2Cdebugview-report).
+The event count represents a non-distict count of events.

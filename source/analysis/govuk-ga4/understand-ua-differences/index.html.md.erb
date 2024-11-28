@@ -1,7 +1,7 @@
 ---
 title: Understand differences between UA and GA4
 weight: 4
-last_reviewed_on: 2024-11-27
+last_reviewed_on: 2024-11-28
 review_in: 6 months
 ---
 
@@ -141,12 +141,13 @@ It is good to remember that Analytics data is not, and has never been, exact.
 
 The UA and GA4 interfaces are very different and at present the GA4 interface does not enable us to do everything we were used to being able to do in UA.
 
+It is often the case that specific information and analyses are more easily extracted from GA4 data stored in BigQuery.
+For the GOV.UK UA data, this is the only way the data can be accessed following the deprecation of the UA interface on 1 July 2024. Information about how to access the UA data held in BigQuery can be found [here](/analysis/ga-ua-data/#use-the-historic-analytics-ua-data).
 
-It is often the case that specific information and analyses are more easily extracted from GA4 data stored in BigQuery. For the GOV.UK UA data, this is the only way the data can be accessed following the deprecation of the UA interface on 1 July 2024. Information about how to access the UA data held in BigQuery can be found [here](https://docs.data-community.publishing.service.gov.uk/analysis/ga-ua-data/#use-the-historic-analytics-ua-data)
+Alternatively, we have created a Looker Studio dashboard which replicates the reports in the Universal Analytics interface.
+You can find a link to this dashboard and some information on how it was created [on the product page](/products/gov-uk-historic-data-dashboard/).
 
-Alternatively, we have created a Looker Studio dashboard which replicates the Universal Analytics interface, providing as close as possible some like-for-like reports. You can find a link to this dashboard, and how it was created [here](https://docs.data-community.publishing.service.gov.uk/products/gov-uk-historic-data-dashboard/)
-
-For additional guidance on how to analyse GA4 data using BigQuery, please refer to our documentation on how to [find commonly requested information in the GA4 data here](https://docs.data-community.publishing.service.gov.uk/analysis/govuk-ga4/find-in-ga4/#find-things-in-the-gov-uk-ga4-data)
+For additional guidance on how to analyse GA4 data using BigQuery, please refer to our documentation on how to [find commonly requested information in the GA4 data](/analysis/govuk-ga4/find-in-ga4/#find-things-in-the-gov-uk-ga4-data).
 
 ## Other resources
 ### From GDS
