@@ -1,13 +1,12 @@
 ---
 title: GOV.UK GA4 data quality
 weight: 1
-last_reviewed_on: 2024-11-20
+last_reviewed_on: 2024-11-28
 review_in: 6 months
 ---
 
 # GOV.UK GA4 data quality
 Google Analytics 4 (GA4) is used to collect data on the usage of GOV.UK.
-
 Information on how to understand and use GOV.UK GA4 data can be found in the [Analysis section of this site](/analysis/govuk-ga4/).
 
 There are a few known issues with this data, which are detailed below.
@@ -15,8 +14,7 @@ There are a few known issues with this data, which are detailed below.
 
 ## Data quality notes and annotations 
 
-The [GOV.UK GA4 data annotations Looker Studio report](https://lookerstudio.google.com/reporting/306f1e28-a2c1-4d3a-b03c-ae03ac0c9484) contains notes on issues with the GOV.UK GA4 data collection and outside events that may impact GOV.UK usage.
-More information on this report can be found on the [GOV.UK GA4 annotations report page](/products/govuk-ga4-data-annotations/).
+The [GOV.UK GA4 data annotations Looker Studio report](/products/govuk-ga4-annotations/) contains notes on issues with the GOV.UK GA4 data collection and outside events that may impact GOV.UK usage.
 
 Data quality notes can be added by GDS staff using the [GOV.UK GA4 annotations form](https://docs.google.com/forms/d/e/1FAIpQLSeoeyNngZiGwBTqFRt5vuEEhr9X6mJA-8SbfIu3_V-tM6NB1w/viewform). 
 
@@ -42,7 +40,8 @@ We do not know how much other bot traffic is being recorded in our data.
 
 Some [smoke tests](https://en.wikipedia.org/wiki/Smoke_testing_(software)) are run on Production GOV.UK, and sometimes the [smokey test](https://github.com/alphagov/smokey) bot triggers analytics data collection.
 
-These can be found and removed from the data by using the 'Test data filter name' dimension, which will be populated with 'Smokey' if the data is from a smokey test IP address. 
+These can be found and removed from the data by using the 'Test data filter name' dimension, which will be populated with 'Smokey' if the data is from a smokey test IP address.
+This constitutes a tiny amount of data, so is unlikely to impact analysis.
 
 ### Users we miss 
 
@@ -90,8 +89,7 @@ The only exception to this is the page_location parameter which [must be 1,000 c
 On pages with attachment links, clicks on different links to download files come through with the `outbound` dimensions equalling 'true' as would be expected (as these files are hosted on https://assets.publishing.service.gov.uk).
 However, clicks on the preview link (to 'View online') come through with the `outbound` value of 'false' even through the preview is also hosted on https://assets.publishing.service.gov.uk.
 
-This is because in the source HTML the second link only has the page path, and is being redirected to the assets domain.
-
+This is because in the source HTML the second link only has the page path, and is being redirected to the assets domain, so it incorrectly appears to our tracking code as if the file is hosted on www.gov.uk.
 
 #### Issues with users accessing GOV.UK in different languages  
 
