@@ -37,7 +37,6 @@ The GA4 Page Path Tool is designed to indicate the relative frequency of popular
 Other caveats to bear in mind when using the tool are:
 
 - Sessions with user_id values set to ‘false’ are removed from the data
-- Sessions containing smart answer journeys are omitted
 - To clean up the data, both tools look at consecutive distinct page_view events within a session, ignoring duplicate consecutive page views. 
 - Only sessions with 5 or fewer page views are included in the analysis for the Session Path tool. The Page Sequence tool looks at sessions of all lengths.
 
@@ -74,14 +73,6 @@ page_view_counter as (
   GROUP BY 
     unique_session_id),
 
-smart_answer_check as (
-SELECT *,
-    CASE WHEN cleaned_page_location LIKE '%/y/%' THEN 'smart_answer_session' END AS smart_answer,
- FROM
-page_view_sessions
-
-),
-
 five_pages_only as (
 
 SELECT unique_session_id from page_view_counter
@@ -92,12 +83,6 @@ ordered as (
         ROW_NUMBER() OVER (PARTITION BY unique_session_id ORDER BY event_timestamp) AS ordered_page_views
     FROM page_view_sessions
     WHERE unique_session_id IN (SELECT unique_session_id FROM five_pages_only)
-    AND NOT EXISTS (
-        SELECT 1
-        FROM smart_answer_check sac
-        WHERE sac.unique_session_id = page_view_sessions.unique_session_id
-        AND sac.smart_answer IS NOT NULL
-   )
     ORDER BY event_date, unique_session_id, ordered_page_views),
 
 no_duplicates as (
@@ -181,26 +166,12 @@ WITH
     AND unique_session_id NOT LIKE '%false%'
  ),
 
-    smart_answer_check as (
-SELECT *,
-    CASE WHEN cleaned_page_location LIKE '%/y/%' THEN 'smart_answer_session' END AS smart_answer,
- FROM
-page_view_sessions
-
-),
-
 ordered as (
 SELECT
 *,
 ROW_NUMBER() OVER(PARTITION BY unique_session_id ORDER BY event_timestamp) AS ordered_page_views
 FROM page_view_sessions
-WHERE NOT EXISTS (
-        SELECT 1
-        FROM smart_answer_check sac
-        WHERE sac.unique_session_id = page_view_sessions.unique_session_id
-        AND sac.smart_answer IS NOT NULL
-   )
-    ORDER BY event_date, unique_session_id, ordered_page_views
+ORDER BY event_date, unique_session_id, ordered_page_views
 ),
 
 no_duplicates as (
