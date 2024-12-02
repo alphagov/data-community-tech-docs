@@ -1,16 +1,21 @@
 ---
-title: Use the GA4 Page Path Tool
-weight: 39.2
-last_reviewed_on: 2024-11-06
+title: Use the GA4 Page Path tool
+weight: 43
+last_reviewed_on: 2024-12-02
 review_in: 6 months
 ---
 
-# Using the GA4 Page Path Tool
+# Using the GA4 Page Path tool
 
-The [GA4 Page Path Tool](https://lookerstudio.google.com/reporting/8529fbac-32d9-4d61-9623-512237e358da/page/p_285z8fl8ld) provides insights into user journeys on GOV.UK, allowing you to analyse navigation patterns from specific start and/or end page URLs. The tool is organised into two tabs: the Session Path Tool and the Page Sequence Tool. Built using GA4 ‘page_view’ event data in BigQuery, it updates each morning to include data from the previous day.
+The [GA4 Page Path Tool](https://lookerstudio.google.com/reporting/8529fbac-32d9-4d61-9623-512237e358da/page/p_285z8fl8ld) provides insights into user journeys on GOV.UK, allowing you to analyse navigation patterns from specific start and/or end page URLs.
+The tool is organised into two tabs: the Session Path Tool and the Page Sequence Tool.
+Built using GA4 ‘page_view’ event data in BigQuery, it updates each morning to include data from the previous day.
 
+## Using the GA4 Page Path tool
+### Get access to the GA4 Page Path tool
+The [GA4 Page Path Tool](https://lookerstudio.google.com/reporting/8529fbac-32d9-4d61-9623-512237e358da/page/p_285z8fl8ld) is accessible to all GDS performance analysts.
 
-## Session Path Tool Tab
+### Session Path Tool Tab
 
 The Session Path Tool displays complete session journeys, starting from the user’s entry page through to their exit page.
 
@@ -20,7 +25,7 @@ The Session Path Tool displays complete session journeys, starting from the user
 
 - Additional filters enable you to view data by device type, session length (in terms of page count), and include an intermediary URL if you want to ensure a particular page appears in the session journey.
 
-## Page Sequence Tool Tab
+### Page Sequence Tool Tab
 
 The Page Sequence Tool focuses on the most common page sequences originating from a specific URL, regardless of its position in the session.
 
@@ -30,7 +35,7 @@ The Page Sequence Tool focuses on the most common page sequences originating fro
 
 - Similar to the Session Path Tool, this tab includes controls for filtering by device type, session length, and an intermediary URL, ensuring that specified pages appear within the sequence.
 
-## Caveats and interpreting the outputs
+### Caveats and interpreting the outputs
 
 The GA4 Page Path Tool is designed to indicate the relative frequency of popular session journeys and sequences between specified pages rather than to provide exact counts of session occurrences. Due to the data processing required to build the tool, some sessions may be omitted from the results. This means that the outputs reflect common patterns and trends but are not a complete representation of all sessions.
 
@@ -40,7 +45,7 @@ Other caveats to bear in mind when using the tool are:
 - To clean up the data, both tools look at consecutive distinct page_view events within a session, ignoring duplicate consecutive page views. 
 - Only sessions with 5 or fewer page views are included in the analysis for the Session Path tool. The Page Sequence tool looks at sessions of all lengths.
 
-## The code & how it has been built
+## How the GA4 Page Path tool works 
 
 Find the code below which each morning processes the data for the previous day, creating structured outputs for both the Session Path Tool and the Page Sequence Tool. 
 

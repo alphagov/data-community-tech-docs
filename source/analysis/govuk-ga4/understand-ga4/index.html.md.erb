@@ -1,7 +1,7 @@
 ---
 title: Understand key GA4 dimensions and metrics
 weight: 3
-last_reviewed_on: 2024-11-28
+last_reviewed_on: 2024-12-02
 review_in: 6 months
 ---
 
@@ -14,9 +14,9 @@ Information on the GOV.UK-specific elements of our analytics implementation can 
 ### Page dimensions
 The page URL is available in various forms in GA4:
 
-| Dimension name in user interface | Dimension name in Looker Studio | Dimension name in raw BigQuery data | Dimension name in flattened dataset | Dimension name in API | Description |
+| Dimension in user interface | Dimension in Looker Studio | Dimension in raw BigQuery data | Dimension in flattened dataset | Dimension in API | Description |
 | --- | --- | --- | --- | --- | --- |
-| Page location | - | UNNEST(event_params) WHERE key = "page_location" | page_location | pageLocation | Full URL with the protocol, hostname, page path and query string |
+| Page location | - | UNNEST (event_params) WHERE key = "page_location" | page_location | pageLocation | Full URL with the protocol, hostname, page path and query string |
 | - | Full page URL | - | - | fullPageUrl | The hostname, page path, and query string for web pages visited - does not contain the protocol |
 | - | Page path | - | cleaned_page_location | pagePath | Page path (value after the domain/hostname), does not include query string |
 | Page path + query string | Page path + query string | - | - | pagePathPlusQueryString | Hostname, page path and query string |
@@ -90,4 +90,3 @@ The bounce and engagement rates are session-scoped, and so should be used with t
 GA4 does not stop you from using bounce/engagement rates with 'Page path', 'Page title' and similar page dimensions, but the figures reported will not be accurate. 
 
 The 'Engaged sessions per user' metric is slightly misleading, as the Google documentation defines this metric as the ‘average number of engaged sessions per user’, when in fact it appears to be dividing engaged sessions by the number of active users (rather than dividing by the number of total users).
-

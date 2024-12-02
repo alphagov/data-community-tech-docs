@@ -1,27 +1,28 @@
 ---
-title: Using the main pogo-sticking dashboard
-weight: 39.41
-last_reviewed_on: 2024-07-11
+title: Pogo-sticking dashboard
+weight: 44
+last_reviewed_on: 2024-12-02
 review_in: 6 months
 hide_in_navigation: false
 ---
 
-# Using the main pogo-sticking dashboard
-
-Pogo-sticking is when a user quickly navigates back and forth from a web page within the same user session
-
-For example, a user navigates from Page A to Page B back to Page A and then to Page C.
+# Pogo-sticking dashboard
+Pogo-sticking is when a user quickly navigates back and forth from a web page within the same user session - for example, when a user navigates from Page A to Page B back to Page A and then to Page C.
 
 There are 2 types of pogo-sticking:
 
 - internal, which is navigating quickly back and forth from a GOV.UK page to other GOV.UK pages
 - external, which is navigating quickly back and forth from an external search result page, such as Google, to GOV.UK pages
 
-The [main pogo-sticking dashboard](https://lookerstudio.google.com/reporting/c3a7a188-548e-46f6-9864-bcc220c4c105/page/iOQ7B) shows the internal and external pogo-sticking rate for GOV.UK pages. This dashboard does not track when users pogo-stick between different smart answer results.
+The [pogo-sticking dashboard](https://lookerstudio.google.com/reporting/c3a7a188-548e-46f6-9864-bcc220c4c105/page/iOQ7B) shows the internal and external pogo-sticking rate for GOV.UK pages.
+This dashboard does not track when users pogo-stick between different smart answer results.
 
-You can view the pogo-sticking dashboard if you have a Google account which uses the @digital.cabinet-office.gov.uk email domain.
+## Using the Pogo-sticking dashboard
+### Get access to the Pogo-sticking dashboard
 
-## Selecting the date range and page path
+You can view the [pogo-sticking dashboard](https://lookerstudio.google.com/reporting/c3a7a188-548e-46f6-9864-bcc220c4c105/page/iOQ7B) if you have a Google account which uses the @digital.cabinet-office.gov.uk email domain.
+
+### Selecting the date range and page path
 
 The dashboard is split into internal and external pogo-sticking.
 
@@ -41,15 +42,14 @@ You can now view the pogo-sticking metrics.
 
 If you have any issues with the dashboard, [email the Analytics team](mailto:analytics-team@digital.cabinet-office.gov.uk).
 
-## Metrics
-
-### Total number of sessions
+### Metrics
+#### Total number of sessions
 
 The total number of sessions for the particular date or date range for desktop and mobile devices.
 
 This metric is in both the original page and comparison page sections.
 
-### Percentage of the sessions where the page triggered pogo-sticking
+#### Percentage of the sessions where the page triggered pogo-sticking
 
 The percentage of sessions that visited a page where that page triggered pogo-sticking for Desktop and Mobile devices for a particular date or date range, averaged over the dates.
 
@@ -57,17 +57,17 @@ For example, if the total number of sessions that visited a page is 1000, and th
 
 This metric is in both the original page and comparison page sections.
 
-### Time-series graph
+#### Time-series graph
 
 This graph plots the percentage rate of the sessions that visited a page where that page triggered pogo-sticking for Desktop and Mobile over the past 28 days. Hover your cursor over the graph to see the percentages.
 
-### Common pogo-sticking sequences
+#### Common pogo-sticking sequences
 
 This table displays the most common pogo-sticking sequences over a date or date range.
 
 Count is in descending order. Desktop and mobile journeys are added together.
 
-### Comparisons with other document types that triggered pogo-sticking
+#### Comparisons with other document types that triggered pogo-sticking
 
 There are 3 plotted graphs in the __Comparisons with other document types that triggered pogo-sticking__ section.
 
@@ -91,3 +91,11 @@ The plot displays the quartile ranges (lower-, inter-, upper-).
 The black dot and value represent the average pogo-sticking rate for the page path of interest.
 
 Desktop and mobile pogo-sticking rates are averaged together.
+
+## How the Pogo-sticking dashboard works
+
+### Data sources
+
+The Pogo-sticking dashboard uses custom queries to access `gds-bq-data.GA4_PogoSticking` tables stored in BigQuery.
+
+These tables are constructred using a number of scheduled queries.
