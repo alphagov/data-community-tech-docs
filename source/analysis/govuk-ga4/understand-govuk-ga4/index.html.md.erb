@@ -1,7 +1,7 @@
 ---
 title: Understand the GOV.UK GA4 data structure
 weight: 5
-last_reviewed_on: 2024-11-25
+last_reviewed_on: 2024-12-11
 review_in: 6 months
 ---
 
@@ -15,7 +15,6 @@ More information about the data collection and GA4 settings can be found on the 
 Please note that the GA4 tracking on GOV.UK has been developed and evolved over time, so you may find inconsistencies or deviations from the below.
 If you spot anything in the GOV.UK GA4 data that appears to be broken, wrong, or unhelpful, please report it to the GOV.UK Analytics team.
 
-
 ## GOV.UK GA4 events
 
 There are a few primary categories of events implemented on GOV.UK:
@@ -28,6 +27,8 @@ There are a few primary categories of events implemented on GOV.UK:
 
 Page view and and ecommcerce events do not have a ['type' value](https://docs.publishing.service.gov.uk/analytics/attribute_type.html).
 Other events can be broken down by the 'type', which typically groups events by their function, location, or the component they are associated with.
+
+There are a few GA4 events which are also collected as standard as part of any GA4 implementation. These are the `session_start`, `user_engagement`, and `first_visit` events.
 
 ### Page views
 
@@ -52,7 +53,6 @@ The types of navigation event you will find include:
 - homepage: clicks on links on the [GOV.UK homepage](https://www.gov.uk/)
 
 The dimensions collected with navigation events that are likely to be of particular use are whether or not the link is 'outbound', the link domain and URL, and the link text.
-
 
 ### Form events 
 
@@ -89,17 +89,28 @@ The values collected on form events are summaried in the following table.
 | form_start_again | smart answer, simple smart answer | \<link text> |  |  | \<question text> | start again | \<form name> |
 
 
-
 ### Other user interface events 
 
-There are a range of other events which do not fit into the above categories.
+There are a range of other events which capture information on users' interactions with the user interface.
 These will have distinct event names and often use additional custom dimensions to capture useful information.
 
-Some of the most notable are:
+These include the below.
 
-- `select_content` events: tracking interactions which show or hide pieces of content on GOV.UK (for example, user interactions with accordions)
-- `scroll` events: tracking users' scrolls, using different fields to track scroll depth depending on the [type of scroll tracking](https://docs.publishing.service.gov.uk/analytics/event_scroll_tracking.html) implemented
-- video events (`video_start`, `video_progress`, `video_complete`): tracking users' [progress through videos](https://docs.publishing.service.gov.uk/analytics/event_video.html)
+#### `select_content` events
+
+These events track interactions which show or hide pieces of content on GOV.UK (for example, user interactions with accordions).
+
+#### Video events
+
+Video events (named `video_start`, `video_progress`, or `video_complete`) track users' [progress through videos](https://docs.publishing.service.gov.uk/analytics/event_video.html).
+
+Our video tracking uses [dataLayer pushes](https://docs.publishing.service.gov.uk/analytics/event_video.html) implemented by developers, using the [GA4 video tracker script](https://github.com/alphagov/govuk_publishing_components/blob/main/docs/analytics-ga4/trackers/ga4-video-tracker.md).
+
+We use the standard GA4 video event names and parameters [suggested by Google](https://support.google.com/analytics/answer/9216061?hl=en) to capture information like the `video_duration` (in seconds), `video_current_time` (seconds through the video), `video_percent` (percentage through the video), `video_title`, and `video_url`.
+
+#### Scroll events
+
+`scroll` events track users' scrolls, using different fields to track scroll depth depending on the [type of scroll tracking](https://docs.publishing.service.gov.uk/analytics/event_scroll_tracking.html) implemented.
 
 ### Ecommerce events 
 
