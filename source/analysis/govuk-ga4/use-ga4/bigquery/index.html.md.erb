@@ -1,7 +1,7 @@
 ---
 title: BigQuery best practice
 weight: 3
-last_reviewed_on: 2024-12-11
+last_reviewed_on: 2024-12-13
 review_in: 6 months
 ---
 
@@ -75,4 +75,4 @@ More guidance on this can be found on the [Looker Studio best practice page](/an
 
 GA4 data stored in BigQuery can be accessed in Google Sheets via the [Connected Sheets](https://cloud.google.com/bigquery/docs/connected-sheets) feature.
 
-This can be an efficient way to query the data if you set up a custom query (similar to how you would in [Looker Studio](/analysis/govuk-ga4/use-ga4/looker-studio/#use-the-bigquery-ga4-data-in-looker-studio)), and filtering the partitioned flattened table by at least date and event name, rather than using the default method that starts by connecting to the whole table.
+This can be an efficient way to query the data if you set up a custom query (similar to how you would in [Looker Studio](/analysis/govuk-ga4/use-ga4/looker-studio/#use-the-bigquery-ga4-data-in-looker-studio)), and filter the partitioned flattened table by at least date and event name, rather than using the default method that starts by connecting to the whole table.
