@@ -1,25 +1,18 @@
 ---
 title: GOV.UK GA4 (BigQuery) backfill processes
 weight: 11
-last_reviewed_on: 2024-11-25
+last_reviewed_on: 2025-01-08
 review_in: 6 months
 ---
 
 # GOV.UK GA4 (BigQuery) backfill processes
 
-Each morning we receive yesterday's [GOV.UK GA4](/data-sources/ga/ga4/) data in [BigQuery](/data-sources/ga/ga4-bq/). 
+Each morning we receive yesterday's [GOV.UK GA4](/data-sources/ga/ga4/) data in [BigQuery](/tools/google-cloud-platform/bigquery/). 
 
-The sending of this data is administered by Google, and on occasion the data can arrive relatively late in the day. When this happens, several processes we use to transform the data fail, and the transformed data needs to be backfilled when it does arrive.
+The sending of this raw data is administered by Google, and on occasion the data can arrive relatively late in the day.
+When this happens, several processes we use to transform the data fail, and the transformed data needs to be backfilled when it does arrive.
 
 This page aims to summarise the backfilling processes undertaken by the GOV.UK Insights and Analytics team when GOV.UK GA4 data arrives late.
-
-## Flattened sharded GA4 data
-
-To backfill the flattened sharded GA4 data, you need to:
-
-- First, delete the affected empty sharded table from the GA4 flattened dataset
-- Run the [flattened sharded backfill SQL query](https://console.cloud.google.com/bigquery?ws=!1m7!1m6!12m5!1m3!1sgds-bq-reporting!2seurope-west2!3s61268eb8-7bc7-459e-a966-0da90771c7e9!2e1&project=ga4-analytics-352613), making sure to change the date at the top of the query
-- Once the query has run, view the results and save them to a BigQuery table. Save them to the `ga4-analytics-352613.flattened_dataset` dataset. The name of the backfilled table should be 'flattened_daily_ga_data_YYYYMMDD', with YYYYMMDD corresponding to the date of your backfilled data, e.g. 'flattened_daily_ga_data_20240902'
 
 ## Pogo-sticking dashboard
 

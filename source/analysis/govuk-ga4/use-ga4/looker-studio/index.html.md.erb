@@ -1,7 +1,7 @@
 ---
 title: Looker Studio best practice
 weight: 2
-last_reviewed_on: 2024-11-25
+last_reviewed_on: 2025-01-08
 review_in: 6 months
 ---
 
@@ -79,8 +79,10 @@ The partitioned flattened tables are more efficient to query than the sharded ta
 
 #### Always define your date ranges
 If you are connecting to BigQuery data in Looker Studio, make sure to define your date range.
+
 If you would like to use a dynamic date range with BigQuery data and are using a custom query, please enable the date range parameters in the connection so that Looker Studio only queries the dates required.
-To do this you will also need to include the date range parameters in your query - for example, with a our partitioned flattened GA4 tables (which have been partitioned on the event_date field), use `WHERE event_date >= PARSE_DATE('%Y%m%d', @DS_START_DATE) and event_date <= PARSE_DATE('%Y%m%d', @DS_END_DATE)`. If you are using a data source comprised of sharded tables, the syntax is slightly different, and you would qualify your query with something like: `WHERE _TABLE_SUFFIX BETWEEN @DS_START_DATE AND @DS_END_DATE`.
+To do this you will also need to include the date range parameters in your query - for example, with our partitioned flattened GA4 tables (which have been partitioned on the event_date field), use `WHERE event_date >= PARSE_DATE('%Y%m%d', @DS_START_DATE) and event_date <= PARSE_DATE('%Y%m%d', @DS_END_DATE)`.
+If the data source you are using is a sharded table, the syntax is slightly different, and you would qualify your query with something like: `WHERE _TABLE_SUFFIX BETWEEN @DS_START_DATE AND @DS_END_DATE`.
 
 #### Pause updates
 Use the ‘pause updates’ feature whilst creating new charts or carrying out a lot of edits on a report to minimise the number of queries run.

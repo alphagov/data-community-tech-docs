@@ -1,7 +1,7 @@
 ---
 title: BigQuery best practice
 weight: 3
-last_reviewed_on: 2024-12-13
+last_reviewed_on: 2024-01-08
 review_in: 6 months
 ---
 
@@ -40,8 +40,9 @@ Where possible, use the [flattened data source](/data-sources/ga/ga4-flat/). The
 
 #### Always define date ranges
 If you are running queries in BigQuery or connecting to BigQuery data, make sure to define your date range.
-Using a wildcard in the place of the date at the end of the table queries all the flattened tables (the entire history of the data) and costs can rack up pretty quickly due to the amount of data we are collecting and storing.
-Either specify a date in the tables you are selecting data from or make sure to use a `WHERE` statement where you define the date (or dates) you want.
+
+It is best to test queries on short periods of time, such as one day, whilst still in development, to ensure you are not querying too much data unnecessarily.
+Costs can rack up quickly when querying long periods due to the amount of data we are collecting and storing.
 
 Our partitioned tables, such as the GOV.UK GA4 flattened data, have been set up to require a `WHERE` clause specifying the dates being queried.
 
@@ -58,9 +59,16 @@ FROM `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
 WHERE event_date = backfill_date
 ```
 
-#### A note on `LIMIT`
+When querying sharded tables, such as the raw GA4 data, you need to make sure that you either:
 
-Note that using a `LIMIT` statement does not reduce the amount of data queried, just the amount of rows returned to you. `SELECT * FROM [table] LIMIT 20` and `SELECT * FROM [table]` cost the exact same amount. 
+- specify a date or date range in the name of the table you are selecting data from, or
+- use a `WHERE` statement in which you define the date (or dates) you want.
+
+Using a wildcard in the place of the date at the end of a sharded table name queries every shard of the table (the entire history of the data).
+
+#### A note on using `LIMIT`
+
+Using a `LIMIT` statement does not reduce the amount of data queried, just the number of rows returned to you. `SELECT * FROM [table] LIMIT 20` and `SELECT * FROM [table]` cost the exact same amount. 
 
 ## Using GA4 data stored in BigQuery in other tools
 

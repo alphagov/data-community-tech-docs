@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 BigQuery data processing
 weight: 10
-last_reviewed_on: 2024-11-25
+last_reviewed_on: 2025-01-08
 review_in: 6 months
 ---
 
@@ -25,7 +25,7 @@ The full code used can be [viewed in Github](https://github.com/alphagov/ga4-dat
 
 ### Partitioning
 
-This process takes the raw date sharded GOV.UK GA4 table (with shards with the suffix 'YYYYMMDD') and duplicates the data into a new partition in the `ga4-analytics-352613.analytics_330577055.partitioned_events` table.
+This process takes the raw date-sharded GOV.UK GA4 table (with shards with the suffix 'YYYYMMDD') and duplicates the data into a new partition in the `ga4-analytics-352613.analytics_330577055.partitioned_events` table.
 Partitioning is done on `event_date` which means that this field is transformed from a string into a timestamp. The table is also clustered on `event_name`.
 
 This data is available to query and use, but is still nested and so not as easy to use or efficient to query as the flattened data.
@@ -45,7 +45,7 @@ Tables of high-level summary metrics are also generated from the `partitioned_fl
 The partitioning and flattening workflow is scheduled to run several times a day, but there may be occasions when a you need to force it to run.
 
 To perform a manual execution, you should click on the 'Start execution' button next to the 'Release configurations' heading under the ['Releases and scheduling'](https://console.cloud.google.com/bigquery/dataform/locations/europe-west2/repositories/ga4_production_partitioning/details/release-scheduling?project=gds-bq-reporting) tab in the Dataform repository.
-You will need to select the 'production' release configuration and 'All actions' to run.
+You will need to select the 'production' release configuration and set 'All actions' to run.
 
 #### Updating the partitioned table schema
 
@@ -57,7 +57,6 @@ Simple changes to the schema (adding new, non-nested fields) can be achieved in 
 More complicated changes may require use of the command line.
 
 Should you need to update the schema of the `partitioned_events` table (duplicating the schema of the raw nested data), you will have to produce a copy of the raw nested schema, edit it, and save it as the schema of the partitioned nested table.
-
 This command produces a schema file based on the latest raw nested GOV.UK GA4 data (you will need to change YYYYMMDD to reflect yesterday's date):
 
 `bq show schema format=prettyjson ga4-analytics-352613:analytics_330577055.events_YYYYMMDD > new_schema.json`
@@ -81,6 +80,8 @@ There are several steps to follow when making changes to the SQL in the Dataform
 5. In Dataform, pull your changes from the default branch ('main'), again using the button in the top left of the 'Code' tab
 6. Before you can execute the code, you will need to re-compile the code. This can be done using the 'New compilation' button in the release configuration details. These can be found by clicking on the name of the release configuration (in this case, 'production') in the 'Releases and scheduling' tab. If you don't need to manually execute the code now, you can leave this as the code is scheduled to re-compile every day at 7am before the regular workflow runs
 7. If you wish to manually re-run the code, you can now manually trigger a run using the 'Start execution' button next to the 'Release configurations' heading under the 'Releases and scheduling' tab
+
+Note that if your change adds a new field to a table, you will need to edit the table's schema (as detailed above) before you can successfully run your updated code.
 
 ## Other products
 
