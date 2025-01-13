@@ -1,0 +1,38 @@
+---
+title: GOV.UK GA4 improvements roadmap
+weight: 25
+last_reviewed_on: 2025-01-13
+review_in: 6 months
+hide_in_navigation: true
+---
+
+# GOV.UK GA4 improvements roadmap
+This page details upcoming and recent changes to the [GOV.UK GA4 data collection](/data-sources/ga/ga4/) and [processing](/processes/ga4-data-processing/).
+
+## What we're working on now
+### Adding the traffic_type parameter to the GOV.UK GA4 flattened dataset
+Adding the traffic_type parameter to the [GOV.UK GA4 flattened dataset](/data-sources/ga/ga4-flat/) to support analysis of GOV.UK GA4 data filters.
+
+### Fixing issues with taxonomy dimensions in the GOV.UK GA4 flattened dataset
+Renaming taxonomy dimensions in the [GOV.UK GA4 flattened dataset](/data-sources/ga/ga4-flat/) to ensure the correct page taxonomy information is readily available.
+
+### Fixing issues with search_term and ui_text in the GOV.UK GA4 flattened dataset
+Fixing issues with string fields such as the search_term and ui_text in the [GOV.UK GA4 flattened dataset](/data-sources/ga/ga4-flat/) to ensure the all of the data available in the nested fields is being correctly flattened.
+
+### Updating calculated URL fields in GOV.UK GA4 datasets
+Reassessing and updating calculated page location, page path, and/or URL fields in GOV.UK GA4 datasets following the [implementation of the canonical URL](/processes/govuk-ga-roadmap/#canonical-url).
+
+### Improving our backfilling processes 
+Improving our backfilling processes, focussing on developing a process for backfilling individual columns of the [GOV.UK GA4 flattened dataset](/data-sources/ga/ga4-flat/).
+
+### Updating our Smokey test data filter 
+Updating a data filter set up in the GOV.UK GA4 property to more accurately label [Smokey test](https://docs.publishing.service.gov.uk/manual/testing.html#smokey) data.
+
+## Recently released
+### New canonical URL field
+A page's canonical URL is captured in a new field/custom dimension sent with all events.
+This is available in the GOV.UK GA4 property, the Data API/Looker Studio, and in BigQuery in both the raw and flattened datasets.
+
+## Updates
+As we’re still at an early stage, our plans may shift.
+We’ll update this page when this happens and add more detail when we can.

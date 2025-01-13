@@ -1,7 +1,7 @@
 ---
 title: Understand the GOV.UK GA4 data structure
 weight: 5
-last_reviewed_on: 2024-12-11
+last_reviewed_on: 2025-01-13
 review_in: 6 months
 ---
 
@@ -22,7 +22,7 @@ There are a few primary categories of events implemented on GOV.UK:
 - page views
 - navigation events
 - form events
-- other user interface events
+- other user interface events, including search, video, and scroll events
 - ecommerce events
 
 Page view and and ecommcerce events do not have a ['type' value](https://docs.publishing.service.gov.uk/analytics/attribute_type.html).
@@ -42,8 +42,9 @@ A list of these can be found in the [Implementation Record](https://docs.publish
 
 Navigation events fire when a user clicks on a link to navigate to another page. 
 Not all link clicks on GOV.UK fire a navigation event; the tracking has only been applied to outbound links and other links deemed to be of particular interest.
+Tracking all link clicks would be expensive (to collect and to store) given the volume of link clicks on GOV.UK, and if we were to switch to tracking all link clicks we might have to sacrifice some of the detail we are currently getting from the tracking we have on specific components.
 
-The types of navigation event you will find include:
+The types of navigation event you will find include but are not limited to:
 
 - generic link: clicks on outbound links that are not covered by another type
 - email: clicks on email links 
@@ -100,6 +101,16 @@ These include the below.
 #### `select_content` events
 
 These events track interactions which show or hide pieces of content on GOV.UK (for example, user interactions with accordions).
+
+#### Search events
+
+Search events fire when a user searches on GOV.UK.
+
+These events are distinct from but complementary to the [ecommerce tracking](#ecommerce-events) - the `search` event fires on the user's search, whereas the `view_item_list` event fires on a view of a search results page.
+These are subtly different metrics and will yield slightly different results.
+
+Search events, the search ecommerce events, and page view events on search results pages, all use the `search_term` dimension to capture the user's search term.
+Data users must always filter to one event name (`search`, `view_item_list` or possibly `page_view`) when counting the `search_term` dimension or they will be double- or triple-counting (as one user's search for 'testing' could lead to a `search`, a `view_item_list` and a `page_view` event all sending the `search_term` 'testing').
 
 #### Video events
 
