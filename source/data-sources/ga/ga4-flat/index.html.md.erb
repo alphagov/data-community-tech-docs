@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 flattened table
 weight: 3
-last_reviewed_on: 2024-11-28
+last_reviewed_on: 2025-01-14
 review_in: 6 months
 ---
 
@@ -61,7 +61,6 @@ mermaid.initialize({
 
 This processing occurs within DataForm in the [gds-bq-reporting project](/tools/google-cloud-platform/gcp-projects/#gds-bigquery-reporting), but the data is written back into the [ga4-analytics-352613 project](/tools/google-cloud-platform/gcp-projects/#ga4-analytics).
 The DataForm script is compiled at 7am UTC and run at 8am UTC. The full code used can be [viewed in Github](https://github.com/alphagov/ga4-dataform/branches).
-
 
 More information on the processing can be found in the [Policies and processes section](/processes/ga4-data-processing/).
 
@@ -218,7 +217,8 @@ More information on the processing can be found in the [Policies and processes s
 | autocomplete_input | STRING | NULLABLE | The user's input used to generate search autocomplete suggestions |
 | autocomplete_suggestions | STRING | NULLABLE | The last list of suggestions offered by the autocomplete feature |
 | autocomplete_count | INTEGER | NULLABLE | The number of autocomplete suggestions shown |
-
+| canonical_url | STRING | NULLABLE | The [canonical URL](https://developers.google.com/search/docs/crawling-indexing/canonicalization) of the page, taken from the page header. Note that this is not present on all formats/document types |
+| traffic_type | STRING | NULLABLE | The traffic_type parameter set in the GA4 interface or in Google Tag Manager, to help us filter out internal or developer traffic and spam |
 
 ### Retention
 At present, there is no default table expiry set up for this table, and no agreed data retention period.
