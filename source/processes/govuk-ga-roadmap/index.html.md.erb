@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 improvements roadmap
 weight: 2
-last_reviewed_on: 2025-01-14
+last_reviewed_on: 2025-01-25
 review_in: 6 months
 ---
 
@@ -9,9 +9,6 @@ review_in: 6 months
 This page details upcoming and recent changes to the [GOV.UK GA4 data collection](/data-sources/ga/ga4/) and [processing](/processes/ga4-data-processing/).
 
 ## What we're working on now
-### Adding the traffic_type parameter to the GOV.UK GA4 flattened dataset
-Adding the traffic_type parameter to the [GOV.UK GA4 flattened dataset](/data-sources/ga/ga4-flat/) to support analysis of GOV.UK GA4 data filters.
-
 ### Fixing issues with taxonomy dimensions in the GOV.UK GA4 flattened dataset
 Renaming taxonomy dimensions in the GOV.UK GA4 flattened dataset to ensure the correct page taxonomy information is readily available.
 
@@ -31,6 +28,9 @@ Updating a data filter set up in the GOV.UK GA4 property to more accurately labe
 ### New canonical URL field
 A page's canonical URL is captured in a new field/custom dimension sent with all events.
 This is available in the GOV.UK GA4 property, the Data API, and in BigQuery in both the raw and flattened datasets.
+
+### traffic_type parameter added to the GOV.UK GA4 flattened dataset
+The traffic_type parameter is available in the [GOV.UK GA4 flattened dataset](/data-sources/ga/ga4-flat/) to support analysis of GOV.UK GA4 data filters.
 
 ## Updates
 As we’re still at an early stage, our plans may shift.
