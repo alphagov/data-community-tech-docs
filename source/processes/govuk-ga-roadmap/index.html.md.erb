@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 improvements roadmap
 weight: 2
-last_reviewed_on: 2025-01-25
+last_reviewed_on: 2025-01-17
 review_in: 6 months
 ---
 
@@ -11,9 +11,6 @@ This page details upcoming and recent changes to the [GOV.UK GA4 data collection
 ## What we're working on now
 ### Fixing issues with taxonomy dimensions in the GOV.UK GA4 flattened dataset
 Renaming taxonomy dimensions in the GOV.UK GA4 flattened dataset to ensure the correct page taxonomy information is readily available.
-
-### Fixing issues with search_term and ui_text in the GOV.UK GA4 flattened dataset
-Fixing issues with string fields such as the search_term and ui_text in the GOV.UK GA4 flattened dataset to ensure the all of the data available in the nested fields is being correctly flattened.
 
 ### Updating calculated URL fields in GOV.UK GA4 datasets
 Reassessing and updating calculated page location, page path, and/or URL fields in GOV.UK GA4 datasets following the [implementation of the canonical URL](/processes/govuk-ga-roadmap/#new-canonical-url-field).
@@ -31,6 +28,13 @@ This is available in the GOV.UK GA4 property, the Data API, and in BigQuery in b
 
 ### traffic_type parameter added to the GOV.UK GA4 flattened dataset
 The traffic_type parameter is available in the [GOV.UK GA4 flattened dataset](/data-sources/ga/ga4-flat/) to support analysis of GOV.UK GA4 data filters.
+
+### Resolved issues with some custom dimension fields in the GOV.UK GA4 flattened dataset
+Issues with the query_string, ui_text, response, search_term, autocomplete_input, autocomplete_suggestions, and link_text fields in the GOV.UK GA4 flattened dataset have been resolved in the data processing going forwards.
+The processing for these fields was only including string values, but we observed that some data was coming through as having an integer or double data type.
+We have now edited the processing so that integer and double type data will be included in these fields in the flattened table.
+
+Note that these fields have not yet been backfilled (an upcoming task), so historic flattened data will still only include the string values.
 
 ## Updates
 As we’re still at an early stage, our plans may shift.

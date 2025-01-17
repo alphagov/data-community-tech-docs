@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 improvements changelog
 weight: 2
-last_reviewed_on: 2025-01-25
+last_reviewed_on: 2025-01-17
 review_in: 6 months
 hide_in_navigation: true
 ---
@@ -20,3 +20,8 @@ This is available in the GOV.UK GA4 property, the Data API, and in BigQuery in b
 
 ### traffic_type parameter added to the GOV.UK GA4 flattened dataset
 The `traffic_type` parameter is available in the [GOV.UK GA4 flattened dataset](/data-sources/ga/ga4-flat/) to support analysis of GOV.UK GA4 data filters.
+
+### Resolved issues with some custom dimension fields in the GOV.UK GA4 flattened dataset
+Issues with the query_string, ui_text, response, search_term, autocomplete_input, autocomplete_suggestions, and link_text fields in the GOV.UK GA4 flattened dataset have been resolved in the data processing going forwards.
+The processing for these fields was only including string values, but we observed that some data was coming through as having an integer or double data type.
+We have now edited the processing so that integer and double type data will be included in these fields in the flattened table.

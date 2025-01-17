@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 flattened table
 weight: 3
-last_reviewed_on: 2025-01-14
+last_reviewed_on: 2025-01-17
 review_in: 6 months
 ---
 
@@ -201,7 +201,7 @@ More information on the processing can be found in the [Policies and processes s
 | query_string | STRING | NULLABLE | The query string extracted from the page location |
 | spelling_suggestion | STRING | NULLABLE | The spelling suggestion, if one is shown, on a search results page |
 | outcome | STRING | NULLABLE | The outcome reached at the end of form (only sent with form_complete events) |
-| viewport_size | STRING | NULLABLE | The size of the browser window, minus the scroll bars and toolbars |
+| viewport_size | STRING | NULLABLE | The size of the browser window, minus the scroll bars and toolbars, e.g. '1920x1080'. Note: in the flattening process, we only keep string values (a small number of integer and double values that are collected are not flattened) |
 | batch_page_id | INTEGER | NULLABLE | |
 | batch_ordering_id | INTEGER | NULLABLE | |
 | timestamp | INTEGER | NULLABLE | The [Unix timestamp](https://docs.publishing.service.gov.uk/analytics/attribute_timestamp.html) in milliseconds. This is a custom dimension, pushed with every dataLayer event, unlike the default event_timestamp above |
