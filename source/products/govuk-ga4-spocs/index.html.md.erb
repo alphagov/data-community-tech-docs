@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 SPOCs reporting
 weight: 60
-last_reviewed_on: 2024-11-12
+last_reviewed_on: 2025-01-21
 review_in: 6 months
 ---
 
@@ -106,21 +106,21 @@ ga4_logs as (
 
 __spocs as (
   SELECT 
-    array(select trim(val) from unnest(split(trim(email_domain, '[]'))) val) AS email_domain,
+    array(select trim(val) from unnest(split(trim(domain, '[]'))) val) AS domain,
     array(select trim(val) from unnest(split(trim(spoc, '[]'))) val) AS spoc
   FROM `ga4-analytics-352613.user_admin.spocs`
 ),
 
 _spocs as (
   SELECT
-    email_domain,
+    domain,
     spoc
-  FROM __spocs, unnest(email_domain) email_domain
+  FROM __spocs, unnest(domain) domain
 ),
 
 spocs as (
   SELECT
-    email_domain,
+    domain,
     spoc
   FROM _spocs, unnest(spoc) spoc
   GROUP BY 1, 2
@@ -136,5 +136,5 @@ SELECT
 FROM ga4_users A 
 LEFT JOIN ga4_admin_log B on A.user_email = B.user_email
 LEFT JOIN ga4_logs C on A.user_email = C.user_email
-LEFT JOIN spocs S on A.domain = S.email_domain
+LEFT JOIN spocs S on A.domain = S.domain
 ```
