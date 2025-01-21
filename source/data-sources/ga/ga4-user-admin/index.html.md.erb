@@ -1,0 +1,43 @@
+---
+title: GOV.UK GA4 user admin tables
+weight: 10
+last_reviewed_on: 2025-01-21
+review_in: 6 months
+---
+
+# GOV.UK GA4 user admin tables
+<span style="color:red">This page is a work in progress.</span>
+
+The GOV.UK GA4 user admin tables are used to support administration of the [GOV.UK Google Analytics GA4 dataset](/data-sources/ga/ga4/).
+
+These tables include:
+
+- the `all_users` table in the dataset created by the [GA4 user admin tool](/tools/ga4-user-admin-tool/#ga4-user-admin-tool) 
+- the `user_admin_log` table in the dataset created by the [GA4 user admin tool](/tools/ga4-user-admin-tool/#ga4-user-admin-tool) 
+- the `spocs` table in the user admin tool dataset, pulling organisation and [SPOC information](/processes/ga-access/spocs/) from a Google Sheet
+
+## Content
+The fields in this dataset and their descriptions can be seen in the [schema table below](/data-sources/ga/ga4-user-admin/#schema).
+
+The data in the `all_users` and `user_admin_log` tables comes from the [GA4 user admin tool](/tools/ga4-user-admin-tool/#ga4-user-admin-tool).
+
+The data in the `spocs` table comes from a Google Sheet used by GOV.UK performance analysts to record departments' [Analytics SPOCs](/processes/ga-access/spocs/).
+
+## Access
+Access to the BigQuery dataset is limited to GA4 user admins. 
+However, the [GOV.UK GA4 users monitoring report](/products/govuk-ga4-users-monitoring/) which visualises this data is shared with all GDS performance analysts and the GOV.UK Insights and Analytics team Google group.
+
+[Summarised data is also provided to SPOCs](/products/govuk-ga4-spocs/) for their department.
+
+### Location
+The data is located in BigQuery under the `ga4-analytics-352613.user_admin` dataset, in the [GA4 Analytics project](/tools/google-cloud-platform/gcp-projects/#ga4-analytics).
+
+## Set-up
+### Retention
+The `all_users` table is set to expire in February 2026.
+
+The `spocs` table is set to never expire.
+
+The `user_admin_log` table is set to expire in April 2025.
+
+
