@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 data quality
 weight: 1
-last_reviewed_on: 2024-11-28
+last_reviewed_on: 2025-01-23
 review_in: 6 months
 ---
 
@@ -69,7 +69,6 @@ This is because we were not technically able to limit form_complete events to fi
 
 Further information on how and when form events are used can be found in our information on the [GOV.UK GA4 data structure](/analysis/govuk-ga4/understand-govuk-ga4/#form-events).
 
-
 #### Truncated ecommerce (view_item_list) tracking on search results pages
 
 Each ecommerce event (view_item_list) can have up to 200 items sent with it.
@@ -117,3 +116,15 @@ This is because to extract the date, which we record in the custom dimension, we
 Previous work looking into timestamps associated with Whitehall Publisher CSVs identified that the Content API timestamps are in GMT, so for example an item timestamped as '2014-08-31 23:00:00' is actually displayed on the page as '1 September 2014' (published at midnight BST).
 
 We have not yet investigated whether this has an impact on these GA4 dimensions.
+
+#### Issues with taxonomy information
+
+Taxonomy information is known to be of uneven quality as content editors are not always consistent in how they label or attach taxons to pages.
+
+There is also a known bug with the `browse_topic` field which can leave it coming through blank when multiple topics have been assigned to a page.
+
+The way in which taxonomy information has been collected into GA4 has also varied over time.
+Due to GA4's character count limits on parameter values (previously set to 100 characters per parameter value), the `taxonomy_all` and `taxonomy_all_ids` fields were frequently heavily truncated when first implemented.
+To work around this, in February 2023 we implemented a solution which split these fields across five sub-fields, which were then concatenated togeter in the `full_taxonomy` and `full_taxonomy_ids` fields, and the `taxonomy_all` and `taxonomy_all_ids` fields were left empty.
+Later in 2023, Google increased the character count limit on parameter values to 500, so in November we switched back to the `taxonomy_all` and `taxonomy_all_ids` fields.
+We have renamed the 'full' taxonomy fields to `full_taxonomy_DEPRECATED` and `full_taxonomy_ids_DEPRECATED` as they are now not being populated (since November 2023), although they still contain the data for February to November 2023 should that be required.

@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 flattened table
 weight: 3
-last_reviewed_on: 2025-01-17
+last_reviewed_on: 2025-01-23
 review_in: 6 months
 ---
 
@@ -86,17 +86,17 @@ More information on the processing can be found in the [Policies and processes s
 | public_updated_at | STRING | NULLABLE | The date of the last public update (the 'public_updated_at' field within the Content API and content attribute of the `<meta name="govuk:public-updated-at">` tag) |
 | updated_at | STRING | NULLABLE | The date of the last internal update (the 'updated_at' field within the Content API and content attribute of the `<meta name="govuk:updated-at">` tag) |
 | first_published_at | STRING | NULLABLE | The original publish date (the 'first_published_at' field within the Content API and content attribute of the `<meta name="govuk:first-published-at">` tag) |
-| taxonomy_all_ids_DEPRECATED | STRING | NULLABLE | The content attribute of the `<meta name="govuk:taxon-ids">` tag e.g. 'a7f3005b-a3cd-4060-a127-725accb54f2e,65a25d2c-a0e5-4283-921d-c928babfb6e4' |
+| taxonomy_all_ids | STRING | NULLABLE | The content attribute of the `<meta name="govuk:taxon-ids">` tag e.g. 'a7f3005b-a3cd-4060-a127-725accb54f2e,65a25d2c-a0e5-4283-921d-c928babfb6e4'. Note: this field was blank between February and November 2023 when instead the `full_taxonomy_ids_DEPRECATED` field was populated with this information |
 | status_code | INTEGER | NULLABLE | The HTTP response status code |
 | withdrawn | STRING | NULLABLE | Default value of 'false', 'true' if `<meta name="govuk:withdrawn" content="withdrawn">` tag is present |
 | document_type | STRING | NULLABLE | The content attribute of the `<meta name="govuk:format">` tag |
 | history | STRING | NULLABLE | Default value of 'false', 'true' if `<meta name="govuk:content-has-history" content="true">` tag is present |
 | taxonomy_main_id | STRING | NULLABLE | The content attribute of the `<meta name="govuk:taxon-id">` tag |
-| taxonomy_all_DEPRECATED | STRING | NULLABLE | The content attribute of the `<meta name="govuk:taxon-slugs">` tag |
+| taxonomy_all | STRING | NULLABLE | The content attribute of the `<meta name="govuk:taxon-slugs">` tag. Note: this field was blank between February and November 2023 when instead the `full_taxonomy_DEPRECATED` field was populated with this information |
 | taxonomy_main | STRING | NULLABLE | The content attribute of the `<meta name="govuk:taxon-slug">` tag |
 | taxonomy_level_1 | STRING | NULLABLE | The content attribute of the `<meta name="govuk:themes">` tag |
-| full_taxonomy | STRING | NULLABLE | Deprecated - the taxonomy path parts, concatenated |
-| full_taxonomy_ids | STRING | NULLABLE | Deprecated - the taxonomy ID path parts, concatenated |
+| full_taxonomy_DEPRECATED | STRING | NULLABLE | Deprecated - the taxonomy path parts, concatenated. This field was [only populated between February and November 2023](/data-sources/ga/ga4/data-quality/#issues-with-taxonomy-information). Users seeking this information outside that period should use the `taxonomy_all` field |
+| full_taxonomy_ids_DEPRECATED | STRING | NULLABLE | Deprecated - the taxonomy ID path parts, concatenated. This field was [only populated between February and November 2023](/data-sources/ga/ga4/data-quality/#issues-with-taxonomy-information). Users seeking this information outside that period should use the `taxonomy_all_ids` field |
 | rendering_app | STRING | NULLABLE | The content attribute of the `<meta name="govuk:rendering-app">` tag |
 | organisations | STRING | NULLABLE | Publishing organisation IDs - the content attribute of the `<meta name="govuk:analytics:organisations">` tag e.g. '\<D25>' |
 | session_engaged | STRING | NULLABLE |  |

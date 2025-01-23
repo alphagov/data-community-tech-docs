@@ -1,17 +1,16 @@
 ---
 title: GOV.UK GA4 improvements roadmap
 weight: 2
-last_reviewed_on: 2025-01-17
+last_reviewed_on: 2025-01-23
 review_in: 6 months
 ---
 
 # GOV.UK GA4 improvements roadmap
 This page details upcoming and recent changes to the [GOV.UK GA4 data collection](/data-sources/ga/ga4/) and [processing](/processes/ga4-data-processing/).
 
-## What we're working on now
-### Fixing issues with taxonomy dimensions in the GOV.UK GA4 flattened dataset
-Renaming taxonomy dimensions in the GOV.UK GA4 flattened dataset to ensure the correct page taxonomy information is readily available.
+See the [changelog](/processes/govuk-ga-roadmap/ga-changelog/) for previous releases.
 
+## What we're working on now
 ### Updating calculated URL fields in GOV.UK GA4 datasets
 Reassessing and updating calculated page location, page path, and/or URL fields in GOV.UK GA4 datasets following the [implementation of the canonical URL](/processes/govuk-ga-roadmap/#new-canonical-url-field).
 
@@ -20,6 +19,12 @@ Improving our backfilling processes, focussing on developing a process for backf
 
 ### Updating our Smokey test data filter 
 Updating a data filter set up in the GOV.UK GA4 property to more accurately label [Smokey test](https://docs.publishing.service.gov.uk/manual/testing.html#smokey) data.
+
+### Enabling easier access to site search data
+Creating simplified tables or views containing site search data in BigQuery.
+
+### Creating useful tables joining GOV.UK GA4 and Knowledge Graph data
+Creating summarised tables or views combining GOV.UK GA4 and [Knowledge Graph](/tools/govgraph/) data.
 
 ## Recently released
 ### New canonical URL field
@@ -35,6 +40,11 @@ The processing for these fields was only including string values, but we observe
 We have now edited the processing so that integer and double type data will be included in these fields in the flattened table.
 
 Note that these fields have not yet been backfilled (an upcoming task), so historic flattened data will still only include the string values.
+
+### Taxonomy dimensions renamed in the GOV.UK GA4 flattened dataset
+Four taxonomy dimensions have been renamed in the GOV.UK GA4 flattened dataset to help users find the correct fields.
+`taxonomy_all_DEPRECATED` has become `taxonomy_all` and `taxonomy_all_ids_DEPRECATED` has become `taxonomy_all_ids`, as these are the fields containing current taxonomy information.
+`full_taxonomy` has been renamed `full_taxonomy_DEPRECATED` and `full_taxonomy_ids` has been renamed `full_taxonomy_ids_DEPRECATED` because these fields have not been populated since November 2023.
 
 ## Updates
 As we’re still at an early stage, our plans may shift.
