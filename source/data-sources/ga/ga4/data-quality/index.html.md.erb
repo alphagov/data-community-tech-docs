@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 data quality
 weight: 1
-last_reviewed_on: 2025-01-23
+last_reviewed_on: 2025-02-04
 review_in: 6 months
 ---
 
@@ -36,12 +36,14 @@ In GA4, [traffic from known bots is automatically excluded](https://support.goog
 
 We do not know how much other bot traffic is being recorded in our data.
 
-#### Smokey tests
+#### Smokey and E2E tests
 
-Some [smoke tests](https://en.wikipedia.org/wiki/Smoke_testing_(software)) are run on Production GOV.UK, and sometimes the [smokey test](https://github.com/alphagov/smokey) bot triggers analytics data collection.
+Some bots are used by GOV.UK developers to test the Production GOV.UK site.
+These tests - the [smokey test](https://github.com/alphagov/smokey) bot until the end of November 2024, and from December 2024 the [E2E tests](https://github.com/alphagov/govuk-e2e-tests) - can trigger analytics data collection.
 
-These can be found and removed from the data by using the 'Test data filter name' dimension, which will be populated with 'Smokey' if the data is from a smokey test IP address.
+These can be found and removed from the data by using the 'Test data filter name' dimension, which will be populated with 'Smokey' if the data is from an automated test IP address.
 This constitutes a tiny amount of data, so is unlikely to impact analysis.
+Data collected on traffic from these test bots dropped off almost entirely from December 2024 with the switch to the E2E tests, and any hits from these tests should now only occur on the [Cookies on GOV.UK](https://www.gov.uk/help/cookies} and [A/B testing](https://www.gov.uk/help/ab-testing) pages.
 
 ### Users we miss 
 
