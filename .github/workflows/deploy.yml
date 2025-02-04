@@ -63,6 +63,9 @@ jobs:
       - name: Build Middleman site
         run: bundle exec middleman build --verbose
 
+      - name: List build directory
+        run: ls -la ./build
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
