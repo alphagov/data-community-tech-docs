@@ -69,7 +69,13 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./build
+          path: ./build/
+
+      - name: Debug build output
+        run: |
+          pwd
+          ls -la
+          ls -la ./build || echo "Build directory does not exist"
 
   # Deployment job
   deploy:
