@@ -74,8 +74,8 @@ jobs:
 
       - name: Verify artifact
         run: |
-          ls -la /github/workspace
-          ls -la ${{ runner.temp }}/_github_workflow
+          ls -la ${{ runner.temp }}
+          ls -la ${{ github.workspace }}
 
       - name: Debug build output
         run: |
