@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 improvements roadmap
 weight: 2
-last_reviewed_on: 2025-01-23
+last_reviewed_on: 2025-02-04
 review_in: 6 months
 ---
 
@@ -16,9 +16,6 @@ Reassessing and updating calculated page location, page path, and/or URL fields 
 
 ### Improving our backfilling processes 
 Improving our backfilling processes, focussing on developing a process for backfilling individual columns of the [GOV.UK GA4 flattened dataset](/data-sources/ga/ga4-flat/).
-
-### Updating our Smokey test data filter 
-Updating a data filter set up in the GOV.UK GA4 property to more accurately label [Smokey test](https://docs.publishing.service.gov.uk/manual/testing.html#smokey) data.
 
 ### Enabling easier access to site search data
 Creating simplified tables or views containing site search data in BigQuery.
@@ -45,6 +42,10 @@ Note that these fields have not yet been backfilled (an upcoming task), so histo
 Four taxonomy dimensions have been renamed in the GOV.UK GA4 flattened dataset to help users find the correct fields.
 `taxonomy_all_DEPRECATED` has become `taxonomy_all` and `taxonomy_all_ids_DEPRECATED` has become `taxonomy_all_ids`, as these are the fields containing current taxonomy information.
 `full_taxonomy` has been renamed `full_taxonomy_DEPRECATED` and `full_taxonomy_ids` has been renamed `full_taxonomy_ids_DEPRECATED` because these fields have not been populated since November 2023.
+
+### Smokey test data filter updated with other test IP addresses
+The 'Smokey' data filter set up in the GOV.UK GA4 property has been updated with the IP addresses now used for the [E2E tests](https://github.com/alphagov/govuk-e2e-tests).
+The [GOV.UK GA4 data quality notes](/data-sources/ga/ga4/data-quality/#smokey-and-e2e-tests) contain further details on the potential test bot data being collected and notes on how to filter it out of reports.
 
 ## Updates
 As we’re still at an early stage, our plans may shift.
