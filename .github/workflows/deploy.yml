@@ -67,9 +67,15 @@ jobs:
         run: ls -la ./build
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v2
         with:
           path: ./build
+          retention-days: 1
+
+      - name: Verify artifact
+        run: |
+          ls -la /github/workspace
+          ls -la ${{ runner.temp }}/_github_workflow
 
       - name: Debug build output
         run: |
