@@ -78,10 +78,10 @@ jobs:
           path: ./build
           retention-days: 1
           name: github-pages
-          tag: gh-pages
 
       - name: Check artifact ID
         run: |
+          echo "Artifact name: ${{ steps.pages.outputs.artifact_name }}"
           echo "Artifact ID: ${{ steps.pages.outputs.artifact_id }}"
           echo "All outputs: ${{ toJSON(steps.pages.outputs) }}"
 
@@ -108,5 +108,4 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v3
         with:
-          artifact_name: github-pages
-          tag: gh-pages
+          artifact_name: ${{ steps.upload.outputs.artifact_name }}
