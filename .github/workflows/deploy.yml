@@ -71,6 +71,12 @@ jobs:
         with:
           path: ./build
           retention-days: 1
+          name: github-pages
+
+      - name: Check artifact ID
+        run: |
+          echo "Artifact ID: ${{ steps.pages.outputs.artifact_id }}"
+          echo "All outputs: ${{ toJSON(steps.pages.outputs) }}"
 
       - name: Verify artifact
         run: |
@@ -94,3 +100,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v3
+        artifact_name: github-pages
