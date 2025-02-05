@@ -75,16 +75,17 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
+          name: github-pages
           path: ./build
           retention-days: 1
-          name: github-pages
+          if-no-files-found: error
 
       - name: Save Pages Artifact
         uses: actions/upload-artifact@v4
         with:
           name: github-pages
           path: ${{ runner.temp }}/_github_workflow/artifact.tar
-          
+
       - name: Check artifact ID
         run: |
           echo "Artifact name: ${{ steps.pages.outputs.artifact_name }}"
