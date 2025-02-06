@@ -79,11 +79,14 @@ jobs:
           path: ./build
           retention-days: 1
 
-      - name: Check artifact ID
+      - name: Check artifact
         run: |
           echo "Artifact name: ${{ steps.pages.outputs.artifact_name }}"
           echo "Artifact ID: ${{ steps.pages.outputs.artifact_id }}"
+          echo "Upload step outputs: ${{ toJSON(steps.upload.outputs) }}"
           echo "All outputs: ${{ toJSON(steps.pages.outputs) }}"
+          echo "Artifact location: ${{ runner.temp }}/_github_workflow"
+          ls -la ${{ runner.temp }}/_github_workflow || echo "Directory not found"
 
       - name: Verify artifact
         run: |
@@ -104,6 +107,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - name: List Available Artifacts
+        run: |
+          echo "Listing all available artifacts:"
+          ls -la ${{ runner.temp }}
+          echo "Checking _github_workflow directory:"
+          ls -la ${{ runner.temp }}/_github_workflow || echo "Directory not found"
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v3
