@@ -79,13 +79,6 @@ jobs:
           path: ./build
           retention-days: 1
 
-      - name: Save Pages Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: github-pages
-          path: ./build
-          include-hidden-files: true
-
       - name: Check artifact ID
         run: |
           echo "Artifact name: ${{ steps.pages.outputs.artifact_name }}"
@@ -111,12 +104,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Download Pages Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: github-pages
-          path: ${{ runner.temp }}/_github_workflow/  
-
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v3
