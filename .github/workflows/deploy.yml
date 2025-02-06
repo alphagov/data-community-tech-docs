@@ -61,26 +61,35 @@ jobs:
           key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-gems-
+
       - name: Install Gems
         run: |
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
 
       - name: Build Middleman site
-        run: bundle exec middleman build --verbose
+        run: bundle exec middleman build --verbose 
+
+      - name: Verify build output
+        run: |
+          if [ ! -d "./build" ] || [ -z "$(ls -A ./build)" ]; then
+            echo "Build directory is empty or missing"
+            exit 1
+          fi
 
       - name: List build directory
         run: ls -la ./build
 
       - name: Upload artifact
+        id: upload
         uses: actions/upload-pages-artifact@v3
         with:
-          name: github-pages
           path: ./build
           retention-days: 1
 
       - name: Check artifact
         run: |
+          ls -la ${{ runner.temp }}/_github_workflow/artifact
           echo "Artifact name: ${{ steps.pages.outputs.artifact_name }}"
           echo "Artifact ID: ${{ steps.pages.outputs.artifact_id }}"
           echo "Upload step outputs: ${{ toJSON(steps.upload.outputs) }}"
