@@ -84,9 +84,15 @@ jobs:
         id: upload
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./build
+          path: ${{ github.workspace }}/build
           retention-days: 1
 
+      - name: Debug Upload
+        if: always()
+        run: |
+          echo "Upload step result: ${{ steps.upload.outcome }}"
+          echo "Upload step conclusion: ${{ steps.upload.conclusion }}"
+          
       - name: Check artifact
         run: |
           echo "Artifact path verification:"
