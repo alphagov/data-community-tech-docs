@@ -137,6 +137,15 @@ jobs:
           echo "Checking _github_workflow directory:"
           ls -la ${{ runner.temp }}/_github_workflow || echo "Directory not found"
 
+      - name: Verify artifact before deployment
+        run: |
+          echo "Artifact size:"
+          ls -lh /home/runner/work/_temp/artifact.tar || echo "Artifact not found"
+          echo "Artifact contents:"
+          tar tvf /home/runner/work/_temp/artifact.tar || echo "Cannot read artifact"
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v3
+        with:
+          path: /home/runner/work/_temp/artifact.tar
