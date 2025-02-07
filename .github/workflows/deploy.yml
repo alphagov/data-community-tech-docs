@@ -89,13 +89,14 @@ jobs:
 
       - name: Check artifact
         run: |
-          ls -la ${{ runner.temp }}/_github_workflow/artifact
+          echo "Artifact path verification:"
+          ls -la ${{ runner.temp }}
+          find ${{ runner.temp }} -name "github-pages" -type f
           echo "Artifact name: ${{ steps.pages.outputs.artifact_name }}"
           echo "Artifact ID: ${{ steps.pages.outputs.artifact_id }}"
           echo "Upload step outputs: ${{ toJSON(steps.upload.outputs) }}"
           echo "All outputs: ${{ toJSON(steps.pages.outputs) }}"
           echo "Artifact location: ${{ runner.temp }}/_github_workflow"
-          ls -la ${{ runner.temp }}/_github_workflow || echo "Directory not found"
 
       - name: Verify artifact
         run: |
