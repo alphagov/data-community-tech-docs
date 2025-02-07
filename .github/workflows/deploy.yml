@@ -87,12 +87,17 @@ jobs:
           path: ${{ github.workspace }}/build
           retention-days: 1
 
-      - name: Debug Upload
+      - name: Verify upload
         if: always()
         run: |
           echo "Upload step result: ${{ steps.upload.outcome }}"
           echo "Upload step conclusion: ${{ steps.upload.conclusion }}"
-          
+          echo "Upload step outputs:"
+          echo "Checking artifact directory structure:"
+          find ${{ runner.temp }} -type f -ls
+          echo "Checking specific artifact path:"
+          find ${{ runner.temp }} -name "artifact.tar" -type f -ls
+
       - name: Check artifact
         run: |
           echo "Artifact path verification:"
@@ -125,6 +130,8 @@ jobs:
     steps:
       - name: List Available Artifacts
         run: |
+          pwd
+          ls -la
           echo "Listing all available artifacts:"
           ls -la ${{ runner.temp }}
           echo "Checking _github_workflow directory:"
@@ -133,5 +140,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v3
-        with:
-          artifact_name: github-pages
