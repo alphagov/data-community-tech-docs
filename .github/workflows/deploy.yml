@@ -78,13 +78,15 @@ jobs:
           fi
 
       - name: List build directory
-        run: ls -la ./build
+        run: |
+          echo "Listing build directory contents:"
+          ls -la ./build || echo "Build directory is missing or empty"
 
       - name: Upload artifact
         id: upload
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ${{ github.workspace }}/build
+          path: ./build
           retention-days: 1
 
       - name: Verify upload
@@ -139,13 +141,13 @@ jobs:
 
       - name: Verify artifact before deployment
         run: |
+          artifact_path="${{ runner.temp }}/_github_workflow/${{ steps.upload.outputs.artifact_name }}"
+          echo "Artifact path: $artifact_path"
           echo "Artifact size:"
-          ls -lh /home/runner/work/_temp/artifact.tar || echo "Artifact not found"
+          ls -lh $artifact_path || echo "Artifact not found"
           echo "Artifact contents:"
-          tar tvf /home/runner/work/_temp/artifact.tar || echo "Cannot read artifact"
+          tar tvf $artifact_path || echo "Cannot read artifact"
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v3
-        with:
-          path: /home/runner/work/_temp/artifact.tar
+        uses: actions/deploy-pages@v3          
