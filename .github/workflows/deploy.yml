@@ -71,13 +71,6 @@ jobs:
       - name: Build Middleman site
         run: bundle exec middleman build --verbose 
 
-      - name: Verify build output
-        run: |
-          if [ ! -d "./build" ] || [ -z "$(ls -A ./build)" ]; then
-            echo "Build directory is empty or missing"
-            exit 1
-          fi
-
       - name: List build directory
         run: |
           echo "Listing build directory contents:"
@@ -90,37 +83,9 @@ jobs:
           path: ./build
           retention-days: 1    
 
-      - name: Verify upload
-        if: always()
-        run: |
-          echo "Upload step result: ${{ steps.upload.outcome }}"
-          echo "Upload step conclusion: ${{ steps.upload.conclusion }}"
-          echo "Upload step outputs:"
-          echo "Checking artifact directory structure:"
-          find ${{ runner.temp }} -type f -ls
-          echo "Checking specific artifact path:"
-          find ${{ runner.temp }} -name "artifact.tar" -type f -ls
-
-      - name: Check artifact
-        run: |
-          echo "Artifact path verification:"
-          ls -la ${{ runner.temp }}
-          find ${{ runner.temp }} -name "github-pages" -type f
-          echo "Artifact name: ${{ steps.pages.outputs.artifact_name }}"
-          echo "Artifact ID: ${{ steps.pages.outputs.artifact_id }}"
-          echo "Upload step outputs: ${{ toJSON(steps.upload.outputs) }}"
-          echo "All outputs: ${{ toJSON(steps.pages.outputs) }}"
-          echo "Artifact location: ${{ runner.temp }}/_github_workflow"
-
-      - name: Verify artifact
-        run: |
-          ls -la ${{ runner.temp }}
-          ls -la ${{ github.workspace }}
-
       - name: Debug build output
         run: |
           pwd
-          ls -la
           ls -la ./build || echo "Build directory does not exist"
 
   # Deployment job
@@ -131,24 +96,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: List Available Artifacts
-        run: |
-          pwd
-          ls -la
-          echo "Listing all available artifacts:"
-          ls -la ${{ runner.temp }}
-          echo "Checking _github_workflow directory:"
-          ls -la ${{ runner.temp }}/_github_workflow || echo "Directory not found"
-
-      - name: Verify artifact before deployment
-        run: |
-          artifact_path="${{ runner.temp }}/_github_workflow/${{ steps.upload.outputs.artifact_name }}"
-          echo "Artifact path: $artifact_path"
-          echo "Artifact size:"
-          ls -lh $artifact_path || echo "Artifact not found"
-          echo "Artifact contents:"
-          tar tvf $artifact_path || echo "Cannot read artifact"
-
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
