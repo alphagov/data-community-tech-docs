@@ -1,4 +1,4 @@
-# Technical Documentation 
+# Technical Documentation
 
 This project uses the [Tech Docs Template][template], which is a [Middleman template][mmt] that you can use to build technical documentation using a GOV.UK style.
 
@@ -57,14 +57,15 @@ You can add content by editing the `.html.md.erb` files. These files support con
 
 ## Preview your changes locally
 
-- Install rbenv
-- Install Ruby version 2.7.6 `rbenv install 2.7.6`
-- Activate Ruby version 2.7.6 in your current terminal `rbenv shell 2.7.6`
-- Install an old version of a dependency `rbenv exec gem install contracts -v 0.16.1`
-- Install middleman `rbenv exec gem install middleman`
-- Change directory into the website `cd <folder-name>`
-- Install packages that the website requires `rbenv exec bundle install`
-- View the website on your device `bundle exec middleman server`
+1. Install rbenv.
+2. Use git to clone this repository to your device.
+3. In your terminal, navigate to the cloned repository on your device.
+4. Install Ruby version 2.7.6 by running `rbenv install 2.7.6` in your terminal.
+5. Activate Ruby version 2.7.6 in your current terminal by running `rbenv shell 2.7.6`.
+6. Install a required version of the `bundler` gem by running `gem install bundler:1.16.5` in your terminal.
+7. Install all the other required Ruby gems by running `rbenv exec bundle install`.
+8. Make some changes to the content of the site, in the `source` directory.
+9. Preview the changes by running `bundle exec middleman serve`.
 
 👉 See the generated website on `http://localhost:4567` in your browser. Any content changes you make to your website will be updated in real time.
 
