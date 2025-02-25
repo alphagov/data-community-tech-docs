@@ -1,7 +1,7 @@
 ---
 title: Content Data app
 weight: 34
-last_reviewed_on: 2024-11-21
+last_reviewed_on: 2025-02-25
 review_in: 6 months
 ---
 
@@ -35,7 +35,7 @@ The table below reveals potential differences when looking at Content Data over 
 | Field name | Definition pre-December 2023 (UA) | Definition since December 2023 (GA4) | Notes |
 | --- | --- | --- | --- |
 | Unique page views | The [`uniquePageviews` metric returned from the API](https://github.com/alphagov/content-data-api/pull/2005/commits/e474afb5f727e778466ba4ee277a9a884191e1ff#diff-f889fa6dea35fd3a8d5b23c9341a0aeadc5eb52fca2d293a3f6c6c59397b05ecL86) | A count of distinct session IDs attached to page_view events on the page in question | The figures returned will differ between UA and GA4 due to the [change in the definition of a session](/analysis/govuk-ga4/understand-ua-differences/#sessions) |
-| Page views | The total number of page views the selected page received in the given period - the [`pageviews` metric returned from the API](https://github.com/alphagov/content-data-api/pull/2005/commits/e474afb5f727e778466ba4ee277a9a884191e1ff#diff-f889fa6dea35fd3a8d5b23c9341a0aeadc5eb52fca2d293a3f6c6c59397b05ecL85) | The total number of page views the selected page received in the given period - a count of distinct session IDs attached to page_view events on the page in question | Should be very similar across UA and GA4 |
+| Page views | The total number of page views the selected page received in the given period - the [`pageviews` metric returned from the API](https://github.com/alphagov/content-data-api/pull/2005/commits/e474afb5f727e778466ba4ee277a9a884191e1ff#diff-f889fa6dea35fd3a8d5b23c9341a0aeadc5eb52fca2d293a3f6c6c59397b05ecL85) | The total number of page views the selected page received in the given period - a count of session IDs attached to page_view events on the page in question | Should be very similar across UA and GA4 |
 | Page views per visit |  | The number of total page views divided by the number of unique page views, to show on average how many times a page was viewed during a user's session | The figures returned will differ between UA and GA4 due to the [change in the definition of a session](/analysis/govuk-ga4/understand-ua-differences/#sessions) |
 | Searches from page | The [`searchUniques` metric returned from the API](https://github.com/alphagov/content-data-api/pull/2064/files#diff-ffdec38327091d6fe4265ad5e83274af06090b43cbf3aee0ba46ecbf9c2d247aL74) where the page in question was the `searchStartPage` | The number of `search` events sent on the page | These are potentially quite different metrics |
 | Number of feedback comments | The number of [Feedex comments returned from the support API](https://github.com/alphagov/content-data-api/blob/main/app/domain/etl/feedex/service.rb#L44) | No change | Data from Feedex - not impacted by the migration to GA4 |

@@ -1,24 +1,24 @@
 ---
-title: Use the GOV.UK Search Console data
+title: Use Search Console data
 weight: 35
-last_reviewed_on: 2024-11-27
+last_reviewed_on: 2025-02-25
 review_in: 6 months
 ---
 
-# Use the GOV.UK Search Console data
-Google Search Console provides data on searches that result in a page from www.gov.uk being displayed as part of the Google search results.
-This data can help you understand what terms users use to find content on GOV.UK, and how well certain pages perform on the search results page.
+# Use Search Console data
+Google Search Console provides data on searches that result in a page from a given domain being displayed as part of the Google search results.
+This data can help you understand what terms users use to find content on our sites, and how well certain pages perform on the search results page.
 
-This page provides some guidance on how to use the GOV.UK Search Console data, stored in [BigQuery](/tools/google-cloud-platform/bigquery/).
+This page provides some guidance on how to use Search Console data stored in [BigQuery](/tools/google-cloud-platform/bigquery/).
 
-More information on the data source itself can be found on the [data source page](/data-sources/gsc/).
+More information on the Search Console data available can be found on the [data source pages](/data-sources/gsc/).
 
-## Use the GOV.UK Search Console data in BigQuery
+## Use Search Console data in BigQuery
 
 You can choose to access and query the Search Console data directly in BigQuery.
 
 To do this, you will need access to view and query the data. 
-All users who are granted [permissions to access GOV.UK GA4 data](/processes/ga-access/) are also granted permissions to access the Search Console data. 
+All users who are granted [permissions to access GOV.UK GA4 data](/processes/ga-access/) are also granted permissions to access the GOV.UK Search Console data. 
 GDS users will be able to run queries in a range of projects in BigQuery, such as the [GA4 analytics project](/tools/google-cloud-platform/gcp-projects/#ga4-analytics) where the data is stored.
 Users from other organisations will need to query the data from a Google Cloud Platform project with billing owned by their organisation.
 
@@ -26,10 +26,11 @@ If you are new to BigQuery, you may find it helpful to review Google’s [docume
 
 ### Tables and fields
 
-Information on the two Search Console tables can be found on the [data source page](/data-sources/gsc/).
+Information on the two Search Console tables can be found on the [data source pages](/data-sources/gsc/).
 
 Queries can be returned with `null` values if they are rare. In these cases, the 'is_anonymized_query' field should be marked with this bool.
-The query field will be `null` when it is true to protect the privacy of users making the query. More information on this can be found in [Google's documentation on Search Console performance data filtering and limits](https://developers.google.com/search/blog/2022/10/performance-data-deep-dive#privacy-filtering).
+The query field will be `null` when it is true to protect the privacy of users making the query.
+More information on this can be found in [Google's documentation on Search Console performance data filtering and limits](https://developers.google.com/search/blog/2022/10/performance-data-deep-dive#privacy-filtering).
 
 ### Example query
 
@@ -50,15 +51,14 @@ ORDER BY
   impressions DESC
 ```
 
-
-## Use the GOV.UK Search Console data in Looker Studio
+## Use Search Console data in Looker Studio
 
 The Search Console data stored in BigQuery can be used in Looker Studio (and other reporting tools).
 To do this, you will need the ID of a Google Cloud Platform project with billing enabled that is owned by your organisation.
 
 ### Connecting to the BigQuery data
 
-If you are a member of GDS staff, please use the [shared data connections](https://trello.com/c/N8C3H9KT/55-looker-studio-data-sources).
+If you are a member of GDS staff trying to access the GOV.UK Search Console data, please use the [shared data connections](https://trello.com/c/N8C3H9KT/55-looker-studio-data-sources).
 
 If you are a member of another organsiation, we recommend you use a custom query to connect to BigQuery.
 You can do this in Looker Studio by:

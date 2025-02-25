@@ -1,0 +1,89 @@
+---
+title: Assets Search Console
+weight: 10
+last_reviewed_on: 2025-02-25
+review_in: 6 months
+---
+
+# Assets Search Console
+The Assets Google Search Console (GSC) data provides information on searches that result in a page or file on assets.publishing.service.gov.uk being displayed as part of the Google search results.
+
+The Search Console instance for assets.publishing.service.gov.uk is owned by the Insights and Analytics team. 
+
+## Access
+Direct access to Search Console is limited to Search Console admins.
+
+GDS staff can contact the data engineering community on Slack for access to this data.
+
+### Location
+GSC data for the assets.publishing.service.gov.uk site is located in BigQuery in the `ga4-analytics-352613.searchconsole_assetspublishing` dataset, within the [GA4 analytics project](/tools/google-cloud-platform/gcp-projects/#ga4-analytics).
+This data is stored in the europe-west 2 region (London).
+
+The dataset contains two partitioned tables.
+The `searchdata_site_impression` table contains performance data for the Assets property aggregated at the site/property level.
+The `searchdata_url_impression` table contains performance data for aggregated by URL.
+More information on Search Console data can be found in [Google's documentation](https://support.google.com/webmasters/answer/12917991?hl=en).
+
+## Schema
+### Site Impressions
+| field name | type | mode |
+| --- | --- | --- |
+| data_date | DATE | YES |
+| site_url | STRING | YES |
+| query | STRING | YES |
+| is_anonymized_query | BOOL | YES |
+| country | STRING | YES |
+| search_type | STRING | YES |
+| device | STRING | YES |
+| impressions | INT64 | YES |
+| clicks | INT64 | YES |
+| sum_top_position | INT64 | YES |
+
+
+### URL Impressions
+| field name | type | mode |
+| --- | --- | --- |
+| data_date | DATE | YES |
+| site_url | STRING | YES |
+| url | STRING | YES |
+| query | STRING | YES |
+| is_anonymized_query | BOOL | YES |
+| is_anonymized_discover | BOOL | YES |
+| country | STRING | YES |
+| search_type | STRING | YES |
+| device | STRING | YES |
+| is_amp_top_stories | BOOL | YES |
+| is_amp_blue_link | BOOL | YES |
+| is_job_listing | BOOL | YES |
+| is_job_details | BOOL | YES |
+| is_tpf_qa | BOOL | YES |
+| is_tpf_faq | BOOL | YES |
+| is_tpf_howto | BOOL | YES |
+| is_weblite | BOOL | YES |
+| is_action | BOOL | YES |
+| is_events_listing | BOOL | YES |
+| is_events_details | BOOL | YES |
+| is_search_appearance_android_app | BOOL | YES |
+| is_amp_story | BOOL | YES |
+| is_amp_image_result | BOOL | YES |
+| is_video | BOOL | YES |
+| is_organic_shopping | BOOL | YES |
+| is_review_snippet | BOOL | YES |
+| is_special_announcement | BOOL | YES |
+| is_recipe_feature | BOOL | YES |
+| is_recipe_rich_snippet | BOOL | YES |
+| is_subscribed_content | BOOL | YES |
+| is_page_experience | BOOL | YES |
+| is_practice_problems | BOOL | YES |
+| is_math_solvers | BOOL | YES |
+| is_translated_result | BOOL | YES |
+| is_edu_q_and_a | BOOL | YES |
+| is_product_snippets | BOOL | YES |
+| is_merchant_listings | BOOL | YES |
+| is_learning_videos | BOOL | YES |
+| impressions | INT64 | YES |
+| clicks | INT64 | YES |
+| sum_position | INT64 | YES |
+
+## Retention
+No data retention period has yet been specified in BigQuery.
