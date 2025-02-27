@@ -53,7 +53,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.1.0'
+          ruby-version: '2.7.6'
 
       - name: Ruby gem cache
         uses: actions/cache@v4
