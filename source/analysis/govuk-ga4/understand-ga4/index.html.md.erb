@@ -1,20 +1,20 @@
 ---
 title: Understand key GA4 dimensions and metrics
 weight: 3
-last_reviewed_on: 2025-02-27
+last_reviewed_on: 2025-02-28
 review_in: 6 months
 ---
 
 # Understand key GA4 dimensions and metrics
 This page contains information on key Google Analytics 4 (GA4) dimensions and metrics and how to use them.
 
-Information on the GOV.UK-specific elements of our analytics implementation can be found on [the page on understanding the GOV.UK GA4 data structure](/analysis/govuk-ga4/understand-ga4/).
+Information on the GOV.UK-specific elements of our analytics implementation can be found on [the page on understanding the GOV.UK GA4 data structure](/analysis/govuk-ga4/understand-govuk-ga4/).
 
 ## Key GA4 dimensions
 ### Page dimensions
 The page URL is available in various forms in GA4:
 
-| Dimension in user interface | Dimension in Looker Studio | Dimension in raw BigQuery data | Dimension in flattened dataset | Dimension in API | Description |
+| Dimension in user interface | Dimension in Looker Studio | Dimension in raw BigQuery data | Dimension in [flattened dataset](/data-sources/ga/ga4-flat/) | Dimension in API | Description |
 | --- | --- | --- | --- | --- | --- |
 | Page location | - | UNNEST (event_params) WHERE key = "page_location" | page_location | pageLocation | Full URL with the protocol, hostname, page path and query string |
 | - | Full page URL | - | - | fullPageUrl | The hostname, page path, and query string for web pages visited - does not contain the protocol |
@@ -22,7 +22,7 @@ The page URL is available in various forms in GA4:
 | Page path + query string | Page path + query string | - | - | pagePathPlusQueryString | Hostname, page path and query string |
 | Page path and screen class | Page path and screen class | - | - | unifiedPagePathScreen | The page path (web) or screen class (app) on which the event was logged |
 
-Not all page dimensions were created equal: [Google announced](https://developers.google.com/analytics/devguides/reporting/data/v1/announcements/20221201-compatibility-changes) that dimensions that include the query string such as pagePathPlusQueryString are only compatible with a limited set of dimensions and metrics.
+Not all page dimensions were created equal: [Google announced](https://developers.google.com/analytics/devguides/reporting/data/v1/announcements/20221201-compatibility-changes) that dimensions that include the query string such as `pagePathPlusQueryString` are only compatible with a limited set of dimensions and metrics.
 For this reason, we also collect the query string in a custom dimension named `query_string`.
 
 The 'Page location' and 'Full page URL' fields are the most complete page dimensions, showing all or nearly all that the end user will see in the address bar of their browser.
@@ -30,9 +30,9 @@ However, due to this completeness, they may not always be the best page dimensio
 The presence of query strings, UTM parameters, and other small errors in the URL can make it difficult to accurately understand the number of sessions that have occurred on a given page using these dimensions.
 
 In most cases, the 'Page path' will be the simplest and best page dimension to use, aggregating all views of a page, ignoring any differing parameters appended to the URL.
-In our [GOV.UK GA4 flattened dataset](/data-sources/ga/ga4-flat/), we have created a 'cleaned_page_location' field which is very similar to the 'Page path', although it defaults to the 'canonical_url' value on document types where the canonical URL is available as the canonical URL is cleaner.
-This means there will be some differences when comparing analysis using the 'Page path' and analysis using the 'cleaned_page_location'. 
-This may particularly cause confusion when doing journey analysis, as the path seen in the next page's page_referrer may differ from the cleaned_page_location of the present page.
+In our [GOV.UK GA4 flattened dataset](/data-sources/ga/ga4-flat/), we have created a `cleaned_page_location` field which is very similar to the 'Page path', although it defaults to the `canonical_url` value (minus the hostname) on document types where the canonical URL is available as the canonical URL is cleaner.
+This means there will be some differences when comparing analysis using the 'Page path' and analysis using the `cleaned_page_location`.
+Particular attention should be paid to these differences when doing journey analysis, as the path seen in the next page's `page_referrer` may differ from the `cleaned_page_location` of the present page.
 
 ### Page referrer
 The 'Page referrer' in GA4 is based on the document referrer, and tells you the page the user clicked a link on to get to the present page - the page that referred the user to the current page.
