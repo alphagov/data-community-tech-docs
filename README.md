@@ -57,15 +57,12 @@ You can add content by editing the `.html.md.erb` files. These files support con
 
 ## Preview your changes locally
 
-1. Install rbenv.
-2. Use git to clone this repository to your device.
-3. In your terminal, navigate to the cloned repository on your device.
-4. Install Ruby version 2.7.6 by running `rbenv install 2.7.6` in your terminal.
-5. Activate Ruby version 2.7.6 in your current terminal by running `rbenv shell 2.7.6`.
-6. Install a required version of the `bundler` gem by running `gem install bundler:1.16.5` in your terminal.
-7. Install all the other required Ruby gems by running `rbenv exec bundle install`.
-8. Make some changes to the content of the site, in the `source` directory.
-9. Preview the changes by running `bundle exec middleman serve`.
+In your terminal:
+
+```
+make init
+make local-dev
+```
 
 👉 See the generated website on `http://localhost:4567` in your browser. Any content changes you make to your website will be updated in real time.
 
@@ -78,7 +75,7 @@ If you make changes to the `config/tech-docs.yml` configuration file, you need t
 To build the HTML pages from content in your `source` folder, run:
 
 ```
-bundle exec middleman build
+rbenv exec bundle exec middleman build
 ```
 
 Every time you run this command, the `build` folder gets generated from scratch. This means any changes to the `build` folder that are not part of the build command will get overwritten.
@@ -89,7 +86,7 @@ Do not run `bundle update` because the website only builds with the current
 package versions, given the old version of ruby.  You could try using a more
 recent version of ruby, and recent versions of all the packages.
 
-Run `bundle exec middleman build --verbose` to get detailed error messages to help with finding the problem.
+Run `rbenv exec bundle exec middleman build --verbose` to get detailed error messages to help with finding the problem.
 
 ## Licence
 
