@@ -4,15 +4,12 @@
 ## init
 init:
 	brew install rbenv ruby-build
-	rbenv install 3.1.0
-	rbenv shell 3.1.0
-	rbenv exec gem install contracts -v 0.16.1
-	rbenv exec gem install middleman
+	rbenv install --skip-existing
 	rbenv exec bundle install
 
 ## Run the site locally
 local-dev:
-	bundle exec middleman server
+	rbenv exec bundle exec middleman server
 
 ## Get help on all make commands
 help:

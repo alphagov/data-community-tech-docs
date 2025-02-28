@@ -39,7 +39,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           submodules: recursive
-        
+
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v3
@@ -52,8 +52,6 @@ jobs:
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '2.7.6'
 
       - name: Ruby gem cache
         uses: actions/cache@v4
@@ -70,7 +68,7 @@ jobs:
           bundle install --jobs 4 --retry 3
 
       - name: Build Middleman site
-        run: bundle exec middleman build --verbose 
+        run: bundle exec middleman build --verbose
 
       - name: List build directory
         run: |
@@ -82,7 +80,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./build
-          retention-days: 1    
+          retention-days: 1
 
       - name: Debug build output
         run: |
