@@ -7,7 +7,7 @@ review_in: 6 months
 
 # Data Services technical documentation
 
-This site is a central store of technical documentation for the data community working on GOV.UK, and should be the default place to record information and decisions.
+This site is a central store of technical documentation for the data community working on GOV.UK, and should be the default place to record information and decisions. 
 Any private or sensitive information should be linked to from here rather than written here directly.
 
 Use this documentation if you need to find out information on:
@@ -43,22 +43,19 @@ You can add content by editing the `.html.md.erb` files. These files support con
 3. Request review and get approval from another contributor
 4. Merge the pull request
 
-When the pull request is merged, GitHub will automatically render the changes that you made.  It will take about a minute.
+When the pull request is merged, GitHub will automatically render the changes that you made.  It will take about a minute. 
 You can monitor the progress by viewing the [GitHub action][github-action] in your browser.
 
 ### Preview your changes
 
 Follow the steps in the section [install the tech docs template](#install-the-tech-docs-template).  Then follow the steps below.
 
-1. Install rbenv.
-2. Use git to clone this repository to your device.
-3. In your terminal, navigate to the cloned repository on your device.
-4. Install Ruby version 2.7.6 by running `rbenv install 2.7.6` in your terminal.
-5. Activate Ruby version 2.7.6 in your current terminal by running `rbenv shell 2.7.6`.
-6. Install a required version of the `bundler` gem by running `gem install bundler:1.16.5` in your terminal.
-7. Install all the other required Ruby gems by running `rbenv exec bundle install`.
-8. Make some changes to the content of the site, in the `source` directory.
-9. Preview the changes by running `bundle exec middleman serve`.
+1. Use git to clone this repository to your device.
+2. Navigate to the cloned repository on your device.
+3. Activate Ruby version 2.7.6 in your current terminal by running `rbenv shell 2.7.6`.
+4. Use rbenv to install all the required Ruby gems by running `rbenv exec bundle install`.
+5. Make some changes to the content of the site, in the `source` directory.
+6. Preview the changes by running `bundle exec middleman serve`.
 
 👉 See the generated website on `http://localhost:4567` in your browser. Any content changes you make to your website will be updated in real time.
 
