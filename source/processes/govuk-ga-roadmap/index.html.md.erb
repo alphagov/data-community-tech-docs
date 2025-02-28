@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 improvements roadmap
 weight: 2
-last_reviewed_on: 2025-02-04
+last_reviewed_on: 2025-02-28
 review_in: 6 months
 ---
 
@@ -11,26 +11,19 @@ This page details upcoming and recent changes to the [GOV.UK GA4 data collection
 See the [changelog](/processes/govuk-ga-roadmap/ga-changelog/) for previous releases.
 
 ## What we're working on now
-### Updating calculated URL fields in GOV.UK GA4 datasets
-Reassessing and updating calculated page location, page path, and/or URL fields in GOV.UK GA4 datasets following the [implementation of the canonical URL](/processes/govuk-ga-roadmap/#new-canonical-url-field).
-
-### Improving our backfilling processes 
-Improving our backfilling processes, focussing on developing a process for backfilling individual columns of the [GOV.UK GA4 flattened dataset](/data-sources/ga/ga4-flat/).
-
-### Enabling easier access to site search data
-Creating simplified tables or views containing site search data in BigQuery.
-
 ### Creating useful tables joining GOV.UK GA4 and Knowledge Graph data
 Creating summarised tables or views combining GOV.UK GA4 and [Knowledge Graph](/tools/govgraph/) data.
 
+### Investigating using the User Deletion API to delete users' GA4 data
+Investigating using the User Deletion API to delete users' GOV.UK GA4 data.
+
+### Increasing the reliability of the Content Data app query
+Increasing the reliability of the query used to populate a table that provides the [Content Data app](/products/content-data/) with GOV.UK GA4 data.
+
+### Enabling easier access to site search data
+Creating simplified tables or views containing GOV.UK site search data in BigQuery.
+
 ## Recently released
-### New canonical URL field
-A page's canonical URL is captured in a new field/custom dimension sent with all events.
-This is available in the GOV.UK GA4 property, the Data API, and in BigQuery in both the raw and flattened datasets.
-
-### traffic_type parameter added to the GOV.UK GA4 flattened dataset
-The traffic_type parameter is available in the [GOV.UK GA4 flattened dataset](/data-sources/ga/ga4-flat/) to support analysis of GOV.UK GA4 data filters.
-
 ### Resolved issues with some custom dimension fields in the GOV.UK GA4 flattened dataset
 Issues with the query_string, ui_text, response, search_term, autocomplete_input, autocomplete_suggestions, and link_text fields in the GOV.UK GA4 flattened dataset have been resolved in the data processing going forwards.
 The processing for these fields was only including string values, but we observed that some data was coming through as having an integer or double data type.
@@ -46,6 +39,23 @@ Four taxonomy dimensions have been renamed in the GOV.UK GA4 flattened dataset t
 ### Smokey test data filter updated with other test IP addresses
 The 'Smokey' data filter set up in the GOV.UK GA4 property has been updated with the IP addresses now used for the [E2E tests](https://github.com/alphagov/govuk-e2e-tests).
 The [GOV.UK GA4 data quality notes](/data-sources/ga/ga4/data-quality/#smokey-and-e2e-tests) contain further details on the potential test bot data being collected and notes on how to filter it out of reports.
+
+### Bug fixed on contact form_complete events
+A bug which led to contact type `form_complete` events firing on the completion of other forms across GOV.UK has now been fixed.
+
+### Page path (cleaned_page_location) field updated in the GOV.UK GA4 flattened dataset
+The `cleaned_page_location` field in the [GOV.UK GA4 flattened dataset](/data-sources/ga/ga4-flat//#schema) has been updated following the [implementation of the canonical URL](/processes/govuk-ga-roadmap/ga-changelog/#new-canonical-url-field).
+The `cleaned_page_location` now defaults to the `canonical_url` value, with the hostname removed, if it is available.
+If the `canonical_url` is null, the `cleaned_page_location` is calculated as before - by stripping the hostname, anchors and query string from the `page_location`.
+
+### Alternative methods of backfilling datasets investigated 
+We have investigated changing our backfilling processes, focussing on developing a process for backfilling individual columns of the [GOV.UK GA4 flattened dataset](/data-sources/ga/ga4-flat/).
+In this investigation, we learned how to backfill individual columns, but also that this was a fiddly and expensive task. 
+We will only use this single column method on rare occasions, and will instead continue to prefer whole day backfilling, with human intervention required to delete the days needing to be backfilled.
+
+### Assets domain Search Console BigQuery export set up
+We have set up the bulk export for the [assets.publishing.service.gov.uk domain Search Console property](/data-sources/gsc/assetspublishing/).
+This should facilitate analysis of users' journeys to files on that domain.
 
 ## Updates
 As we’re still at an early stage, our plans may shift.

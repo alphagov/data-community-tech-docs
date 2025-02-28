@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 (BigQuery) backfill processes
 weight: 13
-last_reviewed_on: 2025-01-08
+last_reviewed_on: 2025-02-28
 review_in: 6 months
 ---
 
@@ -13,6 +13,16 @@ The sending of this raw data is administered by Google, and on occasion the data
 When this happens, several processes we use to transform the data fail, and the transformed data needs to be backfilled when it does arrive.
 
 This page aims to summarise the backfilling processes undertaken by the GOV.UK Insights and Analytics team when GOV.UK GA4 data arrives late.
+
+## Partitioned tables
+
+The two partitioned tables built from GOV.UK GA4 data have been set up to automatically backfill, even if the raw data arrives late.
+
+If previously processed data is incorrect and needs to be reprocessed, all that is required is for the partitions (days) including data requiring re-processing to be deleted.
+The backfill will then run automatically to reprocess the missing dates. 
+If a large number of days need to be reprocessed, the cron schedule of the workflow in Dataform can be adjusted to that it runs more frequently and so that more days are processed in a set time.
+
+More information on how these tables are generated can be read on the [GOV.UK GA4 BigQuery data processing page](/processes/ga4-data-processing/), and the queries used can be [viewed in Github](https://github.com/alphagov/ga4-dataform/branches).
 
 ## Pogo-sticking dashboard
 
@@ -26,8 +36,3 @@ The process for backfilling the data for this dashboard is as follows:
     - [Pogo-sticking step 9 backfill query](https://console.cloud.google.com/bigquery?ws=!1m7!1m6!12m5!1m3!1sga4-analytics-352613!2seurope-west2!3sa418d1b9-095f-4de9-890a-64ab5e2bc372!2e1&project=gds-bq-data)
     - [Pogo-sticking step 10 backfill query](https://console.cloud.google.com/bigquery?ws=!1m7!1m6!12m5!1m3!1sga4-analytics-352613!2seurope-west2!3sb279f588-b387-47b3-8e20-ea329c6ba249!2e1&project=gds-bq-data)
 
-## Partitioned tables
-
-The two partitioned tables built from GOV.UK GA4 data have been set up to automatically backfill, even if the raw data arrives late.
-
-More information on how these tables are generated can be read on the [GOV.UK GA4 BigQuery data processing page](/processes/ga4-data-processing/), and the queries used can be [viewed in Github](https://github.com/alphagov/ga4-dataform/branches).
