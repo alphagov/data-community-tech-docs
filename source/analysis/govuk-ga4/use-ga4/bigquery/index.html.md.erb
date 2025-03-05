@@ -1,7 +1,7 @@
 ---
 title: BigQuery best practice
 weight: 3
-last_reviewed_on: 2024-01-08
+last_reviewed_on: 2025-03-05
 review_in: 6 months
 ---
 
@@ -45,10 +45,8 @@ It is best to test queries on short periods of time, such as one day, whilst sti
 Costs can rack up quickly when querying long periods due to the amount of data we are collecting and storing.
 
 Our partitioned tables, such as the GOV.UK GA4 flattened data, have been set up to require a `WHERE` clause specifying the dates being queried.
-
-To query a specific date, the `WHERE` clause would look like: `WHERE event_date = "2024-09-12"`
-
-To select yesterday's data, the `WHERE` clause would be written as: `WHERE event_date = DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)`
+A specific date can be queried with a `WHERE` clause such as `WHERE event_date = "2024-09-12"`.
+Relative dates can be calcuated using an interval, for example selecting yesterday's data with a `WHERE` clause like `WHERE event_date = DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)`.
 
 If your preference is to select dates using declared variables, these would be written as follows:
 
@@ -65,6 +63,15 @@ When querying sharded tables, such as the raw GA4 data, you need to make sure th
 - use a `WHERE` statement in which you define the date (or dates) you want.
 
 Using a wildcard in the place of the date at the end of a sharded table name queries every shard of the table (the entire history of the data).
+
+#### Filter on event_name  
+
+Our flattened dataset is clustered on the event_name field.
+When querying the flattened dataest, filtering on the `event_name` to select just the events you require will make queries more efficient. 
+
+#### Use table sampling when developing queries 
+
+Using [table sampling](https://cloud.google.com/bigquery/docs/table-sampling) can help you restrict the data processed when testing queries.
 
 #### A note on using `LIMIT`
 
