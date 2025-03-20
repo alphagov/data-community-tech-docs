@@ -1,7 +1,7 @@
 ---
 title: Google Cloud Platform
 weight: 3
-last_reviewed_on: 2024-08-02
+last_reviewed_on: 2025-03-20
 review_in: 6 months
 ---
 
@@ -24,3 +24,17 @@ More information on this data can be found on the [GCP logs data source page](/d
 GCP is certified as [ISO/IEC 27001:2022 compliant](https://cloud.google.com/security/compliance/iso-27001).
 
 In many cases (such as with the collection and use of [Google Analytics data](/data-sources/ga/ga4/)), the storage and usage of data within GCP is governed by Data Protection Impact Assessments.
+
+### Projects
+
+Projects should have logging set up (and ideally routed to the [`all_gcp_logs` dataset](https://docs.data-community.publishing.service.gov.uk/data-sources/gcp-logs/)), quotas applied, and terraformed permissions.
+
+Key projects and the quotas applied to them are listed below.
+
+| Project name | Project ID and link | Purpose | Quotas | Notes |
+| --- | --- | --- | --- | --- |
+| GA4 analytics | [ga4-analytics-352613](https://console.cloud.google.com/welcome?project=ga4-analytics-352613) | To store [GOV.UK GA4](/data-sources/ga/ga4-bq/) and [Search Console](/data-sources/gsc/) data | 1TB per user per day and a global limit of 3.5TB per day |  |
+| Universal analytics | [govuk-bigquery-analytics](https://console.cloud.google.com/welcome?project=govuk-bigquery-analytics) | For all work around the collection and use of GOV.UK Universal Analytics data | Global limit of 3TB per day | This project should not be heavily used now that GOV.UK has migrated to GA4 |
+| GDS BigQuery reporting | [gds-bq-reporting](https://console.cloud.google.com/welcome?project=gds-bq-reporting) | To enable querying of our GA4 data in various reporting tools while monitoring costs and access | Global limit of 15TB per day |  |
+| GDS BigQuery data | [gds-bq-data](https://console.cloud.google.com/welcome?project=gds-bq-data) | To store data for use in various reporting tools while monitoring costs and access | 1TB per user per day and a global limit of 3TB per day |  |
+| GDS GA Archive | [gds-ga-archive](https://console.cloud.google.com/welcome?project=gds-ga-archive) | To store historic Universal Analytics data from properties managed by GDS | None |  |
