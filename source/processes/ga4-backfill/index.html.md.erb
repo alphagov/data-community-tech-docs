@@ -36,3 +36,82 @@ The process for backfilling the data for this dashboard is as follows:
     - [Pogo-sticking step 9 backfill query](https://console.cloud.google.com/bigquery?ws=!1m7!1m6!12m5!1m3!1sga4-analytics-352613!2seurope-west2!3sa418d1b9-095f-4de9-890a-64ab5e2bc372!2e1&project=gds-bq-data)
     - [Pogo-sticking step 10 backfill query](https://console.cloud.google.com/bigquery?ws=!1m7!1m6!12m5!1m3!1sga4-analytics-352613!2seurope-west2!3sb279f588-b387-47b3-8e20-ea329c6ba249!2e1&project=gds-bq-data)
 
+## GA4 flattened backfill process - replacing incorrectly processed data
+
+This section outlines the process which we (the GOV.UK Insights and Analytics team) will follow in order to backfill our GA4 production data. We are fully backfilling the data as opposed to selectively backfilling specific fields. This is following a comprehensive investigation into the feasibility and pros and cons of selectively backfilling only specific fields in the data. The investigation determined that there were more arguments in favour of completely reprocessing days containing incorrect data - the principal reasons being lower cost and reduced complexity.
+
+### Make changes to the flattening backfilling code
+
+The first step we took was to ensure that the flattening code is up to date with the latest amendments to correctly flatten fields from the raw GA4 partitioned table. These amendments are:
+
+- Adjust fields flattened with LAST_VALUE window functions to make use of the `timestamp` field for their ordering. This is because, prior to this change, the order within these window functions was determined by the `event_timestamp`, and this can be a non-distinct value due to the data being sent in batches. To get around this, we have added in our custom `timestamp` as a secondary sort.
+- Change `content_language` to unnest the value without the use of a window function. This was determined by an independent piece of work looking into this, and this change will more accurately reflect the raw data.
+- Several fields were recording data under different data types in the raw GA4 data, but we were only retrieving a single data type for each of these fields. We have therefore made a change to flatten these fields, and coalesce different data stypes under the same field. The fields we have done this for are:
+    - `search_term`
+    - `ui_text`
+    - `response`
+    - `autocomplete_input`
+    - `autocomplete_suggestions`
+    - `link_text`
+    - `query_string`
+    - `response`
+    - `tool_name`
+- Ensure that the `cleaned_page_location` is updated to return, in the majority of cases, the canonical url
+
+### Backfilling schedule and processing resources
+
+Following these checks, we will backfill our partitioned flattened GA4 data from the beginning of 2023. We have determined with the Lead Data Engineer that where data is to be deleted, it will be safer to do this manually than rely on an automated script that will iterate through a series of dates. This is because this is production data, and deleting data is important and needs human oversight. 
+
+We have determined that we will manually delete and backfill 60 days of data at a time.
+
+We have determined this based on the following:
+
+- The backfilling/flattening script takes approximately 30GB of processing and 5 minutes to execute and backfill one day of data
+
+- Increasing the script’s run frequency to five times per hour, would mean that, over the course ~12 hours, we would be able to backfill around 60 days worth of data over the course of an evening if we began the backfilling at 6pm. This way, approximately two months of data will have been processed by 6am the following morning
+
+- We would want to set this process in motion at the end of a working day, and be complete by the start of the following working day to incur minimum impact to our users (again because this is production data)
+
+- This would mean that the total bytes processed for the backfilling over this period of around 12 hours would be approximately 2TB
+
+- Following this process would mean that, over the course of around 14 working days/3 weeks, we would be able to backfill data up until the current date
+
+### The process itself
+
+- Delete the required data from the flattened partitioned table as required, in 60 day chunks. For example, using DML as below:
+
+```SQL
+DELETE FROM `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
+WHERE event_date BETWEEN "2023-01-01" and "2023-03-02"
+```
+
+- Set the scheduled frequency for the flattening Dataform pipeline to execute five times per hour
+
+- Run the below query to check that the data has been reprocessed, and that the row counts look correct for each day. If the dates have not reprocessed, or the counts looks incorrect, investigate before proceeding. The table this query checks against is a precalculated count of events per day in the flattened data. We would want to ensure the reprocessed counts are the same.
+
+```SQL
+DECLARE backfill_start_date_check DATE DEFAULT '2023-01-01';
+DECLARE backfill_end_date_check DATE DEFAULT '2024-03-02';
+
+with cte_1 as (
+
+SELECT event_date, count(*) as event_count from `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
+where event_date BETWEEN backfill_start_date_check AND backfill_end_date_check GROUP BY 1)
+
+SELECT a.event_date, 
+b.event_date as backfilled_date, 
+a.event_count, 
+b.event_count as backfilled_event_count, 
+CASE WHEN a.event_date = b.event_date AND a.event_count = b.event_count 
+THEN "Success!" ELSE "Error" 
+END AS match_check
+FROM `gds-bq-reporting.ga4_data_checks.flat_dates_event_counts` a 
+JOIN cte_1 b on a.event_date = b.event_date 
+WHERE a.event_date = b.event_date
+ORDER BY a.event_date
+```
+
+- Make a note of the latest dates to be reprocessed according to a progress tracker spreadsheet and continue the process
+
+- Once all backfilling has been completed, revert the flattening Dataform pipeline's schedule back to the custom Cron schedule of: `0 8,9,10,11,12,14 * * *`
+
