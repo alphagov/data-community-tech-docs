@@ -36,3 +36,45 @@ The process for backfilling the data for this dashboard is as follows:
     - [Pogo-sticking step 9 backfill query](https://console.cloud.google.com/bigquery?ws=!1m7!1m6!12m5!1m3!1sga4-analytics-352613!2seurope-west2!3sa418d1b9-095f-4de9-890a-64ab5e2bc372!2e1&project=gds-bq-data)
     - [Pogo-sticking step 10 backfill query](https://console.cloud.google.com/bigquery?ws=!1m7!1m6!12m5!1m3!1sga4-analytics-352613!2seurope-west2!3sb279f588-b387-47b3-8e20-ea329c6ba249!2e1&project=gds-bq-data)
 
+## GA4 flattened backfill process - replacing incorrectly processed data
+
+This section outlines the process which we (the GOV.UK Insights and Analytics team) will follow in order to backfill our flattened GA4 production data. We are fully backfilling the data as opposed to selectively backfilling specific fields. This is following a comprehensive investigation into the feasibility and pros and cons of selectively backfilling only specific fields in the data. The investigation determined that there were more arguments in favour of completely reprocessing days containing incorrect data - the principal reasons being lower cost and reduced complexity.
+
+### The process itself
+
+- Delete the required data from the flattened partitioned table as required, in 60 day chunks. For example, using DML as below:
+
+```SQL
+DELETE FROM `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
+WHERE event_date BETWEEN "2023-01-01" and "2023-03-02"
+```
+
+- Set the scheduled frequency for the flattening Dataform pipeline to execute five times per hour. This can be done with the following custom schedule to run the pipeline on the hour, and at 15, 30, 45 and 50 minutes past, every hour: `0, 15, 30, 40, 50 * * * *`
+
+- Run the below query to check that the data has been reprocessed, and that the row counts look correct for each day. If the dates have not been reprocessed, or the counts look incorrect, investigate before proceeding. The table this query checks against is a precalculated count of events per day in the flattened data. We would want to ensure the reprocessed counts are the same.
+
+```SQL
+DECLARE backfill_start_date_check DATE DEFAULT '2023-01-01';
+DECLARE backfill_end_date_check DATE DEFAULT '2024-03-02';
+
+with cte_1 as (
+
+SELECT event_date, count(*) as event_count from `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
+where event_date BETWEEN backfill_start_date_check AND backfill_end_date_check GROUP BY 1)
+
+SELECT a.event_date, 
+b.event_date as backfilled_date, 
+a.event_count, 
+b.event_count as backfilled_event_count, 
+CASE WHEN a.event_date = b.event_date AND a.event_count = b.event_count 
+THEN "Success!" ELSE "Error" 
+END AS match_check
+FROM `gds-bq-reporting.ga4_data_checks.flat_dates_event_counts` a 
+JOIN cte_1 b on a.event_date = b.event_date 
+WHERE a.event_date = b.event_date
+ORDER BY a.event_date
+```
+
+- Make a note of the latest dates to be reprocessed according to a progress tracker spreadsheet and continue the process
+
+- Once all backfilling has been completed, revert the flattening Dataform pipeline's schedule back to the custom Cron schedule of: `0 8,9,10,11,12,14 * * *`
