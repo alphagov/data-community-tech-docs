@@ -1,0 +1,62 @@
+---
+title: GOV.UK Web log data
+weight: 11
+last_reviewed_on: 2025-04-10
+review_in: 6 months
+---
+
+# GOV.UK Web log data
+
+## Context
+
+Web log data is collected by anyone visiting www.gov.uk. The data is not constrained by consent, so can give a full view of the reach of www.gov.uk as well as putting consented data into context. This means that it can help us understand the consented web analytics data we collect using GA4 - for example, understanding cookie opt in rate.
+However, because the data is not consented, we need to fully anonymise it so that it can be used for analytical purposes. This will be done via Differential Privacy.
+
+
+## Building the data pipeline and applying Differential Privacy
+
+The first step in building the pipeline was to export the data from AWS to our primary data storage and analytical environment, BigQuery. With this process established, each morning the previous day’s raw web log data arrives via this pipeline and is housed in BigQuery in the ‘govuk-production’ project. As the raw web log data is not consented, access to the data in this project is restricted to only those who require it - i.e. those running the data through Differential Privacy and working on data manipulation. The data exists in a partitioned table, and we have set it to have a partition expiry of 7 days. This ensures that data older than 7 days is deleted, and we don’t retain any more non-consented data that we have to.
+
+We chose to use Dataform to create a workflow which applies Differential Privacy to the raw web log data. This was so that we could provide clearer documentation, version control the code, and more easily manage source data and table dependencies.
+
+Through Dataform we were also able to make use of BigQuery’s built-in Differential Privacy clause which transforms the results of a query with differentially private aggregations. By modifying the parameters of the Differential Privacy clause, we were able to add sufficient noise to the raw data to limit any personal information being revealed by an output.
+
+## The Dataform workflow
+
+### Step 1
+
+The Dataform workflow sits within the `gds-bq-reporting` project under the workspace name `fastly_processing`. It begins by defining the raw web logs data as a source file - `fastly_logs.sqlx`.
+
+### Step 2
+
+Next, the `hashing_fastly.sqlx` file takes the raw data from this source file and applies a number of transformations. These include: creating a device_type field by inferring information contained within the raw data’s user agent field, a cleaned_url field to match that of the GA4 flattened dataset, and a hashed concatenation of ip address and user agent as a field to denote users within the data.
+
+This file also filters the results to only return pages with a 200 status code, a payload size greater than 0 bytes, and a content type of ‘html’. This ensures that the raw data is filtered to include only successful web page loads.
+
+Since its creation we have iterated on this step of the pipeline, and following several revisions it also excludes suspected bot/spam traffic through a few different methods. These are:
+
+- Limiting the number of pages a single user (defined as a concatenating of IP address and user agent) views in a single day to 50, ignoring other results
+- Restricting the results to only include only users who have viewed a single page no more than 10 times in a single day, eliminating bots/spam who request the same page dozens, if not hundreds, of times per day
+- Limiting the output to include only IP addresses which have requested any single page, during a single second, fewer than 5 times on the same day
+
+The result is a temporary table which will be the source for all subsequent steps in the pipeline. The table is set up to overwrite the current table in BigQuery each time the pipeline is run to ensure that we (again) do not retain any more non-consented data than is required.
+
+### Step 3
+
+The results from this temporary table are then made differentially private in both the `fastly_users.sqlx` and `fastly_urls.sqlx` files. 
+
+These files aggregate both the total number of page views and users, grouped by `partition_date` and by `device_type` (and `cleaned page_url` for the `fastly_urls` file). They both contain a differential privacy clause, which anonymises the data through the following parameters:
+
+- epsilon: This defines the level of privacy guarantee. A higher value of epsilon provides less privacy (more accurate results), while a lower value increases privacy but decreases accuracy. 
+
+- delta: This parameter determines the probability of a row not being differentially private. Lower values (closer to 0) are more privacy-preserving.
+
+- privacy_unit_column: This column defines the unit of privacy. In the case of these two queries, each distinct md5_hashed_value (anonymised user identifiers) is treated as the privacy unit we want to preserve.
+
+- max_groups_contributed: Limits each user's contributions to at most 100 groups to reduce the risk of any individual dominating the output.
+
+## Output
+
+The final result from the Dataform pipeline are two tables called `weblog_users` and `weblog_urls`. They can both be found in the `govuk_weblogs` dataset in the `gds-bq-data` GCP project. Both tables are incremental tables, so each time the pipeline is run, the results will be appended to the end of each table. Data exists in these tables from 21st March 2025 onwards. This is the data from which we made the last significant changes to our pipeline and we determined the data to be ready for use by analysts.
+
+Note: the user counts provided in the `weblog_users` table should be used with caution. This is due to the limitations of the raw data in which a true user may appear under multiple IP addresses (e.g. if a user is on using a phone, their IP address is subject to change multiple times on the same day). This is likely to have inflated the user counts in this table. The page_view counts in the `weblog_urls` table will be more analogous to the page_view numbers presented by GA4, and these can be compared to produce indications of metrics such as cookie consent rate.
