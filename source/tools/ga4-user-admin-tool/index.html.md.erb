@@ -22,8 +22,25 @@ The standard message for GOV.UK users can be found on the [welcome message page]
 ### Issues and errors when adding a user
 Sometimes the tool will fail to add a user.
 This is most commonly because they do not have a Google account.
-The user will need to [set up a Google account with their work email address](https://support.google.com/accounts/answer/27441?hl=en#existingemail) before they can be granted access to GA4 data.
+The user will need to [set up a Google account with their work email address](https://support.google.com/accounts/answer/27441?hl=en#existingemail) before they can be granted access to GA4 data. 
 
+#### Instructions for connecting work email to a Google account
+We give the following instructions on setting up an account:
+- Go to [Create Google account](https://support.google.com/accounts/answer/27441?hl=en)
+- Click ‘For myself’ (The business option doesn't let you use an existing email unless you sign up to Google Workspace.)
+- Answer a few basic questions 
+- Crucially, click the link that says something like “Use an existing email” (if you don’t you will create a new gmail email)
+
+#### Accounts reverting to personal emails
+A frequent issue is that a user's work email reverts to that user's personal email.
+
+A Google account will have a primary email address associated with it, either a gmail.com or something else. It can also have alternate email associated with it, for purposes of back-up access etc. Once an email is used as an alternate, it cannot be used as a primary email address for another Google account.
+
+What sometimes happens is that somebody already has a gmail address and uses their work email as its alternate. If that work email is used to give them access to GA, it reverts to (and is shown as) their primary gmail address. Since we don't allow non-government emails to have access, any that are found are in danger of being deleted.
+
+To get out of this, the user needs to remove their government email as an alternate to their gmail address, and then to set it up again as the primary address to a brand new Google account.
+
+#### Other issues
 If you continue to get errors when adding users, you can attempt to use Google Marketing Platform to add the user, and see what error message you receive in Marketing Platform.
 If you see an error message in Marketing Platform stating that the user does not satisy the organisation's user policy, this is commonly related to the user not having associated their account with Google.
 [This support article](https://support.google.com/analytics/thread/235084253/new-user-error-this-user-did-not-satisfy-this-organization%E2%80%99s-user-policy?hl=en&sjid=9628882099368924042-EU) should help you deal with this issue.
