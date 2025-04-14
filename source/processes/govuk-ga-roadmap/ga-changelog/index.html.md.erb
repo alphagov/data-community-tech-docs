@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 improvements changelog
 weight: 2
-last_reviewed_on: 2025-02-28
+last_reviewed_on: 2025-04-11
 review_in: 6 months
 ---
 
@@ -20,8 +20,8 @@ This is available in the GOV.UK GA4 property, the Data API, and in BigQuery in b
 ### traffic_type parameter added to the GOV.UK GA4 flattened dataset
 The `traffic_type` parameter is available in the [GOV.UK GA4 flattened dataset](/data-sources/ga/ga4-flat/) to support analysis of GOV.UK GA4 data filters.
 
-### Resolved issues with some custom dimension fields in the GOV.UK GA4 flattened dataset
-Issues with the query_string, ui_text, response, search_term, autocomplete_input, autocomplete_suggestions, and link_text fields in the GOV.UK GA4 flattened dataset have been resolved in the data processing going forwards.
+### Resolved issues with incomplete data in some custom dimension fields in the GOV.UK GA4 flattened dataset
+Issues with the `query_string`, `ui_text`, `response`, `search_term`, `autocomplete_input`, `autocomplete_suggestions`, and `link_text` fields in the GOV.UK GA4 flattened dataset have been resolved in the data processing going forwards.
 The processing for these fields was only including string values, but we observed that some data was coming through as having an integer or double data type.
 We have now edited the processing so that integer and double type data will be included in these fields in the flattened table.
 
@@ -51,3 +51,26 @@ We will only use this single column method on rare occasions, and will instead c
 ### Assets domain Search Console BigQuery export set up
 We have set up the bulk export for the [assets.publishing.service.gov.uk domain Search Console property](/data-sources/gsc/assetspublishing/).
 This should facilitate analysis of users' journeys to files on that domain.
+
+## March 2025
+### Redaction added to target National Insurance numbers
+Some users were spotted searching for their National Insurance numbers.
+We have added in additional redaction to ensure this data does not get collected in any search analytics data collection, and are deleting any collected National Insurance numbers that may have previously slipped through.
+
+## April 2025
+### Changed processing of the content_language field in the GOV.UK GA4 flattened dataset
+We have noticed unexpected values appearing in the `content_language` field - for example, where the language changes between events on the same page, or multiple times in one user's session.
+Previously, we were applying some processing to the `content_language` field to keep one consistent value across one user's events on a given page, but we are no longer sure if that is the best approach and so we have removed this calculation.
+The values in the field now simply reflect the values collected with each event, to help us debug these unexpected values.
+
+### Updated processing of the GOV.UK GA4 flattened dataset to use the custom timestamp
+We have added the custom `timestamp` field to window functions previously only using the `event_timestamp`.
+From the dates we tested this change with, we do not expect this to cause any difference in the values output - this is just being added as a fail-safe.
+
+### Resolved issues with some sessionised custom dimension fields in the GOV.UK GA4 flattened dataset
+Issues were identified with fields which use window functions to generate session-scoped values in the GOV.UK GA4 flattened dataset.
+The processing for the affected fields involved window functions which generated the output values based on the client ID, session ID and (in some cases) page location.
+However, in these functions, the `ga_session_id` was not being correctly selected (the string value was being extracted instead of the integer value), and so data could be incorrect for users who had multiple sesssions in one day.
+This impacted the `content_language`, `session_source`, `session_medium`, `public_updated_at`, `updated_at`, `content_id`, `browse_topic`, `publishing_app`, `first_published_at`, `taxonomy_all_ids`, `status_code`, `withdrawn`, `document_type`, `history`, `taxonomy_main_id`, `taxonomy_all`, `taxonomy_main`, `taxonomy_level_1`, `full_taxonomy_DEPRECATED`, `full_taxonomy_ids_DEPRECATED`, `rendering_app`, `organisations`, `schema_name`, `term`, `content`, and `campaign_id` fields.
+In most cases the difference noticed when fixing the functions was minor (<0.05%), but `session_source` and `session_medium` were more significantly impacted (about 8% out).
+We have now edited the processing to fix these fields going forward in the flattened table, and we are backfilling the entire dataset to correct erroneous values.
