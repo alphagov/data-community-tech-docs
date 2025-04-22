@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 improvements roadmap
 weight: 2
-last_reviewed_on: 2025-04-11
+last_reviewed_on: 2025-04-22
 review_in: 6 months
 ---
 
@@ -14,11 +14,11 @@ See the [changelog](/processes/govuk-ga-roadmap/ga-changelog/) for previous rele
 ### Creating useful tables joining GOV.UK GA4 and Knowledge Graph data
 Creating summarised tables or views combining GOV.UK GA4 and [Knowledge Graph](/tools/govgraph/) data.
 
+### Evaluating the utility of implementing a GOV.UK GA4 GTM spam filter
+Evaluating the utility of implementing a filter which ensures that we are only collecting GOV.UK GA4 data via our Google Tag Manager code (thereby hopefully reducing the incidence of 'spam').
+
 ### Investigating using the User Deletion API to delete users' GA4 data
 Investigating using the User Deletion API to delete users' GOV.UK GA4 data.
-
-### Increasing the reliability of the Content Data app query
-Increasing the reliability of the query used to populate a table that provides the [Content Data app](/products/content-data/) with GOV.UK GA4 data.
 
 ### Enabling easier access to site search data
 Creating simplified tables or views containing GOV.UK site search data in BigQuery.
@@ -28,8 +28,6 @@ Creating simplified tables or views containing GOV.UK site search data in BigQue
 Issues with the `query_string`, `ui_text`, `response`, `search_term`, `autocomplete_input`, `autocomplete_suggestions`, and `link_text` fields in the GOV.UK GA4 flattened dataset have been resolved.
 The processing for these fields was only including string values, but we observed that some data was coming through as having an integer or double data type.
 We have now edited the processing so that integer and double type data will be included in these fields in the flattened table.
-
-We are currently backfilling the dataset to apply this updated processing across its history.
 
 ### Page path (cleaned_page_location) field updated in the GOV.UK GA4 flattened dataset
 The `cleaned_page_location` field in the [GOV.UK GA4 flattened dataset](/data-sources/ga/ga4-flat//#schema) has been updated following the [implementation of the canonical URL](/processes/govuk-ga-roadmap/ga-changelog/#new-canonical-url-field).
@@ -55,7 +53,7 @@ The processing for the affected fields involved window functions which generated
 However, in these functions, the `ga_session_id` was not being correctly selected (the string value was being extracted instead of the integer value), and so data could be incorrect for users who had multiple sesssions in one day.
 This impacted the `content_language`, `session_source`, `session_medium`, `public_updated_at`, `updated_at`, `content_id`, `browse_topic`, `publishing_app`, `first_published_at`, `taxonomy_all_ids`, `status_code`, `withdrawn`, `document_type`, `history`, `taxonomy_main_id`, `taxonomy_all`, `taxonomy_main`, `taxonomy_level_1`, `full_taxonomy_DEPRECATED`, `full_taxonomy_ids_DEPRECATED`, `rendering_app`, `organisations`, `schema_name`, `term`, `content`, and `campaign_id` fields.
 In most cases the difference noticed when fixing the functions was minor (<0.05%), but `session_source` and `session_medium` were more significantly impacted (about 8% out).
-We have now edited the processing to fix these fields going forward in the flattened table, and we are backfilling the entire dataset to correct erroneous values.
+We have now edited the processing to fix these fields in the flattened table.
 
 ## Updates
 As we’re still at an early stage, our plans may shift.
