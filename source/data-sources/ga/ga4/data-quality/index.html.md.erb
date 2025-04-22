@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 data quality
 weight: 1
-last_reviewed_on: 2025-02-04
+last_reviewed_on: 2025-04-22
 review_in: 6 months
 ---
 
@@ -130,3 +130,11 @@ Due to GA4's character count limits on parameter values (previously set to 100 c
 To work around this, in February 2023 we implemented a solution which split these fields across five sub-fields, which were then concatenated togeter in the `full_taxonomy` and `full_taxonomy_ids` fields, and the `taxonomy_all` and `taxonomy_all_ids` fields were left empty.
 Later in 2023, Google increased the character count limit on parameter values to 500, so in November we switched back to the `taxonomy_all` and `taxonomy_all_ids` fields.
 We have renamed the 'full' taxonomy fields to `full_taxonomy_DEPRECATED` and `full_taxonomy_ids_DEPRECATED` as they are now not being populated (since November 2023), although they still contain the data for February to November 2023 should that be required.
+
+#### Issues with indexes
+
+Early on in the development of our GOV.UK GA4 tracking, only two index fields - the `index` and `index_total` - were collected.
+This was expanded in March 2023 so there are now four fields, collecting the index_link (the index of the clicked item, often a link, within the section), index_total (the total number of links or items in the section), index_section (the index of the section that was interacted with), and index_section_count (the total number of sections in the thing being tracked).
+
+Index information, which would typically be sent with some `select_content` and some `navigation` events, is missing from some events due to difficulties implementing the tracking.
+For example, the `index_section_count` is not collected from detail type events on certain document types.
