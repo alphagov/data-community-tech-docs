@@ -81,9 +81,10 @@ If a user leaves www.gov.uk to go to another website but returns to www.gov.uk w
 A single user can open multiple sessions.
 If John Smith visits GOV.UK in the same browser on his laptop on Friday and Saturday, that will be counted as one “user” having two sessions.
 
-Sessions can be counted using the `session_start` event.
+When a new session is started, the `session_start` event will fire.
+Sessions can be counted either using this event or using the session ID (though these two methods tend to lead to very slightly different results).
 
-We have sometimes noticed sessions which are missing session_start events.
+We have sometimes noticed sessions which appear to be missing session_start events.
 If a user starts a session just before midnight but continues activity after midnight, analysis of the new day will show user engagement in a session that does not contain a session_start event.
 About 0.3% of our sessions are like this.
 
