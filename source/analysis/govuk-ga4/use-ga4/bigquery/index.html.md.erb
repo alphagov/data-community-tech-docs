@@ -1,7 +1,7 @@
 ---
 title: BigQuery best practice
 weight: 3
-last_reviewed_on: 2025-03-05
+last_reviewed_on: 2025-04-29
 review_in: 6 months
 ---
 
@@ -20,13 +20,16 @@ Some example SQL to find common GA4 metrics can be found on the ['Find things in
 If you are unfamiliar with BigQuery, it may help to review Google’s [documentation explaining the BigQuery user interface](https://cloud.google.com/bigquery/docs/bigquery-web-ui#open-ui).
 
 To query GA4 data in BigQuery you will have to have permissions to view the data and to run queries in whichever project you are running the query in.
+Everyone with access to GOV.UK GA4 is given access to the GOV.UK GA4 and GOV.UK Search Console data in BigQuery [as standard](/processes/ga-access/#what-we-provide-access-to). 
+GDS staff will be able to use GDS [Google Cloud Platform (GCP)](/tools/google-cloud-platform/) projects to run queries.
+Staff in other departments will need to set up projects in GCP with billing enabled from which they can run queries.
 If your query fails to run, check whether you are running the query from the right project, and check the error message to see if there was a role or permission error.
 
 You can save queries in BigQuery to return to later.
 
 There are quotas in place on querying in BigQuery to ensure that costs do not get too high.
 More information on these can be found in the [quotas guidance](/tools/google-cloud-platform/bigquery/#quotas).
-Details of the specific quotas set on various projects can be found under each project on the [GCP projects page](/tools/google-cloud-platform/gcp-projects/).
+Details of the specific quotas set on various projects can be found in the [GCP projects information](/tools/google-cloud-platform/#projects).
 
 ### Best practice 
 #### Do not `SELECT *`
