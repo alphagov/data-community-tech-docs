@@ -69,10 +69,25 @@ The user count can therefore be reliably assumed to be inflated, particularly ov
 
 We recommend that in most cases session counts are used rather than the misleading “user” figures. 
 
+#### Active Users and Engaged Users
 If you are using the 'users' metric, bear in mind that in many reports in the GA4 user interface ‘Users’ is actually ‘Active users’.
 Active users are users with at least one ‘engaged session’.
 Engaged sessions are sessions that lasted 10 seconds or longer, or had 1 or more conversion events (at the moment we have [no conversion events set up on GOV.UK](/data-sources/ga/ga4/#data-processing-and-modification)), or 2 or more page or screen views. 
 ‘Total users’ is the GA4 metric to use to capture all users.
+
+#### New and Returning users
+GA4 records as a **New user** anyone who has entered GOV.UK for the first time during a defined date range. If a user does not already have a GA4 cookies for GOV.UK, GA4 automatically collects a *first_visit* event. Metrics are available for New users and Returning users in the GA4 interface and via Looker Studio.
+
+However, **Returning users** are calculated in a slightly different way. This means that New users + Returning users != Total users.
+
+> **Example**
+> A user visits your site for the first time on January 1st (counted as a new user). They visit again on February 1st.
+>
+> In a report for January, they are a new user.
+> In a report for February, they are a returning user.
+> In a report covering both months, they're counted twice; as both a new user and a returning user.
+
+A true count of Returning Users in a specified time period can only be obtained by calculating Total Users - New Users. If you don’t do this you could be counting someone as a Returning User even though they’ve already been counted as a New User.
 
 ### Sessions
 A session in Google Analytics is defined as a group of user interactions with a website that take place within a given time frame (a session ends when there has been more than a 30-minute period of inactivity).
