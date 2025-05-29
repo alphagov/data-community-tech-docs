@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 flattened table
 weight: 3
-last_reviewed_on: 2025-02-28
+last_reviewed_on: 2025-05-29
 review_in: 6 months
 ---
 
@@ -104,7 +104,7 @@ More information on the processing can be found in the [Policies and processes s
 | method | STRING | NULLABLE | The method with which the user clicked on the link e.g. 'primary click'. Populated for navigation and information_click events only |
 | engagement_time_msec | INTEGER | NULLABLE | The time the user has been engaged in milliseconds |
 | event_campaign | STRING | NULLABLE | The campaign information [associated with this event](https://support.google.com/analytics/answer/11080067) |
-| content_language | STRING | NULLABLE | The language the content is written in |
+| content_language | STRING | NULLABLE | The language the content is written in. This prioritises the `#content` language attribute, but will fall back to the `<html>` language attribute if not available |
 | type | STRING | NULLABLE | The type of feature the user interacted with e.g. accordion, footer etc |
 | event_source | STRING | NULLABLE | The source information [associated with this event](https://support.google.com/analytics/answer/11080067) |
 | session_source | STRING | NULLABLE | The source information [associated with this session](https://support.google.com/analytics/answer/11080067) (the first source of the session) |
