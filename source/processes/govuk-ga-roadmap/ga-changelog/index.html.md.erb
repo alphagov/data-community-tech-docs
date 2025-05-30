@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 improvements changelog
 weight: 2
-last_reviewed_on: 2025-04-22
+last_reviewed_on: 2025-05-30
 review_in: 6 months
 ---
 
@@ -78,3 +78,12 @@ We have now edited the processing to fix these fields in the flattened table.
 ## April 2025
 ### GOV.UK GA4 flattened dataset refreshed
 We have refreshed the entirety of the GOV.UK GA4 flattened dataset so that all processing improvements made over previous months are applied to the whole dataset.
+
+## May 2025
+### Agreed to not fully implement the GOV.UK GA4 GTM spam filter
+We have agreed to not fully implement the spam filter we developed (which would ensure that we are only collecting GOV.UK GA4 data via our Google Tag Manager code) as this did not seem to exclude enough data to be worth the risk of accidentally excluding legitimate data.
+We have left the test filter running so it can be applied if data users would like to use it - using the 'Test data filter name' field in GA4 or the `traffic_type` field in BigQuery.
+
+### Determined that the User Deletion API does not meet our deletion needs
+From our testing, we have identified that the User Deletion API does not fully delete users' GOV.UK GA4 data and so cannot be used for the removal of personally identifiable information.
+Our [GA4 data deletion process](/processes/ga-deletion/) remains unchanged.

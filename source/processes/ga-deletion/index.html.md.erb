@@ -1,7 +1,7 @@
 ---
 title: GA4 data deletions
 weight: 7
-last_reviewed_on: 2024-11-28
+last_reviewed_on: 2025-05-30
 review_in: 6 months
 ---
 
@@ -43,6 +43,9 @@ This is because the risks associated with deleting raw data are not worth the be
     - a) The data being deleted is moved out of the original source dataset into a quarantine dataset, and then deleted from the source dataset
     - b) If the data deletion has been checked and confirmed to be successful then the quarantine dataset is also deleted
 7. A notice on the data deletion is shared with the analyst community/data users and/or added to the GA4 data annotations table 
+
+We have tested using the [Google Analytics User Deletion API](https://developers.google.com/analytics/devguides/config/userdeletion/v3) but this did not appear to successfully delete all of the values we wished it to.
+The in-built GA4 data deletion feature should be used to target fields containing any unwanted data, as above.
 
 ## Owners and staff members’ responsibilities
 
