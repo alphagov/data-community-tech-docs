@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 improvements roadmap
 weight: 2
-last_reviewed_on: 2025-04-22
+last_reviewed_on: 2025-05-30
 review_in: 6 months
 ---
 
@@ -14,49 +14,30 @@ See the [changelog](/processes/govuk-ga-roadmap/ga-changelog/) for previous rele
 ### Creating useful tables joining GOV.UK GA4 and Knowledge Graph data
 Creating summarised tables or views combining GOV.UK GA4 and [Knowledge Graph](/tools/govgraph/) data.
 
-### Evaluating the utility of implementing a GOV.UK GA4 GTM spam filter
-Evaluating the utility of implementing a filter which ensures that we are only collecting GOV.UK GA4 data via our Google Tag Manager code (thereby hopefully reducing the incidence of 'spam').
+### Backfilling the GOV.UK GA4 'page_summaries' table
+Backfilling the GOV.UK GA4 `page_summaries` table, part of the GOV.UK GA4 flattened dataset, so that all processing improvements made over previous months to the flattened table are applied to the `page_summaries` table.
 
-### Investigating using the User Deletion API to delete users' GA4 data
-Investigating using the User Deletion API to delete users' GOV.UK GA4 data.
+### Setting up alerts to monitor levels of spam received
+Following [work looking into a spam filter](/processes/govuk-ga-roadmap/#decided-to-not-implement-the-gov-uk-ga4-gtm-spam-filter), we decided we would develop more alerts to monitor the levels of spam collected.
 
-### Enabling easier access to site search data
-Creating simplified tables or views containing GOV.UK site search data in BigQuery.
+### Improving our redaction on search terms to stop the collection of phone numbers
+Improving our redaction, designed to stop the collection of personally identifiable information, on search terms and related fields to ensure we do not collect any phone numbers that users search for.
 
 ## Recently released
-### Resolved issues with some incomplete custom dimension fields in the GOV.UK GA4 flattened dataset
-Issues with the `query_string`, `ui_text`, `response`, `search_term`, `autocomplete_input`, `autocomplete_suggestions`, and `link_text` fields in the GOV.UK GA4 flattened dataset have been resolved.
-The processing for these fields was only including string values, but we observed that some data was coming through as having an integer or double data type.
-We have now edited the processing so that integer and double type data will be included in these fields in the flattened table.
-
-### Page path (cleaned_page_location) field updated in the GOV.UK GA4 flattened dataset
-The `cleaned_page_location` field in the [GOV.UK GA4 flattened dataset](/data-sources/ga/ga4-flat//#schema) has been updated following the [implementation of the canonical URL](/processes/govuk-ga-roadmap/ga-changelog/#new-canonical-url-field).
-The `cleaned_page_location` now defaults to the `canonical_url` value, with the hostname removed, if it is available.
-If the `canonical_url` is null, the `cleaned_page_location` is calculated as before - by stripping the hostname, anchors and query string from the `page_location`.
-
 ### Redaction added to target National Insurance numbers
 Some users were spotted searching for their National Insurance numbers.
 We have added in additional redaction to ensure this data does not get collected in any search analytics data collection, and are deleting any collected National Insurance numbers that may have previously slipped through.
 
-### Changed processing of the content_language field in the GOV.UK GA4 flattened dataset
-We have noticed unexpected values appearing in the `content_language` field - for example, where the language changes between events on the same page, or multiple times in one user's session.
-Previously, we were applying some processing to the `content_language` field to keep one consistent value across one user's events on a given page, but we are no longer sure if that is the best approach and so we have removed this calculation.
-The values in the field now simply reflect the values collected with each event, to help us debug these unexpected values.
-
-### Updated processing of the GOV.UK GA4 flattened dataset to use the custom timestamp
-We have added the custom `timestamp` field to window functions previously only using the `event_timestamp`.
-From the dates we tested this change with, we do not expect this to cause any difference in the values output - this is just being added as a fail-safe.
-
-### Resolved issues with some sessionised custom dimension fields in the GOV.UK GA4 flattened dataset
-Issues were identified with fields which use window functions to generate session-scoped values in the GOV.UK GA4 flattened dataset.
-The processing for the affected fields involved window functions which generated the output values based on the client ID, session ID and (in some cases) page location.
-However, in these functions, the `ga_session_id` was not being correctly selected (the string value was being extracted instead of the integer value), and so data could be incorrect for users who had multiple sesssions in one day.
-This impacted the `content_language`, `session_source`, `session_medium`, `public_updated_at`, `updated_at`, `content_id`, `browse_topic`, `publishing_app`, `first_published_at`, `taxonomy_all_ids`, `status_code`, `withdrawn`, `document_type`, `history`, `taxonomy_main_id`, `taxonomy_all`, `taxonomy_main`, `taxonomy_level_1`, `full_taxonomy_DEPRECATED`, `full_taxonomy_ids_DEPRECATED`, `rendering_app`, `organisations`, `schema_name`, `term`, `content`, and `campaign_id` fields.
-In most cases the difference noticed when fixing the functions was minor (<0.05%), but `session_source` and `session_medium` were more significantly impacted (about 8% out).
-We have now edited the processing to fix these fields in the flattened table.
-
 ### Backfilled the GOV.UK GA4 flattened dataset
-We have refreshed the entirety of the GOV.UK GA4 flattened dataset so that all processing improvements made over previous months are applied to the whole dataset.
+We have refreshed the entirety of the GOV.UK GA4 flattened dataset so that all [processing improvements made over previous months](/processes/govuk-ga-roadmap/ga-changelog/#january-2025) are applied to the whole dataset.
+
+### Decided to not implement the GOV.UK GA4 GTM spam filter
+We are not implementing the spam filter we developed (which would ensure that we are only collecting GOV.UK GA4 data via our Google Tag Manager code) as this did not seem to exclude enough data to be worth the risk of accidentally excluding legitimate data.
+We have left the test filter running so it can be applied if data users would like to use it, and will develop alerts to monitor spam instead.
+
+### Determined that the User Deletion API does not meet our deletion needs
+From our testing, we have identified that the User Deletion API does not fully delete users' GOV.UK GA4 data and so cannot be used for the removal of personally identifiable information.
+Our [GA4 data deletion process](/processes/ga-deletion/) remains unchanged.
 
 ## Updates
 As we’re still at an early stage, our plans may shift.
