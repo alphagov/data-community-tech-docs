@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 improvements roadmap
 weight: 2
-last_reviewed_on: 2025-05-30
+last_reviewed_on: 2025-06-05
 review_in: 6 months
 ---
 
@@ -16,9 +16,6 @@ Creating summarised tables or views combining GOV.UK GA4 and [Knowledge Graph](/
 
 ### Backfilling the GOV.UK GA4 'page_summaries' table
 Backfilling the GOV.UK GA4 `page_summaries` table, part of the GOV.UK GA4 flattened dataset, so that all processing improvements made over previous months to the flattened table are applied to the `page_summaries` table.
-
-### Setting up alerts to monitor levels of spam received
-Following [work looking into a spam filter](/processes/govuk-ga-roadmap/#decided-to-not-implement-the-gov-uk-ga4-gtm-spam-filter), we decided we would develop more alerts to monitor the levels of spam collected.
 
 ### Improving our redaction on search terms to stop the collection of phone numbers
 Improving our redaction, designed to stop the collection of personally identifiable information, on search terms and related fields to ensure we do not collect any phone numbers that users search for.
@@ -38,6 +35,9 @@ We have left the test filter running so it can be applied if data users would li
 ### Determined that the User Deletion API does not meet our deletion needs
 From our testing, we have identified that the User Deletion API does not fully delete users' GOV.UK GA4 data and so cannot be used for the removal of personally identifiable information.
 Our [GA4 data deletion process](/processes/ga-deletion/) remains unchanged.
+
+### Set up alerts to monitor levels of spam received
+Following [work looking into a spam filter](/processes/govuk-ga-roadmap/#decided-to-not-implement-the-gov-uk-ga4-gtm-spam-filter), we have developed more alerts to monitor the levels of spam collected.
 
 ## Updates
 As we’re still at an early stage, our plans may shift.
