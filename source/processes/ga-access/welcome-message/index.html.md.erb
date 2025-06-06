@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 welcome message
 weight: 1
-last_reviewed_on: 2024-11-25
+last_reviewed_on: 2025-06-06
 review_in: 6 months
 ---
 
@@ -11,25 +11,29 @@ This is the message that should get sent to new users when they are granted acce
 
 ## GOV.UK GA4 new user welcome message
 
-You have now been added to GOV.UK GA4.
+**Access**
 
-- We regularly review account access data. If you do not access your account for over six months, your access may be removed without notice. For more information see: [https://docs.data-community.publishing.service.gov.uk/processes/ga-access/#monitoring-and-reporting](https://docs.data-community.publishing.service.gov.uk/processes/ga-access/#monitoring-and-reporting)
-- Do not connect google analytics data to unauthorised 3rd party tools or APIs (if unsure contact [govuk-ga4-support@digital.cabinet-office.gov.uk](mailto:govuk-ga4-support@digital.cabinet-office.gov.uk)).
+You now have access to:
+- the GOV.UK GA4 Production property (Analyst role)
+- GOV.UK GA4 data in BigQuery, flattened and raw (read access)
+- GOV.UK Search Console data in BigQuery (read access)
 
+You will not be able to query the data stored in Big Query without access to a billable Google Cloud Platform project.
 
-## What you have access to:
+**Access points**
 
-[https://docs.data-community.publishing.service.gov.uk/processes/ga-access/#what-we-provide-access-to](https://docs.data-community.publishing.service.gov.uk/processes/ga-access/#what-we-provide-access-to)
+- The URL of the main GA4 interface is [https://analytics.google.com/analytics/web](https://analytics.google.com/analytics/web)
+- The key Big Query tables are ‘ga4-analytics-352613.flattened_dataset.partitioned_flattened_events’ and ‘ga4-analytics-352613.searchconsole_wwwgovuk.searchdata_url_impression_click_data_only’
 
-- Analyst access to the GOV.UK GA4 Production property
-- Read access to GOV.UK GA4 data in BigQuery, flattened and raw
-- Read access to GOV.UK Search Console data in BigQuery
+**Tips**
 
+- There is documentation [here](https://docs.data-community.publishing.service.gov.uk/analysis/govuk-ga4/) on how GA4 has been configured on GOV.UK, how it differs from Universal Analytics and how to use it.
+- There is also documentation on the structure of the [GA4 table](https://docs.data-community.publishing.service.gov.uk/data-sources/ga/ga4-flat/#gov-uk-ga4-flattened-table) and the [Search Console tables](https://docs.data-community.publishing.service.gov.uk/data-sources/gsc/wwwgovuk/#gov-uk-search-console) in Big Query.
+- Consider setting up a [Looker Studio dashboard](https://lookerstudio.google.com/), connected to the GA4 data source. While that's an extra thing to learn and set up, it is often a quicker and easier way to extract data from GA4.
+- The Explorations area is arguably the most useful area of the GA4 interface. It allows you to customise the metrics and dimensions you want and analyse funnels and user paths. 
+- Watch out for sampling and the effects of [high cardinality](https://support.google.com/analytics/answer/12226705?hl=en). By default G4 gives ‘Faster results’, but there is often an option to get upsampled ‘More detailed results’.
 
-## Resources
+**Rules**
 
-- Google Analytics can be accessed via this link: [https://analytics.google.com/analytics/web/](https://analytics.google.com/analytics/web/)
-- GOV.UK GA4 data guides: [https://docs.data-community.publishing.service.gov.uk/analysis/govuk-ga4/](https://docs.data-community.publishing.service.gov.uk/analysis/govuk-ga4/)
-
-
-A copy of this message can be located here: [https://docs.data-community.publishing.service.gov.uk/processes/ga-access/welcome-message](https://docs.data-community.publishing.service.gov.uk/processes/ga-access/welcome-message)
+- We regularly review account access data. If you do not access your account for over six months, your access may be removed without notice. There is more information [here](https://docs.data-community.publishing.service.gov.uk/processes/ga-access/#monitoring-and-reporting).
+- Do not connect Google Analytics data to unauthorised 3rd party tools or APIs. If unsure contact the [GA4 team](mailto:govuk-ga4-support@digital.cabinet-office.gov.uk).
