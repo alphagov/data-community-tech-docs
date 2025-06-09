@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4
 weight: 1
-last_reviewed_on: 2024-02-18
+last_reviewed_on: 2025-06-09
 review_in: 6 months
 ---
 
@@ -73,6 +73,15 @@ If you spot any PII or other data that should not be present in the GA4 datasets
 Our PII process is documented in the [Policies and processes section](/processes/ga-pii/).  
 
 ### Data display settings
+
+We have created a number of custom dimensions.
+You can see a list and the definitions of these custom dimensions [in the GA4 interface](https://analytics.google.com/analytics/web/#/a26179049p330577055/admin/customdefinitions/hub), or if you are seeking the definition of a specific dimension it should be the same in the [flattened table schema](/data-sources/ga/ga4-flat/#schema).
+
+There are eight instances where we have both the default and a `_custom_` version of a custom dimension in GA4 - for example, `Link URL` and `Link URL _custom_`.
+Despite theoretically being the same dimension, the default and `_custom_` versions do behave differently.
+The total number of rows returned by each should be the same, but the `_custom_` versions return '(not set)' where the default dimensions return a blank row when no data was collected.
+We have also observed different behaviours with regards sampling and cardinality - from our testing, the `_custom_` versions appear to suffer less from cardinality, so we would recommend using them if in doubt.
+The `_custom_` versions can still suffer from cardinality in some instances though, and will be sampled when used with high volumes of data, so data quality should be monitored regardless.
 
 Expanded data sets and audiences have been created to alter how data is displayed and accessed in the GOV.UK GA4 property.
 More information on how these changes can be made or requested can be found in the [Policies and processes section](/processes/ga4-data-display/).  
