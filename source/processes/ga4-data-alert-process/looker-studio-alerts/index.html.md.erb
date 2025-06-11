@@ -3,7 +3,6 @@ title: Looker Studio alerts
 weight: 15
 last_reviewed_on: 2025-06-11
 review_in: 6 months
-hide_in_navigation: true
 ---
 
 # Looker Studio alert processes
@@ -19,7 +18,7 @@ There is a scheduled query in the gds-bq-reporting project of BigQuery which run
 
 The result of this query is appended daily to a table called pii_checks which sits within the ga4_data_checks dataset in the gds-bq-reporting project.
 
-A Looker Studio dashboard is connected to this table and a separate page of the dashboard displays the last 7 days of data. A scheduled email is sent from this page containing the last 7 days of data.
+A Looker Studio dashboard is connected to this table and a separate page of the dashboard displays the last 7 days of data. A scheduled email has been set up from this page.
 
 #### Scheduled query
 
