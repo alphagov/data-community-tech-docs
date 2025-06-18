@@ -1,7 +1,7 @@
 ---
 title: Google Cloud Platform logs
 weight: 8
-last_reviewed_on: 2025-03-18
+last_reviewed_on: 2025-06-18
 review_in: 6 months
 ---
 
@@ -94,7 +94,7 @@ An IAM binding is also required in the source project. IAM can be configured in 
 The target project must give the `log_writer` service account the role `roles/logging.bucketWriter` at the project level.
 
 ### Schema
-All of these datasets have the default Cloud Audit logs schema.
+All of these datasets have the default [Cloud Audit logs schema](https://cloud.google.com/logging/docs/reference/audit/auditlog/rest/Shared.Types/AuditLog).
 
 ## Retention
 This data is stored for 1 year.
