@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 data quality
 weight: 1
-last_reviewed_on: 2025-04-22
+last_reviewed_on: 2025-08-04
 review_in: 6 months
 ---
 
@@ -109,6 +109,14 @@ Strictly, this URL should not be valid, but it (and many other incorrect URLs) d
 
 Use of URLs like this is rare and so this should not cause too much of a data quality issue.
 
+#### Issues with the full link URL
+
+The way in which the full link clicked as part of a navigation event has been collected into GA4 has varied over time.
+Due to GA4's character count limits on parameter values (previously set to 100 characters per parameter value), the `link_url` field was frequently heavily truncated when first implemented.
+To work around this, in February 2023 we implemented a solution which split these fields across five sub-fields, which were then concatenated togeter in the `full_link_url` field.
+Later in 2023, Google increased the character count limit on parameter values to 500, so the default 'link_url' field started to function as expected.
+We deprecated the link_path_parts sub-fields so the 'full_link_url' now only contains the 'link_domain'.
+
 #### Issues with publication and update dates
 The `first_published_at`, `public_updated_at` and `updated_at` dates sent with page view events may be misleading.
 
@@ -127,7 +135,7 @@ There is also a known bug with the `browse_topic` field which can leave it comin
 
 The way in which taxonomy information has been collected into GA4 has also varied over time.
 Due to GA4's character count limits on parameter values (previously set to 100 characters per parameter value), the `taxonomy_all` and `taxonomy_all_ids` fields were frequently heavily truncated when first implemented.
-To work around this, in February 2023 we implemented a solution which split these fields across five sub-fields, which were then concatenated togeter in the `full_taxonomy` and `full_taxonomy_ids` fields, and the `taxonomy_all` and `taxonomy_all_ids` fields were left empty.
+To work around this, in February 2023 we implemented a solution which split these fields across five sub-fields, which were then concatenated together in the `full_taxonomy` and `full_taxonomy_ids` fields, and the `taxonomy_all` and `taxonomy_all_ids` fields were left empty.
 Later in 2023, Google increased the character count limit on parameter values to 500, so in November we switched back to the `taxonomy_all` and `taxonomy_all_ids` fields.
 We have renamed the 'full' taxonomy fields to `full_taxonomy_DEPRECATED` and `full_taxonomy_ids_DEPRECATED` as they are now not being populated (since November 2023), although they still contain the data for February to November 2023 should that be required.
 
