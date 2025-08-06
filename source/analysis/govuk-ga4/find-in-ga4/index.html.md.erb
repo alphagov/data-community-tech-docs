@@ -289,13 +289,13 @@ Using the BigQuery data, however, you can view users' journeys in much more deta
 
 ### Ordering users' events
 
-There is no 'hit number' in the GA4 data which easily enables you to order a user's events.
-Instead, there are a number of other dimensions that will need to be used to carry out this ordering.
+There is no one 'hit number' dimension in the GA4 data which easily enables you to order a user's events.
+Instead, there are a number of other dimensions that can be combined to carry out this ordering.
 These include:
 
 - the `event_timestamp` - this is a default dimension and represents the time that a given batch of events was sent to GA4. As this is connected to the event batch (Google batches events that occur within a few seconds of each other), many events can have the same event_timestamp
 - the `timestamp` - this is a custom dimension which captures the time that a given event is sent to the dataLayer. This should be a better indicator of the actual time an event occurred than the `event_timestamp`, but some events may still have identical `timestamp` values (particularly: the automatic events Google generate such as `session_start` will have identical timestamps to the session's first `page_view`). We implemented this in mid January 2024 so this can only be used for ordering events after that date
-- the `batch_ordering_id` and `batch_event_index` - these are default dimensions indicating what order batches were logged in and what order events were logged within a batch. These indexes were only added to GA4 datasets in [mid-July 2024](https://support.google.com/analytics/answer/9164320#071624) so can only be used after that date
+- the `batch_ordering_id` and `batch_event_index` - these are default dimensions indicating what order batches were logged in and what order events were logged within a batch. These indexes were only added to GA4 datasets in [mid-July 2024](https://support.google.com/analytics/answer/9164320#071624) so can only be used to order events collected after that date
 
 Google provide some sample code indicating how you can use some combination of these IDs and indexes to order users' events in [their guidance](https://developers.google.com/analytics/bigquery/basic-queries#sequence_of_pageviews).
 
