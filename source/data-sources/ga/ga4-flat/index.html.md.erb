@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 flattened table
 weight: 3
-last_reviewed_on: 2025-05-29
+last_reviewed_on: 2025-08-06
 review_in: 6 months
 ---
 
@@ -99,7 +99,7 @@ More information on the processing can be found in the [Policies and processes s
 | full_taxonomy_ids_DEPRECATED | STRING | NULLABLE | Deprecated - the taxonomy ID path parts, concatenated. This field was [only populated between February and November 2023](/data-sources/ga/ga4/data-quality/#issues-with-taxonomy-information). Users seeking this information outside that period should use the `taxonomy_all_ids` field |
 | rendering_app | STRING | NULLABLE | The content attribute of the `<meta name="govuk:rendering-app">` tag |
 | organisations | STRING | NULLABLE | Publishing organisation IDs - the content attribute of the `<meta name="govuk:analytics:organisations">` tag e.g. '\<D25>' |
-| session_engaged | STRING | NULLABLE |  |
+| session_engaged | STRING | NULLABLE | A flag to indicate whether or not the session was engaged e.g. '1' when the event belongs to a session deemed to be engaged. This begins as '0' for all events in a given session then flips to '1' for all events after the session has become engaged |
 | schema_name | STRING | NULLABLE | The content attribute of the `<meta name="govuk:schema-name">` tag |
 | method | STRING | NULLABLE | The method with which the user clicked on the link e.g. 'primary click'. Populated for navigation and information_click events only |
 | engagement_time_msec | INTEGER | NULLABLE | The time the user has been engaged in milliseconds |
@@ -109,7 +109,7 @@ More information on the processing can be found in the [Policies and processes s
 | event_source | STRING | NULLABLE | The source information [associated with this event](https://support.google.com/analytics/answer/11080067) |
 | session_source | STRING | NULLABLE | The source information [associated with this session](https://support.google.com/analytics/answer/11080067) (the first source of the session) |
 | link_text | STRING | NULLABLE | The text of the link clicked (sent with navigation and information_click events) |
-| term | STRING | NULLABLE | |
+| term | STRING | NULLABLE | Broken field that we are investigating. Do not use |
 | link_url | STRING | NULLABLE | The href attribute of a link (sent with navigation and information_click events) |
 | event_medium | STRING | NULLABLE | The medium information [associated with this event](https://support.google.com/analytics/answer/11080067) |
 | session_medium | STRING | NULLABLE | The medium information [associated with this session](https://support.google.com/analytics/answer/11080067) (the first medium of the session) |
@@ -117,7 +117,7 @@ More information on the processing can be found in the [Policies and processes s
 | event_previous_timestamp | INTEGER | NULLABLE | The time (in microseconds, UTC) the event was previously logged on the client |
 | event_bundle_sequence_id | INTEGER | NULLABLE | The sequential ID of the bundle in which these events were sent to GA4 |
 | event_server_timestamp_offset | INTEGER | NULLABLE | Timestamp offset between collection time and upload time in microseconds |
-| user_id | STRING | NULLABLE | |
+| user_id | STRING | NULLABLE | A unique ID to associate a single user with engagement via multiple devices. Not in use on GOV.UK |
 | user_first_touch_timestamp | INTEGER | NULLABLE | The time (in microseconds) when the user first visited the site |
 | category | STRING | NULLABLE | The device category (mobile, tablet, desktop) |
 | mobile_brand_name | STRING | NULLABLE | The device brand name |
@@ -129,8 +129,8 @@ More information on the processing can be found in the [Policies and processes s
 | language | STRING | NULLABLE | The OS language |
 | is_limited_ad_tracking | STRING | NULLABLE | The device's Limit Ad Tracking setting |
 | time_zone_offset_seconds | INTEGER | NULLABLE | The offset from GMT in seconds |
-| device_browser | STRING | NULLABLE | |
-| device_browser_version | STRING | NULLABLE | |
+| device_browser | STRING | NULLABLE | Not in use - use 'browser' field instead |
+| device_browser_version | STRING | NULLABLE | Not in use - use 'browser_version' field instead |
 | browser | STRING | NULLABLE | The browser in which the user viewed content |
 | browser_version | STRING | NULLABLE | The version of the browser in which the user viewed content |
 | hostname | STRING | NULLABLE | The hostname associated with the logged event |
@@ -145,8 +145,8 @@ More information on the processing can be found in the [Policies and processes s
 | first_user_source | STRING | NULLABLE | The source through which this user first landed on GOV.UK |
 | stream_id | STRING | NULLABLE | The numeric ID of the data stream from which the event originated |
 | platform | STRING | NULLABLE | The data stream platform (Web, IOS or Android) from which the event originated |
-| event_dimensions_hostname | STRING | NULLABLE | |
-| full_link_URL | STRING | NULLABLE | |
+| event_dimensions_hostname | STRING | NULLABLE | Not in use |
+| full_link_URL | STRING | NULLABLE | Should no longer be used - the link path parts, concatenated. This field was [only correctly populated between February and November 2023](/data-sources/ga/ga4/data-quality/#issues-with-the-full-link-URL). Users seeking this information outside that period should use the `link_url` field |
 | search_sort | STRING | NULLABLE | Where available this is the sort method e.g. 'Relevance' |
 | search_term | STRING | NULLABLE | The search term used |
 | search_results | STRING | NULLABLE | The number of results returned by the search |
@@ -159,28 +159,28 @@ More information on the processing can be found in the [Policies and processes s
 | publishing_government | STRING | NULLABLE | The content attribute of the `<meta name="govuk:political-status">` tag e.g. 'historic'. This will only be available on 'whitehall' pages |
 | world_locations | STRING | NULLABLE | The content attribute of the `<meta name="govuk:analytics:world-locations">` tag |
 | dclid | STRING | NULLABLE | The Google Marketing Platform (GMP) identifier that was collected with the event |
-| debug_mode | INTEGER | NULLABLE | |
-| engaged_session_event | INTEGER | NULLABLE |  |
+| debug_mode | INTEGER | NULLABLE | A flag to indicate whether Google Tag Manager's debug mode was being used to send these events e.g. '1' when debug mode was in use |
+| engaged_session_event | INTEGER | NULLABLE | The number of sessions the user is engaged in. Should always be '1' on GOV.UK as we do not use a user ID so cannot tell if a user visits the website from many devices |
 | entrances | INTEGER | NULLABLE | A flag to indicate an entrance, where '1' indicates an entrance |
-| firebase_conversion | INTEGER | NULLABLE | |
+| firebase_conversion | INTEGER | NULLABLE | firebase_conversion |
 | gclid | STRING | NULLABLE | The Google click identifier that was collected with the event |
-| gclsrc | STRING | NULLABLE | |
-| content | STRING | NULLABLE |  |
-| campaign_id | STRING | NULLABLE |  |
+| gclsrc | STRING | NULLABLE | The Google click identifier that indicates the source of the click ID |
+| content | STRING | NULLABLE | The 'content' campaign parameter, typically used to differentiate between two ads or links that point to the same URL |
+| campaign_id | STRING | NULLABLE | The ID of a promotion or marketing campaign that led to a key event |
 | index_section | INTEGER | NULLABLE | The index of the section that was interacted with e.g. if the third tab was clicked the index would be '3' |
 | index_section_total | INTEGER | NULLABLE | The total number of sections within a feature e.g. if there are five tabs in total this would be '5' |
-| tool_name | STRING | NULLABLE | The name of the tool (the smart answer or form)|
+| tool_name | STRING | NULLABLE | The name of the tool (the smart answer or form) |
 | response | STRING | NULLABLE | The user's reponse to a form question or error message |
 | ab_test | STRING | NULLABLE | The [content attribute of the `<meta name="govuk:ab-test">` tag](https://docs.publishing.service.gov.uk/analytics/attribute_ab_test.html) |
 | navigation_list_type | STRING | NULLABLE | The content attribute of the `<meta name="govuk:navigation-list-type">` tag |
 | navigation_page_type | STRING | NULLABLE | The content attribute of the `<meta name="govuk:navigation-page-type">` tag |
 | percent_scrolled | INTEGER | NULLABLE | The percentage scroll depth the user has reached |
-| sfmc_activity_id | STRING | NULLABLE | |
-| sfmc_activity_name | STRING | NULLABLE | |
-| sfmc_asset_id | STRING | NULLABLE | |
-| sfmc_channel | STRING | NULLABLE | |
-| sfmc_journey_id | STRING | NULLABLE | |
-| sfmc_journey_name | STRING | NULLABLE | |
+| sfmc_activity_id | STRING | NULLABLE | Session salesforce marketing cloud activity ID - not used |
+| sfmc_activity_name | STRING | NULLABLE | Session salesforce marketing cloud activity name - not used |
+| sfmc_asset_id | STRING | NULLABLE | Session salesforce marketing cloud asset ID - not used |
+| sfmc_channel | STRING | NULLABLE | Salesforce marketing cloud channel - not used |
+| sfmc_journey_id | STRING | NULLABLE | Salesforce marketing cloud journey ID - not used |
+| sfmc_journey_name | STRING | NULLABLE | Salesforce marketing cloud journey name - not used |
 | step_navs | STRING | NULLABLE | The content attribute of the `<meta name="govuk:stepnavs">` tag |
 | manual_campaign_id | STRING | NULLABLE | The manual campaign id (utm_id) that was collected with the event |
 | manual_campaign_name | STRING | NULLABLE | The manual campaign name (utm_campaign) that was collected with the event |
@@ -202,13 +202,13 @@ More information on the processing can be found in the [Policies and processes s
 | spelling_suggestion | STRING | NULLABLE | The spelling suggestion, if one is shown, on a search results page |
 | outcome | STRING | NULLABLE | The outcome reached at the end of form (only sent with form_complete events) |
 | viewport_size | STRING | NULLABLE | The size of the browser window, minus the scroll bars and toolbars, e.g. '1920x1080'. Note: in the flattening process, we only keep string values (a small number of integer and double values that are collected are not flattened) |
-| batch_page_id | INTEGER | NULLABLE | |
-| batch_ordering_id | INTEGER | NULLABLE | |
+| batch_page_id | INTEGER | NULLABLE | A unique identifier for each page view, allowing for the reconstruction of user interactions within a specific page |
+| batch_ordering_id | INTEGER | NULLABLE | A monotonically increasing number assigned to each network request sent from a page |
 | timestamp | INTEGER | NULLABLE | The [Unix timestamp](https://docs.publishing.service.gov.uk/analytics/attribute_timestamp.html) in milliseconds. This is a custom dimension, pushed with every dataLayer event, unlike the default event_timestamp above |
 | copy_length | INTEGER | NULLABLE | The number of characters in text copied ([copy events](https://docs.publishing.service.gov.uk/analytics/event_copy.html) only) |
 | item_list_name | STRING | NULLABLE | The name of the item list - on GOV.UK, this will be the name of a finder (search/search results) page |
 | item_id | STRING | NULLABLE | The URL of the search result item. A maximum of 200 search result items (the first 200) will be sent on longer search results pages |
-| item_name | STRING | NULLABLE | |
+| item_name | STRING | NULLABLE | The name of an item - on GOV.UK, the link text of a search result |
 | item_list_index | STRING | NULLABLE | The index of the search result item. A maximum of 200 search result items (the first 200) will be sent on longer search results pages |
 | item_content_id | STRING | NULLABLE | The content ID of the search result item |
 | emergency_banner | STRING | NULLABLE | Value is true if the user is served the emergency banner |

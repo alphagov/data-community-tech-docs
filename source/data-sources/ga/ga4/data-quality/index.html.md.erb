@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 data quality
 weight: 1
-last_reviewed_on: 2025-04-22
+last_reviewed_on: 2025-08-04
 review_in: 6 months
 ---
 
@@ -108,6 +108,14 @@ This can be seen on the live site, for example if you interact with the Contents
 Strictly, this URL should not be valid, but it (and many other incorrect URLs) do work to load content on GOV.UK.
 
 Use of URLs like this is rare and so this should not cause too much of a data quality issue.
+
+#### Issues with the full link URL
+
+The way in which the full link clicked as part of a navigation event has been collected into GA4 has varied over time.
+Due to GA4's character count limits on parameter values (previously set to 100 characters per parameter value), the `link_url` field was frequently heavily truncated when first implemented.
+To work around this, in February 2023 we implemented a solution which split these fields across five sub-fields, which were then concatenated togeter in the `full_link_url` field.
+Later in 2023, Google increased the character count limit on parameter values to 500, so the default 'link_url' field started to function as expected.
+We deprecated the link_path_parts sub-fields so the 'full_link_url' now only contains the 'link_domain'.
 
 #### Issues with publication and update dates
 The `first_published_at`, `public_updated_at` and `updated_at` dates sent with page view events may be misleading.
