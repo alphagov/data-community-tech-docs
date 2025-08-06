@@ -303,7 +303,7 @@ From our investigations, we believe that the 'batch_event_index' is the most rel
 
 #### Method in BigQuery
 
-The following SQL gets all page views on 26th August 2024, with a calculated 'session ID' and 'hit number', ordered by the session ID and custom timestamp:
+The following SQL gets all page views on 26th August 2024, with a calculated 'session ID' and 'hit number', ordered by the session ID using the `event_timestamp` and `batch_event_index`:
 
 ```SQL
 SELECT
