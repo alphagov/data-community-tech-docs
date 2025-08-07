@@ -1,0 +1,205 @@
+---
+title: GOV.UK Publishing GA4 Processing
+weight: 12
+last_reviewed_on: 2025-08-07
+review_in: 6 months
+---
+
+# GOV.UK Publishing GA4 BigQuery Processing
+
+## Publishing’s raw BigQuery data
+
+We export our GOV.UK Publishing Google Analytics data and store it in Google BigQuery to enable more detailed analysis than is possible in the GA4 user interface. This data can also be queried and used in other tools.
+
+From the ‘raw’ exported data, a flattened dataset is also created. This contains most of the same fields as the raw data and is easier and more efficient to query, so should be used for most analysis and reporting.
+
+In the `govuk-publishing` project we have both flattened sharded and flattened partitioned data available, depending on what the user would prefer to access or query. Using the flattened partitioned table will be the best option in most cases, so we would recommend using this table where possible. 
+
+### Location
+
+There are 2 raw Publishing GA4 datasets, which correspond to the integration and production environments. All of these datasets are in the govuk-publishing project. These datasets are:
+
+- the `govuk-publishing.analytics_400020090 dataset`, which holds publishing’s raw GA4 production data 
+- the `govuk-publishing.analytics_414850201 dataset`, which holds publishing’s raw GA4 integration data 
+
+These datasets are both comprised of date sharded tables - a new table is created each day with the suffix YYYYMMDD.
+
+### Set-up
+
+#### Data collection and processing
+
+As with the GOV.UK website data, our Google Analytics properties export GOV.UK Publishing data several times a day. The data for the current day is temporarily stored in intraday tables. At the end of the day, BigQuery automatically moves the data in the intraday tables to a date table (suffixed YYYYMMDD) and deletes the intraday tables in question. New intraday tables are created and added to throughout the next day.
+
+#### Schema
+
+These tables use the default [GA4 BigQuery Export schema](https://support.google.com/analytics/answer/7029846):
+
+| field name | type | mode |
+| --- | --- | --- |
+| event_date | STRING | NULLABLE | 
+| event_timestamp | INTEGER | NULLABLE | 
+| event_name | STRING | NULLABLE | 
+| event_params | RECORD | REPEATED | 
+| event_previous_timestamp | INTEGER | NULLABLE | 
+| event_value_in_usd | FLOAT | NULLABLE | 
+| event_bundle_sequence_id | INTEGER | NULLABLE | 
+| event_server_timestamp_offset | INTEGER | NULLABLE | 
+| user_id | STRING | NULLABLE | 
+| user_pseudo_id | STRING | NULLABLE | 
+| privacy_info | RECORD | NULLABLE | 
+| user_properties | RECORD | REPEATED | 
+| user_first_touch_timestamp | INTEGER | NULLABLE | 
+| user_ltv | RECORD | NULLABLE | 
+| device | RECORD | NULLABLE | 
+| geo | RECORD | NULLABLE | 
+| app_info | RECORD | NULLABLE | 
+| traffic_source | RECORD | NULLABLE | 
+| stream_id | STRING | NULLABLE | 
+| platform | STRING | NULLABLE | 
+| event_dimensions | RECORD | NULLABLE | 
+| ecommerce | RECORD | NULLABLE | 
+| items | RECORD | REPEATED | 
+| collected_traffic_source | RECORD | NULLABLE | 
+| is_active_user | BOOLEAN | NULLABLE | 
+
+
+## Publishing’s processed BigQuery data
+
+### Publishing GA4 flattened data
+
+Publishing’s GA4 flattened data refers to our production GA4 data processed into a flat format.
+
+Publishing’s GA4 data is flattened in two places: a set of sharded tables (one table for each day), and a flattened partition table (all dates are combined into one big partitioned table). Users may use whichever data source they wish, but for most applications we would recommend using the flattened partitioned table, as this will be more efficient and easier to query than other data sources. This also aligns us with the primary GA4 data source as used for the main GOV.UK website which has its own flattened partitioned table in the `ga4-analytics-352613` project. As such, this documentation will refer specifically to publishing’s flattened partitioned data rather than the sharded tables.
+
+### Content and change record
+
+The first date for which there is data in the flattened partitioned table is the 1st January 2025. This is because the quality of earlier data may be lower than desired before this point. 
+
+The flattened partitioned table is partitioned on `event_date`. A `WHERE` clause to specify which partitions are needed is required when querying this table - for example, `WHERE event_date = "2024-09-12"`.
+
+As of 2025, our GA4 implementation is still in active development, and we have developed a [dashboard to track significant data changes](https://lookerstudio.google.com/reporting/9fc96af9-978f-4ad8-8c9e-9b73a58a9fe2/page/HEYTF) in our Publishing GA4 change record to help users understand when certain elements were introduced or changed.
+
+### Location
+
+This data can be found in BigQuery in the `govuk-publishing.dataform.partitioned_flattened_events` table.
+
+As with the rest of our GA4 publishing BigQuery data, this is located in the `govuk-publishing project`. 
+
+### Set-up
+
+#### Data collection and processing
+
+This flattened table is the result of several steps of processing:
+
+1. The GA4 publishing production raw data is received from Google. This arrives sharded into daily tables, and the data within these tables is nested. We store this raw data in BigQuery.
+
+2. The raw data is processed into a partitioned table that is partitioned on `event_date` and clustered on `event_name` (though the data is still nested).
+
+3. The partitioned nested data is flattened into the partitioned flattened table detailed on this page.
+
+<pre class="mermaid">
+graph TD 
+A[Raw sharded data from Google] --> B
+B[Partitioned raw event data] 
+B --> C[Partitioned flattened data] 
+
+</pre>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+        mainBkg: '#ffffff',
+        primaryColor: '#f3f2f1',
+        primaryTextColor: '#0b0c0c',
+        secondaryTextColor: '#505a5f'
+    } 
+    });
+</script>
+
+This processing occurs within DataForm in the same project (`govuk-publishing`). The DataForm script is compiled at 7am UTC and is run several times throughout the day to ensure the data is processed soon after it arrives.
+
+For more information about the processing, this process mirrors that which is used for GOV.UK’s GA4 data, and more information can be found [here](https://docs.data-community.publishing.service.gov.uk/data-sources/ga/ga4-flat/#gov-uk-ga4-flattened-table), which also links to the code itself on github.
+
+#### Schema
+
+| field name | type | mode | description |
+| --- | --- | --- | --- |
+| event_date | DATE | NULLABLE | The date when the event was logged, formatted as YYYYMMDD |
+| user_pseudo_id | STRING | NULLABLE | The pseudonymous ID for a user on a particular client |
+| event_name | STRING | NULLABLE | The [name of the event](https://docs.publishing.service.gov.uk/analytics/attribute_event_name.html) |
+| event_timestamp | INTEGER | NULLABLE | The time (in microseconds, UTC) when the event was logged |
+| unique_session_id | STRING | NULLABLE | The user_pseudo_id concatenated with the ga_session_id to create a unique session ID |
+| page_title | STRING | NULLABLE | The [page title](https://docs.publishing.service.gov.uk/analytics/attribute_title.html) |
+| page_location | STRING | NULLABLE | The full URL with the protocol, hostname, page path and query string |
+| cleaned_page_location | STRING | NULLABLE | The page path (the page_location without the protocol, hostname, and any query string). If a canonical_url is available for this page, the cleaned_page_location will default to the canonical_url value (with the hostname removed)|
+| ga_sessionid | INTEGER | NULLABLE | A session ID generated by GA4. This corresponds to the time the session started and is not necessarily unqiue |
+| ga_session_number | INTEGER | NULLABLE | The number of sessions that a user has started up to the current session e.g. '5' for the user's fifth session |
+| page_referrer | STRING | NULLABLE | The address of the webpage where a user clicked a link that sent them to the current page |
+| cleaned_page_referrer | STRING | NULLABLE | The path of the page referrer (the page_referrer without the protocol, hostname, and any query string |
+| content_id | STRING | NULLABLE | The content attribute of the `<meta name="govuk:content-id">` tag |
+| document_type | STRING | NULLABLE | The content attribute of the `<meta name="govuk:format">` tag |
+| session_engaged | STRING | NULLABLE | A flag to indicate whether or not the session was engaged e.g. '1' when the event belongs to a session deemed to be engaged. This begins as '0' for all events in a given session then flips to '1' for all events after the session has become engaged |
+| method | STRING | NULLABLE | The method with which the user clicked on the link e.g. 'primary click'. Populated for navigation and information_click events only |
+| engagement_time_msec | INTEGER | NULLABLE | The time the user has been engaged in milliseconds |
+| event_type | STRING | NULLABLE | The type of feature the user interacted with e.g. accordion, footer etc |
+| event_source | STRING | NULLABLE | The source information [associated with this event](https://support.google.com/analytics/answer/11080067) |
+| link_url | STRING | NULLABLE | The href attribute of a link (sent with navigation and information_click events) |
+| event_medium | STRING | NULLABLE | The medium information [associated with this event](https://support.google.com/analytics/answer/11080067) |
+| link_domain | STRING | NULLABLE | The destination domain of a link (sent with navigation and information_click events) |
+| event_bundle_sequence_id | INTEGER | NULLABLE | The sequential ID of the bundle in which these events were sent to GA4 |
+| user_id | STRING | NULLABLE | A unique ID to associate a single user with engagement via multiple devices. Not in use on GOV.UK |
+| user_first_touch_timestamp | INTEGER | NULLABLE | The time (in microseconds) when the user first visited the site |
+| category | STRING | NULLABLE | The device category (mobile, tablet, desktop) |
+| mobile_brand_name | STRING | NULLABLE | The device brand name |
+| mobile_model_name | STRING | NULLABLE | The device model name |
+| operating_system | STRING | NULLABLE | The operating system of the device |
+| operating_system_version | STRING | NULLABLE | The OS version |
+| language | STRING | NULLABLE | The OS language |
+| browser | STRING | NULLABLE | The browser in which the user viewed content |
+| browser_version | STRING | NULLABLE | The version of the browser in which the user viewed content |
+| hostname | STRING | NULLABLE | The hostname associated with the logged event |
+| country | STRING | NULLABLE | The country from which events were reported, based on IP address e.g. 'United Kingdom' |
+| region | STRING | NULLABLE | The region from which events were reported, based on IP address e.g. 'England' |
+| city | STRING | NULLABLE | The city from which events were reported, based on IP address e.g. 'Birmingham' |
+| metro | STRING | NULLABLE | The metro from which events were reported, based on IP address e.g. 'Midlands' |
+| search_term | STRING | NULLABLE | The search term used |
+| search_results | STRING | NULLABLE | The number of results returned by the search |
+| index | INTEGER | NULLABLE | The index of the link that was interacted with e.g. if the third link was clicked the index would be '3' |
+| index_total | INTEGER | NULLABLE | The total number of individual links within a feature e.g. if there are five links in total this would be '5' |
+| engaged_session_event | INTEGER | NULLABLE | The number of sessions the user is engaged in. Should always be '1' on GOV.UK as we do not use a user ID so cannot tell if a user visits the website from many devices |
+| entrances | INTEGER | NULLABLE | A flag to indicate an entrance, where '1' indicates an entrance |
+| firebase_conversion | INTEGER | NULLABLE | A flag to indicate if an event is a firebase conversion. Not in use |
+| content | STRING | NULLABLE | The 'content' campaign parameter, typically used to differentiate between two ads or links that point to the same URL |
+| index_section | INTEGER | NULLABLE | The index of the section that was interacted with e.g. if the third tab was clicked the index would be '3' |
+| index_section_total | INTEGER | NULLABLE | The total number of sections within a feature e.g. if there are five tabs in total this would be '5' |
+| tool_name | STRING | NULLABLE | The name of the tool (the smart answer or form) |
+| is_active_user | BOOLEAN | NULLABLE | Whether the user was active (True) or inactive (False) at any point in the calendar day |
+| outbound | STRING | NULLABLE | 'True' if a link clicked leads away from www.gov.uk |
+| query_string | STRING | NULLABLE | The query string extracted from the page location |
+| viewport_size | STRING | NULLABLE | The size of the browser window, minus the scroll bars and toolbars, e.g. '1920x1080'. Note: in the flattening process, we only keep string values (a small number of integer and double values that are collected are not flattened) |
+| batch_page_id | INTEGER | NULLABLE | A (Google-created) unique identifier for each page view, allowing for the reconstruction of user interactions within a specific page. Added by Google in July 2024 |
+| batch_event_index | INTEGER | NULLABLE | A number indicating the sequential order of each event within a batch based on their order of occurrence on the device. Added by Google in July 2024 |
+| batch_ordering_id | INTEGER | NULLABLE | A monotonically increasing number assigned to each network request sent from a page. Added by Google in July 2024 |
+| timestamp | INTEGER | NULLABLE | The [Unix timestamp](https://docs.publishing.service.gov.uk/analytics/attribute_timestamp.html) in milliseconds. This is a custom dimension, pushed with every dataLayer event, unlike the default event_timestamp above |
+| item_list_name | STRING | NULLABLE | The name of the item list - on GOV.UK, this will be the name of a finder (search/search results) page |
+| item_id | STRING | NULLABLE | The URL of the search result item. A maximum of 200 search result items (the first 200) will be sent on longer search results pages |
+| item_name | STRING | NULLABLE | The name of an item - on GOV.UK, the link text of a search result |
+| item_list_index | STRING | NULLABLE | The index of the search result item. A maximum of 200 search result items (the first 200) will be sent on longer search results pages |
+| item_content_id | STRING | NULLABLE | The content ID of the search result item |
+| emergency_banner | STRING | NULLABLE | Value is true if the user is served the emergency banner |
+| traffic_type | STRING | NULLABLE | The traffic_type parameter set in the GA4 interface or in Google Tag Manager, to help us filter out internal or developer traffic and spam |
+| ignore_referrer | STRING | NULLABLE | Value of the ignore_referrer parameter |
+| name | STRING | NULLABLE | The traffic source name value associated with this event |
+| medium | STRING | NULLABLE | The traffic source medium value associated with this event |
+| source | STRING | NULLABLE | The traffic source 'source' value associated with this event |
+| campaign | STRING | NULLABLE | The campaign value associated with this event |
+| event_section | STRING | NULLABLE | Used to distinguish between multiple sections within an interaction element where the UI/Link text property is not granular enough |
+| event_action | STRING | NULLABLE | The action the user has taken e.g. 'opened' |
+| user_created_at | STRING | NULLABLE | The time, as a date value, denoting when a user's publishing account was created |
+| user_organisation_name | STRING | NULLABLE | The organisation the user belongs to |
+| user_role | STRING | NULLABLE | The role held by the publishing user |
+
+
