@@ -16,7 +16,8 @@ This data is also exported to BigQuery.
 
 ## Content
 
-The usage data for all Publishing apps is sent to the one property.
+The usage data for all Publishing apps is sent to the one property. Amongst others, this includes data for the Whitehall, Mainstream and Specialist Publisher apps.
+
 
 ## Access
 
@@ -25,6 +26,13 @@ Contact a GOV.UK Publishing performance analyst for access to the Publishing GA4
 ### Location
 
 There are two GOV.UK Publishing GA4 properties. These correspond to the integration and production or live GOV.UK Publishing apps.
+
+The production property can be found in the GA4 interface [here](https://analytics.google.com/analytics/web/#/p400020090/reports/intelligenthome), and the integration property found [here](https://analytics.google.com/analytics/web/#/p414850201/reports/intelligenthome).
+
+Data for both of these properties is exported to BigQuery, and can be found in the `govuk-publishing` GCP project. The production and integration GA4 data lives in different datasets, and the raw sharded tables for each can be found at `govuk-publishing.analytics_400020090.events_*` and `govuk-publishing.analytics_414850201.events_*` respectively.  
+
+In addition to these raw tables, we also apply some processing to the production GA4 data to make using it more easy and more efficient to query. Please read [this page](https://docs.data-community.publishing.service.gov.uk/data-sources/ga/publishing-ga4-processing/) on our BigQuery processing to find out more about how users can use and understand this data.
+
 
 ## GA4 settings
 ### Property set-up
@@ -57,6 +65,11 @@ At present, we have not created any custom events or designated any events as co
 We are also not using GA4's inbuilt data redaction feature on GOV.UK.
 Instead, we are applying redaction to strip out potential Personally Identifable Information (PII) from values before they are pushed to the dataLayer (see our [documentation on this in GitHub](https://github.com/alphagov/govuk_publishing_components/blob/main/docs/analytics-ga4/pii-remover.md)).
 Additional PII redaction is also applied in Google Tag Manager as a fail-safe.
+
+Publishing GA4 data in BigQuery is available in several formats: raw sharded tables as sent by Google, flattened sharded tables, a partitioned nested table and also a partition flattened table. These tables all have various applications and advantages/disadvantages, though generally the flattened tables will be much easier to query for analysis.
+
+Please refer to [this page](https://docs.data-community.publishing.service.gov.uk/data-sources/ga/publishing-ga4-processing/) on our BigQuery processing, and guidance on how to use our flattened publishing data. 
+
 
 ### Retention
 
