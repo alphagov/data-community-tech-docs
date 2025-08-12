@@ -1,7 +1,7 @@
 ---
 title: Find things in the GOV.UK GA4 data
 weight: 6
-last_reviewed_on: 2025-08-06
+last_reviewed_on: 2025-08-12
 review_in: 6 months
 ---
 
@@ -300,6 +300,8 @@ These include:
 Google provide some sample code indicating how you can use some combination of these IDs and indexes to order users' events in [their guidance](https://developers.google.com/analytics/bigquery/basic-queries#sequence_of_pageviews).
 
 From our investigations, we believe that the 'batch_event_index' is the most reliable way to order hits on a given page (that are likely to have occurred within a batch).
+If trying to order all of the events within a given session, we recommend you use both the `event_timestamp` (to order the batches) and `batch_event_index`.
+An example of a SQL query to order users' events within sessions can be seen below.
 
 #### Method in BigQuery
 

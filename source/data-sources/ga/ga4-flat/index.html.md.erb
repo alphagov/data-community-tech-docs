@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 flattened table
 weight: 3
-last_reviewed_on: 2025-08-06
+last_reviewed_on: 2025-08-12
 review_in: 6 months
 ---
 
@@ -110,7 +110,6 @@ More information on the processing can be found in the [Policies and processes s
 | event_source | STRING | NULLABLE | The source information [associated with this event](https://support.google.com/analytics/answer/11080067) |
 | session_source | STRING | NULLABLE | The source information [associated with this session](https://support.google.com/analytics/answer/11080067) (the first source of the session) |
 | link_text | STRING | NULLABLE | The text of the link clicked (sent with navigation and information_click events) |
-| term | STRING | NULLABLE | Broken field that we are investigating. Do not use |
 | link_url | STRING | NULLABLE | The href attribute of a link (sent with navigation and information_click events) |
 | event_medium | STRING | NULLABLE | The medium information [associated with this event](https://support.google.com/analytics/answer/11080067) |
 | session_medium | STRING | NULLABLE | The medium information [associated with this session](https://support.google.com/analytics/answer/11080067) (the first medium of the session) |
@@ -167,6 +166,7 @@ More information on the processing can be found in the [Policies and processes s
 | gclid | STRING | NULLABLE | The Google click identifier that was collected with the event |
 | gclsrc | STRING | NULLABLE | The Google click identifier that indicates the source of the click ID |
 | content | STRING | NULLABLE | The 'content' campaign parameter, typically used to differentiate between two ads or links that point to the same URL |
+| term | STRING | NULLABLE | The 'term' campaign parameter, typically used with paid search to note the keywords for an ad |
 | campaign_id | STRING | NULLABLE | The ID of a promotion or marketing campaign that led to a key event |
 | index_section | INTEGER | NULLABLE | The index of the section that was interacted with e.g. if the third tab was clicked the index would be '3' |
 | index_section_total | INTEGER | NULLABLE | The total number of sections within a feature e.g. if there are five tabs in total this would be '5' |
