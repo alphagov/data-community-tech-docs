@@ -1,7 +1,7 @@
 ---
 title: Looker Studio
 weight: 2
-last_reviewed_on: 2025-01-08
+last_reviewed_on: 2025-08-13
 review_in: 6 months
 ---
 
@@ -31,6 +31,8 @@ When creating a new data connection to be shared, you should:
 - Share with the GDS domain as viewer so that others can use your connection
 
 Community visualisations must be turned off because a DPIA has not been carried out on them to assess the potential risk of data loss.
+
+#### Connecting to BigQuery
 
 If you are connecting to a BigQuery dataset, it is better to connect using a custom SQL query with date range parameters than to connect to the table directly.
 This is because some of our data is stored in sharded tables, and Looker Studio queries all shards when direct connections are established.
