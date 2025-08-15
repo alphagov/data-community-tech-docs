@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 flattened table
 weight: 3
-last_reviewed_on: 2025-08-12
+last_reviewed_on: 2025-08-14
 review_in: 6 months
 ---
 
@@ -129,8 +129,6 @@ More information on the processing can be found in the [Policies and processes s
 | language | STRING | NULLABLE | The OS language |
 | is_limited_ad_tracking | STRING | NULLABLE | The device's Limit Ad Tracking setting |
 | time_zone_offset_seconds | INTEGER | NULLABLE | The offset from GMT in seconds |
-| device_browser | STRING | NULLABLE | Not in use - use 'browser' field instead |
-| device_browser_version | STRING | NULLABLE | Not in use - use 'browser_version' field instead |
 | browser | STRING | NULLABLE | The browser in which the user viewed content |
 | browser_version | STRING | NULLABLE | The version of the browser in which the user viewed content |
 | hostname | STRING | NULLABLE | The hostname associated with the logged event |
@@ -145,7 +143,6 @@ More information on the processing can be found in the [Policies and processes s
 | first_user_source | STRING | NULLABLE | The source through which this user first landed on GOV.UK |
 | stream_id | STRING | NULLABLE | The numeric ID of the data stream from which the event originated |
 | platform | STRING | NULLABLE | The data stream platform (Web, IOS or Android) from which the event originated |
-| event_dimensions_hostname | STRING | NULLABLE | Not in use |
 | full_link_URL | STRING | NULLABLE | Should no longer be used - the link path parts, concatenated. This field was [only correctly populated between February and November 2023](/data-sources/ga/ga4/data-quality/#issues-with-the-full-link-URL). Users seeking this information outside that period should use the `link_url` field |
 | search_sort | STRING | NULLABLE | Where available this is the sort method e.g. 'Relevance' |
 | search_term | STRING | NULLABLE | The search term used |
