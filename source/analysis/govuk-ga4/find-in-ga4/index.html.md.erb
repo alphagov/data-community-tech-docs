@@ -1,7 +1,7 @@
 ---
 title: Find things in the GOV.UK GA4 data
 weight: 6
-last_reviewed_on: 2025-09-18
+last_reviewed_on: 2025-09-19
 review_in: 6 months
 ---
 
@@ -296,14 +296,14 @@ This can be particularly useful when trying to figure out if internal links are 
 Steps:
 
 1. Create a blank [exploration](https://analytics.google.com/analytics/web/#/analysis/p330577055), and add in the ‘Page location’ and 'Page referrer' dimensions, along with the 'Event count' metric, using the '+' buttons in the 'Variables' tab
-2. Add the ‘Page location’ dimension and the 'Event count' metric to the table. You can do this by either dragging and dropping/selecting the 'Page path' dimension in the 'Rows' area in the 'Settings' tab, and doing the same to the 'Views' metric for the 'Values' area, or by just double-clicking on the dimension and metrics you want to use (they should automatically be assigned to be a row and a value in the table settings when you do this)
+2. Add the ‘Page location’ dimension and the 'Event count' metric to the table. You can do this by either dragging and dropping/selecting the 'Page location' dimension in the 'Rows' area in the 'Settings' tab, and doing the same to the 'Event count' metric for the 'Values' area, or by just double-clicking on the dimension and metrics you want to use (they should automatically be assigned to be a row and a value in the table settings when you do this)
 3. Filter the data by the ‘Page referrer’ dimension to equals/contains the URL of the page you are interested in finding journeys from
 4. Change the date range and sort the table
 
 This should give you a table showing the pages on GOV.UK that were navigated to from your given referrer page and the number of times each was navigated to (the count).
 
-If you are unfamiliar with filtering GA4 data, it may be helpful to include the ‘Event name’ and ‘Page referrer’ dimensions in your table to check that your filters have worked correctly.
-You should only be able to see ‘view_item_list’ in the ‘Event name’ column and the specific page you want search terms from in the ‘Page referrer’ column.
+If you are unfamiliar with filtering GA4 data, it may be helpful to include the ‘Page referrer’ dimensions in your table to check that your filters have worked correctly.
+You should only be able to see the specific page you want to see users clicking links on in the ‘Page referrer’ column.
 
 ### Ordering users' events
 
