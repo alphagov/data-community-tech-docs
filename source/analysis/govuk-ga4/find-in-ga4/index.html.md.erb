@@ -1,7 +1,7 @@
 ---
 title: Find things in the GOV.UK GA4 data
 weight: 6
-last_reviewed_on: 2025-08-12
+last_reviewed_on: 2025-09-19
 review_in: 6 months
 ---
 
@@ -66,7 +66,6 @@ ORDER BY
   pageviews DESC
 ```
 
-
 ### Page views filtered to a certain publishing organisation
 
 In GA4, there are two custom dimensions you can use to identify different organisations:
@@ -90,7 +89,8 @@ Remember to check the [data quality icons](https://support.google.com/analytics/
 Link clicks are now tracked as events with the event name ‘navigation’.
 External links will be navigation events with the ‘outbound’ parameter/custom dimension set to ‘true’.
 Internal links (links to other pages on GOV.UK) will not have the parameter/custom dimension ‘outbound’ equalling ‘true’.
-Not all internal links have specific tracking on them.
+Not all internal links have specific tracking on them. 
+If you would like to figure out how much internal links without tracking are used, you can do this using the [page referrer](/analysis/govuk-ga4/find-in-ga4/#using-the-page-referrer).
 
 These events should all have dimensions such as the ‘Link URL’, ‘Link text’ and so on which should help you identify which links have been clicked.
 
@@ -133,7 +133,6 @@ GROUP BY
 ORDER BY
   events DESC
 ```
-
 
 ## File downloads
 
@@ -188,7 +187,6 @@ GROUP BY
 ORDER BY
   file_downloads DESC
 ```
-
 
 ## Search terms
 
@@ -286,6 +284,26 @@ You can also use funnel explorations to examine users' flow through pre-defined 
 Google have published some information on how to use [funnel explorations here](https://support.google.com/analytics/answer/9327974).
 
 Using the BigQuery data, however, you can view users' journeys in much more detail.
+
+### Using the page referrer
+
+In the interface, in Looker Studio, and in the BigQuery data, you can look at users' page locations and page referrers to see which page on GOV.UK they were on previously that led them to the current page.
+
+This can be particularly useful when trying to figure out if internal links are used to navigate between certain pages, as some internal link clicks are not tracked.
+
+#### Using the page referrer to see which internal links are clicked on a page - method in an exploration
+
+Steps:
+
+1. Create a blank [exploration](https://analytics.google.com/analytics/web/#/analysis/p330577055), and add in the ‘Page location’ and 'Page referrer' dimensions, along with the 'Event count' metric, using the '+' buttons in the 'Variables' tab
+2. Add the ‘Page location’ dimension and the 'Event count' metric to the table. You can do this by either dragging and dropping/selecting the 'Page location' dimension in the 'Rows' area in the 'Settings' tab, and doing the same to the 'Event count' metric for the 'Values' area, or by just double-clicking on the dimension and metrics you want to use (they should automatically be assigned to be a row and a value in the table settings when you do this)
+3. Filter the data by the ‘Page referrer’ dimension to equals/contains the URL of the page you are interested in finding journeys from
+4. Change the date range and sort the table
+
+This should give you a table showing the pages on GOV.UK that were navigated to from your given referrer page and the number of times each was navigated to (the count).
+
+If you are unfamiliar with filtering GA4 data, it may be helpful to include the ‘Page referrer’ dimensions in your table to check that your filters have worked correctly.
+You should only be able to see the specific page you want to see users clicking links on in the ‘Page referrer’ column.
 
 ### Ordering users' events
 
