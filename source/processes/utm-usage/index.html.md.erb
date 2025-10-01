@@ -1,0 +1,84 @@
+---
+title: UTM usage
+weight: 10
+last_reviewed_on: 2025-10-01
+review_in: 6 months
+hide_in_navigation: true
+---
+
+# UTM usage
+
+This page suggests how government organisations should use Google Analytics tracking parameters when deploying campaigns that promote web content.
+This includes paid-for campaigns like paid search, email marketing and social media activity.
+
+## Why should you use UTMs?
+
+Campaign tagging involves adding tags to the URLs used in the promotions with Google Analytics (GA) standard tracking parameters such as `utm_campaign` and `utm_source`. 
+
+GA will use these parameters when trying to understand the attribution of a given session or event, displaying them in the interface.
+Metrics around activity, behaviour and conversions can then be attributed to those tags.
+
+These parameters overwrite Google's default attribution calculations, so should be used carefully and only when required.
+
+Other, non-Google, tracking schema are available, but GA will not treat them in the same way and these alternative URLs could interfere with our standard page tracking.
+
+**Note that campaign tagging should not be used on internal links within GOV.UK.**
+This will break the default attribution tracking.
+
+## Tagging schema
+
+Some standardisation in tagging schemas helps make the data in GA more usable and mitigates against [high cardinality](https://support.google.com/analytics/answer/13331684).
+In our GOV.UK data you can see many examples of missing or duplicate campaign parameters, and other examples where over-complex or partial tagging has made the subsequent analysis more complex.
+
+Google provides a [URL builder for campaigns](https://ga-dev-tools.google/campaign-url-builder/).
+
+### General rules
+
+- Do not use spaces or special characters in the parameters. Underscores are fine, as are hyphens; though we've been caught out in the past by stray en-dashes, em-dashes and smart quotes, so be careful using these symbols
+- Use lowercase. Parameters are case sensitive; we must stick to exactly these formats or they will be reported on separately
+
+#### utm_campaign
+
+The utm_campaign provides the name of the campaign being run.
+This should be consistent across all campaign elements (whether paid-for, free or earned etc).
+
+#### utm_medium
+
+The utm_medium indicates the channel this link was shared on, which should be similar to the standard GA 'medium' dimension values.
+
+Common examples include:
+
+- utm_medium=organic - non-paid links from search engines
+- utm_medium=referral - links on other websites
+- utm_medium=social - tweets and posts on owned/earned social media channels
+- utm_medium=cpc - digital paid search
+- utm_medium=cre - content recommendation engines 
+- utm_medium=email - links in emails
+- utm_medium=affiliate - partnership promotions 
+
+#### utm_source
+
+The source of the traffic, which should be similar to the standard GA 'source' dimension values.
+
+Common examples might include:
+
+- utm_source=google
+- utm_source=facebook
+- utm_source=april_newsletter
+
+#### utm_content
+
+We’ve used utm_content for various, and sometimes mixed purposes, covering creative variation, ad format/position, and audience.
+
+For example:
+
+- utm_content=creative1
+- utm_content=creative2_320x50
+- utm_content=creative3_970x250_hard-working-families
+- utm_content=tweet52
+- utm_content=post_130515
+
+#### utm_term
+
+Paid search will use this parameter to indicate the search term and the level of match.
+This should be done automatically.
