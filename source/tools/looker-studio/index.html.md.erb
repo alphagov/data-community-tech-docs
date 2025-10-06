@@ -1,7 +1,7 @@
 ---
 title: Looker Studio
 weight: 2
-last_reviewed_on: 2025-08-13
+last_reviewed_on: 2025-10-06
 review_in: 6 months
 ---
 
@@ -9,9 +9,16 @@ review_in: 6 months
 
 Looker Studio is an online dashboarding tool, developed by Google.
 
-Looker Studio is the primary tool used within GDS for web analytics data visualisations and reporting.
+Looker Studio is a key tool used within GDS for web analytics data visualisations and reporting.
 
-## Report creation
+There are two key concepts within Looker Studio; Reports and Data Connections
+
+
+## Looker Studio Reports
+
+Teams own the Looker Studio Reports that they create. This includes updates, sharing. maintenance and decommissioning.
+
+When creating a report it is best practice to add a Google Group as an editor. This is to prevent access to the report being lost in the evntthe owners Google Account becomes deleted or unavailable. The Google Group either by the Performance Analyst Community (performance-analysts@digital.cabinet-office.gov.uk) or a specific group for your team.
 
 If you are a member of GDS staff, please use one of the standard data connections listed [in Trello](https://trello.com/c/N8C3H9KT/55-looker-studio-data-sources) when creating a new report.
 If your data source is not listed there, it may not have a standard data connection.
@@ -19,7 +26,16 @@ If that is the case, please follow the instructions on data connections below, o
 
 Make sure to add the Looker Studio [GA4 property ID](https://trello.com/c/N8C3H9KT/55-looker-studio-data-sources) to your report to track usage.
 
+### Sharing
+
+Looker Studio reports allow access to our data, and also if the data connection is linked to BigQuery the viewers are executing queries. Therefore do not make your reports 'unlisted' or 'public' to share them.
+
+
 ## Data sources and connections
+
+Data Connections are split into ones centrally managed and owned by the Insights and Analytics Team and those locally managed in teams.
+
+Centrally managed connections should be favoured over creating your own connections. Reasons for creating your own could including using a specific data source not available, or the sensitive nature of a piece of work.
 
 ### Creating new data connections
 
@@ -46,7 +62,7 @@ For SQL examples showing how to connect to both partitioned and sharded data sou
 When setting up the connection, ensure you select the appropriate billing project. 
 For most shared reports that will be [the GDS BQ reporting project](https://docs.google.com/spreadsheets/d/1_FQUVLNA_TYYCvI9WIuI6mOdFJTNsykSWJcNlv6SPrU/edit#gid=608928265).
 
-## Sharing reports 
+# Sharing reports 
 
 Do not make your reports 'unlisted' or 'public' to share them.
 You can either share your reports with anyone on the GDS email domain, or with specified individuals or Google groups.
