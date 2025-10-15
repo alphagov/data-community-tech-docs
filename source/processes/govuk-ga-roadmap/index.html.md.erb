@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 improvements roadmap
 weight: 2
-last_reviewed_on: 2025-06-05
+last_reviewed_on: 2025-10-15
 review_in: 6 months
 ---
 
@@ -11,34 +11,22 @@ This page details upcoming and recent changes to the [GOV.UK GA4 data collection
 See the [changelog](/processes/govuk-ga-roadmap/ga-changelog/) for previous releases.
 
 ## What we're working on now
-### Creating useful tables joining GOV.UK GA4 and Knowledge Graph data
-Creating summarised tables or views combining GOV.UK GA4 and [Knowledge Graph](/tools/govgraph/) data.
+### Improving the GOV.UK GA4 flattening pipeline
+Developing the pipeline, splitting the current flattening code into multiple stages to improve debugging and enable more advanced calculations to be carried out during the data processing.
 
-### Backfilling the GOV.UK GA4 'page_summaries' table
-Backfilling the GOV.UK GA4 `page_summaries` table, part of the GOV.UK GA4 flattened dataset, so that all processing improvements made over previous months to the flattened table are applied to the `page_summaries` table.
-
-### Improving our redaction on search terms to stop the collection of phone numbers
-Improving our redaction, designed to stop the collection of personally identifiable information, on search terms and related fields to ensure we do not collect any phone numbers that users search for.
+### Deleting PII found in the GOV.UK GA4 dataset
+Deleting PII found in the GOV.UK GA4 dataset in our routine checks.
 
 ## Recently released
-### Redaction added to target National Insurance numbers
-Some users were spotted searching for their National Insurance numbers.
-We have added in additional redaction to ensure this data does not get collected in any search analytics data collection, and are deleting any collected National Insurance numbers that may have previously slipped through.
-
 ### Backfilled the GOV.UK GA4 flattened dataset
-We have refreshed the entirety of the GOV.UK GA4 flattened dataset so that all [processing improvements made over previous months](/processes/govuk-ga-roadmap/ga-changelog/#january-2025) are applied to the whole dataset.
+We have refreshed the GOV.UK GA4 flattened dataset for September so that the [changes to the calculation of the cleaned_page_location](/processes/govuk-ga-roadmap/ga-changelog/#january-2025) now apply since the canonical_url changes were made at the beginning of September.
 
-### Decided to not implement the GOV.UK GA4 GTM spam filter
-We are not implementing the spam filter we developed (which would ensure that we are only collecting GOV.UK GA4 data via our Google Tag Manager code) as this did not seem to exclude enough data to be worth the risk of accidentally excluding legitimate data.
-We have left the test filter running so it can be applied if data users would like to use it, and will develop alerts to monitor spam instead.
+### Removed our redaction of phone numbers in search terms 
+We appreciated that previous attempted to redact this information did not function as we had hoped, and so have removed this redaction.
 
-### Determined that the User Deletion API does not meet our deletion needs
-From our testing, we have identified that the User Deletion API does not fully delete users' GOV.UK GA4 data and so cannot be used for the removal of personally identifiable information.
-Our [GA4 data deletion process](/processes/ga-deletion/) remains unchanged.
-
-### Set up alerts to monitor levels of spam received
-Following [work looking into a spam filter](/processes/govuk-ga-roadmap/#decided-to-not-implement-the-gov-uk-ga4-gtm-spam-filter), we have developed more alerts to monitor the levels of spam collected.
+### MVP guidance on UTM parameter usage written up
+We have written up and published basic guidance on [UTM parameter usage](/processes/utm-usage/).
 
 ## Updates
-As we’re still at an early stage, our plans may shift.
+We regularly review our priorities and our plans may shift.
 We’ll update this page when this happens and add more detail when we can.

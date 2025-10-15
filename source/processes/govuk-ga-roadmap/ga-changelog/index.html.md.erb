@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 improvements changelog
 weight: 2
-last_reviewed_on: 2025-06-05
+last_reviewed_on: 2025-10-15
 review_in: 6 months
 ---
 
@@ -91,5 +91,30 @@ Our [GA4 data deletion process](/processes/ga-deletion/) remains unchanged.
 ### Set up alerts to monitor levels of spam received
 Following [work looking into a spam filter](/processes/govuk-ga-roadmap/#decided-to-not-implement-the-gov-uk-ga4-gtm-spam-filter), we have developed more alerts to monitor the levels of spam collected.
 
-### Backfilling the GOV.UK GA4 'page_summaries' table
+### Backfilled the GOV.UK GA4 'page_summaries' table
 We have backfilled the GOV.UK GA4 `page_summaries` table, part of the GOV.UK GA4 flattened dataset, so that all processing improvements made over previous months to the flattened table have now also been applied to the `page_summaries` table.
+
+### Created views joining GOV.UK GA4 and Knowledge Graph data
+We created a couple of views combining GOV.UK GA4 and [Knowledge Graph](/tools/govgraph/) data to enable easier querying and joining of these datasets.
+
+## July 2025
+### Added redaction of phone numbers in search terms 
+We added regex redaction to capture phone numbers being entered into the GOV.UK search box.
+
+## September 2025
+### Canonical URLs added to most pages across GOV.UK 
+We have populated the `canonical_url` parameter on the majority of pages across GOV.UK.
+Note that this has not been done by adding a canonical URL to most of these pages, but by pulling the base path from the content item into the `canonical_url` attribute simply to populate it in GA4.
+
+### Removed redaction from page titles 
+Having made an effort to stop any user-inputted PII appearing in page titles across GOV.UK we have now removed redaction from page titles.
+
+### Removed redaction of phone numbers in search terms 
+We appreciated that previous attempted to redact this information did not function as we had hoped, and so have removed this redaction.
+
+### Deleted unowned shared explorations
+We have deleted unowned shared explorations in the GOV.UK GA4 property as there were a number of these taking up space and causing us issues with the shared explorations quota.
+
+## October 2025
+### MVP guidance on UTM parameter usage written up
+We have written up and published basic guidance on [UTM parameter usage](/processes/utm-usage/).
