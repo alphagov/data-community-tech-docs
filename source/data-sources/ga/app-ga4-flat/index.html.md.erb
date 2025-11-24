@@ -74,12 +74,12 @@ The full code used can be [viewed in Github](https://github.com/alphagov/app-ga4
 | batch_event_index | INTEGER | NULLABLE | A number indicating the sequential order of each event within a batch based on their order of occurrence on the device |
 | batch_ordering_id | INTEGER | NULLABLE | A monotonically increasing number assigned to each network request sent from a page |
 | screen_title | STRING | NULLABLE | The title assigned to the screen the user is on when the event is fired |
-| firebase_screen | STRING | NULLABLE |  |
-| firebase_screen_class | STRING | NULLABLE |  |
-| firebase_screen_id | STRING | NULLABLE |  |
-| firebase_previous_screen | STRING | NULLABLE |  |
-| firebase_previous_class | STRING | NULLABLE |  |
-| firebase_event_origin | STRING | NULLABLE |  |
+| firebase_screen | STRING | NULLABLE | The current screen’s name, derived from the name set for a screen using Firebase |
+| firebase_screen_class | STRING | NULLABLE | The current screen’s name, derived from the class name of the UIViewController or Activity in focus  |
+| firebase_screen_id | STRING | NULLABLE | An identifier for the current screen |
+| firebase_previous_screen | STRING | NULLABLE | The name of the previous screen the user was on |
+| firebase_previous_class | STRING | NULLABLE | The class of the previous screen the user was on |
+| firebase_event_origin | STRING | NULLABLE | Differentiates events based on their collection method or source within the app environment |
 | session_engaged | STRING | NULLABLE | A flag to indicate whether or not the session was engaged e.g. '1' when the event belongs to a session deemed to be engaged. This begins as '0' for all events in a given session then flips to '1' for all events after the session has become engaged |
 | method | STRING | NULLABLE | |
 | text | STRING | NULLABLE | Identifying text for the specific item the user interacted with |
@@ -121,12 +121,12 @@ The full code used can be [viewed in Github](https://github.com/alphagov/app-ga4
 | first_user_source | STRING | NULLABLE | The source through which this user first landed on GOV.UK |
 | stream_id | STRING | NULLABLE | The numeric ID of the data stream from which the event originated |
 | platform | STRING | NULLABLE | The data stream platform (Web, IOS or Android) from which the event originated |
-| previous_app_version | STRING | NULLABLE |  |
-| fatal | INTEGER | NULLABLE |  |
-| system_app | INTEGER | NULLABLE |  |
-| update_with_analytics | INTEGER | NULLABLE |  |
-| previous_first_open_count | INTEGER | NULLABLE |  |
-| system_app_update | INTEGER | NULLABLE |  |
+| previous_app_version | STRING | NULLABLE | For the app_update event, this parameter signifies the previous application version |
+| fatal | INTEGER | NULLABLE | Whether an exception was fatal |
+| system_app | INTEGER | NULLABLE | (Android Only) Whether or not a first_open pertains to a system app |
+| update_with_analytics | INTEGER | NULLABLE | Signifies that the first_open event was logged due to an update to a new version of the app that integrates Analytics |
+| previous_first_open_count | INTEGER | NULLABLE | The number of times the first_open event has been logged |
+| system_app_update | INTEGER | NULLABLE | (Android Only) Whether or not a first_open pertains to a system app update |
 | section | STRING | NULLABLE | Used to distinguish between multiple sections within an interaction element where the text property is not granular enough |
 | action | STRING | NULLABLE | The action the user has taken e.g. 'opened' |
 | debug_mode | INTEGER | NULLABLE | A flag to indicate whether Google Tag Manager's debug mode was being used to send these events e.g. '1' when debug mode was in use |
@@ -137,7 +137,6 @@ The full code used can be [viewed in Github](https://github.com/alphagov/app-ga4
 | gclsrc | STRING | NULLABLE | The Google click identifier that indicates the source of the click ID |
 | dclid | STRING | NULLABLE | The Google Marketing Platform (GMP) identifier that was collected with the event |
 | ignore_referrer | STRING | NULLABLE | Value of the ignore_referrer parameter, a flag used by Google to determine whether or not to use a given referrer to generate attribution information |
-
 | content | STRING | NULLABLE | The 'content' campaign parameter, typically used to differentiate between two ads or links that point to the same URL |
 | campaign_id | STRING | NULLABLE | The ID of a promotion or marketing campaign that led to a key event |
 | ab_test | STRING | NULLABLE | The [content attribute of the `<meta name="govuk:ab-test">` tag](https://docs.publishing.service.gov.uk/analytics/attribute_ab_test.html) |
@@ -148,22 +147,22 @@ The full code used can be [viewed in Github](https://github.com/alphagov/app-ga4
 | manual_medium | STRING | NULLABLE | The manual campaign medium (utm_medium) that was collected with the event. Also includes parsed parameters from referral params, not just UTM values |
 | manual_term | STRING | NULLABLE | The manual campaign keyword/term (utm_term) that was collected with the event |
 | manual_content | STRING | NULLABLE | The manual content keyword/term (utm_content) that was collected with the event |
-| manual_source_platform | STRING | NULLABLE |  |
-| manual_creative_format | STRING | NULLABLE |  |
-| manual_marketing_tactic | STRING | NULLABLE |  |
-| collected_traffic_source_gclid | STRING | NULLABLE |  |
-| collected_traffic_source_dclid | STRING | NULLABLE |  |
-| collected_traffic_source_srsltid | STRING | NULLABLE |  |
+| manual_source_platform | STRING | NULLABLE | Indicates the platform from which the traffic originated |
+| manual_creative_format | STRING | NULLABLE | Like 'content', used to manually tag the format of a creative (e.g., "image," "video," "text") to track different versions of ads |
+| manual_marketing_tactic | STRING | NULLABLE | The manual marketing tactic parameter, used to send information related to your marketing tactics (for example, targeting strategies) |
+| collected_traffic_source_gclid | STRING | NULLABLE | The Google click identifier that was collected with the event |
+| collected_traffic_source_dclid | STRING | NULLABLE | The DoubleClick Click Identifier for Display and Video 360 and Campaign Manager 360 that was collected with the event |
+| collected_traffic_source_srsltid | STRING | NULLABLE | The Google Merchant Center identifier that was collected with the event |
 | is_active_user | BOOLEAN | NULLABLE | Whether the user was active (True) or inactive (False) at any point in the calendar day |
 | outbound | STRING | NULLABLE | 'True' if a link clicked leads away from the GOV.UK App |
 | traffic_type | STRING | NULLABLE | The traffic_type parameter set in the GA4 interface or in Google Tag Manager, to help us filter out internal or developer traffic and spam |
-| app_info_id | STRING | NULLABLE |  |
-| app_info_version | STRING | NULLABLE |  |
-| app_info_install_store | STRING | NULLABLE |  |
-| app_info_firebase_app | STRING | NULLABLE |  |
-| app_info_install_source | STRING | NULLABLE |  |
-| topics_customised | STRING | NULLABLE |  |
-| first_open_time | INTEGER | NULLABLE |  |
+| app_info_id | STRING | NULLABLE | Identifies the mobile application from which event data originated - for Android apps, the package name, and for iOS the bundle ID of the app |
+| app_info_version | STRING | NULLABLE | The mobile app's versionName (Android) or short bundle version (iOS) in which an event occurred |
+| app_info_install_store | STRING | NULLABLE | The store that installed the app |
+| app_info_firebase_app | STRING | NULLABLE | The Firebase App ID associated with the app |
+| app_info_install_source | STRING | NULLABLE | The store that installed the app |
+| topics_customised | STRING | NULLABLE | Custom user property which indicates whether or not a user has customised their topics |
+| first_open_time | INTEGER | NULLABLE | User property automatically collected for app streams (iOS and Android) that records the timestamp of the first time a user opens the app |
 | item_list_name | STRING | NULLABLE | The name of the item list |
 | item_list_id | STRING | NULLABLE | The id of the item list |
 | item_id | STRING | NULLABLE | The id of the item |
