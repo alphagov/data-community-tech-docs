@@ -6,7 +6,7 @@ review_in: 6 months
 ---
 
 # GOV.UK App GA4 (BigQuery export) 
-We export our [GOV.UK Google Analytics data](/data-sources/ga/app-ga4/) and store it in Google BigQuery to enable more detailed analysis than is possible in the GA4 user interface.
+We export our [GOV.UK App Google Analytics data](/data-sources/ga/app-ga4/) and store it in Google BigQuery to enable more detailed analysis than is possible in the GA4 user interface.
 This data can also be queried and used in other tools.
 
 A [flattened dataset](/data-sources/ga/app-ga4-flat/) is created from the raw production GOV.UK App data. This contains most, but not all, of the same fields as the raw data.
@@ -27,7 +27,7 @@ These datasets are both comprised of date sharded tables - a new table is create
 ## Set-up
 ### Data collection and processing
 
-Our Google Analytics properties export GOV.UK data several times a day.
+Our Google Analytics properties export GOV.UK App data several times a day.
 The data for the current day is temporarily stored in intraday tables.
 At the end of the day, BigQuery automatically moves the data in the intraday tables to a date table (suffixed `YYYYMMDD`) and deletes the intraday tables in question.
 New intraday tables are created and added to throughout the next day.
@@ -63,6 +63,11 @@ These tables use the default [GA4 BigQuery Export schema](https://support.google
 | items | RECORD | REPEATED | 
 | collected_traffic_source | RECORD | NULLABLE | 
 | is_active_user | BOOLEAN | NULLABLE | 
+| batch_event_index | INTEGER | NULLABLE | 
+| batch_page_id | INTEGER | NULLABLE | 
+| batch_ordering_id | INTEGER | NULLABLE | 
+| session_traffic_source_last_click | RECORD | NULLABLE | 
+| publisher | RECORD | NULLABLE | 
 
 ### Retention
 

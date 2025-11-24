@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 (BigQuery export)
 weight: 2
-last_reviewed_on: 2024-11-25
+last_reviewed_on: 2025-11-25
 review_in: 6 months
 ---
 
@@ -68,6 +68,11 @@ These tables use the default [GA4 BigQuery Export schema](https://support.google
 | items | RECORD | REPEATED | 
 | collected_traffic_source | RECORD | NULLABLE | 
 | is_active_user | BOOLEAN | NULLABLE | 
+| batch_event_index | INTEGER | NULLABLE | 
+| batch_page_id | INTEGER | NULLABLE | 
+| batch_ordering_id | INTEGER | NULLABLE | 
+| session_traffic_source_last_click | RECORD | NULLABLE | 
+| publisher | RECORD | NULLABLE | 
 
 ### Retention
 
