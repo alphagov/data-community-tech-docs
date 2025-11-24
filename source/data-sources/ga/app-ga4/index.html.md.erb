@@ -1,0 +1,69 @@
+---
+title: GOV.UK App GA4
+weight: 1
+last_reviewed_on: 2025-11-25
+review_in: 6 months
+---
+
+# GOV.UK App GA4
+Google Analytics 4 (GA4) is used to collect data on the usage of the GOV.UK App.
+
+This data can be accessed via the [Google Analytics 4 user interface](/analysis/govuk-ga4/use-ga4/ga4-interface/), the [GA4 Looker Studio connection](/analysis/govuk-ga4/use-ga4/looker-studio/), and the [Google Analytics Data API](/analysis/govuk-ga4/use-ga4/analytics-data-api/).
+This data is also exported to [BigQuery](/data-sources/ga/app-ga4-bq/).
+
+Information on how to understand and use this data can be found in the [Analysis section of this site](/analysis/govuk-ga4/).
+
+## Content
+
+The first date we have retained data for in the Development property is 26/06/25.
+The first date we have retained data for in the Production property is 11/11/25.
+The events captured have changed significantly over time, and so early data quality may be patchy. 
+A significant portion of early data has been deleted from these properties to ensure tidyness.
+
+## Access
+GDS staff can request access to the GOV.UK App GA4 data by contacting analysts working on the GOV.UK App team.
+
+### Location
+There are two GOV.UK App GA4 properties. These correspond to the development and production App environments.
+
+## GA4 settings
+### Property set-up
+At set-up, we chose the following reporting options:
+
+- Reporting timezone of United Kingdom - (GMT+01:00) United Kingdom Time
+- Currency is British Pound (£)
+- Industry category of Law and Government 
+- Business size - Very Large
+- When asked about our business objectives (which determines which standard reports GA4 will provide in the property), we chose 'Other business objectives' 
+
+No [subproperties](https://support.google.com/analytics/answer/11525732) have been set up for any GOV.UK GA4 properties.
+Instead, we are using BigQuery and Looker Studio to clean, filter, and control access to the data.
+
+### Data collection
+
+GA4's inbuilt 'Enhanced measurement' feature is not in use on the GOV.UK App as it was determined that it would not meet our data collection needs.
+However, default GA4 event names and dimensions have been used wherever there is a clear fit to the information being captured to ensure that GDS will benefit from any default reporting functionality associated with those events and dimensions.
+
+Granular location and device data collection is enabled to allow reporting on the city-level location and devices used by our users.
+
+### Data processing and modification
+
+At present, we have not created any custom events or designated any events as key events (formerly known as conversions) within GA4.
+
+Instead, we are applying redaction to strip out potential Personally Identifable Information (PII) from values before they are pushed to the dataLayer (see our [documentation on this in GitHub](https://github.com/alphagov/govuk_publishing_components/blob/main/docs/analytics-ga4/pii-remover.md)).
+
+If you spot any PII or other data that should not be present in our GA4 datasets, please raise a Zendesk ticket or contact the GOV.UK App team.
+
+### Data display settings
+
+We have created a number of custom dimensions.
+You can see a list and the definitions of these custom dimensions [in the GA4 interface](https://analytics.google.com/analytics/web/#/a26179049p461569528/admin/customdefinitions/hub), or if you are seeking the definition of a specific dimension it should be the same in the [flattened table schema](/data-sources/ga/app-ga4-flat/#schema).
+
+### Retention
+
+A data retention period for this data is set in the GA4 user interface.
+For the development and production GOV.UK App properties, this is set to 38 months.
+
+## Governance
+
+The collection, storage, and use of this data is governed by a Data Protection Impact Assessment (DPIA).

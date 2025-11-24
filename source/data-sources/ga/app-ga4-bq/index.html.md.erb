@@ -1,0 +1,69 @@
+---
+title: GOV.UK App GA4 (BigQuery export)
+weight: 2
+last_reviewed_on: 2025-11-25
+review_in: 6 months
+---
+
+# GOV.UK App GA4 (BigQuery export) 
+We export our [GOV.UK Google Analytics data](/data-sources/ga/app-ga4/) and store it in Google BigQuery to enable more detailed analysis than is possible in the GA4 user interface.
+This data can also be queried and used in other tools.
+
+A [flattened dataset](/data-sources/ga/app-ga4-flat/) is created from the raw production GOV.UK App data. This contains most, but not all, of the same fields as the raw data.
+The flattened dataset is easier and more efficient to query, so should be used for most analysis and reporting.
+
+## Access
+GDS staff can request access to this data from the GOV.UK App team.
+
+### Location
+There are two raw GOV.UK App GA4 datasets, which correspond to the development and production GOV.UK App environments.
+These datasets are:
+
+- the `govuk-app-production.analytics_461569528` dataset, which holds raw GA4 data from the production GOV.UK App
+- the `govuk-app.analytics_446863425` dataset, which holds raw GA4 data for the GOV.UK App development environment 
+
+These datasets are both comprised of date sharded tables - a new table is created each day with the suffix YYYYMMDD.
+
+## Set-up
+### Data collection and processing
+
+Our Google Analytics properties export GOV.UK data several times a day.
+The data for the current day is temporarily stored in intraday tables.
+At the end of the day, BigQuery automatically moves the data in the intraday tables to a date table (suffixed `YYYYMMDD`) and deletes the intraday tables in question.
+New intraday tables are created and added to throughout the next day.
+
+### Schema
+
+These tables use the default [GA4 BigQuery Export schema](https://support.google.com/analytics/answer/7029846):
+
+| field name | type | mode |
+| --- | --- | --- |
+| event_date | STRING | NULLABLE | 
+| event_timestamp | INTEGER | NULLABLE | 
+| event_name | STRING | NULLABLE | 
+| event_params | RECORD | REPEATED | 
+| event_previous_timestamp | INTEGER | NULLABLE | 
+| event_value_in_usd | FLOAT | NULLABLE | 
+| event_bundle_sequence_id | INTEGER | NULLABLE | 
+| event_server_timestamp_offset | INTEGER | NULLABLE | 
+| user_id | STRING | NULLABLE | 
+| user_pseudo_id | STRING | NULLABLE | 
+| privacy_info | RECORD | NULLABLE | 
+| user_properties | RECORD | REPEATED | 
+| user_first_touch_timestamp | INTEGER | NULLABLE | 
+| user_ltv | RECORD | NULLABLE | 
+| device | RECORD | NULLABLE | 
+| geo | RECORD | NULLABLE | 
+| app_info | RECORD | NULLABLE | 
+| traffic_source | RECORD | NULLABLE | 
+| stream_id | STRING | NULLABLE | 
+| platform | STRING | NULLABLE | 
+| event_dimensions | RECORD | NULLABLE | 
+| ecommerce | RECORD | NULLABLE | 
+| items | RECORD | REPEATED | 
+| collected_traffic_source | RECORD | NULLABLE | 
+| is_active_user | BOOLEAN | NULLABLE | 
+
+### Retention
+
+Both datasets do not currently have a set table expiry.
