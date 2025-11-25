@@ -59,9 +59,12 @@ mermaid.initialize({
     });
 </script>
 
-This processing occurs within DataForm in the [gds-bq-reporting project](/tools/google-cloud-platform/gcp-projects/#gds-bigquery-reporting), but the data is written back into the [ga4-analytics-352613 project](/tools/google-cloud-platform/gcp-projects/#ga4-analytics).
+This processing occurs within DataForm in the [gds-bq-processing project](/tools/google-cloud-platform/#projects), but the data is written back into the [ga4-analytics-352613 project](/tools/google-cloud-platform/gcp-projects/#ga4-analytics).
 The DataForm script is compiled at 7am UTC and run several times thoughout the day to ensure the data is processed soon after it arrives.
+
 The full code used can be [viewed in Github](https://github.com/alphagov/ga4-dataform/blob/main/definitions).
+All staff in the 'performance analysts' group in the Alphagov GitHub organisation can read the repo but only select analysts and data engineers working on GOV.UK GA4 have access to publish changes.
+Contact the Insights and Analytics team if you would like to make changes to the GOV.UK GA4 data processing.
 
 More information on the processing can be found in the [Policies and processes section](/processes/ga4-data-processing/).
 
