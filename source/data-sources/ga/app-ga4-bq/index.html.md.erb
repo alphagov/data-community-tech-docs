@@ -1,38 +1,37 @@
 ---
-title: GOV.UK GA4 (BigQuery export)
-weight: 2
-last_reviewed_on: 2025-11-25
+title: GOV.UK App GA4 (BigQuery export)
+weight: 5
+last_reviewed_on: 2025-11-26
 review_in: 6 months
 ---
 
-# GOV.UK GA4 (BigQuery export) 
-We export our [GOV.UK Google Analytics data](/data-sources/ga/ga4/) and store it in Google BigQuery to enable more detailed analysis than is possible in the GA4 user interface.
+# GOV.UK App GA4 (BigQuery export) 
+We export our [GOV.UK App Google Analytics data](/data-sources/ga/app-ga4/) and store it in Google BigQuery to enable more detailed analysis than is possible in the GA4 user interface.
 This data can also be queried and used in other tools.
 
-A [flattened dataset](/data-sources/ga/ga4-flat/) is created from the raw production GOV.UK data. This contains most, but not all, of the same fields as the raw data.
+A [flattened dataset](/data-sources/ga/app-ga4-flat/) is created from the raw production GOV.UK App data. This contains most, but not all, of the same fields as the raw data.
 The flattened dataset is easier and more efficient to query, so should be used for most analysis and reporting.
 
-## Access
-Everyone with a @digital.cabinet-office.gov.uk account (all GDS staff) has access to this data by default.
+## Content
+The first date for which there is data in the flattened table is the 11th November 2024.
+Note that the [quality of the early data may be lower than desired](/data-sources/ga/app-ga4/#contents) as our GA4 implementation was still being actively developed in 2025.
 
-In addition, everyone who requests and is granted access to the GOV.UK GA4 data will be given access to query this dataset.
-More information can be found in our [GA access policy](/processes/ga-access/#what-we-provide-access-to).
+## Access
+GDS staff can request access to this data from the GOV.UK App team.
 
 ### Location
-There are 3 raw GOV.UK GA4 datasets, which correspond to the integration, staging, and production GOV.UK websites.
-All of these datasets are in the [GA4 Analytics project](/tools/google-cloud-platform/gcp-projects/#ga4-analytics).
+There are two raw GOV.UK App GA4 datasets, which correspond to the development and production GOV.UK App environments.
 These datasets are:
 
-- the `ga4-analytics-352613.analytics_330577055` dataset, which holds raw GA4 data for the GOV.UK production site
-- the `ga4-analytics-352613.analytics_330580593` dataset, which holds raw GA4 data for the GOV.UK staging site
-- the `ga4-analytics-352613.analytics_294475112` dataset, which holds raw GA4 data for the GOV.UK integration site
+- the `govuk-app-production.analytics_461569528` dataset, which holds raw GA4 data from the production GOV.UK App
+- the `govuk-app.analytics_446863425` dataset, which holds raw GA4 data for the GOV.UK App development environment 
 
-These datasets are all comprised of date sharded tables - a new table is created each day with the suffix YYYYMMDD.
+These datasets are both comprised of date sharded tables - a new table is created each day with the suffix YYYYMMDD.
 
 ## Set-up
 ### Data collection and processing
 
-Our Google Analytics properties export GOV.UK data several times a day.
+Our Google Analytics properties export GOV.UK App data several times a day.
 The data for the current day is temporarily stored in intraday tables.
 At the end of the day, BigQuery automatically moves the data in the intraday tables to a date table (suffixed `YYYYMMDD`) and deletes the intraday tables in question.
 New intraday tables are created and added to throughout the next day.
@@ -76,5 +75,4 @@ These tables use the default [GA4 BigQuery Export schema](https://support.google
 
 ### Retention
 
-The integration and staging GA4 datasets have a default table expiry in BigQuery of 30 days.
-The production dataset does not currently have a set table expiry.
+Both datasets do not currently have a set table expiry.

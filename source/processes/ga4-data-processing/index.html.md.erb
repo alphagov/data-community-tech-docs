@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 BigQuery data processing
 weight: 12
-last_reviewed_on: 2025-01-08
+last_reviewed_on: 2025-11-25
 review_in: 6 months
 ---
 
@@ -12,10 +12,12 @@ We process the [raw GOV.UK GA4 data](/data-sources/ga/ga4-bq/) we export from Go
 As well as transforming the data for specific [products](/products/), we have created a partitioned nested version and a [partitioned flattened version](/data-sources/ga/ga4-flat/) of this raw data.
 These tables, particularly the flattened, should be easier and more efficient to query. 
 
+Similar processing is carried out to the [raw GOV.UK App GA4 data](/data-sources/ga/app-ga4-bq/), but resides entirely within the [`govk-app-production` Google Cloud project](/tools/google-cloud-platform/#projects).
+
 ## Partitioning and flattening GOV.UK GA4 data
 
-The partitioning and flattening of the GOV.UK GA4 takes place in the [`gds-bq-reporting` Google Cloud project](/tools/google-cloud-platform/gcp-projects/#gds-bigquery-reporting) and uses [Dataform](https://console.cloud.google.com/bigquery/dataform/locations/europe-west2/repositories/ga4_production_partitioning/details/workspaces?project=gds-bq-reporting).
-The `gds-bq-reporting` project was used to ensure that this processing did not count towards the quotas we have set on the primary [GA4 Analytics project (`ga4-analytics-352613`)](/tools/google-cloud-platform/gcp-projects/#ga4-analytics).
+The partitioning and flattening of the GOV.UK GA4 takes place in the [`gds-bq-processing` Google Cloud project](/tools/google-cloud-platform/#projects) and uses [Dataform](https://console.cloud.google.com/bigquery/dataform/locations/europe-west2/repositories/ga4_production_partitioning/details/workspaces?project=gds-bq-processing).
+The `gds-bq-processing` project was used to ensure that this processing did not count towards the quotas we have set on the primary [GA4 Analytics project (`ga4-analytics-352613`)](/tools/google-cloud-platform/gcp-projects/#ga4-analytics).
 
 The one Dataform repository contains all of the code for the partitioning and flattening of GOV.UK GA4 data, as well as for the generation of a table of summary metrics. 
 The workflow is scheduled to run six times a day - at every hour between 8am and 12pm, and then again at 2pm.
