@@ -1,7 +1,7 @@
 ---
 title: GOV.UK App GA4 (BigQuery export)
 weight: 5
-last_reviewed_on: 2025-11-25
+last_reviewed_on: 2025-11-26
 review_in: 6 months
 ---
 
@@ -11,6 +11,10 @@ This data can also be queried and used in other tools.
 
 A [flattened dataset](/data-sources/ga/app-ga4-flat/) is created from the raw production GOV.UK App data. This contains most, but not all, of the same fields as the raw data.
 The flattened dataset is easier and more efficient to query, so should be used for most analysis and reporting.
+
+## Content
+The first date for which there is data in the flattened table is the 11th November 2024.
+Note that the [quality of the early data may be lower than desired](/data-sources/ga/app-ga4/#contents) as our GA4 implementation was still being actively developed in 2025.
 
 ## Access
 GDS staff can request access to this data from the GOV.UK App team.
