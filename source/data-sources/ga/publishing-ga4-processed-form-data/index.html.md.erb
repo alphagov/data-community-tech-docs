@@ -38,8 +38,6 @@ See the table’s schema below for a description of all of its fields.
 
 | field name | type | description |
 | --- | --- | --- |
-
-
 | event_date | DATE | The date when the event was logged, formatted as YYYYMMDD | 
 | unique_session_id | STRING | The user_pseudo_id concatenated with the ga_session_id to create a unique session ID | 
 | user_organisation_name | STRING | The user's organisation name (department) as inherited from their Signon account | 
@@ -187,52 +185,7 @@ WHERE a.event_date >= PARSE_DATE('%Y%m%d', @DS_START_DATE) and a.event_date <= P
 
 ## Processing (dataform)
 
-The pipeline is made up of 17 nominal steps, though there are a few parallel processes which happen alongside the main processing thread which feed into the final output. A visual representation of how the data is processed can be found in the dataform ‘Compiled graph’, and it looks roughly as below:
-
-### Visual representation
-
-<pre class="mermaid">
-graph TD
-
-%% --- INPUTS ---
-A0[0_date_selector] --> A1[1_2_editorial_form_response_event_data]
-A0 --> B1[1_raw_form_event_data]
-A0 --> C1[7_additional_event_data]
-
-%% --- STREAM 1 ---
-A1 --> A2[5_2_workflow_related_events]
-A2 --> A3[6_distinct_form_change_note]
-A3 --> A4[10_unioned_events]
-A4 --> A5[12_final_output_joined_data]
-
-%% Side arrow into step 12
-D1[11_content_url_knowledge_graph] --> A5
-
-A5 --> A6[13_document_type_identifier]
-A6 --> A7[14_document_types_processed]
-A7 --> A8[15_output_joined_doc_types]
-A8 --> A9[17_output_joined_locale_counts]
-
-%% Side arrow into step 17
-D2[16_locale_counts] --> A9
-
-
-%% --- STREAM 2 ---
-B1 --> B2[2_raw_form_response_columns]
-B2 --> B3[3_add_missing_content_id]
-B3 --> B4[4_form_answer_differences]
-B4 --> B5[5_form_change_note]
-B5 --> A3   %% joins at 6_distinct_form_change_note
-
-
-%% --- STREAM 3 ---
-C1 --> C2[8_publication_actions_check]
-C2 --> C3[9_filtered_publication_actions]
-C3 --> A4   %% joins at 10_unioned_events
-
-</pre>
-
-## Code explanation
+The pipeline is made up of 17 nominal steps, though there are a few parallel processes which happen alongside the main processing thread which feed into the final output. A visual representation of how the data is processed can be found in the dataform ‘Compiled graph’.
 
 ### Sources
 
