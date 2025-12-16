@@ -1,0 +1,25 @@
+---
+title: GOV.UK GA4 BigQuery data processing changes
+weight: 13
+last_reviewed_on: 2025-12-16
+review_in: 6 months
+---
+
+# GOV.UK GA4 BigQuery data processing changes
+
+Occxasionally changes need to be made to the processing of GA4 data. GA4 data is production data and changes should follow the process detailed below.
+
+
+- Work identified
+- Jira ticket created withthe level of detail needed to complete the work
+- Agree sign off for work - LPA and LDE
+- Start the work in a feature branch in Dataform
+- Test the changes
+- Commit the changes and raise a Pull Request
+- The PR needs to be reviewed by xxx
+- You merge the PR
+
+## Who needs to sign off
+If the change affects historical data, requiring a backfill and reprocessing then both LPA and LDE should be consulted on the change.
+If the change affects the structure of the code then the LDE should be consulted.
+Privacy and policy changes require the LPA to be consulted.
