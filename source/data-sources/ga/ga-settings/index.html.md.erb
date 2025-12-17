@@ -1,7 +1,7 @@
 ---
 title: GA Settings Database
 weight: 40
-last_reviewed_on: 2024-11-25
+last_reviewed_on: 2025-12-11
 review_in: 6 months
 ---
 
@@ -16,14 +16,14 @@ Access to the BigQuery dataset is limited to GA4 administrators.
 However, the [GA Settings Database report](/products/ga-settings-database/) which visualises this data is shared with the GDS performance analysts and GOV.UK Insights and Analytics team Google groups.
 
 ### Location
-The data is stored in BigQuery in the [GA4 Analytics project](/tools/google-cloud-platform/gcp-projects/#ga4-analytics).
+The data is stored in BigQuery in the [GA4 Analytics project](/tools/google-cloud-platform/#projects).
 The data can be found in the `ga4-analytics-352613.analytics_settings_database` dataset.
 
 ## Set-up
 ### Data collection
 The [`analytics-settings-database` GitHub repository](https://github.com/alphagov/analytics-settings-database) contains the code used to query, structure, and save this data.
 
-A Google Cloud Run Function set up using this code, also in the [GA4 Analytics project](/tools/google-cloud-platform/gcp-projects/#ga4-analytics), queries the [Google Analytics Admin API](https://developers.google.com/analytics/devguides/config/admin/v1) and saves the settings returned on a given date in a series of tables in the `ga4-analytics-352613.analytics_settings_database` dataset.
+A Google Cloud Run Function set up using this code, also in the [GA4 Analytics project](/tools/google-cloud-platform/#projects), queries the [Google Analytics Admin API](https://developers.google.com/analytics/devguides/config/admin/v1) and saves the settings returned on a given date in a series of tables in the `ga4-analytics-352613.analytics_settings_database` dataset.
 
 ### Schema
 Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
