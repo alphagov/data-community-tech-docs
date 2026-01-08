@@ -3,7 +3,66 @@ title: Using Google Signals
 weight: 5
 last_reviewed_on: 2025-01-08
 review_in: 6 months
-hide_in_navigation: true
+hide_in_navigation: false
 ---
 
-This is an attempt to create a page about carrying out analysis with Google Signals data
+# Using Google Signals
+This page summarises how to use Google Signals data within the GOV.UK GA4 implementation, including key limitations, caveats, and privacy constraints.
+Google Signals is a Google Analytics feature that provides demographic indicators (Age, Gender, Interests) which are unavailable through standard data collection.
+
+## Scope of the data
+Signals users are a self-selecting group. To be included in this dataset, a user must:
+- consent to cookies
+- be signed into a Google account
+- have ad personalisation enabled
+
+Signals does not cover users under the age of 18. 
+
+There is no "row level" data available. You cannot access data for a specific user ID or session; only aggregated data is provided to protect user privacy.
+
+Because this data relies on specific user consent and Google accounts, it represents a subset of users and is subject to privacy thresholds.
+
+## Privacy
+While Google Signals can be used to build audiences for ad remarketing, the GOV.UK [privacy notice](https://www.gov.uk/help/privacy-notice) prohibits sharing data with third parties for marketing purposes. Consequently, Signals data is used strictly for aggregated insight and analysis, not for ad targeting.
+
+## Data bias
+Signals users are not a random sample of GOV.UK users. Because of this, findings from Signals data should not be generalised to all GOV.UK users.
+Observation of the data we are receiving reveals that it over-represents younger age groups and males, while under-representing older age groups and females, compared to ONS population data. 
+
+## Reporting
+After establishing a baseline percentage of Signals users by age or gender for example, you can compare this against findings for specific content types to see if there is under or over-representation compared to the baseline distribution.
+
+## Reporting limitations
+
+### Retrospective data
+Google Signals data is not retrospective. It is only collected from the moment the feature is activated.
+
+### Data thresholding
+Data thresholds apply to the data whenever demographic dimensions (e.g. Age, Gender) are used.
+
+GA4 automatically hides or suppresses rows if it determines that a specific combination of dimensions is unique enough to pose a privacy risk.
+
+As soon as a demographic dimension is included, a thresholding warning appears in the GA4 interface, even if no rows are currently being hidden.
+
+### Cross-device reporting
+In early 2024, Google removed Google Signals from the GA4 reporting identity hierarchy. This means Signals identifiers no longer influence how GA4 deduplicates users in standard reports and Explorations. Signals data continues to be collected and is still used for advertising audiences and demographic reporting, but it does not provide a visible cross‑device journey in GA4 reporting.
+
+### User estimation
+A ‘Users’ metric in GA4 is not a raw count of unique identifiers; it uses probabilistic modelling to estimate unique users. When you segment users by demographic dimensions, GA4 computes an estimate for each row and an independent estimate for the table total. This means that row totals do not match the table total.
+
+### Alternative metrics
+Because user numbers don’t add up properly, this leads to row percentages not summing to 100%. You can use other metrics like sessions or views or event counts as a proxy for users. Views are a count of an event, not an estimate, meaning rows should sum correctly to the table total. The higher volume of data for some events will lead to []sampling thresholds](https://support.google.com/analytics/answer/13331292?hl=en&sjid=4069029866762905612-EU) being reached sooner.
+
+
+## Tool comparison
+Different analysis tools handle Signals data differently:
+
+| Feature | GA4 Explore | Looker Studio |
+| - - - | - - - | - - - | 
+| Data Sampling | Indicates if data is sampled | Does not indicate sampling |
+| Thresholding | Shows red warning icon | No warning icon |
+
+## Technical implementation
+
+### Data Export
+There is currently no automated integration for exporting Signals data to BigQuery. Data can be accessed via the GA4 API or manual export, but only in aggregated form.
