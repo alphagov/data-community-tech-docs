@@ -51,14 +51,14 @@ In early 2024, Google removed Google Signals from the GA4 reporting identity hie
 A ‘Users’ metric in GA4 is not a raw count of unique identifiers; it uses probabilistic modelling to estimate unique users. When you segment users by demographic dimensions, GA4 computes an estimate for each row and an independent estimate for the table total. This means that row totals do not match the table total.
 
 ### Alternative metrics
-Because user numbers don’t add up properly, this leads to row percentages not summing to 100%. You can use other metrics like sessions or views or event counts as a proxy for users. Views are a count of an event, not an estimate, meaning rows should sum correctly to the table total. The higher volume of data for some events will lead to []sampling thresholds](https://support.google.com/analytics/answer/13331292?hl=en&sjid=4069029866762905612-EU) being reached sooner.
+Because user numbers don’t add up properly, this leads to row percentages not summing to 100%. You can use other metrics like sessions or views or event counts as a proxy for users. Views are a count of an event, not an estimate, meaning rows should sum correctly to the table total. The higher volume of data for some events will lead to [sampling thresholds](https://support.google.com/analytics/answer/13331292?hl=en&sjid=4069029866762905612-EU) being reached sooner.
 
 
 ## Tool comparison
 Different analysis tools handle Signals data differently:
 
 | Feature | GA4 Explore | Looker Studio |
-| - - - | - - - | - - - | 
+| --- | --- | --- | 
 | Data Sampling | Indicates if data is sampled | Does not indicate sampling |
 | Thresholding | Shows red warning icon | No warning icon |
 
