@@ -29,6 +29,12 @@ defaults:
     shell: bash
 
 jobs:
+  codeql-sast:
+    name: CodeQL SAST scan
+    uses: alphagov/govuk-infrastructure/.github/workflows/codeql-analysis.yml@main
+    permissions:
+      security-events: write
+
   build:
     name: Build website
     runs-on: ubuntu-latest
