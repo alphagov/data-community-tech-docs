@@ -119,7 +119,11 @@ mermaid.initialize({
     });
 </script>
 
-This processing occurs within DataForm in the same project (`govuk-publishing`). The DataForm script is compiled at 7am UTC and is run several times throughout the day to ensure the data is processed soon after it arrives.
+This processing occurs within Dataform in the same project (`govuk-publishing`). The Dataform script is compiled at 7am UTC and is run several times throughout the day to ensure the data is processed soon after it arrives.
+
+Important note: this Dataform script is executed on a schedule using a custom service account, which is a GCP requirement as of April 2025. It is important that it, and any future Dataform repositories/pipelines, are executed using this service account's credentials, rather than the credentials of an individual user or the default Dataform service account. 
+
+The service account used is `custom-publishing-dataform-ser@govuk-publishing.iam.gserviceaccount.com` and it must have the appropriate IAM permissions in order to function. As a general rule, it requires BigQuery and Dataform Editor permissions in the project in which the Dataform is executed and data is written/saved. If the pipeline is to make use of data which resides in other projects, then the service account will require BigQuery Data Viewer access to the appropriate datasets needed. For this custom service account, it has been given permission to read the data it needs from the `ga4-analytics-352613` and `govuk-knowledge-graph` projects. 
 
 For more information about the processing, this process mirrors that which is used for GOV.UK’s GA4 data, and more information can be found [here](https://docs.data-community.publishing.service.gov.uk/data-sources/ga/ga4-flat/#gov-uk-ga4-flattened-table), which also links to the code itself on github.
 
