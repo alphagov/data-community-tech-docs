@@ -39,6 +39,8 @@ This step also adds an `event_key` in the format of #####_YYYYMMDD. This is the 
 The flattened GA4 data is created from the partitioned nested table.
 This is also partitioned on `event_date` and clustered on `event_name`, and is saved as `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`.
 
+The flattening step originally contained code to unnest the data, clean the data and apply further processing to it. This has now been separated into separate files for each step for clarity and ease of maintenance. The cleaning step creates fields called cleaned_page_location and cleaned_page_referrer and consolidates parts of other fields into a single field. The augmenting step fills in gaps in fields to make sure that data values persist across events in a session.
+
 ### Summary tables
 
 Tables of high-level summary metrics are also generated from the `partitioned_flattened_events` table, and saved in the `ga4-analytics-352613.flattened_dataset.page_summaries` table. You can find an overview of available tables on [the GOV.UK GA4 summary tables page](/data-sources/ga/ga4-summaries/)
