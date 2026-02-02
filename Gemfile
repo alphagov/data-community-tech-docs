@@ -1,5 +1,3 @@
-# If you do not have OpenSSL installed, change
-# the following line to use 'http://'
 source 'https://rubygems.org'
 
 # For faster file watcher updates on Windows:
@@ -11,3 +9,6 @@ gem 'tzinfo-data', platforms: [:mswin, :mingw, :x64_mingw, :jruby]
 # Include the tech docs gem
 gem 'govuk_tech_docs'
 gem 'kramdown-mermaid'
+
+gem "govuk_publishing_components"
+gem 'dotenv', '< 3.0'
