@@ -32,7 +32,7 @@ Partitioning is done on `event_date` which means that this field is transformed 
 
 This data is available to query and use, but is still nested and so not as easy to use or efficient to query as the flattened data.
 
-This step also adds an `event_key` in the format of #####_YYYYMMDD. This is the combination of a deterministic row number and the shard of the data processed and is used touniquely identify the row and act as a primary key. 
+This step also adds an `event_key` in the format of #####_YYYYMMDD. This is the combination of a deterministic row number and the shard of the data processed and is used to uniquely identify the row and act as a primary key. 
 
 ### Flattening 
 
