@@ -646,6 +646,7 @@ DEPENDENCIES
   dotenv (< 3.0)
   govuk_publishing_components
   govuk_tech_docs
+  kramdown
   kramdown-mermaid
   tzinfo-data
   wdm (~> 0.1.0)
