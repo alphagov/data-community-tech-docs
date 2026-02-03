@@ -9,5 +9,8 @@ gem 'wdm', '~> 0.1.0', platforms: [:mswin, :mingw, :x64_mingw]
 gem 'tzinfo-data', platforms: [:mswin, :mingw, :x64_mingw, :jruby]
 
 # Include the tech docs gem
-gem 'govuk_tech_docs'
+gem 'middleman', "4.5.1"
+gem 'govuk_tech_docs', "4.2.0"
 gem 'kramdown-mermaid'
+gem "govuk_publishing_components"
+gem 'dotenv', '< 3.0'

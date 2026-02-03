@@ -5,7 +5,7 @@
 init:
 	brew install rbenv ruby-build
 	rbenv install --skip-existing
-	rbenv exec bundle install
+	rbenv exec bundle _2.7.2_ install
 
 ## Run the site locally
 local-dev:
