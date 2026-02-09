@@ -5,6 +5,10 @@ last_reviewed_on: 2025-04-29
 review_in: 6 months
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # BigQuery best practice
 GA4 data is available in BigQuery in the [raw](/data-sources/ga/ga4-bq/) dataset or the [flattened](/data-sources/ga/ga4-flat/) dataset, which is stored in a partitioned table.
 

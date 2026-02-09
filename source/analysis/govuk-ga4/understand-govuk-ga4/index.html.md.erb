@@ -5,6 +5,10 @@ last_reviewed_on: 2025-01-13
 review_in: 6 months
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # Understand the GOV.UK GA4 data structure
 This page contains information on the different events being captured as part of the GOV.UK GA4 implementation.
 

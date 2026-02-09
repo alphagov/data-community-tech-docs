@@ -6,6 +6,10 @@ review_in: 6 months
 hide_in_navigation: true
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # Use the GOV.UK publishing database
 
 The GOV.UK publishing database is a PostgreSQL database that keeps a copy of every version of every page published on GOV.UK.

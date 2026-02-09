@@ -6,6 +6,10 @@ review_in: 6 months
 hide_in_navigation: false
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # Google Signals
 Google Signals provides demographic indicators (Age, Gender, Interests) within the GA4 property.
 

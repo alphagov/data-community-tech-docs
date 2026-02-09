@@ -6,6 +6,10 @@ review_in: 6 months
 hide_in_navigation: true
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # GOV.UK S3 Mirror
 
 The GOV.UK S3 Mirror project in GCP (Google Cloud Platform) copies data from

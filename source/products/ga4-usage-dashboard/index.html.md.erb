@@ -5,6 +5,10 @@ last_reviewed_on: 2025-02-03
 review_in: 6 months
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # GOV.UK GA4 usage report
 
 The [GOV.UK GA4 usage report](https://lookerstudio.google.com/reporting/80a90704-5cad-410c-96a5-1921415892b1/page/PQpTD) shows access to our GOV.UK GA4 Production data and the tokens consumed per user. Access and tokens can be split out by access mechanism and report type. 

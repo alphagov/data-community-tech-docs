@@ -6,6 +6,10 @@ review_in: 6 months
 hide_in_navigation: true
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # How are GOV.UK related links generated?
 
 GOV.UK related links are generated using a machine learning model. There is detailed documentation available in various places. The developer docs have a dedicated page which provides a [technical overview](https://docs.publishing.service.gov.uk/manual/related-links.html).

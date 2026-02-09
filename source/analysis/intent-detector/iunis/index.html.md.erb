@@ -6,6 +6,10 @@ review_in: 6 months
 hide_in_navigation: true
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # Use the IUNIS algorithm
 
 In the Inferring User Needs by Information Scents (IUNIS) algorithm, the list of keywords that represent the user journey’s intent are driven by the:

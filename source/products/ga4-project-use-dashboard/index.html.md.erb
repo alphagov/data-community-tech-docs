@@ -5,6 +5,10 @@ last_reviewed_on: 2024-11-21
 review_in: 6 months
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # GA4 project use dashboard
 
 The [GA4 project use dashboard](https://lookerstudio.google.com/reporting/90c992bc-5473-4e27-a662-b100d36b22d3/page/fSyIE) uses log data to show what BigQuery datasets and tables in the `ga4-analytics-352613` project are being accessed from users across Government. 

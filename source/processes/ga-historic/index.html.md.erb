@@ -5,6 +5,10 @@ last_reviewed_on: 2025-06-18
 review_in: 6 months
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # Historic GA data access
 
 Historic Google Analytics data is stored for a number of agreed GDS Universal Analytics properties.

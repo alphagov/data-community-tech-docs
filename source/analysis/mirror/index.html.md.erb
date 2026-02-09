@@ -6,6 +6,10 @@ review_in: 6 months
 hide_in_navigation: true
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # Use GOV.UK mirror
 
 The GOV.UK mirror is a static version of the entire GOV.UK website. A crawler generates the mirror every hour by navigating through most of the site and saving each HTML page it visits. See the [Developer docs on updating the GOV.UK mirror](https://docs.publishing.service.gov.uk/manual/fall-back-to-mirror.html#updates-to-the-mirror) for more information.

@@ -6,6 +6,10 @@ review_in: 6 months
 hide_in_navigation: true
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # Manage your machine's resources using AWS Sagemaker
 
 You may find that you reach your local machine’s resource limit when running intensive tasks and/or when using large datasets, or that computations are taking a long time. You should use [AWS Sagemaker](https://eu-west-1.console.aws.amazon.com/sagemaker/home?region=eu-west-1#/landing) to manage these resource issues.

@@ -6,6 +6,10 @@ review_in: 6 months
 hide_in_navigation: true
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # Create the step-function alpha-values vector
 
 There are 2 algorithms that produce a list of words that describes a page of interest:

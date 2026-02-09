@@ -6,6 +6,10 @@ review_in: 6 months
 hide_in_navigation: true
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # Create the page access weight matrix
 
 The page access term frequency-inverse document frequency (TF-IDF) weight matrix gives less weight to pages that are accessed by many users and are not relevant to the user's information needs. For example, the GOV.UK homepage.

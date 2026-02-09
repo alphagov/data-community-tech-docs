@@ -5,6 +5,10 @@ last_reviewed_on: 2026-02-02
 review_in: 6 months
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # GOV.UK GA4 BigQuery data processing
 
 We process the [raw GOV.UK GA4 data](/data-sources/ga/ga4-bq/) we export from Google Analytics 4 to BigQuery to better meet data users' needs.

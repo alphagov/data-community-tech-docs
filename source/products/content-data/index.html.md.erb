@@ -5,6 +5,10 @@ last_reviewed_on: 2025-02-25
 review_in: 6 months
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # Content Data app
 
 The [Content Data app](https://docs.publishing.service.gov.uk/apps/content-store.html) helps users find key metrics about the performance of pages on www.gov.uk, including:

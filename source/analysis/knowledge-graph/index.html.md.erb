@@ -5,6 +5,10 @@ last_reviewed_on: 2025-06-18
 review_in: 6 months
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # Use the Knowledge Graph data
 The Knowledge Graph dataset contains a number of tables which contain information on the content of the GOV.UK website.
 

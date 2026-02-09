@@ -5,6 +5,10 @@ last_reviewed_on: 2025-04-29
 review_in: 6 months
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # Getting started with GA4
 
 The [GOV.UK Google Analytics 4 (GA4) data](/data-sources/ga/ga4/) contains a variety of information on users of GOV.UK, and how those users interacted with various pages on GOV.UK.

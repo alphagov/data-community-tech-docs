@@ -5,6 +5,10 @@ last_reviewed_on: 2025-04-11
 review_in: 6 months
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # GOV.UK GA4 (BigQuery) backfill processes
 
 Each morning we receive yesterday's [GOV.UK GA4](/data-sources/ga/ga4/) data in [BigQuery](/tools/google-cloud-platform/bigquery/). 

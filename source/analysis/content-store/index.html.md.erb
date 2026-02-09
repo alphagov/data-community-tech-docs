@@ -6,6 +6,10 @@ review_in: 6 months
 hide_in_navigation: true
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # Use GOV.UK Content Store database
 
 The [Content Store](https://docs.publishing.service.gov.uk/apps/content-store.html) is a MongoDB database of almost all the content published on GOV.UK.
