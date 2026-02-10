@@ -16,6 +16,7 @@ The data provided includes:
 This report was first created in mid 2024 by the GOV.UK Insights and Analytics team to support users of the GOV.UK GA4 data.
 
 ## Using the GOV.UK GA4 annotations report
+
 ### Get access to the GOV.UK GA4 annotations report
 
 [The report](https://lookerstudio.google.com/reporting/306f1e28-a2c1-4d3a-b03c-ae03ac0c9484) can be viewed by anyone with a GDS email address.
@@ -52,7 +53,7 @@ Date range parameters are enabled and the whole data source (the result of the u
 
 The custom query is as follows:
 
-```SQL
+~~~SQL
 WITH
   dq_notes AS (
   SELECT
@@ -175,4 +176,4 @@ WHERE
       AND end_date >= PARSE_DATE('%Y%m%d', @DS_END_DATE) AND end_date IS NOT NULL)
 ORDER BY
   start_date
-```
+~~~

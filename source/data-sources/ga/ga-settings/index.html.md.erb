@@ -20,6 +20,7 @@ The data is stored in BigQuery in the [GA4 Analytics project](/tools/google-clou
 The data can be found in the `ga4-analytics-352613.analytics_settings_database` dataset.
 
 ## Set-up
+
 ### Data collection
 The [`analytics-settings-database` GitHub repository](https://github.com/alphagov/analytics-settings-database) contains the code used to query, structure, and save this data.
 
@@ -29,8 +30,7 @@ A Google Cloud Run Function set up using this code, also in the [GA4 Analytics p
 Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
 
 #### Tables
-<span>
-<details>
+<details markdown="1">
 <summary>ga4_account_summaries</summary>
 
 | field name | type | mode |
@@ -41,10 +41,8 @@ Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
 | name | STRING | NULLABLE |
 
 </details>
-</span>
 
-<span>
-<details>
+<details markdown="1">
 <summary>ga4_accounts</summary>
 
 | field name | type | mode |
@@ -57,10 +55,8 @@ Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
 | display_name | STRING | NULLABLE |
 
 </details>
-</span>
 
-<span>
-<details>
+<details markdown="1">
 <summary>ga4_audiences</summary>
 
 | field name | type | mode |
@@ -78,10 +74,8 @@ Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
 | exclusion_duration_mode | STRING | NULLABLE |
 
 </details>
-</span>
 
-<span>
-<details>
+<details markdown="1">
 <summary>ga4_conversion_events</summary>
 
 | field name | type | mode |
@@ -95,10 +89,8 @@ Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
 | name | STRING | NULLABLE |
 
 </details>
-</span>
 
-<span>
-<details>
+<details markdown="1">
 <summary>ga4_custom_dimensions</summary>
 
 | field name | type | mode |
@@ -113,10 +105,8 @@ Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
 | description | STRING | NULLABLE | 
 
 </details>
-</span>
 
-<span>
-<details>
+<details markdown="1">
 <summary>ga4_custom_metrics</summary>
 
 | field name | type | mode |
@@ -131,10 +121,8 @@ Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
 | property | STRING | NULLABLE | 
 
 </details>
-</span>
 
-<span>
-<details>
+<details markdown="1">
 <summary>ga4_data_streams</summary>
 
 | field name | type | mode |
@@ -152,10 +140,8 @@ Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
 | ios_app_stream_data | RECORD | NULLABLE | 
 
 </details>
-</span>
 
-<span>
-<details>
+<details markdown="1">
 <summary>ga4_dv360_link_proposals</summary>
 
 | field name | type | mode |
@@ -172,10 +158,8 @@ Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
 | campaign_data_sharing_enabled | BOOLEAN | NULLABLE | 
 
 </details>
-</span>
 
-<span>
-<details>
+<details markdown="1">
 <summary>ga4_dv360_links</summary>
 
 | field name | type | mode |
@@ -190,10 +174,8 @@ Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
 | property_display_name | STRING | NULLABLE | 
 
 </details>
-</span>
 
-<span>
-<details>
+<details markdown="1">
 <summary>ga4_firebase_links</summary>
 
 | field name | type | mode |
@@ -205,10 +187,8 @@ Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
 | name | STRING | NULLABLE | 
 
 </details>
-</span>
 
-<span>
-<details>
+<details markdown="1">
 <summary>ga4_google_ads_links</summary>
 
 | field name | type | mode |
@@ -224,10 +204,8 @@ Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
 | create_time | TIMESTAMP | NULLABLE | 
 
 </details>
-</span>
 
-<span>
-<details>
+<details markdown="1">
 <summary>ga4_measurment_protocol_secrets</summary>
 
 | field name | type | mode |
@@ -244,10 +222,8 @@ Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
 | create_time | TIMESTAMP | NULLABLE | 
 
 </details>
-</span>
 
-<span>
-<details>
+<details markdown="1">
 <summary>ga4_properties</summary>
 
 | field name | type | mode |
@@ -270,10 +246,8 @@ Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
 | property_type | STRING | NULLABLE | 
 
 </details>
-</span>
 
-<span>
-<details>
+<details markdown="1">
 <summary>ua_account_summaries</summary>
 
 | field name | type | mode |
@@ -284,10 +258,8 @@ Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
 | id | INTEGER | NULLABLE | 
 
 </details>
-</span>
 
-<span>
-<details>
+<details markdown="1">
 <summary>ua_audiences</summary>
 
 | field name | type | mode |
@@ -308,10 +280,8 @@ Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
 | audienceDefinition | RECORD | NULLABLE | 
 
 </details>
-</span>
 
-<span>
-<details>
+<details markdown="1">
 <summary>ua_custom_dimensions</summary>
 
 | field name | type | mode |
@@ -330,10 +300,8 @@ Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
 | selfLink | STRING | NULLABLE |
 
 </details>
-</span>
 
-<span>
-<details>
+<details markdown="1">
 <summary>ua_custom_metrics</summary>
 
 | field name | type | mode |
@@ -355,10 +323,8 @@ Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
 | selfLink | STRING | NULLABLE | 
 
 </details>
-</span>
 
-<span>
-<details>
+<details markdown="1">
 <summary>ua_filter_links</summary>
 
 | field name | type | mode |
@@ -371,10 +337,8 @@ Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
 | selfLink | STRING | NULLABLE | 
 
 </details>
-</span>
 
-<span>
-<details>
+<details markdown="1">
 <summary>ua_filters</summary>
 
 | field name | type | mode |
@@ -396,10 +360,8 @@ Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
 | selfLink | STRING | NULLABLE | 
 
 </details>
-</span>
 
-<span>
-<details>
+<details markdown="1">
 <summary>ua_goals</summary>
 
 | field name | type | mode |
@@ -424,10 +386,8 @@ Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
 | accountId | INTEGER | NULLABLE | 
 
 </details>
-</span>
 
-<span>
-<details>
+<details markdown="1">
 <summary>ua_google_ads_links</summary>
 
 | field name | type | mode |
@@ -441,10 +401,8 @@ Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
 | selfLink | STRING | NULLABLE | 
 
 </details>
-</span>
 
-<span>
-<details>
+<details markdown="1">
 <summary>ua_segments</summary>
 
 | field name | type | mode |
@@ -460,10 +418,8 @@ Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
 | name | STRING | NULLABLE | 
 
 </details>
-</span>
 
-<span>
-<details>
+<details markdown="1">
 <summary>ua_views</summary>
 
 | field name | type | mode |
@@ -496,12 +452,11 @@ Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
 | selfLink | STRING | NULLABLE | 
 
 </details>
-</span>
 
+<br>
 
 ### Views
-<span>
-<details>
+<details markdown="1">
 <summary>ga4_settings_joined</summary>
 
 | field name | type | mode |
@@ -536,10 +491,8 @@ Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
 | ga4_data_stream_id | STRING | NULLABLE | 
 
 </details>
-</span>
 
-<span>
-<details>
+<details markdown="1">
 <summary>ua_settings_joined</summary>
 
 | field name | type | mode |
@@ -561,8 +514,8 @@ Data in each table is partitioned by ingestion date (`_PARTITIONTIME`).
 | ua_view_url | STRING | NULLABLE | 
 
 </details>
-</span>
 
+<br>
 
 ### Retention
 Partitions are set to expire after 1 year.

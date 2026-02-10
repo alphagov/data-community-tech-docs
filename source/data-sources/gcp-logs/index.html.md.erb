@@ -36,7 +36,8 @@ Currently, logs with the IDs `cloudaudit.googleapis.com/activity`, `externalaudi
 
 ### Example terraform configuration
 
-```terraform
+~~~
+terraform
 resource "google_service_account" "log_writer" {
   account_id   = "log-writer"
   display_name = "Log writer"
@@ -78,18 +79,19 @@ resource "google_logging_project_sink" "log_sink" {
   unique_writer_identity = true
   custom_writer_identity = google_service_account.log_writer.member
 }
-```
+~~~
 
 An IAM binding is also required in the source project. IAM can be configured in several different ways, so this example is fragmentary.
 
-```terraform
+~~~
+terraform
   binding {
     role = "roles/logging.bucketWriter"
     members = [
       google_service_account.log_writer.member,
     ]
   }
-```
+~~~
 
 The target project must give the `log_writer` service account the role `roles/logging.bucketWriter` at the project level.
 

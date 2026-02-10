@@ -12,6 +12,7 @@ The [GA Settings Database Looker Studio report](https://lookerstudio.google.com/
 This report was first created in August 2023 to support the administration of the GDS GA environment, carried out by the GOV.UK Insights and Analytics team.
 
 ## Using the GA Settings Database report
+
 ### Get access to the GA Settings Database report
 
 [The report](https://lookerstudio.google.com/reporting/623bb323-2484-472e-916c-93e43ea40ad7) can be viewed by anyone in the GDS performance analysts Google group.
@@ -73,7 +74,7 @@ All tables are filtered by the Looker Studio date parameters.
 
 The custom query is as follows:
 
-```SQL
+~~~SQL
 WITH
   ga4_accounts AS (
   SELECT
@@ -188,4 +189,4 @@ WITH
   ON
   	ga4_accounts.date = ga4_data_streams.date
   	AND ga4_properties.name = ga4_data_streams.property
-```
+~~~

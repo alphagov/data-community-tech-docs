@@ -30,7 +30,7 @@ The queries are as following
 
 This query simply outputs yesterday’s event date, and whether or not it exists in the partitioned flattened table. It also calculates the previous day’s event count, and another column with the average event count over the last two weeks for either a weekend day, a friday, or any other week day for comparison. The query is:
 
-```SQL
+~~~SQL
 -- yesterday exists checker 
 with yesterday_check as (
 SELECT
@@ -119,13 +119,13 @@ FROM
   weekend_average_event_count,
   friday_average_event_count,
   yesterday_check
-```
+~~~
 
 #### Query 2: Event data checks
 
 This query looks at the distinct event names which appeared in the data for the previous day, and compares those to the events which appeared in the GA4 data two days earlier. This query helps us to identify whether events have appeared or disappeared unexpectedly between any two days. The query is:
 
-```SQL
+~~~SQL
 
 WITH event_counts_two_days_ago AS (
   SELECT
@@ -169,13 +169,13 @@ ON
   yesterday.distinct_event_name = two_days_ago.distinct_event_name
 ORDER BY
   event_check, event_name;
-```
+~~~
 
 #### Query 3: Event count average checks
 
 This query returns the event count for the previous day, and another column comparing it to the average event count over the last two weeks for either a weekend day, a friday, or any other week day for comparison. The query is:
 
-```SQL
+~~~SQL
 WITH event_counts_week_day_average AS (
   SELECT 
     event_name, 
@@ -270,13 +270,13 @@ ON
 event_counts_yesterday.event_name = event_counts_friday_average.event_name 
 ORDER BY 
   event_counts_yesterday.event_count_yesterday DESC;
-```
+~~~
 
 #### Query 4: Event parameter checks
 
 This query returns the count of parameters by event seen in yesterday’s data, and for comparison, the equivalent counts for data from the day before yesterday. This is so we can identify where event parameters appear or disappear day to day where we are not expecting this to happen. The query is:
 
-```SQL
+~~~SQL
 WITH yesterday_event_params AS (
   SELECT
     event_name,
@@ -322,13 +322,13 @@ FULL OUTER JOIN
 ON
   yesterday.event_name = two_days_ago.event_name
   AND yesterday.parameter_name = two_days_ago.parameter_name
-```
+~~~
 
 #### Query 5: Event parameter average count checks
 
 This query again counts parameters by event, but then also returns an average count for the last two weeks in an additional column (depending on if we are looking at a weekend day, a friday or any other week day). This way we can spot any anomalous event parameter counts. The query is:
 
-```SQL
+~~~SQL
 WITH param_counts_week_day_average AS (
   SELECT 
     event_name, 
@@ -432,13 +432,13 @@ ON
   param_counts_yesterday.event_name = param_counts_friday_average.event_name AND param_counts_yesterday.parameter_name = param_counts_friday_average.parameter_name
 ORDER BY 
   param_counts_yesterday.param_count_yesterday DESC;
-```
+~~~
 
 #### Query 6: Type parameter checks
 
 We sometimes see issues in the data that affect event parameters of particular types. We can spot any anomalous counts in type parameters by comparing yesterday’s count with an average for the last two weeks (again depending on whether we are looking at a weekend day, a Friday or any other week day). The query is:
 
-```SQL
+~~~SQL
 WITH type_counts_week_day_average AS (
   SELECT 
     parameter_name,
@@ -552,7 +552,7 @@ ON
   AND type_counts_yesterday.parameter_name = type_counts_friday_average.parameter_name
 ORDER BY 
   type_counts_yesterday.type_count_yesterday DESC;
-```
+~~~
 
 ### Step 2: Connect data to Google Sheets
 
@@ -569,6 +569,7 @@ Finally, there is an Apps Script that runs in the Google sheet on a schedule bet
 The email itself is divided into four sections pertaining to different elements of the GA4 data we want to monitor: 1) Basic checks 2) Event checks 3) Event parameter checks and 4) Type parameter checks. Each section will return different messages depending on certain thresholds and conditions met in the output of the query tables.
 
 Here is a basic summary of what it does by outline the checks and conditions for each step:
+
 #### GA4 Basic Data Checks:
 
 
@@ -627,7 +628,7 @@ __Threshold:__ Triggers if: Change exceeds ±20% and yesterday's or two days ago
 
 The Apps Script is written in javascript and the full code is as follows:
 
-```js
+~~~js
 function checkEventCountChange() {
   // Define the sheets and email details
   const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
@@ -912,7 +913,8 @@ if (outlierTypes.length > 0) {
     htmlBody: messageBody
   });
 }
-```
+~~~
+
 ## Verifying and investigating data alerts
 
 The outputs from the alerts process are sent to the GOVUK GA4 Alerts Google group. If there are any flags in the data, then a member of this group can begin to investigate the issue(s). Not all flags raised by the alert process will warrant investigating, however. For example, if a rise in the count of ab_test event parameters is flagged, this might be expected behaviour if an AB test somewhere on GOV.UK has recently begun or concluded.

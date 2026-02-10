@@ -32,6 +32,7 @@ More information on these can be found in the [quotas guidance](/tools/google-cl
 Details of the specific quotas set on various projects can be found in the [GCP projects information](/tools/google-cloud-platform/#projects).
 
 ### Best practice 
+
 #### Do not `SELECT *`
 
 Avoid selecting all (`SELECT *`) - there are very few circumstances where you actually need every column from the data source!
@@ -53,12 +54,12 @@ Relative dates can be calcuated using an interval, for example selecting yesterd
 
 If your preference is to select dates using declared variables, these would be written as follows:
 
-```SQL
+~~~SQL
 DECLARE backfill_date DATE DEFAULT "2024-10-20";
 SELECT *
 FROM `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
 WHERE event_date = backfill_date
-```
+~~~
 
 When querying sharded tables, such as the raw GA4 data, you need to make sure that you either:
 

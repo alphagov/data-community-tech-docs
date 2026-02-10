@@ -43,11 +43,11 @@ To connect to the UA data, we recommend you use a custom query. You can do this 
 
 An example of a generic SQL query that could be used in step 5 above is: 
 
-```SQL
+~~~SQL
 SELECT * 
 FROM `govuk-bigquery-analytics.FlattenedDailyData.flattened_daily_ga_data_*`
 WHERE _TABLE_SUFFIX BETWEEN @DS_START_DATE AND @DS_END_DATE
-```
+~~~
 
 This query selects all fields from the [GOV.UK UA flattened tables](/data-sources/ga/ua-flat/) and returns all the data for those fields between the dates you have selected in your Looker Studio report.
 
@@ -60,7 +60,7 @@ Below are some sample queries which may help you in exploring the historic data.
 The below query can be used to replicate the 'All Pages' report in the 'Site Content' section of the Behaviour reports in the Universal Analytics interface.
 This again uses the [GOV.UK UA flattened dataset](/data-sources/ga/ua-flat/) and Looker Studio date parameters, although these could easily be switched for dates in the 'YYYYMMDD' format.
 
-```SQL
+~~~SQL
 #Query to replicate the UA All Pages report
 #Page views and unique page views
 WITH
@@ -352,7 +352,7 @@ ORDER BY
 date DESC,
 pageviews DESC,
 unique_pageviews DESC
-```
+~~~
 
 #### 'Top Events' UA report query  
 
@@ -361,7 +361,7 @@ This uses the [GOV.UK UA raw dataset](/data-sources/ga/ua/), but this could easi
 
 This query has the dates written in, although these could be switched for Looker Studio date parameters if used in a Looker Studio custom query (see the above queries for examples of this).
 
-```SQL
+~~~SQL
 SELECT
   #Commenting out the date as it is not needed in the 'Top events' table, although it would be required for a chart of events over time
   #date,
@@ -386,7 +386,7 @@ GROUP BY
   event_label
 ORDER BY
   total_events DESC
-```
+~~~
 
 
 ## Other resources

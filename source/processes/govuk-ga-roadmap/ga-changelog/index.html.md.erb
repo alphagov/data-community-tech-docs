@@ -13,6 +13,7 @@ Upcoming changes can be found on the [improvements roadmap page](/processes/govu
 For a more long-term history of changes to the GOV.UK GA4 data collection, please see the [GOV.UK GA4 annotations report](/products/govuk-ga4-annotations/).
 
 ## January 2025
+
 ### New canonical URL field
 A page's canonical URL is captured in a new field/custom dimension sent with all events.
 This is available in the GOV.UK GA4 property, the Data API, and in BigQuery in both the raw and flattened datasets.
@@ -35,6 +36,7 @@ The 'Smokey' data filter set up in the GOV.UK GA4 property has been updated with
 The [GOV.UK GA4 data quality notes](/data-sources/ga/ga4/data-quality/#smokey-and-e2e-tests) contain further details on the potential test bot data being collected and notes on how to filter it out of reports.
 
 ## February 2025
+
 ### Bug fixed on contact form_complete events
 A bug which led to contact type `form_complete` events firing on the completion of other forms across GOV.UK has now been fixed.
 
@@ -53,11 +55,13 @@ We have set up the bulk export for the [assets.publishing.service.gov.uk domain 
 This should facilitate analysis of users' journeys to files on that domain.
 
 ## March 2025
+
 ### Redaction added to target National Insurance numbers
 Some users were spotted searching for their National Insurance numbers.
 We have added in additional redaction to ensure this data does not get collected in any search analytics data collection, and are deleting any collected National Insurance numbers that may have previously slipped through.
 
 ## April 2025
+
 ### Changed processing of the content_language field in the GOV.UK GA4 flattened dataset
 We have noticed unexpected values appearing in the `content_language` field - for example, where the language changes between events on the same page, or multiple times in one user's session.
 Previously, we were applying some processing to the `content_language` field to keep one consistent value across one user's events on a given page, but we are no longer sure if that is the best approach and so we have removed this calculation.
@@ -79,6 +83,7 @@ We have now edited the processing to fix these fields in the flattened table.
 We have refreshed the entirety of the GOV.UK GA4 flattened dataset so that all processing improvements made over previous months are applied to the whole dataset.
 
 ## May 2025
+
 ### Agreed to not fully implement the GOV.UK GA4 GTM spam filter
 We have agreed to not fully implement the spam filter we developed (which would ensure that we are only collecting GOV.UK GA4 data via our Google Tag Manager code) as this did not seem to exclude enough data to be worth the risk of accidentally excluding legitimate data.
 We have left the test filter running so it can be applied if data users would like to use it - using the 'Test data filter name' field in GA4 or the `traffic_type` field in BigQuery.
@@ -88,6 +93,7 @@ From our testing, we have identified that the User Deletion API does not fully d
 Our [GA4 data deletion process](/processes/ga-deletion/) remains unchanged.
 
 ## June 2025
+
 ### Set up alerts to monitor levels of spam received
 Following [work looking into a spam filter](/processes/govuk-ga-roadmap/#decided-to-not-implement-the-gov-uk-ga4-gtm-spam-filter), we have developed more alerts to monitor the levels of spam collected.
 
@@ -98,10 +104,12 @@ We have backfilled the GOV.UK GA4 `page_summaries` table, part of the GOV.UK GA4
 We created a couple of views combining GOV.UK GA4 and [Knowledge Graph](/tools/govgraph/) data to enable easier querying and joining of these datasets.
 
 ## July 2025
+
 ### Added redaction of phone numbers in search terms 
 We added regex redaction to capture phone numbers being entered into the GOV.UK search box.
 
 ## September 2025
+
 ### Canonical URLs added to most pages across GOV.UK 
 We have populated the `canonical_url` parameter on the majority of pages across GOV.UK.
 Note that this has not been done by adding a canonical URL to most of these pages, but by pulling the base path from the content item into the `canonical_url` attribute simply to populate it in GA4.
@@ -116,5 +124,6 @@ We appreciated that previous attempted to redact this information did not functi
 We have deleted unowned shared explorations in the GOV.UK GA4 property as there were a number of these taking up space and causing us issues with the shared explorations quota.
 
 ## October 2025
+
 ### MVP guidance on UTM parameter usage written up
 We have written up and published basic guidance on [UTM parameter usage](/processes/utm-usage/).

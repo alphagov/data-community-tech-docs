@@ -32,7 +32,7 @@ The table is updated each day from a scheduled query, and processes information 
 
 The scheduled query used to build the table is as follows:
 
-```SQL
+~~~SQL
 with data as (
   SELECT
   auth_info.permission,
@@ -84,7 +84,7 @@ OR method_name = 'jobservice.query'
 ORDER BY date ASC)
 
 SELECT distinct principal_email, dataset_name, table_name_clean, date, connector_type, TO_JSON_STRING(service_data) as service_data  FROM data_2
-```
+~~~
 
 This works by grabbing various fields from the `_AllLogs` table, extracting with REGEX the dataset and table names from the auth_info.resource field. 
 The query also determines the user’s email and timestamp, as well as the connection type (scheduled query, Google Sheets, Looker Studio or other) from the log’s service_data field. 

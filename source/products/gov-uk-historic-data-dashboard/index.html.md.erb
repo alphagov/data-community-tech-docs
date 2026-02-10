@@ -39,17 +39,17 @@ Because the dashboard required many calculated fields and dimensions not nativel
 
 Should the dashboard need to be modified or recreated, these custom queries should be fairly straightforward to decipher. They all share the same FROM and WHERE clause values, referencing the flattened UA data, and using the built-in `@DS_START_DATE` and `@DS_END_DATE` date variables in Looker Studio: 
 
-```SQL
+~~~SQL
 FROM `govuk-bigquery-analytics.FlattenedDailyData.flattened_daily_ga_data_*` 
   WHERE
      _table_suffix BETWEEN @DS_START_DATE
      AND @DS_END_DATE
-```
+~~~
 The custom queries are as follows:
 
 #### Audience - Overview page
 
-```SQL
+~~~SQL
 SELECT
 date,
 language,
@@ -68,11 +68,11 @@ FROM `govuk-bigquery-analytics.FlattenedDailyData.flattened_daily_ga_data_*`
      _table_suffix BETWEEN @DS_START_DATE
      AND @DS_END_DATE
 Group by 1,2,3
-```
+~~~
 
 #### Audience - Language page
 
-```SQL
+~~~SQL
 SELECT
 date,
 language,
@@ -87,11 +87,11 @@ FROM `govuk-bigquery-analytics.FlattenedDailyData.flattened_daily_ga_data_*`
       _table_suffix BETWEEN @DS_START_DATE
       AND @DS_END_DATE
 Group by 1,2
-```
+~~~
 
 #### Audience - New vs Returning Users page
 
-```SQL
+~~~SQL
 with new_visitors as (
 Select date,
 'new_visitor' AS user_type,
@@ -149,11 +149,11 @@ FROM
   new_visitors
 GROUP BY 
   1, 2
-```
+~~~
 
 #### Audience - Location page
 
-```SQL
+~~~SQL
 SELECT
 date,
 country,
@@ -168,13 +168,13 @@ FROM `govuk-bigquery-analytics.FlattenedDailyData.flattened_daily_ga_data_*`
       _table_suffix BETWEEN @DS_START_DATE
       AND @DS_END_DATE
 Group by 1,2
-```
+~~~
 
 
 
 #### Acquisition - Channels page
 
-```SQL
+~~~SQL
 SELECT date, channelGrouping as channel,
 count(distinct(fullvisitorid)) as user_count,
 count(distinct if(newVisits = 1, fullVisitorId, NULL)) AS new_visitors,
@@ -187,11 +187,11 @@ FROM `govuk-bigquery-analytics.FlattenedDailyData.flattened_daily_ga_data_*`
       _table_suffix BETWEEN @DS_START_DATE
       AND @DS_END_DATE
 Group by 1, 2
-```
+~~~
 
 #### Acquisition - Source/Medium page
 
-```SQL
+~~~SQL
 SELECT date, source, medium,
 count(distinct(fullvisitorid)) as user_count,
 count(distinct if(newVisits = 1, fullVisitorId, NULL)) AS new_visitors,
@@ -204,11 +204,11 @@ FROM `govuk-bigquery-analytics.FlattenedDailyData.flattened_daily_ga_data_*`
       _table_suffix BETWEEN @DS_START_DATE
       AND @DS_END_DATE
 Group by 1, 2, 3
-```
+~~~
 
 #### Acquisition - Referrals page
 
-```SQL
+~~~SQL
 SELECT date, source, medium,
 count(distinct(fullvisitorid)) as user_count,
 count(distinct if(newVisits = 1, fullVisitorId, NULL)) AS new_visitors,
@@ -221,11 +221,11 @@ FROM `govuk-bigquery-analytics.FlattenedDailyData.flattened_daily_ga_data_*`
       _table_suffix BETWEEN @DS_START_DATE
       AND @DS_END_DATE
 Group by 1, 2, 3
-```
+~~~
 
 #### Behaviour - All Pages page (and pages by date page)
 
-```SQL
+~~~SQL
   #Query to replicate the UA All Pages report
   #Page views and unique page views
 WITH
@@ -518,11 +518,11 @@ ORDER BY
   date DESC,
   pageviews DESC,
   unique_pageviews DESC
-```
+~~~
 
 #### Behaviour - Top Events page
 
-```SQL
+~~~SQL
 SELECT
   date,
   pagePath AS page_path,
@@ -547,11 +547,11 @@ event_category,
 event_action,
 event_label
 ORDER BY total_events DESC
-```
+~~~
 
 #### Behaviour - Search Terms page
 
-```SQL
+~~~SQL
 WITH DATA AS(
   SELECT
     date,
@@ -580,11 +580,11 @@ GROUP BY
   date, search_term
 ORDER BY
   total_unique_searches DESC
-```
+~~~
 
 #### Behaviour - Landing Pages page
 
-```SQL
+~~~SQL
 SELECT
  date,
 landingScreenName,
@@ -599,11 +599,11 @@ FROM `govuk-bigquery-analytics.FlattenedDailyData.flattened_daily_ga_data_*`
      _table_suffix BETWEEN @DS_START_DATE
      AND @DS_END_DATE
 Group by 1,2
-```
+~~~
 
 #### Behaviour - Exit Pages page
 
-```SQL
+~~~SQL
 SELECT
 date, screenName,
 SUM(CASE WHEN isexit = TRUE THEN 1 ELSE 0 END) AS exit_count,
@@ -613,4 +613,4 @@ FROM `govuk-bigquery-analytics.FlattenedDailyData.flattened_daily_ga_data_*`
      _table_suffix BETWEEN @DS_START_DATE
      AND @DS_END_DATE
 GROUP BY 1,2
-```
+~~~

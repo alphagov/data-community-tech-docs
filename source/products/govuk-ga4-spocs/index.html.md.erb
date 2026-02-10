@@ -16,6 +16,7 @@ The data provided includes:
 This report was first created in early 2024 to support SPOCs and is owned by the GOV.UK Insights and Analytics team.
 
 ## Using the GOV.UK GA4 SPOCs reporting
+
 ### Get access to the GOV.UK GA4 SPOCs reporting
 
 [The report](https://lookerstudio.google.com/reporting/3efb1388-9c6f-4265-beea-caea6b5a89fb) can be viewed by anyone, but will only work for those who are documented as being SPOCs in the ['SPOC and Numbers by org' Sheet](https://docs.google.com/spreadsheets/d/1LHi8cSKvH7ot_dSPyQJIVs3fSwTu9UGglKqnZNHq4Qs/).
@@ -63,7 +64,7 @@ This data source is very similar to the [GOV.UK GA4 users monitoring Looker Stud
 
 The custom query is as follows:
 
-```SQL
+~~~SQL
 WITH 
 ga4_users as (
   SELECT 
@@ -137,4 +138,4 @@ FROM ga4_users A
 LEFT JOIN ga4_admin_log B on A.user_email = B.user_email
 LEFT JOIN ga4_logs C on A.user_email = C.user_email
 LEFT JOIN spocs S on A.domain = S.domain
-```
+~~~

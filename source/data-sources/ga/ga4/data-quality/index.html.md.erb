@@ -52,6 +52,7 @@ We know a chunk of our users do not accept analytics cookies so we do not collec
 Some users may also be using ad blockers which inhibit Google Analytics from functioning.
 
 ### Incorrect event tracking
+
 #### Assumptions in navigation tracking
 
 In order to capture users clicking on links in ways other than the usual left or primary click, we set up navigation (link) tracking so that all clicks on links trigger a navigation event to fire.
@@ -79,7 +80,8 @@ When searches return more than 200 items, the items sent with each event will be
 In some cases, we have had to limit the number of items sent with each event further, as the number of bytes being sent with each event was too high and was triggering error 413 (Payload Too Large).
 The maximum amount of bytes we can send to GA4 per event appears to be 16KB, so we have implemented a limit to cut off the ecommerce items array at 15KB, to ensure our events are small enough to send (the additional KB may be needed for other information sent with the event).
 
-### Incorrect information in dimensions  
+### Incorrect information in dimensions
+  
 #### Parameter character count limits 
 GA4 limits all parameters (custom dimensions) to a maximum length of 500 characters (for [360 properties](/tools/ga/#google-analytics-360)).
 
