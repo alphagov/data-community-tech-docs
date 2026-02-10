@@ -6,6 +6,10 @@ review_in: 6 months
 hide_in_navigation: true
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # Use the GOV.UK feedback spam classifier
 
 The [GOV.UK feedback spam classifier](https://github.com/alphagov/govuk-feedback-spam-classifier) is a [binary classifier](https://machinelearningmastery.com/types-of-classification-in-machine-learning/#:~:text=each%20in%20turn.-,Binary%20Classification,prediction%20(churn%20or%20not)) machine learning model that classifies feedback data as spam or not spam.

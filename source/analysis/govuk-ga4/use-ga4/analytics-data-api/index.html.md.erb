@@ -5,6 +5,10 @@ last_reviewed_on: 2024-12-11
 review_in: 6 months
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # Analytics Data API best practice
 You can access GOV.UK GA4 data via the [Data API](https://developers.google.com/analytics/devguides/reporting/data/v1).
 

@@ -5,6 +5,10 @@ last_reviewed_on: 2025-02-28
 review_in: 6 months
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # Implementing GA4
 
 This is a high level summary of the steps required to implement Google Analytics 4 (GA4).

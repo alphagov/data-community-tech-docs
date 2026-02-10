@@ -5,6 +5,10 @@ last_reviewed_on: 2025-11-26
 review_in: 6 months
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # GOV.UK App GA4 flattened table
 The GOV.UK App GA4 flattened table contains production [GOV.UK GA4](/data-sources/ga/app-ga4/) data processed into a flat format.
 

@@ -5,6 +5,10 @@ last_reviewed_on: 2025-01-08
 review_in: 6 months
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # Looker Studio best practice
 You can visualise GOV.UK GA4 data in Looker Studio via the standard 'Google Analytics' connector or by connecting to the GA4 data stored in BigQuery.
 

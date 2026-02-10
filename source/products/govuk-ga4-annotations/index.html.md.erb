@@ -5,6 +5,10 @@ last_reviewed_on: 2024-11-14
 review_in: 6 months
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # GOV.UK GA4 annotations
 The [GOV.UK GA4 annotations report](https://lookerstudio.google.com/reporting/306f1e28-a2c1-4d3a-b03c-ae03ac0c9484) provides information on users of GOV.UK GA4 data to [SPOCs](/processes/ga-access/spocs/).
 

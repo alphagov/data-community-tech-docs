@@ -6,6 +6,10 @@ review_in: 6 months
 hide_in_navigation: false
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # Pogo-sticking dashboard
 Pogo-sticking is when a user quickly navigates back and forth from a web page within the same user session - for example, when a user navigates from Page A to Page B back to Page A and then to Page C.
 

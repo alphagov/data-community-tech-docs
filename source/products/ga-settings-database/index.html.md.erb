@@ -5,6 +5,10 @@ last_reviewed_on: 2024-11-15
 review_in: 6 months
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # GA Settings Database report
 
 The [GA Settings Database Looker Studio report](https://lookerstudio.google.com/reporting/623bb323-2484-472e-916c-93e43ea40ad7) provides information on the settings applied across GDS Google Analytics (GA) accounts and properties.

@@ -5,6 +5,10 @@ last_reviewed_on: 2024-11-21
 review_in: 6 months
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # GA4 query costs dashboard
 
 The [GA4 query costs dashboard](https://lookerstudio.google.com/reporting/9fb2f7d6-efc9-40e2-a25e-d9071867bcd4/page/PQpTD) uses BigQuery log data to show queries and processing costs from jobs which have been run in GDS-owned GCP projects.

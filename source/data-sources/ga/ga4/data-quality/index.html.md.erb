@@ -5,6 +5,10 @@ last_reviewed_on: 2025-08-04
 review_in: 6 months
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # GOV.UK GA4 data quality
 Google Analytics 4 (GA4) is used to collect data on the usage of GOV.UK.
 Information on how to understand and use GOV.UK GA4 data can be found in the [Analysis section of this site](/analysis/govuk-ga4/).

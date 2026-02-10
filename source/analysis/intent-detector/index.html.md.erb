@@ -6,6 +6,10 @@ review_in: 6 months
 hide_in_navigation: true
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # Use the GOV.UK intent detector
 
 The intent detector is a tool that analyses GOV.UK user journeys to better understand user intents.

@@ -6,6 +6,10 @@ review_in: 12 months
 hide_in_navigation: true
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # Set up AWS CLI to assume roles with MFA and interact with GDS AWS
 
 Here we go through how to set up `aws cli` to assume an AWS IAM Role that has permissions your AWS user account does not have (for instance, accessing `S3`). It assumes that MFA is also required.

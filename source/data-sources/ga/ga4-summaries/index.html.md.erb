@@ -6,6 +6,10 @@ review_in: 6 months
 hide_in_navigation: false
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # GOV.UK GA4 summary tables
 Tables of high-level summary metrics are generated from the partitioned_flattened_events table where there is a need to reduce query costs. A list of available tables is below.  
 

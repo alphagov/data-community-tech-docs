@@ -5,6 +5,10 @@ last_reviewed_on: 2025-12-11
 review_in: 6 months
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # GOV.UK GA4 access logs
 The GOV.UK GA4 access logs data details usage of the [GOV.UK Google Analytics GA4 data](/data-sources/ga/ga4/) via the Google Analytics Data API.
 This includes usage of the GOV.UK GA4 user interface and Looker Studio connections, as well as direct querying of the API, but does not include usage of the data [exported to BigQuery](/data-sources/ga/ga4-bq/).

@@ -5,6 +5,10 @@ last_reviewed_on: 2024-11-27
 review_in: 6 months
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # Using Funnel Explorations in GA4
 
 GA4 funnel explorations are one of the standard exploration report types available to users in the GA4 interface. They allow you to visualise and analyse the sequence of steps users take to complete a task or journey. It can help you see where users drop off and optimise those points.

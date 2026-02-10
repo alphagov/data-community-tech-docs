@@ -6,6 +6,10 @@ review_in: 6 months
 hide_in_navigation: false
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # Using Google Signals
 This page summarises how to use Google Signals data within the GOV.UK GA4 implementation, including key limitations, caveats, and privacy constraints.
 Google Signals is a Google Analytics feature that provides demographic indicators (Age, Gender, Interests) which are unavailable through standard data collection.

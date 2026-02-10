@@ -5,6 +5,10 @@ last_reviewed_on: 2025-09-19
 review_in: 6 months
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # Find things in the GOV.UK GA4 data
 Google Analytics 4 (GA4) is used to collect data on the usage of GOV.UK.
 There are a [variety of different things you can learn from the GA4 data](/analysis/govuk-ga4/ga4-data-information/) about pages and users on GOV.UK.

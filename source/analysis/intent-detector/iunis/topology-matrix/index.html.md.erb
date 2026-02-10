@@ -6,6 +6,10 @@ review_in: 6 months
 hide_in_navigation: true
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # Create the topology matrix
 
 The topology matrix, also known as the directed adjacency matrix, represents how pages are connected to each other through hyperlink.

@@ -5,6 +5,10 @@ last_reviewed_on: 2024-11-21
 review_in: 6 months
 ---
 
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
 # GOV.UK historic data report
 
 The [GOV.UK historic data report](https://lookerstudio.google.com/reporting/833939e2-2cfb-4ed3-a202-90498bf9daff/page/p_fg5xyapmid) displays historic Universal Analytics (UA) data in tables that contain similar information to the old Universal Analytics interface. The data in the report runs from 6th April 2021 to 30th June 2024.
