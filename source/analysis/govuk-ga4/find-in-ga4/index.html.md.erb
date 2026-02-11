@@ -53,22 +53,22 @@ For an example in Looker Studio, see the ‘Top pages’ table in [this sample L
 
 The following SQL gets a count of page views by page path ([cleaned_page_location in the flattened dataset](/data-sources/ga/ga4-flat/#schema)) for the 1st January 2024:
 
-```SQL
-SELECT
-  cleaned_page_location,
-  COUNT(*) AS pageviews,
-FROM
-  `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
-WHERE
-  event_date BETWEEN '2024-01-01'
-  AND '2024-01-01'
-  #Filter to just page_view events
-  AND event_name = 'page_view'
-GROUP BY
-  cleaned_page_location
-ORDER BY
-  pageviews DESC
-```
+~~~SQL
+  SELECT
+    cleaned_page_location,
+    COUNT(*) AS pageviews,
+  FROM
+    `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
+  WHERE
+    event_date BETWEEN '2024-01-01'
+    AND '2024-01-01'
+    #Filter to just page_view events
+    AND event_name = 'page_view'
+  GROUP BY
+    cleaned_page_location
+  ORDER BY
+    pageviews DESC
+~~~
 
 ### Page views filtered to a certain publishing organisation
 
@@ -117,7 +117,7 @@ See also the ‘External link clicks’ table in [this sample Looker Studio repo
 
 The following SQL returns external links clicked (and how many times they were clicked) on the ['Child adoption' page](https://www.gov.uk/child-adoption) on 1st January 2024:
 
-```SQL
+~~~SQL
 SELECT
   link_url,
   COUNT(*) AS events,
@@ -136,7 +136,7 @@ GROUP BY
   link_url
 ORDER BY
   events DESC
-```
+~~~
 
 ## File downloads
 
@@ -172,7 +172,7 @@ Steps:
 
 The following SQL gets a count of file downloads for the different files (using the Link URL) on the ['Apply for a postal vote (paper forms)' page](https://www.gov.uk/government/publications/apply-for-a-postal-vote) on 1st January 2024:
 
-```SQL
+~~~SQL
 SELECT
   link_url,
   COUNT(*) AS file_downloads,
@@ -190,7 +190,7 @@ GROUP BY
   link_url
 ORDER BY
   file_downloads DESC
-```
+~~~
 
 ## Search terms
 
@@ -258,7 +258,7 @@ You should only be able to see ‘view_item_list’ in the ‘Event name’ colu
 
 The following SQL gets a count of search terms used in searches on the ['Sign in to your Universal Credit account' page](https://www.gov.uk/sign-in-universal-credit) on 1st January 2024:
 
-```SQL
+~~~SQL
 SELECT
   search_term,
   COUNT(*) AS searches,
@@ -276,7 +276,7 @@ GROUP BY
   search_term
 ORDER BY
   searches DESC
-```
+~~~
 
 ## Users' journeys
 
@@ -329,7 +329,7 @@ An example of a SQL query to order users' events within sessions can be seen bel
 
 The following SQL gets all page views on 26th August 2024, with a calculated 'session ID' and 'hit number', ordered by the session ID using the `event_timestamp` and `batch_event_index`:
 
-```SQL
+~~~SQL
 SELECT
   #Create a session ID
   CONCAT(user_pseudo_id,"-", ga_sessionid) AS session_id,
@@ -347,7 +347,7 @@ WHERE
 ORDER BY
   session_id,
   hit_number
-```
+~~~
 
 The result of this query could be further manipulated to enable analysis of users' journeys.
 
@@ -382,7 +382,7 @@ A session is engaged when the 'session_engaged' integer flag is '1' (true) on th
 
 The following SQL gets a count of sessions and engaged sessions by country for the 1st July 2024. This uses the flattened dataset:
 
-```SQL
+~~~SQL
 SELECT
   country,
   COUNT(DISTINCT unique_session_id) AS sessions,
@@ -400,11 +400,11 @@ GROUP BY
   country
 ORDER BY
   engaged_sessions DESC
-```
+~~~
 
 The following SQL gets the same count of sessions and engaged sessions by country for the 1st July 2024, but using the raw dataset:
 
-```SQL
+~~~SQL
 WITH DATA AS (
   SELECT
     geo.country AS country,
@@ -441,7 +441,7 @@ GROUP BY
   country
 ORDER BY
   engaged_sessions DESC
-```
+~~~
 
 ### Engagement rate
 

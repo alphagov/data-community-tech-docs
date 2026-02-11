@@ -19,6 +19,7 @@ The [GOV.UK GA4 users monitoring Looker Studio report](https://lookerstudio.goog
 This report was [first created in November 2024](https://trello.com/c/xZRqzIgu/47-flag-non-legit-emails-that-have-access-to-ga-data) to support the GOV.UK GA4 user administration carried out by the GOV.UK Insights and Analytics team.
 
 ## Using the GOV.UK GA4 users monitoring report
+
 ### Get access to the GOV.UK GA4 users monitoring report
 
 [The report](https://lookerstudio.google.com/reporting/2a6e53cc-34e7-459f-820a-949918ea02e3) can be viewed by anyone in the GDS performance analysts Google group.
@@ -63,7 +64,7 @@ This data source is very similar to the [GOV.UK GA4 SPOC user report Looker Stud
 
 The custom query is as follows:
 
-```SQL
+~~~SQL
 WITH 
 ga4_users as (
   SELECT 
@@ -137,4 +138,4 @@ FROM ga4_users A
 LEFT JOIN ga4_admin_log B on A.user_email = B.user_email
 LEFT JOIN ga4_logs C on A.user_email = C.user_email
 LEFT JOIN spocs S on A.domain = S.email_domain
-```
+~~~

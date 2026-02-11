@@ -70,13 +70,14 @@ If you are not GDS staff, we recommend you use a custom query. You can do this b
 
 An example of a SQL query that could be used in step 5 above is: 
 
-```SQL
+~~~SQL
 SELECT *
 FROM `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
 WHERE event_date >= PARSE_DATE('%Y%m%d', @DS_START_DATE) and event_date <= PARSE_DATE('%Y%m%d', @DS_END_DATE)
-```
+~~~
 
 ### Best practice 
+
 #### Use flattened data sources
 Where possible, use the partitioned flattened data source.
 The partitioned flattened tables are more efficient to query than the sharded tables, and because the fields have been flattened, they are much easier to use than the nested raw data.

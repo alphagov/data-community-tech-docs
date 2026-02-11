@@ -48,16 +48,16 @@ This section outlines the process which we (the GOV.UK Insights and Analytics te
 
 - Delete the required data from the flattened partitioned table as required, in 60 day chunks. For example, using DML as below:
 
-```SQL
+~~~SQL
 DELETE FROM `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
 WHERE event_date BETWEEN "2023-01-01" and "2023-03-02"
-```
+~~~
 
 - Set the scheduled frequency for the flattening Dataform pipeline to execute five times per hour. This can be done with the following custom schedule to run the pipeline on the hour, and at 15, 30, 45 and 50 minutes past, every hour: `0,15,30,40,50 * * * *`
 
 - Run the below query to check that the data has been reprocessed, and that the row counts look correct for each day. If the dates have not been reprocessed, or the counts look incorrect, investigate before proceeding. The table this query checks against is a precalculated count of events per day in the flattened data. We would want to ensure the reprocessed counts are the same.
 
-```SQL
+~~~SQL
 DECLARE backfill_start_date_check DATE DEFAULT '2023-01-01';
 DECLARE backfill_end_date_check DATE DEFAULT '2024-03-02';
 
@@ -77,7 +77,7 @@ FROM `gds-bq-reporting.ga4_data_checks.flat_dates_event_counts` a
 JOIN cte_1 b on a.event_date = b.event_date 
 WHERE a.event_date = b.event_date
 ORDER BY a.event_date
-```
+~~~
 
 - Make a note of the latest dates to be reprocessed according to a progress tracker spreadsheet and continue the process
 

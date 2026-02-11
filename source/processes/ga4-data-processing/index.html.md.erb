@@ -50,6 +50,7 @@ The flattening step originally contained code to unnest the data, clean the data
 Tables of high-level summary metrics are also generated from the `partitioned_flattened_events` table, and saved in the `ga4-analytics-352613.flattened_dataset.page_summaries` table. You can find an overview of available tables on [the GOV.UK GA4 summary tables page](/data-sources/ga/ga4-summaries/)
 
 ### Making changes to the processing
+
 #### Manually running the pipeline
 
 The partitioning and flattening workflow is scheduled to run several times a day, but there may be occasions when a you need to force it to run.

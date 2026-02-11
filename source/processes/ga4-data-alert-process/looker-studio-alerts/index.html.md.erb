@@ -28,7 +28,7 @@ A Looker Studio dashboard is connected to this table and a separate page of the 
 
 Below is the code for the scheduled query which is running every day and appending data to a table:
 
-```SQL
+~~~SQL
 WITH
   combined AS (
   SELECT
@@ -61,7 +61,7 @@ WHERE
   OR REGEXP_CONTAINS(combined_text, r'(@\s*|%40\s*)(gmail\.com|outlook\.com|yahoo\.com|icloud\.com)')
 ORDER BY
   event_date
-```
+~~~
 The code identifies potential PII that may have found its way into the page_location, page_title, page_referrer, query_string or search_term. There are a number of triggers for a row to be flagged such as 'my name is', something that looks like a UK mobile or landline number and personal emails that may have escaped the normal redaction process. In the case of telephone numbers, non-geographic numbers are not included as these are likely to be publically available numbers and not linked to an individual.
 
 Checks were done on phone numbers detected by this REGEXP by comparing them against phone numbers on the GOV.UK website. To do this phone numbers were compared against a Knowledge Graph table in the public dataset called phone_numbers. The result of these checks was that most of the numbers being detected were not publically available on GOV.UK.

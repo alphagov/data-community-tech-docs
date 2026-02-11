@@ -85,7 +85,7 @@ If you cannot, this is likely to be an authentication issue.
 
 1. Create a file called `bigquery.py` that contains the following code:
 
-    ```python
+~~~python
     from google.cloud import bigquery
 
     # Construct a BigQuery client object.
@@ -106,7 +106,7 @@ If you cannot, this is likely to be an authentication issue.
     for row in query_job:
       # You can access row values by field name or index.
       print("name={}, count={}".format(row[0], row["total_people"]))
-    ```
+~~~ 
 
 1. Run `python bigquery.py` in the command line. You should see the following output:
 
@@ -152,7 +152,8 @@ If you do not see this output, then you currently cannot use GCP through code th
 
 1. Create a file called `sheets.py` that contains the following code:
 
-    ```python
+~~~python
+
     from googleapiclient.discovery import build
     from googleapiclient.errors import HttpError
     from pprint import pprint
@@ -184,7 +185,7 @@ If you do not see this output, then you currently cannot use GCP through code th
       pprint(rows)
     except HttpError as err:
       print(err)
-    ```
+~~~
 
 1. Run the code in this file by running `python sheets.py -s=SHEET_ID -r=RANGE` in the command line, where:
 
@@ -227,12 +228,12 @@ The Google Cloud client libraries will now use the service account.
 
 Paste and run the following code into a cell in a Colab notebook.
 
-```py
+~~~py
 from google.colab import auth
 
 # Authenticate the user - follow the link and the prompts to get an authentication token
 auth.authenticate_user()
-```
+~~~
 
 ## Avoid using a credentials file
 

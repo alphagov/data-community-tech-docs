@@ -70,7 +70,7 @@ See the table’s schema below for a description of all of its fields.
 
 Alongside this, this final output can be combined with other GA4 usage data. For example, we have combined it with usage data which calculates the average time each user spends on Whitehall to create a new dimension for what is a ‘Light’ vs ‘Proficient’ user, examining the data through this lens. This was done through a Looker Studio custom query which is as follows.
 
-```SQL
+~~~SQL
 with data as (
  SELECT
  event_date,
@@ -185,7 +185,7 @@ SELECT a.*, b.use_level, b.average_time_per_week
 FROM `govuk-publishing.form_processing.17_output_joined_locale_counts`a
 LEFT JOIN average_time_per_week_output b ON a.user_id = b.user_id
 WHERE a.event_date >= PARSE_DATE('%Y%m%d', @DS_START_DATE) and a.event_date <= PARSE_DATE('%Y%m%d', @DS_END_DATE)
-```
+~~~
 
 ## Processing (dataform)
 

@@ -16,6 +16,7 @@ The tool is organised into two tabs: the Session Path Tool and the Page Sequence
 Built using GA4 ‘page_view’ event data in BigQuery, it updates each morning to include data from the previous day.
 
 ## Using the GA4 Page Path tool
+
 ### Get access to the GA4 Page Path tool
 The [GA4 Page Path Tool](https://lookerstudio.google.com/reporting/8529fbac-32d9-4d61-9623-512237e358da/page/p_285z8fl8ld) is accessible to all GDS performance analysts.
 
@@ -55,7 +56,7 @@ Find the code below which each morning processes the data for the previous day, 
 
 ### Session Path Tool Code
 
-```SQL
+~~~SQL
 WITH
   page_view_sessions AS (
   SELECT
@@ -153,11 +154,11 @@ CASE
 from page_pruning)
 
 SELECT DISTINCT * from penultimate_cte 
-```
+~~~
 
 ### Page Sequence Tool Code
 
-```SQL
+~~~SQL
 WITH
   page_view_sessions AS (
   SELECT
@@ -302,7 +303,7 @@ CASE
  from page_pruning_2)
 
  SELECT DISTINCT * from penultimate_cte
-```
+~~~
 
 To summarise, the following steps outline the approach taken for each tab:
 

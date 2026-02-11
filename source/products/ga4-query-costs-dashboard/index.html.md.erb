@@ -44,7 +44,7 @@ The results include details like the user, project, and query classification, al
 
 The full custom query is as follows:
 
-```SQL
+~~~SQL
 WITH cte AS (
   SELECT 
   	FORMAT_TIMESTAMP("%Y-%m-%d", TIMESTAMP) AS formatted_timestamp,
@@ -90,4 +90,4 @@ SELECT
   sum(TiB * 7.16)  AS Estimated_USD_Cost 
 FROM cte, exchange_rate e
 GROUP BY uuid, formatted_timestamp, user, type, project, query, job_status, e.exchange_rate
-```
+~~~
