@@ -37,3 +37,7 @@ prevent_indexing: false
 show_contribution_banner: true
 github_repo: alphagov/data-community-tech-docs
 github_branch: main
+
+# Ownership for page reviews
+default_owner_slack: '#insights-and-analytics-alerts'
+owner_slack_workspace: gds
