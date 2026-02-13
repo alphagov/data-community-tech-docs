@@ -1,3 +1,6 @@
+# Tech Docs configuration
+# https://github.com/alphagov/tech-docs-gem/blob/main/example/config/tech-docs.yml
+
 # Host to use for canonical URL generation (without trailing slash)
 host: docs.data-community.publishing.service.gov.uk
 
@@ -17,8 +20,8 @@ header_links:
 # Enables search functionality. This indexes pages only and is not recommended for single-page sites.
 enable_search: true
 
-# Tracking ID from Google Analytics (e.g. UA-XXXX-Y)
-ga_tracking_id:
+# Google Analytics 4 using Google Tag Manager (e.g. GTM-XXXXXXXX)
+ga4_gtm_tracking_id: GTM-WVQKH9TT
 
 # Enable multipage navigation in the sidebar
 multipage_nav: true
