@@ -59,3 +59,5 @@ help:
 		printf "\n"; \
 	}' \
 	| more $(shell test $(shell uname) = Darwin && echo '--no-init --raw-control-chars')
+
+.PHONY: init clean build local-dev help
