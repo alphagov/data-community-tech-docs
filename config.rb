@@ -7,3 +7,5 @@ GovukTechDocs.configure(self)
 # activate :relative_assets
 
 set :markdown_engine, :kramdown
+activate :relative_assets
+set :relative_links, true

@@ -9,6 +9,7 @@ init:
 
 ## Run the site locally
 local-dev:
+	rbenv exec bundle exec middleman build
 	rbenv exec bundle exec middleman server
 
 ## Get help on all make commands
