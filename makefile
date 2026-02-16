@@ -5,11 +5,20 @@
 init:
 	brew install rbenv ruby-build
 	rbenv install --skip-existing
+
+## build clean up
+clean:
+	rm -rf build
+
+## fresh build
+build:
 	rbenv exec bundle install
+	rbenv exec bundle exec middleman build
 
 ## Run the site locally
-local-dev:
+local-dev: clean build
 	rbenv exec bundle exec middleman server
+
 
 ## Get help on all make commands
 help:
@@ -50,3 +59,5 @@ help:
 		printf "\n"; \
 	}' \
 	| more $(shell test $(shell uname) = Darwin && echo '--no-init --raw-control-chars')
+
+.PHONY: init clean build local-dev help
