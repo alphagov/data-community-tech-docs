@@ -648,8 +648,6 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  activestorage (= 7.1.5.2)
-  dotenv (< 3.0)
   govuk_publishing_components
   govuk_tech_docs
   kramdown-mermaid
