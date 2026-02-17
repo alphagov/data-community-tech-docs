@@ -6,6 +6,14 @@ init:
 	brew install rbenv ruby-build
 	rbenv install --skip-existing
 
+## clean ruby gems
+clean-gems:
+	gem uninstall -aIx
+
+## kill middleman
+kill:
+	kill -9 $(lsof -i:4567 -t)  
+
 ## build clean up
 clean:
 	rm -rf build
@@ -60,4 +68,4 @@ help:
 	}' \
 	| more $(shell test $(shell uname) = Darwin && echo '--no-init --raw-control-chars')
 
-.PHONY: init clean build local-dev help
+.PHONY: init clean clean-gems killbuild local-dev help
