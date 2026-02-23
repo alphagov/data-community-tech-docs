@@ -68,4 +68,4 @@ help:
 	}' \
 	| more $(shell test $(shell uname) = Darwin && echo '--no-init --raw-control-chars')
 
-.PHONY: init clean clean-gems killbuild local-dev help
+.PHONY: init clean clean-gems kill build local-dev help
