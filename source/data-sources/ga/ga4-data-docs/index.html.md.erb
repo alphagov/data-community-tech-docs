@@ -1,0 +1,61 @@
+---
+title: Data Community Tech Docs GA4
+weight: 13
+last_reviewed_on: 2026-03-10
+review_in: 6 months
+hide_in_navigation: false
+---
+
+<% content_for :head do %>
+  <%= partial 'partials/cookie_wrapper' %>
+<% end %>
+
+# Data Community Tech Docs GA4
+Google Analytics 4 (GA4) is used to collect data on the usage of the data community’s [technical documentation](/)
+
+This data can be accessed via the Google Analytics 4 user interface, the GA4 Looker Studio connection, and the Google Analytics Data API.
+
+## Content
+Data was first collected into this property on 02/03/2026. Data was exported to a table in BigQuery from 05/03/2026.
+
+## Access
+The GA4 property sits within the account GDS - Apps. 
+
+At the moment anyone with the ‘Org Admin’ role in the GDS GA4 account can access the GA4 property. This is mainly Senior PAs and a few other people that have been given access for a specific reason. 
+
+If anyone else requires access to this account, please contact the [GOV.UK GA4 support inbox](mailto:govuk-ga4-support@digital.cabinet-office.gov.uk).
+
+### Location
+There is one GA4 property for all the data called GA4 Data Documentation.
+
+Daily tables can also be found in BigQuery in the following dataset `gds-bq-data.analytics_522950481`.
+
+## GA4 settings
+### Production property set-up
+At set-up, we chose the following reporting options:
+
+- Reporting timezone of United Kingdom - (GMT+00:00) United Kingdom Time
+- Currency is British Pound (£)
+- Industry category of Law and Government 
+- Business size of Very Large - 501+ employees
+- The business objective (which determines which standard reports GA4 will provide in the property), was set to 'Understand web and/or app traffic'. 
+
+### Test property set-up
+Before collecting data in the Production property, the data was sent by GTM to a test property in the GA4 account GDS - Non-Prod.
+
+The test property was set-up in the same way, except for the business objective which was set as ‘Other business objectives’.
+
+### Data collection
+Google Signals data collection and Ads personalisation has not been enabled.
+
+Granular location and device data collection is enabled to allow reporting on the city-level location and devices used by our users.
+
+### Data processing and modification
+At present, we have not created any custom events or designated any events as conversions within GA4.
+
+We are not using GA4's inbuilt data redaction feature on GOV.UK.
+
+If you spot any PII or other data that should not be present in any GDS GA4 datasets, please raise a Zendesk ticket or contact the Insights & Analytics team.
+
+### Retention
+A data retention period for this data is set in the GA4 user interface. This is set to 14 months.
