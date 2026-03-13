@@ -54,8 +54,7 @@ Granular location and device data collection is enabled to allow reporting on th
 ### Data processing and modification
 At present we are using the standard page view event and a custom GA4 event called navigation to track user interactions. 
 
-Rather than relying on GA4’s inbuilt data redaction features, we have implemented a multi-stage PII scrubbing process within Google Tag Manager. This ensures that sensitive information (e.g. emails, postcodes, security tokens) is redacted
-from page locations, titles, and referrers before the data is transmitted to GA4.
+Rather than relying on GA4’s inbuilt data redaction features, we have implemented a multi-stage PII scrubbing process within Google Tag Manager. This ensures that sensitive information (e.g. emails, postcodes, security tokens) is redacted from page locations, titles, and referrers before the data is transmitted to GA4.
 
 If you spot any PII or other data that should not be present in any GDS GA4 datasets, please raise a Zendesk ticket or contact the Insights & Analytics team.
 
