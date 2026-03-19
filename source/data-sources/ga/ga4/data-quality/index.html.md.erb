@@ -122,6 +122,8 @@ Due to GA4's character count limits on parameter values (previously set to 100 c
 To work around this, in February 2023 we implemented a solution which split these fields across five sub-fields, which were then concatenated togeter in the `full_link_url` field.
 Later in 2023, Google increased the character count limit on parameter values to 500, so the default 'link_url' field started to function as expected.
 We deprecated the link_path_parts sub-fields so the 'full_link_url' now only contains the 'link_domain'.
+As part of the latest update March 2025, all code related to "full_link_url" has now been commented out and this field is set to NULL.
+This approach has been taken to preserve historical data integrity while preventing any further population of this field going forward.
 
 #### Issues with publication and update dates
 The `first_published_at`, `public_updated_at` and `updated_at` dates sent with page view events may be misleading.
