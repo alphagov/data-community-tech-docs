@@ -153,7 +153,7 @@ More information on the processing can be found in the [Policies and processes s
 | first_user_source | STRING | NULLABLE | The source through which this user first landed on GOV.UK |
 | stream_id | STRING | NULLABLE | The numeric ID of the data stream from which the event originated |
 | platform | STRING | NULLABLE | The data stream platform (Web, IOS or Android) from which the event originated |
-| full_link_URL | STRING | NULLABLE | Should no longer be used - the link path parts, concatenated. This field was [only correctly populated between February and November 2023](/data-sources/ga/ga4/data-quality/#issues-with-the-full-link-URL). Users seeking this information outside that period should use the `link_url` field |
+| full_link_URL | STRING | NULLABLE | Should no longer be used - the link path parts, concatenated. This field was [only correctly populated between February and November 2023](/data-sources/ga/ga4/data-quality/#issues-with-the-full-link-URL). Users seeking this information outside that period should use the `link_url` field. As of 18th March 2026, this has been set as a NULL value. |
 | search_sort | STRING | NULLABLE | Where available this is the sort method e.g. 'Relevance' |
 | search_term | STRING | NULLABLE | The search term used |
 | search_results | STRING | NULLABLE | The number of results returned by the search |
