@@ -14,6 +14,6 @@ gem 'kramdown-mermaid'
 
 gem "govuk_publishing_components"
 gem 'dotenv', '< 3.0'
-gem 'activestorage', '7.1.5.2'
+gem 'activestorage', '7.2.3.1'
 
 gem 'kramdown'
