@@ -141,7 +141,8 @@ Taxonomy information is known to be of uneven quality as content editors are not
 
 There are also issues with the 'browse_topic' field. Currently 'browse_topic' grabs the page title of the highest parent underneath a "mainstream_browse_pages" array, if that array exists. This populates the meta tag name="govuk:ga4-browse-topic". 
 Sometimes a page doesn't have that array. That was leaving some mainstream pages without a 'browse_topic' and some didn't seem to have the most accurate topic. 
-An investigation of this issue led a developer to propose a different method of grabbing the highest level parent page, which theoretically would always be the first breadcrumb that appears on a browse page after the “Home” breadcrumb. To do this a new field would be created to capture the data, but unfortunaely there was no easy way of verifying the data quality without implementing it.
+An investigation of this issue led a developer to propose a different method of grabbing the highest level parent page, which theoretically would always be the first breadcrumb that appears on a browse page after the “Home” breadcrumb. 
+To do this a new field would be created to capture the data, but unfortunately there was no easy way of verifying the data quality without implementing it.
 After discussion, it was decided that as the current 'browse_topic' data is present on most pages, particularly higher traffic pages, it was not desirable to introduce a new field that may also have data quality issues.
 
 The way in which taxonomy information has been collected into GA4 has also varied over time.
