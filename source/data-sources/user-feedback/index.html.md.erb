@@ -1,7 +1,7 @@
 ---
 title: User feedback data
 weight: 15
-last_reviewed_on: 2024-04-24
+last_reviewed_on: 2026-06-10
 review_in: 6 months
 ---
 
@@ -13,14 +13,55 @@ review_in: 6 months
 
 <span style="color:red">This page is a work in progress.</span>
 
-User feedback data collected when a user submits feedback on www.gov.uk.
+User feedback data is collected when a user submits feedback using the [feedback component](https://components.publishing.service.gov.uk/component-guide/feedback) on www.gov.uk.
 
-Information on the processing of this data can be found [below this page](/data-sources/user-feedback/govuk-feedback-processing/).
+This data is owned by the GOV.UK Insights and Analytics team.
+
+## Content
+
+Feedback data comes from multiple places, including:
+
+- 'Feedex' data, submitted by users in the free text fields provided after they click the ‘Report a problem with this page’ button
+- 'SmartSurvey' or 'User Intent Survey' data, submitted in the survey linked to after users click ‘No’ in response to ‘Is this page useful?’
+
+Clicks on the 'Yes' and 'No' buttons (in response to 'Is this page useful?') are also collected by [GA4](/data-sources/ga/ga4/).
 
 ## Access
 
 ### Location
 
-## Schema
+Feedback data is stored in the `govuk-user-feedback.process.govuk_user_feedback` table, in the [GOV.UK User Feedback project](/tools/google-cloud-platform/#projects).
 
-## Retention
+User Intent Survey data has a 'type' value of `SmartSurvey`. Feedex data has a type value of `ProblemReport`.
+
+## Set-up
+
+Information on the processing of this data can be found [below this page](/data-sources/user-feedback/govuk-feedback-processing/).
+
+### Schema
+
+| field name | type | mode | description |
+| --- | --- | --- | --- |
+| field name | mode | type | description |
+| type | NULLABLE | STRING | The type of feedback record |
+| feedback_record_id | REQUIRED | STRING | The feedback record identifier |
+| referrer | NULLABLE | STRING | Referrer page |
+| created | REQUIRED | DATETIME | Datetime at which the feedback record was created |
+| ended | NULLABLE | DATETIME | Datetime representing the point at which the feedback form session ended |
+| status | NULLABLE | STRING | Indicator of the status of the feedback record session / User Support case |
+| subject_page_path | NULLABLE | STRING | Page path from which the feedback journey was started |
+| javascript_enabled | NULLABLE | BOOLEAN | Boolean indicator of javascript enabled status for submitting client |
+| user_agent_string | NULLABLE | STRING | User agent info for submitting client |
+| client_id | NULLABLE | STRING | Client identifier |
+| response_identifier | REQUIRED | STRING | Unique identifier for an individual response |
+| prompt_type | NULLABLE | STRING | Type of feedback prompt |
+| prompt_value | NULLABLE | STRING | Feedback prompt |
+| response_type | NULLABLE | STRING | Type of feedback response |
+| response_value | NULLABLE | STRING | Feedback response |
+| sentiment | NULLABLE | STRING | Predicted sentiment of feedback response |
+| spam_classification | NULLABLE | STRING | Predicted classification of feedback response as spam/not spam |
+| spam_probability | NULLABLE | FLOAT | Confidence (probability) of spam prediction |
+
+### Retention
+
+The table has a partition expiry of 365 days.
