@@ -287,7 +287,7 @@ GEM
     minitest (5.27.0)
     multi_json (1.15.0)
     mutex_m (0.3.0)
-    net-imap (0.6.4)
+    net-imap (0.6.4.1)
       date
       net-protocol
     net-pop (0.1.2)
