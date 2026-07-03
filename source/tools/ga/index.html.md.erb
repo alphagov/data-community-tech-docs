@@ -1,7 +1,7 @@
 ---
 title: Google Analytics
 weight: 1
-last_reviewed_on: 2024-11-15
+last_reviewed_on: 2026-07-03
 review_in: 6 months
 ---
 
@@ -27,3 +27,42 @@ Google Analytics 360 also has a number of advantages over the free tier, providi
 More information on the differences between free Google Analytics and Google Analytics 360 can be found on Google's [support pages](https://support.google.com/analytics/answer/11202874).
 
 If you have created a new GDS Google Analytics property and need to upgrade it to 360, please contact the Analytics team.
+
+## Account and property creation setup
+When setting up new Google Analytics accounts or properties, use the following guidelines to ensure compliance, proper licensing, and security.
+
+### 1. Who we create accounts for
+
+Before creating a new account or property, verify if the request falls within our operational remit:
+
+- **Who we do it for:** Any official GDS-owned digital products, core services, and public-facing platforms that fall under our organisational mandate.
+- **Who we do not do it for:** External third-party partners, non-GDS government services, or temporary personal/sandbox testing environments that won't see production use.
+
+### 2. Upgrading to 360 in Google Marketing Platform (GMP)
+
+Newly created properties default to the free tier and must be upgraded immediately to ensure contract coverage and higher data limits.
+
+- Once you have created the new GA4 property, it must be linked and updated to a 360 account within the Google Marketing Platform (GMP) organisation.
+- Please contact the Insights & Analytics Team to finalise the upgrade.
+
+### 3. Data retention configuration
+
+By default, standard GA4 properties retain user and event data for only 2 months.
+
+- **Action required**: Once the property is created and upgraded to 360, you must manually extend the data retention period.
+- How to update: Go to `Admin > Data collection and modification > Data retention`
+- Set:   
+  - **Event data retention:** 38 months
+  - **User data retention:** 14 months
+
+
+### 4. Admin access and permission management
+
+Once the account and property have been set up, we will typically assign Administrator access to the designated product owner or service owner. 
+
+From that point onward, they are responsible for managing user permissions and access levels for their own account and properties.
+
+Owners should ensure access follows the principle of least privilege, granting users only the level of access required for their role. Access should also be reviewed periodically, and users who no longer require access should be removed.
+
+
+
