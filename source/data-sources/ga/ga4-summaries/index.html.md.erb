@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 summary tables
 weight: 4
-last_reviewed_on: 2026-03-19
+last_reviewed_on: 2026-08-05
 review_in: 6 months
 hide_in_navigation: false
 ---
@@ -16,14 +16,15 @@ Tables of high-level summary metrics are generated from the partitioned_flattene
 ## Access
 Everyone with a @digital.cabinet-office.gov.uk email address (all GDS staff) has access to the data by default.
 
-In addition, everyone who requests and is granted access to the GOV.UK GA4 data will be given access to query this flattened dataset. More information can be found in our GA access policy.
+In addition, everyone who requests and is granted access to the GOV.UK GA4 data will be given access to these tables. More information can be found in our GA access policy.
 
 ### Available tables
 
 | Table | Content | Location |
 | --- | --- | --- |
-| Page Summaries | A table that groups by event date and page location and provides a range of summary metrics. The summary metrics are things like page views, sessions, entrances, exits, searches and page usefulness | [Link to page_summaries](https://console.cloud.google.com/bigquery?project=gds-bq-processing&ws=!1m5!1m4!4m3!1sga4-analytics-352613!2sflattened_dataset!3spage_summaries) |
-| Navigation Events | A table that is grouped on a number of fields (event_date, event_name, cleaned_page_location, canonical_url, link_domain, link_url, type and outbound) and filters for navigation, information_click and file_download events. The purpose of this table is to create a dedicated table for tracking link clicks (internal and external) on the gov.uk site. The table also includes two summary metrics: a count of the number of times a particular navigation event happened and the number of sessions it happened in | [Link to navigation_events](https://console.cloud.google.com/bigquery?project=gds-bq-processing&ws=!1m5!1m4!4m3!1sga4-analytics-352613!2sflattened_dataset!3snavigation_events) |
+| Page Summaries | A table that groups by event date and page location and provides a range of summary metrics. The summary metrics are things like page views, sessions, entrances, exits, searches and page usefulness. | [Link to page_summaries](https://console.cloud.google.com/bigquery?project=ga4-analytics-352613&ws=!1m6!1m5!4m3!1sga4-analytics-352613!2sflattened_dataset!3spage_summaries!23sTREE_NODE_SELECTION) |
+| Navigation Events | A table that is grouped on a number of fields (event_date, event_name, cleaned_page_location, canonical_url, link_domain, link_url, type and outbound) and filters for navigation, information_click and file_download events. The purpose of this table is to create a dedicated table for tracking link clicks (internal and external) on the gov.uk site. The table also includes two summary metrics: a count of the number of times a particular navigation event happened and the number of sessions it happened in. | [Link to navigation_events](https://console.cloud.google.com/bigquery?project=ga4-analytics-352613&ws=!1m6!1m5!4m3!1sga4-analytics-352613!2sflattened_dataset!3snavigation_events!23sTREE_NODE_SELECTION) |
+| Search Events | A table that is grouped by event_date, event_type (search or select_item), and other fields related to the page the search was initiated on, the search term used, the search page and the ultimate destination page. It counts searches and sessions with searches as well as clicks on results and sessions with clicks. It should be noted that searches in this table only capture searches initiated from the on-site search box. The click events however rely on the page referrer, which could be an external source or a direct link or a search results page, if they go beyond the first results page. This table will not include filtering or sorting of search results pages. | [Link to search_events](https://console.cloud.google.com/bigquery?project=ga4-analytics-352613&ws=!1m6!1m5!4m3!1sga4-analytics-352613!2sflattened_dataset!3ssearch_events!23sTREE_NODE_SELECTION) |
 
 ### Retention
-At present, there is no default table expiry set up for these table, and no agreed data retention period.
+At present, there is no default table expiry set up for these tables, and no agreed data retention period.
