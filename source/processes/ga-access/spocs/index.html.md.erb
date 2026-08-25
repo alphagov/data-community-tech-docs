@@ -1,8 +1,8 @@
 ---
 title: Analytics SPOCs
 weight: 2
-last_reviewed_on: 2025-01-17
-review_in: 6 months
+last_reviewed_on: 2026-08-25
+review_in: 18 months
 ---
 
 <% content_for :head do %>
@@ -11,32 +11,45 @@ review_in: 6 months
 
 # Analytics SPOCs
 
-Every organisation with access to GOV.UK web analytics data should have a nominated analytics Single Point of Contact (SPOC).
+Every organisation with access to GOV.UK web analytics data should have a nominated Analytics Single Point of Contact (SPOC).
 
 ## SPOC responsibilities 
-The primary responsibility of the SPOC is to carry out some administration of their organisation's Google Analytics users.
+The primary responsibility of the SPOC is to maintain appropriate access to GOV.UK Google Analytics 4 data within their organisation.
 
 This includes:
 
 - raising requests to grant new users GOV.UK Google Analytics access, for example when new starters join the organisation
 - raising requests to remove GOV.UK Google Analytics access from users who no longer need it, for example when users leave the organisation
-- monitoring which employees at their organisation have Google Analytics access, to ensure that those who do not require access to the data have their permissions revoked
+- monitoring which employees at their organisation have Google Analytics access
+- carrying out a review of GA4 access every 6 months and sending a list of users who no longer require access
 
-SPOCs can use some basic reporting provided (see below) to enable them to [monitor their organisation's users' usage](/processes/ga-access/#monitoring-and-reporting).
+SPOCs can use some basic reporting provided (see below) to enable them to [monitor their organisation's users' usage](/products/govuk-ga4-spocs/).
 
 ## How to become a SPOC
-To request a change of SPOC, raise a request via the [Analytics Support Form](https://support.publishing.service.gov.uk/analytics_request/new) stating who the new SPOC will be.
+To request a change of SPOC, raise a request via the [Analytics Support Form](https://support.publishing.service.gov.uk/analytics_request/new) or govuk-ga4-support@digital.cabinet-office.gov.uk stating who the new SPOC will be.
 
 The nominated SPOC will need access to Signon. Access to Signon can be arranged by your organisation's content SPOC.
 
 ## Resources for SPOCs
 
-For any user admin requests:
+### Requesting or removing user access
 
-- [Analytics Support Form](https://support.publishing.service.gov.uk/analytics_request/new) in Signon
+There are two main ways to submit requests for new users or users who no longer require access.
+1. **Analytics Support Form**
 
-To monitor your organisations' users:
+If you have access to GOV.UK Sign-on, you should raise a ticket using the [Analytics Support form](https://support.publishing.service.gov.uk/analytics_request/new).
 
-- [SPOC user report](https://lookerstudio.google.com/reporting/3efb1388-9c6f-4265-beea-caea6b5a89fb/page/3GYgD)
+2. **GOV.UK GA4 Support**
 
-If you have any other questions, please contact the [GOV.UK GA4 support inbox](mailto:govuk-ga4-support@digital.cabinet-office.gov.uk).
+If you do not have access to Support Form, please email, **govuk-ga4-support@digital.cabinet-office.gov.uk**
+
+Include:
+- the names and email addresses of the users
+- the relevant organisation or department
+- whether access is being requested or removed
+
+## Monitoring users
+
+Use the [SPOC user report](https://lookerstudio.google.com/reporting/3efb1388-9c6f-4265-beea-caea6b5a89fb/page/3GYgD)
+
+If you cannot access the report or have any other questions, please contact the [GOV.UK GA4 support inbox](mailto:govuk-ga4-support@digital.cabinet-office.gov.uk).
