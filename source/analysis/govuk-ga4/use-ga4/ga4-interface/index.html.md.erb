@@ -1,8 +1,8 @@
 ---
 title: Google Analytics 4 user interface best practice
 weight: 1
-last_reviewed_on: 2024-11-25
-review_in: 6 months
+last_reviewed_on: 2026-08-26
+review_in: 18 months
 ---
 
 <% content_for :head do %>
@@ -24,7 +24,7 @@ Pay attention to the [data quality icons](https://support.google.com/analytics/a
 These indicate whether the data in question is [sampled](https://support.google.com/analytics/answer/13331292), has [thresholding](https://support.google.com/analytics/answer/9383630) applied, or is affected by [cardinality](https://support.google.com/analytics/answer/12226705).
 
 In explorations, clicking on the data quality icon in the top right corner will tell you what percentage of the data your report is currently based on.
-In most cases, if you select ‘More detailed results’ in the dropdown, you will be able to get an exploration based on 100% of the raw data without needing to request an [unsampled exploration](https://support.google.com/analytics/answer/10896953).
+In most cases, if you select ‘More detailed results’ in the dropdown, it can increase the amount of data used. For GA4 360 properties, if the exploration is still sampled, you can request an [unsampled exploration](https://support.google.com/analytics/answer/10896953).
 
 Be particularly careful when using same-day data.
 GA4 data on GOV.UK [takes several hours to be processed](https://support.google.com/analytics/answer/12233314?hl=en&ref_topic=13818299&sjid=14243600463504287898-EU), so same-day data is often very unreliable.
