@@ -79,6 +79,7 @@ More information on the processing can be found in the [Policies and processes s
 | field name | type | mode | description |
 | --- | --- | --- | --- |
 | event_date | DATE | NULLABLE | The date when the event was logged, formatted as YYYYMMDD |
+| event_key | STRING | NULLABLE | A unique identifier for the row, combining a deterministically-ordered row number, the `stream_id`, and the shard date the event was processed in |
 | user_pseudo_id | STRING | NULLABLE | The pseudonymous ID for a user on a particular client |
 | event_name | STRING | NULLABLE | The [name of the event](https://docs.publishing.service.gov.uk/analytics/attribute_event_name.html) |
 | event_timestamp | INTEGER | NULLABLE | The time (in microseconds, UTC) when the event was logged |
