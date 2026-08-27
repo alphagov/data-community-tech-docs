@@ -231,6 +231,7 @@ More information on the processing can be found in the [Policies and processes s
 | canonical_url | STRING | NULLABLE | The [canonical URL](https://developers.google.com/search/docs/crawling-indexing/canonicalization) of the page, taken from the page header. Note that this is not present on all formats/document types |
 | traffic_type | STRING | NULLABLE | The traffic_type parameter set in the GA4 interface or in Google Tag Manager, to help us filter out internal or developer traffic and spam |
 | ignore_referrer | STRING | NULLABLE | Value of the ignore_referrer parameter, a flag used by Google to determine whether or not to use a given referrer to generate attribution information |
+| gtm_container_version | INTEGER | NULLABLE | The version of the Google Tag Manager container that was used to send the event |
 
 ### Retention
 At present, there is no default table expiry set up for this table, and no agreed data retention period.
