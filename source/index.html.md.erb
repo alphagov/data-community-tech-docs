@@ -1,7 +1,7 @@
 ---
 title: Data Community Technical Documentation
 weight: 10
-last_reviewed_on: 2025-04-10
+last_reviewed_on: 2026-08-28
 review_in: 6 months
 ---
 
@@ -48,21 +48,20 @@ You can monitor the progress by viewing the [GitHub action][github-action] in yo
 
 ### Preview your changes
 
-Follow the steps in the section [install the tech docs template](#install-the-tech-docs-template).  Then follow the steps below.
+To preview changes you've made locally, you will need Homebrew and rbenv.
+To install Homebrew, open a terminal and paste in the Homebrew install script which you can [copy from the Homebrew website](https://brew.sh/).
+Once Homebrew has been installed, you can install rbenv (a Ruby version manager) by running `brew install rbenv` in the terminal.
 
-1. Install rbenv.
-2. Use git to clone this repository to your device.
-3. In your terminal, navigate to the cloned repository on your device.
-4. Install Ruby version 2.7.6 by running `rbenv install 2.7.6` in your terminal.
-5. Activate Ruby version 2.7.6 in your current terminal by running `rbenv shell 2.7.6`.
-6. Install a required version of the `bundler` gem by running `gem install bundler:1.16.5` in your terminal.
-7. Install all the other required Ruby gems by running `rbenv exec bundle install`.
-8. Make some changes to the content of the site, in the `source` directory.
-9. Preview the changes by running `bundle exec middleman serve`.
+When you want to make and preview changes to this site, you can:
 
-👉 See the generated website on `http://localhost:4567` in your browser. Any content changes you make to your website will be updated in real time.
-
-To shut down the Middleman instance running on your machine, use `ctrl+C`.
+1. Clone the data-community-tech-docs repository to your device. You can do this using git or the GitHub Desktop app (which can be installed on GDS MacBooks via Cirrus Self Service)
+2. In your terminal, navigate to the repository root directory. This might be easiest to do by opening the repository in Visual Studio Code via GitHub Desktop, and opening the terminal in Visual Studio Code
+3. Install Ruby version 3.4.2 by running `rbenv install 3.4.2` in your terminal
+4. Run `make init`
+5. Make some changes to the content of the site, in the `source` directory
+6. Run `make local-dev` to build the site and start the Middleman server
+7. See the generated website on `http://localhost:4567` in your browser. Any content changes you make to your website will be updated in real time
+8. Remember to shut down the instance running on your machine once you are done using `ctrl+C`. If you do not do this, the instance will keep running in the terminal session and it may be tricky to find and shut down later!
 
 If you make changes to the `config/tech-docs.yml` configuration file, you need to restart Middleman to see the changes.
 
