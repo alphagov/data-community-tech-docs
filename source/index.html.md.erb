@@ -52,20 +52,20 @@ You can monitor the progress by viewing the [GitHub action][github-action] in yo
 
 ### Preview your changes
 
-To preview changes you've made locally, you will need the GitHub Desktop app (which can be installed on GDS MacBooks via Cirrus Self Service), Homebrew, and rbenv.
+To preview changes you've made locally, you will need Homebrew and rbenv.
 To install Homebrew, open a terminal and paste in the Homebrew install script which you can [copy from the Homebrew website](https://brew.sh/).
 Once Homebrew has been installed, you can install rbenv (a Ruby version manager) by running `brew install rbenv` in the terminal.
 
 When you want to make and preview changes to this site, you can:
 
-1. Use git to clone the data-community-tech-docs repository to your device
-2. In your terminal, navigate to the home folder of the cloned repository on your device. This might be easiest to do by opening the repository in Visual Studio Code via GitHub Desktop, and opening the terminal in Visual Studio Code
+1. Clone the data-community-tech-docs repository to your device. You can do this using git or the GitHub Desktop app (which can be installed on GDS MacBooks via Cirrus Self Service)
+2. In your terminal, navigate to the repository root directory. This might be easiest to do by opening the repository in Visual Studio Code via GitHub Desktop, and opening the terminal in Visual Studio Code
 3. Install Ruby version 3.4.2 by running `rbenv install 3.4.2` in your terminal
 4. Run `make init`
 5. Make some changes to the content of the site, in the `source` directory
-6. Run `make local-dev` to build the site
+6. Run `make local-dev` to build the site and start the Middleman server
 7. See the generated website on `http://localhost:4567` in your browser. Any content changes you make to your website will be updated in real time
-8. Remember to shut down the instance running on your machine once you are done using `ctrl+C`. If you do not do this, the instance will keep running in the background and it may be difficult to shut down later!
+8. Remember to shut down the instance running on your machine once you are done using `ctrl+C`. If you do not do this, the instance will keep running in the terminal session and it may be tricky to find and shut down later!
 
 If you make changes to the `config/tech-docs.yml` configuration file, you need to restart Middleman to see the changes.
 
