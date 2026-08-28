@@ -1,39 +1,39 @@
 ---
 title: GOV.UK GA4 data display settings
 weight: 6
-last_reviewed_on: 2025-09-12
-review_in: 6 months
+last_reviewed_on: 2026-08-27
+review_in: 18 months
 ---
 
 
 
 # GOV.UK GA4 data display settings
 
-There are a variety of ways you can impact how data is displayed in Google Analytics 4.
+There are a variety of ways you can control how data is displayed and organised in Google Analytics 4 (GA4).
 
 ##Audiences
 
-Audiences in GA4 assist you in segmenting different groups of users.
+Audiences in GA4 allow you to define and analyse groups of users based on shared characteristics or behaviours.
 
-Property editors or administrators can create audiences within the property's Admin area.
+Marketer, Property editors or Administrators can create audiences within the property's Admin area.
 See [Google's documentation](https://support.google.com/analytics/answer/9267572?hl=en#create-an-audience&zippy=%2Cin-this-article) for further information on how to do this.
 
 ##Channel groups
 
-Channels enable monitoring of the performance of the various sources sending traffic to the website.
+Channel groups classify traffic into groups of channels, such as Organic Search, Direct, Referral and Paid Search, to help you analyse where traffic comes from.
 Google's default channel groups cannot be edited. 
 
 Property editors or administrators can create custom channel groups within the property's Admin area.
 See [Google's documentation](https://support.google.com/analytics/answer/13051316) for further information on how to do this.
 
-We are reluctant to create many custom channel groups due to the time required to then maintain these groups and the fact that these can be viewed by all users of the property, so possibly require further explanation and documentation.
+We are reluctant to create many custom channel groups due to the time required to then maintain these groups and the fact that these can be viewed by all users of the property, so may therefore require additional explanation and documentation.
 
 If you are interested in creating custom channel groups in the GOV.UK GA4 property, please contact the [GA4 support inbox](mailto:govuk-ga4-support@digital.cabinet-office.gov.uk).
 
 ##Expanded data sets
 
 'Expanded data sets' are a feature available in [Google Analytics 360](/tools/ga/#google-analytics-360) which allow you to view more data in your analytics reports.
-They allow you to expand on reports which return rows labelled as '(other)' and view up to 2 million rows of data in a report or exploration - removing the cardinality limits set by Google Analytics when viewing standard reports. 
+They can be used to reduce the impact of cardinality limits in GA4 reports, where less common dimension values may otherwise be grouped into an (other) row.
 
 '(other)' rows appear because, once the number of rows in a table exceeds the table's row limit, a standard report will surface only the most common dimension values, and condense less common values under '(other)'.
 Expanded data sets allow you to see more data by triggering the expansion of this (other) row.
@@ -44,13 +44,13 @@ Expanded datasets do have a [number of limitations](https://support.google.com/a
 The main limits are:
 
 - We are only able to create a maximum of 100 expanded data sets per GA4 360 property - you can check the number of expanded data sets already created in the property Admin section as detailed above
-- Expanded datasets are limited to no more than 6 dimensions or 12 mentrics per report
-- If the expanded data exceeds 2 million rows, reports can still include an '(other)' row.  
+- Expanded datasets are limited to no more than 6 dimensions or 12 metrics per report
+- Expanded datasets can return up to 2 million rows. If the expanded data exceeds this limit, the report may still include an `(other)` row.
 
 Property editors or administrators can view a list of expanded data sets which have already been created within the property's Admin area.
 See [Google's documentation](https://support.google.com/analytics/answer/12867885?hl=en#request&zippy=%2Csee-expanded-data-set-configurations) for further information on how to do this.
 
-To request an expanded data set, you need to have Editor or Administrator roles on the property and follow the steps below. 
+If you have the required permissions, you can create an expanded data set by following these steps:
 
 - Identify a GA4 report that features an '(other)' row
 - Select your preferred primary and/or secondary dimensions and add any filters or comparisons
