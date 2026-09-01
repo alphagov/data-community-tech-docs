@@ -1,7 +1,7 @@
 ---
 title: Google Tag Manager
 weight: 4
-last_reviewed_on: 2026-08-20
+last_reviewed_on: 2026-09-01
 review_in: 18 months
 ---
 
@@ -26,6 +26,14 @@ See [the GTM change process](https://docs.publishing.service.gov.uk/manual/gtm-c
 ### Configuration
 
 We use one container with multiple environments to cover the integration, staging and production or live GOV.UK sites.
+
+### Cookie Consent
+
+There are a variety of ways you can confirm that a user has consented to analytics tracking using Google Tag Manager (GTM).
+
+On GOV.UK, we have our own [cookie banner component](https://components.publishing.service.gov.uk/component-guide/cookie_banner), and can read the cookie values this sets using GTM.
+
+Some other services use alternative solutions, such as [Cookiebot](https://userguide.campaign.gov.uk/set-up-campaign-platform/privacy-and-cookies/).
 
 ### Access
 Read access is granted to Performance Analysts to allow for debugging and checking analytics data.
