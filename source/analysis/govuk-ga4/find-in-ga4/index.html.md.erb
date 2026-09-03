@@ -1,8 +1,8 @@
 ---
 title: Find things in the GOV.UK GA4 data
 weight: 6
-last_reviewed_on: 2025-09-19
-review_in: 6 months
+last_reviewed_on: 2026-09-03
+review_in: 18 months
 ---
 
 
@@ -22,8 +22,6 @@ The BigQuery SQL examples provided on this page make use of the [GOV.UK GA4 flat
 
 There is a report in the GA4 interface which shows views by page path.
 In explorations and in Looker Studio, you can get numbers of page views either using a count of page_view events or using the ‘views’ metric (which also includes screen views if you have an app).
-
-A count of page_view events in GA4 should provide you with a similar number to the total pageviews figure in Universal Analytics (UA).
 
 ‘Unique pageviews’ no longer exists as a metric in GA4, but the ‘sessions’ metric is conceptually similar, telling you how many sessions contained a visit to this page.
 However, the definition of a session has changed in GA4, so the figures produced here will deviate significantly from those in UA.
@@ -49,7 +47,7 @@ For an example in Looker Studio, see the ‘Top pages’ table in [this sample L
 
 #### Method in BigQuery
 
-The following SQL gets a count of page views by page path ([cleaned_page_location in the flattened dataset](/data-sources/ga/ga4-flat/#schema)) for the 1st January 2024:
+The following SQL gets a count of page views by page path ([cleaned_page_location in the flattened dataset](/data-sources/ga/ga4-flat/#schema)) for the 1st January 2026:
 
 ~~~SQL
   SELECT
@@ -58,8 +56,8 @@ The following SQL gets a count of page views by page path ([cleaned_page_locatio
   FROM
     `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
   WHERE
-    event_date BETWEEN '2024-01-01'
-    AND '2024-01-01'
+    event_date BETWEEN '2026-01-01'
+    AND '2026-01-01'
     #Filter to just page_view events
     AND event_name = 'page_view'
   GROUP BY
@@ -113,7 +111,7 @@ See also the ‘External link clicks’ table in [this sample Looker Studio repo
 
 #### Method in BigQuery
 
-The following SQL returns external links clicked (and how many times they were clicked) on the ['Child adoption' page](https://www.gov.uk/child-adoption) on 1st January 2024:
+The following SQL returns external links clicked (and how many times they were clicked) on the ['Child adoption' page](https://www.gov.uk/child-adoption) on 1st January 2026:
 
 ~~~SQL
 SELECT
@@ -122,8 +120,8 @@ SELECT
 FROM
   `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
 WHERE
-  event_date BETWEEN '2024-01-01'
-  AND '2024-01-01'
+  event_date BETWEEN '2026-01-01'
+  AND '2026-01-01'
   #Filter to just navigation events
   AND event_name = 'navigation'
   #Filter to just external link clicks
@@ -168,7 +166,7 @@ Steps:
 
 #### Method in BigQuery
 
-The following SQL gets a count of file downloads for the different files (using the Link URL) on the ['Apply for a postal vote (paper forms)' page](https://www.gov.uk/government/publications/apply-for-a-postal-vote) on 1st January 2024:
+The following SQL gets a count of file downloads for the different files (using the Link URL) on the ['Apply for a postal vote (paper forms)' page](https://www.gov.uk/government/publications/apply-for-a-postal-vote) on 1st January 2026:
 
 ~~~SQL
 SELECT
@@ -178,8 +176,8 @@ FROM
   `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
 WHERE
   #Filter to the right date
-  event_date BETWEEN '2024-01-01'
-  AND '2024-01-01'
+  event_date BETWEEN '2026-01-01'
+  AND '2026-01-01'
   #Filter to just file_download events
   AND event_name = 'file_download'
   #Filter to just the page of interest
@@ -254,7 +252,7 @@ You should only be able to see ‘view_item_list’ in the ‘Event name’ colu
 
 #### Method in BigQuery
 
-The following SQL gets a count of search terms used in searches on the ['Sign in to your Universal Credit account' page](https://www.gov.uk/sign-in-universal-credit) on 1st January 2024:
+The following SQL gets a count of search terms used in searches on the ['Sign in to your Universal Credit account' page](https://www.gov.uk/sign-in-universal-credit) on 1st January 2026:
 
 ~~~SQL
 SELECT
@@ -264,8 +262,8 @@ FROM
   `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
 WHERE
   #Filter to the right date
-  event_date BETWEEN '2024-01-01'
-  AND '2024-01-01'
+  event_date BETWEEN '2026-01-01'
+  AND '2026-01-01'
   #Filter to just search events
   AND event_name = 'search'
   #Filter to just the page of interest
@@ -325,7 +323,7 @@ An example of a SQL query to order users' events within sessions can be seen bel
 
 #### Method in BigQuery
 
-The following SQL gets all page views on 26th August 2024, with a calculated 'session ID' and 'hit number', ordered by the session ID using the `event_timestamp` and `batch_event_index`:
+The following SQL gets all page views on 26th August 2026, with a calculated 'session ID' and 'hit number', ordered by the session ID using the `event_timestamp` and `batch_event_index`:
 
 ~~~SQL
 SELECT
@@ -341,7 +339,7 @@ SELECT
 FROM
   `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
 WHERE
-  event_date = '2024-08-26'
+  event_date = '2026-08-26'
 ORDER BY
   session_id,
   hit_number
@@ -363,7 +361,7 @@ Google compares the times that user_engagement events are sent with page load ti
 
 ### Engaged sessions 
 
-Engaged sessions are all sessions that either last longer than 10 seconds, have more than one screen or page view, or contain a conversion event (ordinary events do not count and as of July 2024 [we do not yet have any conversion events set up](/data-sources/ga/ga4/#data-processing-and-modification)).
+Engaged sessions are all sessions that either last longer than 10 seconds, have more than one screen or page view, or contain a key event (ordinary events do not count and as of September 2026 [we do not yet have any key events set up](/data-sources/ga/ga4/#data-processing-and-modification)).
 
 The 'Engaged sessions' should only be used with the 'Landing page + query string' page dimension (if you wish to use a page dimension - other dimensions such as device and source should work fine) as this is a 'session-scoped' metric tied to the session’s landing page.
 If you use this metric with another page dimension, such as page path, the GA4 interface will show you a figure but it will not be correct.
@@ -378,7 +376,7 @@ The integer value is then calculated and attached to the session_start event to 
 
 A session is engaged when the 'session_engaged' integer flag is '1' (true) on that session’s landing page (the page where the session_start event fired). 
 
-The following SQL gets a count of sessions and engaged sessions by country for the 1st July 2024. This uses the flattened dataset:
+The following SQL gets a count of sessions and engaged sessions by country for the 1st July 2026. This uses the flattened dataset:
 
 ~~~SQL
 SELECT
@@ -392,15 +390,15 @@ SELECT
 FROM
   `ga4-analytics-352613.flattened_dataset.partitioned_flattened_events`
 WHERE
-  event_date BETWEEN '2024-07-01'
-  AND '2024-07-01'
+  event_date BETWEEN '2026-07-01'
+  AND '2026-07-01'
 GROUP BY
   country
 ORDER BY
   engaged_sessions DESC
 ~~~
 
-The following SQL gets the same count of sessions and engaged sessions by country for the 1st July 2024, but using the raw dataset:
+The following SQL gets the same count of sessions and engaged sessions by country for the 1st July 2026, but using the raw dataset:
 
 ~~~SQL
 WITH DATA AS (
@@ -423,8 +421,8 @@ WITH DATA AS (
   FROM
     `ga4-analytics-352613.analytics_330577055.events_*`
   WHERE
-    _TABLE_SUFFIX BETWEEN '20240701'
-    AND '20240701' )
+    _TABLE_SUFFIX BETWEEN '20260701'
+    AND '20260701' )
 SELECT
   country,
   COUNT(DISTINCT unique_session_id) AS sessions,
