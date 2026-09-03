@@ -1,7 +1,7 @@
 ---
 title: GOV.UK Knowledge Graph
 weight: 10
-last_reviewed_on: 2025-05-28
+last_reviewed_on: 2026-09-03
 review_in: 6 months
 ---
 
@@ -11,22 +11,97 @@ review_in: 6 months
 
 <span style="color:red">This page is a work in progress.</span>
 
-The GOV.UK Knowledge Graph, or GovGraph, tables hold GOV.UK content data in BigQuery for analytical workloads.
+The GOV.UK Knowledge Graph, also known as GovGraph, is a collection of BigQuery tables containing information about GOV.UK content. 
+
+The tables can be used for analytical work such as: 
+
+- finding current GOV.UK content 
+- analysing content by document type, publishing application or language 
+- examining relationships between content items 
+- identifying redirects, withdrawn content and content that is no longer available 
+- examining previous editions of content 
+
+## Source of the data 
+
+Most GovGraph content data comes from the GOV.UK Publishing API. The Publishing API represents content using three related concepts:
+
+- a **content item** is a piece of GOV.UK content and has a `content_id` 
+- a **document** is a content item in a particular locale 
+- an **edition** is a version of a document 
+
+A content item can therefore have more than one document, for example an English document and a Welsh document. A document can have multiple editions recording how it has changed over time. 
+
+Some GovGraph tables contain data copied from source systems. Others are derived tables designed to make common analytical tasks easier. 
+
+Read [how to query the Knowledge Graph](https://docs.publishing.service.gov.uk/repos/govuk-knowledge-graph-gcp/how-to-write-queries.html) for more information about the data model. 
 
 ## Access
 Access to the BigQuery dataset is limited to GDS staff.
 
 For access, contact the #data-engineering community.
 
-### Location
+## Location
 The data is located in BigQuery in the `govuk-knowledge-graph` project.
 
+Tables use fully qualified names in this format:  
+
+`govuk-knowledge-graph.dataset_name.table_name` 
+
+For example: `govuk-knowledge-graph.public.publishing_api_editions_current` 
+
+## Choose a table 
+
+Different GovGraph tables represent GOV.UK content at different levels. 
+
+| Table | What it contains | Suitable for | 
+
+|---|---|---| 
+
+| `search.page` | An analysis-ready view of GOV.UK pages used by GovSearch | Most analysis requiring one row per searchable GOV.UK page | 
+
+| `public.publishing_api_editions_current` | The current non-draft, publicly available edition of each document | Current Publishing API content and lower-level content metadata | 
+
+| `publishing_api.editions` | Editions held in the Publishing API source data | Content history and previous versions | 
+
+| `public.publishing_api_links_current` | Relationships involving current editions | Relationships between content items, including publishing organisations and taxonomy | 
+
+| `public.publishing_api_unpublishings_current` | Relevant unpublishing records for current content | Redirect, gone and withdrawal analysis | 
+
+This list is not exhaustive. 
+
+Read [how to use the Knowledge Graph data](/analysis/knowledge-graph/) for more information on how to use the tables. 
+
+## Important concepts 
+
+### A document is not always a web page 
+
+A GovGraph document may: 
+ 
+- represent content that has its own GOV.UK URL 
+- be embedded in another item of content 
+- contain several chapters or parts displayed at different URLs 
+- represent a translation of a content item 
+
+This means that a row in a GovGraph table does not always correspond to one URL displayed in a browser. 
+
+### Current and historical data 
+
+Tables whose names end in `_current` are intended to represent the current state of relevant content. 
+
+Use the source tables in the `publishing_api` dataset if you need previous editions or want to analyse how content has changed over time. 
+
+### JSON data 
+
+Some tables contain a `details` field. This is a JSON object whose structure varies according to the content schema. 
+
+Querying large JSON fields can use more BigQuery processing than selecting standard columns. Select only the fields required for your analysis. 
+
 ## Set-up
-The GovGraph Google Cloud Projects also include infrastructure for the infrastructure for the [GovSearch app](/products/govsearch/), which uses data from GovGraph.
+The GovGraph Google Cloud Projects also include infrastructure for the [GovSearch app](/products/govsearch/), which uses data from GovGraph.
 
 Read the documentation in the [GitHub repository](https://github.com/alphagov/govuk-knowledge-graph-gcp).
 
-### Schema
+## Table schemas 
 
 #### Tables
 The schemas of some of the more heavily used Knowledge Graph tables are detailed below.
@@ -38,7 +113,6 @@ The `govuk-knowledge-graph.search.page` table includes everything that is in [Go
 
 In this table, different sections or chapters of a content item are kept as separate 'pages', instead of being grouped as content items under the `contentId`.
 'Gone' and 'redirect' pages are excluded from this table.
-More detailed documentation can be found [on GitHub](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/terraform/bigquery/README-publishing-api-links-current.md#what-a-page-is).
 
 | field name | mode | type | description | notes |
 | --- | --- | --- | --- | --- |
@@ -73,35 +147,47 @@ More detailed documentation can be found [on GitHub](https://github.com/alphagov
 <details markdown="1">
 <summary>public.publishing_api_editions_current</summary>
 
-The `govuk-knowledge-graph.public.publishing_api_editions_current` table includes one record per 'document' as it currently appears on the GOV.UK website and in the Content API.
-A 'document' is here defined as a content item in a locale - each content item has one or more "documents" but at most one document per locale (unique key: `content_id`, `locale`).
+This table contains the most recent non-draft edition of each document that is publicly available through the GOV.UK website and in the Content API. It is derived primarily from `publishing_api.editions` and is enriched with: 
 
-In this table, different sections or chapters of a content item are grouped together as content items under the `content_id` and common `base_path`.
-More detailed documentation can be found [on GitHub](https://github.com/alphagov/govuk-knowledge-graph-gcp/blob/main/terraform/bigquery/README-publishing-api-editions-current.md#target-publicpublishing-api-editions-current).
- 
-| field name | mode | type | description | notes |
-| --- | --- | --- | --- | --- |
-| content_id | NULLABLE | STRING | | |
-| locale | NULLABLE | STRING | | |
-| id | NULLABLE | INTEGER | | |
-| title | NULLABLE | STRING | | |
-| public_updated_at | NULLABLE | TIMESTAMP | | |
-| publishing_app | NULLABLE | STRING | | |
-| rendering_app | NULLABLE | STRING | | |
-| update_type | NULLABLE | STRING | | |
-| phase | NULLABLE | STRING | | |
-| analytics_identifier | NULLABLE | STRING | | |
-| updated_at | NULLABLE | TIMESTAMP | | |
-| document_type | NULLABLE | STRING | | |
-| schema_name | NULLABLE | STRING | | |
-| first_published_at | NULLABLE | TIMESTAMP | | |
-| base_path | NULLABLE | STRING | | The page path (not including hostname, protocol, or any query strings). Note that different chapters of a guide will have the same base path in this table, although they appear under different URLs on the site |
-| document_id | NULLABLE | INTEGER | | |
-| description | NULLABLE | STRING | | |
-| published_at | NULLABLE | TIMESTAMP | | |
-| details | NULLABLE | JSON | | |
-| routes | NULLABLE | JSON | | |
-| redirects | NULLABLE | JSON | | |
-| unpublishing_type | NULLABLE | STRING | | |
+- `content_id` and `locale` from `publishing_api.documents` 
+- `unpublishing_type` from `publishing_api.unpublishings` 
+
+Some fields are removed or modified for redirect and gone items. 
+
+| Field name | Type | Mode | Description | 
+| --- | --- | --- | --- | 
+| content_id | STRING | NULLABLE | The unique identifier of the content item. A content item may have one document for each locale, with each document having one or more editions. | 
+| locale | STRING | NULLABLE | The locale of the document, such as ‘en’ for English or ‘cy’ for Welsh. Together, content_id and locale identify a document. | 
+| id | INTEGER | NULLABLE | The internal identifier assigned to this edition by the Publishing API. | 
+| title | STRING | NULLABLE | The title of the content item. Set to NULL for ‘redirect’ and ‘gone’ items in this table. | 
+| public_updated_at | TIMESTAMP | NULLABLE | Date and time when the content item was last significantly changed by a major update. It is automatically determined by the Publishing API unless overridden by the publishing application. | 
+| publishing_app | STRING | NULLABLE | The publishing application that supplied the content item to the Publishing API, recorded as the application’s hostname. | 
+| rendering_app | STRING | NULLABLE | The hostname of the frontend application that renders the content item. Set to NULL for ‘redirect’ and ‘gone’ items in this table. | 
+| update_type | STRING | NULLABLE | Classification of the update to the edition. Accepted Publishing API values are ‘major’, ‘minor’ and ‘republish’. A major update changes public_updated_at when the edition is published and may include a change note. A republish may result from technical or bulk processing rather than an editorial change to the content. | 
+| phase | STRING | NULLABLE | The phase assigned to the edition. Accepted Publishing API values are alpha, beta and live. | 
+| analytics_identifier | STRING | NULLABLE | Identifier used to track the content item in analytics software. Set to NULL for ‘redirect’ and ‘gone’ items in this table | 
+| updated_at | TIMESTAMP | NULLABLE | Date and time when this edition was last updated in the Publishing API data. This field is used to select the most recent edition for each document. An update may reflect technical processing or republishing rather than an editorial change. | 
+| document_type | STRING | NULLABLE | The type of content represented by this edition, used to distinguish content that may share the same schema. If the ‘unpublishing_type’ field is ‘redirect’ or ‘gone’, the value will be replaced by the unpublishing type. | 
+| schema_name | STRING | NULLABLE | Name of the content schema e.g. ‘publication’, ‘news_article’, ‘speech’. If the ‘unpublishing_type’ field is ‘redirect’ or ‘gone’, the value will be replaced by the unpublishing type. | 
+| first_published_at | TIMESTAMP | NULLABLE | Date and time recorded as the first publication of the content item. It is automatically determined by the Publishing API unless a value is supplied by the publishing application. Set to NULL for ‘redirect’ and ‘gone’ items in this table. | 
+| base_path | STRING | NULLABLE | The path used by the content item on GOV.UK, excluding the hostname, protocol and query string. | 
+| document_id | INTEGER | NULLABLE | The internal identifier assigned by the Publishing API to the document to which this edition belongs. Multiple editions of the same document share the same document_id. | 
+| description | STRING | NULLABLE | A description of the content item. Set to NULL for ‘redirect’ and ‘gone’ items in this table. | 
+| published_at | TIMESTAMP | NULLABLE | Date and time associated with the publication of this edition. This is an edition-level timestamp and may differ from first_published_at, public_updated_at and updated_at. | 
+| details | JSON | NULLABLE | JSON object containing data specific to the content item’s document_type. Its structure varies according to the applicable content schema. Set to NULL for ‘redirect’ and ‘gone’ items in this table. | 
+| routes | JSON | NULLABLE | Paths and route types used to make the content item available through GOV.UK. | 
+| redirects | JSON | NULLABLE | Redirect destination information associated with an unpublished content item. | 
+| unpublishing_type | STRING | NULLABLE | Type of unpublishing action associated with the edition, such as ‘withdrawal’, ‘redirect’ or ‘gone’. A NULL value indicates that no matching unpublishing record was found. | 
 
 </details>
+
+Further schemas will be added for commonly used tables. 
+
+## Technical documentation 
+
+For more technical information, see: 
+
+- the [GovGraph GitHub repository](https://github.com/alphagov/govuk-knowledge-graph-gcp) 
+- the [Knowledge Graph query guide](https://docs.publishing.service.gov.uk/repos/govuk-knowledge-graph-gcp/how-to-write-queries.html) 
+- the [Publishing API documentation](https://docs.publishing.service.gov.uk/repos/publishing-api.html) 
+- the [Publishing API reference](https://docs.publishing.service.gov.uk/repos/publishing-api/api.html) 
