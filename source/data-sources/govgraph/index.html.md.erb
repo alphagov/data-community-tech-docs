@@ -2,14 +2,12 @@
 title: GOV.UK Knowledge Graph
 weight: 10
 last_reviewed_on: 2026-09-03
-review_in: 6 months
+review_in: 18 months
 ---
 
 
 
 # GovGraph (GOV.UK Knowledge Graph)
-
-<span style="color:red">This page is a work in progress.</span>
 
 The GOV.UK Knowledge Graph, also known as GovGraph, is a collection of BigQuery tables containing information about GOV.UK content. 
 
@@ -54,17 +52,11 @@ For example: `govuk-knowledge-graph.public.publishing_api_editions_current`
 Different GovGraph tables represent GOV.UK content at different levels. 
 
 | Table | What it contains | Suitable for | 
-
 |---|---|---| 
-
 | `search.page` | An analysis-ready view of GOV.UK pages used by GovSearch | Most analysis requiring one row per searchable GOV.UK page | 
-
 | `public.publishing_api_editions_current` | The current non-draft, publicly available edition of each document | Current Publishing API content and lower-level content metadata | 
-
 | `publishing_api.editions` | Editions held in the Publishing API source data | Content history and previous versions | 
-
 | `public.publishing_api_links_current` | Relationships involving current editions | Relationships between content items, including publishing organisations and taxonomy | 
-
 | `public.publishing_api_unpublishings_current` | Relevant unpublishing records for current content | Redirect, gone and withdrawal analysis | 
 
 This list is not exhaustive. 
