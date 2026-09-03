@@ -48,7 +48,7 @@ The GOV.UK GA4 annotations reporting Looker Studio report uses the 'GOV.UK GA4 a
 This is a custom query which pulls together data from a few different data sources in the `ga4_annotations` dataset:
 
 - the `data_quality_notes` table, which pulls information on changes to the GA4 data collection from a Google Sheet 
-- the `govuk_timeline` table, which pull information on external events from a Google Sheet
+- the `govuk_timeline` table, which pulls information on external events from a Google Sheet
 
 The custom query unions each of these tables together after adding in the 'Category' and 'Issue name' fields and ensuring that only appropriate rows (where events have specific dates) are pulled in.
 
