@@ -1,8 +1,8 @@
 ---
 title: GA4 data deletions
 weight: 7
-last_reviewed_on: 2025-05-30
-review_in: 6 months
+last_reviewed_on: 2026-09-03
+review_in: 18 months
 ---
 
 
@@ -37,7 +37,7 @@ This is because the risks associated with deleting raw data are not worth the be
 2. A fix is put in place to stop the unwanted data from being collected, if this hasn’t already been done
 3. Analysts figure out which datasets are impacted by the unwanted data collection, and determine using the criteria above whether it is possible and desirable to delete the unwanted data
 4. Relevant owners and/or Leads are informed of the recommendation on data deletion and asked to approve/feedback
-5. Unwanted data is deleted from the GA4 Data API using the GA4 data deletion feature, if this is possible and desirable. This requires the following actions:
+5. Unwanted data is deleted using the GA4 data deletion feature or the user deletion API, if this is possible and desirable. This requires the following actions:
     - a) Data deletion request is scheduled. Data scheduled to be deleted must be at least 12 days old so the team may need to wait a fortnight to action this
     - b) Data deletion is checked during the preview/grace period  
     - c) Successful data deletion is checked and confirmed after the deletion request shows as processed. A data deletion request can take anything from 7 to 63 days, so this may take some time
