@@ -1,30 +1,120 @@
 ---
 title: Use the Knowledge Graph data
 weight: 40
-last_reviewed_on: 2025-06-18
-review_in: 6 months
+last_reviewed_on: 2026-09-04
+review_in: 18 months
 ---
 
 
 
 # Use the Knowledge Graph data
-The Knowledge Graph dataset contains a number of tables which contain information on the content of the GOV.UK website.
 
-More information on the tables themselves can be found on the [Knowledge Graph data source page](/data-sources/govgraph/).
+The Knowledge Graph contains BigQuery tables describing GOV.UK content, documents, editions and relationships. 
+
+Read the [GOV.UK Knowledge Graph data-source page](/data-sources/govgraph/) for information about access, table locations and schemas. 
 
 ## Get access to Knowledge Graph data
 
+The Knowledge Graph data is available in [BigQuery](/tools/google-cloud-platform/bigquery/)
+
 To get access to the Knowledge Graph data, please post in the #data-engineering Slack channel. 
- 
-## How to use the Knowledge Graph data
 
-One view of the Knowledge Graph data can be accessed via the [GovGraph tool](/products/govsearch/).
+You also need a Google Cloud project with billing enabled to run queries. If you are a member of GDS staff, ask the `#data-engineering` community for a Google Cloud billing project ID.
+If you work for another public sector organisation, your organisation will need to provide a suitable billing project. 
 
-The Knowledge Graph data can also be queried directly in [BigQuery](/tools/google-cloud-platform/bigquery/), or it can be used in various reporting or data visualisation tools.
+You can also access Knowledge Graph data via the [GovGraph tool](/products/govsearch/).
 
-Whether you query it directly in BigQuery or use the data in a reporting tool, you will need a Google Cloud Platform project with billing enabled through which you can query the data.
-If you are GDS staff, please contact the #data-engineering community who will be able to provide you with a Google Cloud Platform billing project ID.
-If you work for another public sector organisation, your department or organisation will have to provide you with this ID. 
+## Choosing the right table 
+
+### I need a general list of current GOV.UK pages 
+
+Start with: `govuk-knowledge-graph.search.page` 
+
+This table is designed for page-level analysis and is used by GovSearch. It excludes redirected pages, gone pages and content without its own `base_path`. Chapters of multipart content can appear as separate pages. 
+
+### I need current Publishing API content 
+
+Use: `govuk-knowledge-graph.public.publishing_api_editions_current` 
+
+This table contains the most recent non-draft, publicly available edition of each document. 
+Use it when you need lower-level Publishing API fields, content that can be embedded in other pages, or information about redirect and gone items. 
+
+### I need previous versions of content 
+
+Use tables in: `govuk-knowledge-graph.publishing_api` 
+
+For example, `publishing_api.editions` contains edition records from the Publishing API source data. 
+
+### I need relationships between content items 
+
+Use: `govuk-knowledge-graph.public.publishing_api_links_current` 
+
+This can be used to analyse relationships involving current content, such as publishing organisations and taxonomy links. 
+
+### I need unpublishing information 
+
+Use: `govuk-knowledge-graph.public.publishing_api_unpublishings_current` 
+
+Use the underlying `publishing_api.unpublishings` table if you require broader historical unpublishing data. 
+
+## Understand the data model 
+
+The Publishing API data model distinguishes between content items, documents and editions. 
+
+```text 
+
+Content item 
+
+└── Document in a locale 
+
+└── Edition of that document 
+
+``` 
+
+- `content_id` identifies a content item 
+- `content_id` and `locale` together identify a document 
+- a document can have multiple editions 
+- an edition represents a version of a document 
+
+Do not assume that `content_id` is unique in a table containing documents in multiple locales. 
+
+## Understand what a page means 
+
+A page, content item, document, edition and URL are not interchangeable. 
+
+For example: 
+
+- a content item may have separate documents for English and Welsh 
+- a multipart guide can be displayed across several URLs 
+- some content has no URL of its own but is displayed within another page 
+- redirects and ‘gone’ content are included in some tables and excluded from others 
+
+## Query the data 
+
+You can query GovGraph directly in BigQuery or use it through compatible reporting and data visualisation tools.  
+
+The following example returns selected fields from current, publicly available Publishing API documents: 
+
+```sql 
+
+SELECT 
+content_id, 
+locale, 
+base_path, 
+title, 
+document_type 
+FROM `govuk-knowledge-graph.public.publishing_api_editions_current` 
+WHERE base_path IS NOT NULL 
+
+``` 
+
+## Query efficiently 
+
+To limit BigQuery processing: 
+
+- select only the columns you need 
+- apply filters as early as possible 
+- avoid selecting the entire `details` JSON field when you only need one value 
 
 ### Sample queries 
 
