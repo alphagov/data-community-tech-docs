@@ -61,15 +61,11 @@ Use the underlying `publishing_api.unpublishings` table if you require broader h
 
 The Publishing API data model distinguishes between content items, documents and editions. 
 
-```text 
-
+~~~TEXT 
 Content item 
-
 └── Document in a locale 
-
 └── Edition of that document 
-
-``` 
+~~~
 
 - `content_id` identifies a content item 
 - `content_id` and `locale` together identify a document 
@@ -95,18 +91,17 @@ You can query GovGraph directly in BigQuery or use it through compatible reporti
 
 The following example returns selected fields from current, publicly available Publishing API documents: 
 
-```sql 
-
+~~~SQL 
 SELECT 
 content_id, 
-locale, 
+locale,
 base_path, 
 title, 
 document_type 
 FROM `govuk-knowledge-graph.public.publishing_api_editions_current` 
 WHERE base_path IS NOT NULL 
-
-``` 
+~~~
+ 
 
 ## Query efficiently 
 
