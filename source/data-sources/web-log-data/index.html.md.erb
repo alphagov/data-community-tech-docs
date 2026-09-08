@@ -35,7 +35,10 @@ Initial processing is performed in fastly_processing_source.sqlx. All records fr
 
 To protect user privacy, activity is identified using md5_hashed_value, an anonymised identifier created by hashing a combination of the user’s IP address and user agent. This enables user-level behavioural analysis while preventing access to the original identifying values contained within the raw web log data.
 
-Additionally, the query applies a number of filters to return only successful web page loads, including a 200 HTTP status code, a payload size greater than 0 bytes, and a content type of html.
+Additionally, the query applies a three filters to return only successful web page loads: 
+- a 200 HTTP status code 
+- a payload size greater than 0 bytes
+- a content type of html.
 
 The resulting dataset is stored as gds-bq-processing-dev.fastly_processing_dev.fastly_bot_processing.
 
