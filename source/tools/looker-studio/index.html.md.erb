@@ -59,7 +59,7 @@ Community visualisations must be turned off because a DPIA has not been carried 
 
 If you are connecting to a BigQuery dataset, it is better to connect using a custom SQL query with date range parameters than to connect to the table directly.
 This is because some of our data is stored in sharded tables, and Data Studio queries all shards when direct connections are established.
-This intial query can be quite costly given the size of our datasets.
+This initial query can be quite costly given the size of our datasets.
 
 For some data, we have now created partitioned tables which are more efficient to query than sharded tables.
 For example, we have a partitioned [flattened table for GOV.UK GA4 data](/data-sources/ga/ga4-flat/). These can also be used in custom SQL queries to connect Data Studio to BigQuery.
