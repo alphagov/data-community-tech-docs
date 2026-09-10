@@ -25,6 +25,7 @@ In addition, everyone who requests and is granted access to the GOV.UK GA4 data 
 | Search Events | A table that is grouped by event_date, event_type (search or select_item), and other fields related to the page the search was initiated on, the search term used, the search page and the ultimate destination page. It counts searches and sessions with searches as well as clicks on results and sessions with clicks. It should be noted that the search event in this table will only be capturing searches initiated from the on-site search box. The click events however rely on the page referrer, which could be an external source or a direct link or a search results page, if they go beyond the first results page. This table will not include filtering or sorting of search results pages. | [Link to search_events](https://console.cloud.google.com/bigquery?project=ga4-analytics-352613&ws=!1m6!1m5!4m3!1sga4-analytics-352613!2sflattened_dataset!3ssearch_events!23sTREE_NODE_SELECTION) |
 
 ## Table schemas 
+
 #### Tables
 
 <details markdown="1">
@@ -45,6 +46,7 @@ In addition, everyone who requests and is granted access to the GOV.UK GA4 data 
 | mobile_sessions | INTEGER | NULLABLE | Total number of distinct sessions on this page that occurred on a mobile device. |
 
 </details>
+
 
 ### Retention
 At present, there is no default table expiry set up for these tables, and no agreed data retention period.
