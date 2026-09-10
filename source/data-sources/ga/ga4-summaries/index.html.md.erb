@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4 summary tables
 weight: 4
-last_reviewed_on: 2026-08-05
+last_reviewed_on: 2026-09-10
 review_in: 6 months
 hide_in_navigation: false
 ---
@@ -23,6 +23,28 @@ In addition, everyone who requests and is granted access to the GOV.UK GA4 data 
 | Page Summaries | A table that groups by event date and page location and provides a range of summary metrics. The summary metrics are things like page views, sessions, entrances, exits, searches and page usefulness. | [Link to page_summaries](https://console.cloud.google.com/bigquery?project=ga4-analytics-352613&ws=!1m6!1m5!4m3!1sga4-analytics-352613!2sflattened_dataset!3spage_summaries!23sTREE_NODE_SELECTION) |
 | Navigation Events | A table that is grouped on a number of fields (event_date, event_name, cleaned_page_location, canonical_url, link_domain, link_url, type and outbound) and filters for navigation, information_click and file_download events. The purpose of this table is to create a dedicated table for tracking link clicks (internal and external) on the gov.uk site. The table also includes two summary metrics: a count of the number of times a particular navigation event happened and the number of sessions it happened in. | [Link to navigation_events](https://console.cloud.google.com/bigquery?project=ga4-analytics-352613&ws=!1m6!1m5!4m3!1sga4-analytics-352613!2sflattened_dataset!3snavigation_events!23sTREE_NODE_SELECTION) |
 | Search Events | A table that is grouped by event_date, event_type (search or select_item), and other fields related to the page the search was initiated on, the search term used, the search page and the ultimate destination page. It counts searches and sessions with searches as well as clicks on results and sessions with clicks. It should be noted that the search event in this table will only be capturing searches initiated from the on-site search box. The click events however rely on the page referrer, which could be an external source or a direct link or a search results page, if they go beyond the first results page. This table will not include filtering or sorting of search results pages. | [Link to search_events](https://console.cloud.google.com/bigquery?project=ga4-analytics-352613&ws=!1m6!1m5!4m3!1sga4-analytics-352613!2sflattened_dataset!3ssearch_events!23sTREE_NODE_SELECTION) |
+
+## Table schemas 
+#### Tables
+
+<details markdown="1">
+<summary>page_summaries</summary>
+
+| Field name | Type | Mode | Description |
+| --- | --- | --- | --- |
+| event_date | DATE | NULLABLE | The date the event occurred. |
+| cleaned_page_location | STRING | NULLABLE | The normalized relative page path. Strips the 'https://www.gov.uk' domain, query parameters, and anchor tags, defaulting to the relative canonical URL or base path depending on the document type. |
+| pageviews | INTEGER | NULLABLE | Total number of page_view events on this page. |
+| unique_pageviews | INTEGER | NULLABLE | Number of sessions in which page_view events were fired. |
+| sessions | INTEGER | NULLABLE | Number of sessions in which any event was fired. |
+| entrances | INTEGER | NULLABLE | Total number of times that the first event in a session occurred on this page. |
+| exits | INTEGER | NULLABLE | Total number of times this page was the final page_view event in a session. |
+| searches | INTEGER | NULLABLE | Total number of 'search' events triggered on this page. |
+| useful_yes | INTEGER | NULLABLE | Total number of positive feedback submissions (form_submit events where ui_text = 'Yes'). |
+| useful_no | INTEGER | NULLABLE | Total number of negative feedback submissions (form_submit events where ui_text = 'No'). |
+| mobile_sessions | INTEGER | NULLABLE | Total number of distinct sessions on this page that occurred on a mobile device. |
+
+</details>
 
 ### Retention
 At present, there is no default table expiry set up for these tables, and no agreed data retention period.
