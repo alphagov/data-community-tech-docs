@@ -29,38 +29,43 @@ As the raw web log data is not consented, access to the data in this project is 
 The Dataform workflow sits within the `gds-bq-processing` project under the workspace name `bot_traffic_processing`. It begins by defining the raw web logs data as a source file - `fastly_logs.sqlx` and the known bot agents as a source file - `fastly_reference.sqlx`.
 
 ### Step 2 - Initial Processing
-The most recent partition_date not already present in fastly_processing_dev is selected from fastly_logs.
+The most recent partition_date not already present in 'fastly_processing_dev' is selected from 'fastly_logs'.
 
-Initial processing is performed in fastly_processing_source.sqlx. All records from fastly_logs are selected and filtered using _PARTITIONTIME from the process_partition table created by process_date.sqlx, ensuring that only the current partition is processed.
+Initial processing is performed in 'fastly_processing_source.sqlx'. All records from fastly_logs are selected and filtered using '_PARTITIONTIME' from the 'process_partition' table created by 'process_date.sqlx', ensuring that only the current partition is processed.
 
-To protect user privacy, activity is identified using md5_hashed_value, an anonymised identifier created by hashing a combination of the user’s IP address and user agent. This enables user-level behavioural analysis while preventing access to the original identifying values contained within the raw web log data.
+To protect user privacy, activity is identified using 'md5_hashed_value', an anonymised identifier created by hashing a combination of the user’s IP address and user agent. This enables user-level behavioural analysis while preventing access to the original identifying values contained within the raw web log data.
 
-Additionally, the query applies a three filters to return only successful web page loads: 
-- a 200 HTTP status code 
-- a payload size greater than 0 bytes
-- a content type of html.
+Additionally, the query applies three filters to return only successful web page loads, these filters are: 
 
-The resulting dataset is stored as gds-bq-processing-dev.fastly_processing_dev.fastly_bot_processing.
+-  200 HTTP status code 
+-  Payload size greater than 0 bytes
+-  Content type of html
+
+The resulting dataset is stored as 'gds-bq-processing-dev.fastly_processing_dev.fastly_bot_processing'.
 
 ### Step 3 - Suspected bot/spam traffic filtering logic
 The results from the initial processing are then filtered to exclude suspected bot/spam traffic through a few different methods. These are:
 
-- Users who have viewed a single page more than 10 times in a single day. This process happens in fastly_page_views.sqlx and is stored as a view in gds-bq-processing-dev.fastly_processing_dev.fastly_page_views.
-- Users viewing more then 50 unique pages in a single day (defined as a concatenating of IP address and user agent). This process happens in fastly_site_views.sqlx and is stored as a view in gds-bq-processing-dev.fastly_processing_dev.fastly_site_views.
-- IP addresses which have requested any single page, during a single second, at least 5 times on the same day. This process happens in fastly_ip_counter.sqlx and is stored as a view in gds-bq-processing-dev.fastly_processing_dev.fastly__ip_counter. 
+- Users who have viewed a single page more than 10 times in a single day. This process happens in 'fastly_page_views.sqlx' and is stored as a view in 'gds-bq-processing-dev.fastly_processing_dev.fastly_page_views'.
 
-The results are stored as a table in gds-bq-processing-dev.fastly_processing_dev.fastly_sus_bot_processing and represent as a spam flag for each method, where 1 indicates a user has been flagged as suspected bot/spam traffic. 
+- Users viewing more then 50 unique pages in a single day (defined as a concatenating of IP address and user agent). This process happens in 'fastly_site_views.sqlx' and is stored as a view in 'gds-bq-processing-dev.fastly_processing_dev.fastly_site_views'.
+
+- IP addresses which have requested any single page, during a single second, at least 5 times on the same day. This process happens in 'fastly_ip_counter.sqlx' and is stored as a view in 'gds-bq-processing-dev.fastly_processing_dev.fastly__ip_counter'. 
+
+The results are stored as a table in 'gds-bq-processing-dev.fastly_processing_dev.fastly_sus_bot_processing' and represent as a spam flag for each method, where 1 indicates a user has been flagged as suspected bot/spam traffic. 
 
 ### Step 4 - Known Bot Processing
-Results from the suspected bot/spam traffic filtering logic are then processed to identify known bot traffic. This is achieved by matching user agents against the known bot reference data defined in fastly_reference.sqlx.
+Results from the suspected bot/spam traffic filtering logic are then processed to identify known bot traffic. This is achieved by matching user agents against the known bot reference data defined in 'fastly_reference.sqlx'.
 
-The classification logic gives precedence to known bot matches. If a user agent matches a pattern in fastly_reference_table_static, the record is assigned a status of known_bot, regardless of any spam flags that may also be set. Spam flag checks are only applied when no known bot match is found, resulting in a status of suspected_bot where applicable. Records that meet neither condition are classified as not_bot.
+The classification logic gives precedence to known bot matches. If a user agent matches a pattern in 'fastly_reference_table_static', the record is assigned a status of 'known_bot', regardless of any spam flags that may also be set. Spam flag checks are only applied when no known bot match is found, resulting in a status of 'suspected_bot' where applicable. Records that meet neither condition are classified as 'not_bot'.
 
 Multiple patterns and tags can be associated with a single record. These values are aggregated into alphabetically ordered, comma-separated lists, providing a consolidated view of all reference table matches that contributed to the classification.
 
 ### Step 5 - Outputs
-There are currently three outputs from the Dataform workflow, all of which are stored in gds-bq-data.govuk_weblogs:
+There are currently three outputs from the Dataform workflow, all of which are stored in 'gds-bq-data.govuk_weblogs':
 
-- weblog_urls: This table contains the total number of page views and users, grouped by partition_date, device_type and cleaned page_url. 
-- fastly_known_bot_url_views: This table contains the total number of page hits for each URL viewed by known bots of interest (bingbot, PerplexityUser, Gemini-Deep-Research, Google-GeminiNotebook, meta-externalfethcher\/, Claude-User and ChatGPT-User) all other known bots are grouped together as 'other_bots'. The table is grouped by partition_date and cleaned_url. 
-- fastly_bot_processing_final: This table contains the final classification of each md5_hashed_value (anonymised user identifier) as known_bot, suspected_bot, or not_bot. It also contains the three spam flags used to identify suspected bot/spam traffic (site_spam_flag, page_spam_flag, and ip_spam_flag), along with any matching reference table patterns and tags. Where multiple patterns or tags are matched, they are aggregated into alphabetically ordered, comma-separated lists. The table is partitioned by partition_date.
+- weblog_urls: This table contains the total number of page views and users, grouped by 'partition_date', 'device_type' and 'cleaned_url'. 
+
+- fastly_known_bot_url_views: This table contains the total number of page hits for each URL viewed by known bots of interest (bingbot, PerplexityUser, Gemini-Deep-Research, Google-GeminiNotebook, meta-externalfethcher\/, Claude-User and ChatGPT-User) all other known bots are grouped together as 'other_bots'. The table is grouped by 'partition_date' and 'cleaned_url'. 
+
+- fastly_bot_processing_final: This table contains the final classification of each 'md5_hashed_value' (anonymised user identifier) as 'known_bot', 'suspected_bot', or 'not_bot'. It also contains the three spam flags used to identify suspected bot/spam traffic (site_spam_flag, page_spam_flag, and ip_spam_flag), along with any matching reference table patterns and tags. Where multiple patterns or tags are matched, they are aggregated into alphabetically ordered, comma-separated lists. The table is partitioned by 'partition_date'.
