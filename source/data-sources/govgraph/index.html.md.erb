@@ -58,6 +58,7 @@ Different GovGraph tables represent GOV.UK content at different levels.
 | `publishing_api.editions` | Editions held in the Publishing API source data | Content history and previous versions | 
 | `public.publishing_api_links_current` | Relationships involving current editions | Relationships between content items, including publishing organisations and taxonomy | 
 | `public.publishing_api_unpublishings_current` | Relevant unpublishing records for current content | Redirect, gone and withdrawal analysis | 
+| `public.organisations` | Current English-language GOV.UK organisation records, including organisation attributes and hierarchy and succession relationships | Organisation type, status, acronym, and relationships between organisations |
 
 This list is not exhaustive. 
 
@@ -170,6 +171,29 @@ Some fields are removed or modified for redirect and gone items.
 | routes | JSON | NULLABLE | Paths and route types used to make the content item available through GOV.UK. | 
 | redirects | JSON | NULLABLE | Redirect destination information associated with an unpublished content item. | 
 | unpublishing_type | STRING | NULLABLE | Type of unpublishing action associated with the edition, such as ‘withdrawal’, ‘redirect’ or ‘gone’. A NULL value indicates that no matching unpublishing record was found. | 
+
+</details>
+
+<details markdown="1">
+<summary>public.organisations</summary>
+
+This table contains one row for each current English-language GOV.UK organisation edition. It includes selected organisation attributes and arrays representing hierarchy and succession relationships between organisations.
+The parents and immediate_successors fields contain directly linked organisations, while ancestors and all_successors contain relationships across the wider hierarchy or succession chain.
+
+| Field name | Type | Mode | Description |
+| --- | --- | --- | --- |
+| edition_id | INTEGER | REQUIRED | The identifier assigned by the Publishing API to the current English-language edition representing the organisation. |
+| acronym | STRING | NULLABLE | The organisation’s acronym, if it has one. |
+| brand | STRING | NULLABLE | The organisation’s brand class name, which is mapped to a colour in the GOV.UK frontend. |
+| organisation_type | STRING | REQUIRED | The type assigned to the organisation in the Publishing API, for example `executive_ndpb`, `ministerial_department` or `devolved_administration`. |
+| foi_exempt | BOOLEAN | REQUIRED | Indicates whether the organisation is exempt from Freedom of Information requests. |
+| organisation_status | STRING | REQUIRED | The organisation’s status on GOV.UK. Permitted values include `changed_name`, `merged` and `no_longer_exists`. |
+| organisation_status_updated_at | TIMESTAMP | NULLABLE | The date and time associated with an update to the organisation’s GOV.UK status, where recorded. |
+| organisation_status_url | STRING | NULLABLE | A URL associated with the organisation’s GOV.UK status, where recorded. |
+| parents | INTEGER | REPEATED | The edition IDs of organisations recorded directly above this organisation in the GOV.UK organisation hierarchy. |
+| immediate_successors | INTEGER | REPEATED | The edition IDs of organisations recorded as directly succeeding this organisation. |
+| ancestors | INTEGER | REPEATED | The edition IDs of organisations recorded at any level above this organisation in the GOV.UK organisation hierarchy. The array also includes this organisation’s own `edition_id`. |
+| all_successors | INTEGER | REPEATED | The edition IDs of organisations in the recorded succession chain for this organisation, including direct and later successors. The array also includes this organisation’s own `edition_id`. |
 
 </details>
 
