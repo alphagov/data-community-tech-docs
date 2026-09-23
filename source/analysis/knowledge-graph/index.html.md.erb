@@ -22,7 +22,7 @@ To get access to the Knowledge Graph data, please post in the #data-engineering 
 You also need a Google Cloud project with billing enabled to run queries. If you are a member of GDS staff, ask the `#data-engineering` community for a Google Cloud billing project ID.
 If you work for another public sector organisation, your organisation will need to provide a suitable billing project. 
 
-You can also access Knowledge Graph data via the [GovGraph tool](/products/govsearch/).
+You can also access Knowledge Graph data via the [GovSearch app](/products/govsearch/).
 
 ## Choosing the right table 
 
@@ -38,6 +38,13 @@ Use: `govuk-knowledge-graph.public.publishing_api_editions_current`
 
 This table contains the most recent non-draft, publicly available edition of each document. 
 Use it when you need lower-level Publishing API fields, content that can be embedded in other pages, or information about redirect and gone items. 
+
+### I need information about GOV.UK organisations
+ 
+Use: `govuk-knowledge-graph.public.organisations`
+ 
+This table contains selected attributes for current English-language GOV.UK organisations, including their acronym, type and status. 
+It also contains hierarchy and succession relationships between organisations.
 
 ### I need previous versions of content 
 
