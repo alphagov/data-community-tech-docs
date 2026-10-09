@@ -1,21 +1,12 @@
 ---
 title: GOV.UK Web log data - Bot detection
 weight: 11
-last_reviewed_on: 2026-09-25
+last_reviewed_on: 2026-10-09
 review_in: 6 months
----
 
-# GOV.UK Web log data
-
-## Context
-
-Web log data is collected by anyone visiting www.gov.uk. The data is not constrained by consent, so can give a full view of the reach of www.gov.uk as well as putting consented data into context. This means that it can help us understand the consented web analytics data we collect using GA4 - for example, understanding cookie opt in rate.
-
-## Building the data pipeline
-
-The fastly data is piped straight to BigQuery from Fastly. Each morning the previous day’s raw web log data arrives via this pipeline and is housed in BigQuery in the ‘govuk-production’ project. 
-
-As the raw web log data is not consented, access to the data in this project is restricted to only those who require it. The data exists in a partitioned table, with a partition expiry of 7 days. This ensures that data older than 7 days is deleted, and we don’t retain any more non-consented data that we have to.
+# GOV.UK Web log data - Bot Detection
+This documentation provides an overview of the bot detection branch of the Dataform workflow for processing Fastly web log data. The bot detection workflow is designed to process and analyse web log data to identify and classify known and suspected bot traffic.
+For more information on the content traffic workflow, see [GOV.UK Web log data - Content traffic](content-traffic/index.html).
 
 ## Dataform workflow
 
@@ -26,12 +17,12 @@ As the raw web log data is not consented, access to the data in this project is 
 </div>
 
 ### Step 1 
-The Dataform workflow sits within the `gds-bq-processing` project under the workspace name `bot_traffic_processing`. It begins by defining the raw web logs data as a source file - `fastly_logs.sqlx` and the known bot agents as a source file - `fastly_reference.sqlx`.
+The Dataform workflow sits within the `gds-bq-processing` project under the workspace name `fastly_processing`. It begins by defining the raw web logs data as a source file - `fastly_logs.sqlx` and the known bot agents as a source file - `fastly_reference.sqlx`.
 
 ### Step 2 - Initial Processing
 The most recent partition_date not already present in `fastly_bot_processing_final` is selected from `fastly_logs`.
 
-Initial processing is performed in `fastly_processing_source.sqlx`. All records from fastly_logs are selected and filtered using `_PARTITIONTIME` from the `process_partition` table created by `process_date.sqlx`, ensuring that only the current partition is processed.
+Initial processing is performed in `fastly_processing_source.sqlx`. All records from fastly_logs are selected and filtered using `_PARTITIONTIME` from the `process_partition` table created by `process_date.sqlx`, ensuring that only the most recent unprocessed partition is selected.
 
 To protect user privacy, activity is identified using `md5_hashed_value`, an anonymised identifier created by hashing a combination of the user’s IP address and user agent. This enables user-level behavioural analysis while preventing access to the original identifying values contained within the raw web log data.
 
@@ -62,7 +53,7 @@ The classification logic gives precedence to known bot matches. If a user agent 
 Multiple patterns and tags can be associated with a single record. These values are aggregated into alphabetically ordered, comma-separated lists, providing a consolidated view of all reference table matches that contributed to the classification.
 
 ### Step 5 - Outputs
-There are currently three outputs from the Dataform workflow, all of which are stored in `gds-bq-data.govuk_weblogs`:
+There are currently three outputs from the bot detection branch of the Dataform workflow, all of which are stored in `gds-bq-data.govuk_weblogs`:
 
 - weblog_urls: This table contains the total number of page views, grouped by `partition_date`, `device_type` and `cleaned_url`. 
 
