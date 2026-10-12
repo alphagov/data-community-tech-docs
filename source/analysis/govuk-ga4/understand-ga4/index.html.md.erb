@@ -1,7 +1,7 @@
 ---
 title: Understand key GA4 dimensions and metrics
 weight: 3
-last_reviewed_on: 2026-09-04
+last_reviewed_on: 2026-10-12
 review_in: 18 months
 ---
 
@@ -96,6 +96,11 @@ If John Smith visits GOV.UK in the same browser on his laptop on Friday and Satu
 When a new session is started, the `session_start` event will fire.
 Sessions can be counted either using this event or using the session ID (though these two methods tend to lead to very slightly different results).
 
+It is possible to have sessions with no `page_view` events. In fact roughly 3% of sessions seem to have no `page_view` events. These sessions are largely not engaged, which means they do not last longer than 10 seconds, as that is the only way they could be engaged in the absence of key events (not on GOV.UK) or page views. The majority of these sessions only contain `session_start` and `user_engagement` events. A small percentage contain
+other events such as `navigation`, `copy`, `select_content` or `file_download`. The hypothesis for these sessions is that the user has left a browser tab open and the session has timed out. Some time later they returned to
+the tab and because it is an active tab in the browser again, a new GA4 session is initiated and a `session_start` event is fired. Because the page was already loaded in the browser cache, no new html is requested and no
+`page_view` fires. A `user_engagement` event is fired to capture a brief a window of activity. In summary, most of these sessions seem to be a user reactivating an old tab and then closing the tab, although a small percentage do include some other actions. 
+
 We have sometimes noticed sessions which appear to be missing session_start events.
 If a user starts a session just before midnight but continues activity after midnight, analysis of the new day will show user engagement in a session that does not contain a session_start event.
 About 0.3% of our sessions are like this.
@@ -112,9 +117,17 @@ The event count represents a non-distinct count of events.
 
 Views are a specific type of event count, counting `page_view` (or `screen_view`) events.
 
-Note that about 4% of sessions on GOV.UK do not have a `page_view` event.
-This is likely due to users opening pages and returning to them hours later.
-In GA4, this will appear as a session with a `page_view` event, followed hours later by a new session containing a `user_engagement` event but no `page_view` on that page.
+### Unique page views
+
+Because of the aforementioned sessions with no `page_view` event, there is a distinction between counting sessions on a page and counting unique page views on a page. This is relevant for example in the 'page_summaries' table.
+
+- ‘sessions’ tells you how many sessions included that page. Not all of those sessions will include a page_view event.
+- ‘unique_pageviews’ tells you how many sessions loaded the page. 
+
+If you want to include sessions where the page was loaded, then 'unique_pageviews' is the best metric. It’s worth noting though that a page view doesn’t necessarily mean the user read or engaged with the content. 
+Conversely a session on a page without a `page_view` event can still contain genuine interaction events, such as copying some text or downloading a file.
+
+Which metric you prefer will depend on what question you are trying to answer. It is however far more likely that sessions with `page_view` events meet Google’s definition of an engaged session than those without, as the sessions without page views tend to be of short duration. 
 
 ### Engagement metrics
 
