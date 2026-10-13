@@ -124,7 +124,7 @@ Because of the aforementioned sessions with no `page_view` event, there is a dis
 - ‘sessions’ tells you how many sessions included that page. Not all of those sessions will include a page_view event.
 - ‘unique_pageviews’ tells you how many sessions loaded the page. 
 
-If you want to count sessions where the page was loaded, then 'unique_pageviews' is the best metric. It’s worth noting though that a page view doesn’t necessarily mean the user read or engaged with the content. 
+If you only want to count sessions where the page was loaded, then 'unique_pageviews' is the best metric. It’s worth noting though that a page view doesn’t necessarily mean the user read or engaged with the content. 
 Conversely a session on a page without a `page_view` event can still contain genuine interaction events, such as copying some text or downloading a file.
 
 Which metric you prefer will depend on what question you are trying to answer. It is however far more likely that sessions with `page_view` events meet Google’s definition of an engaged session than those without, as the sessions without page views tend to be of short duration. 
