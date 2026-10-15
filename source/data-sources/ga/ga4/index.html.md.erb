@@ -1,7 +1,7 @@
 ---
 title: GOV.UK GA4
 weight: 1
-last_reviewed_on: 2026-06-30
+last_reviewed_on: 2026-10-15
 review_in: 6 months
 ---
 
@@ -27,7 +27,7 @@ More information on the dataLayer pushes implemented on GOV.UK can be found in t
 ## Access
 GDS staff can request access to the GOV.UK GA4 data via the [GDS helpdesk](https://docs.data-community.publishing.service.gov.uk/processes/ga-access/#gds-staff).
 
-Data users across government can request access to the GOV.UK GA4 data via their organisation's [analytics SPOC](/processes/spocs/). 
+Data users across government can request access to the GOV.UK GA4 data via their organisation's [analytics SPOC](/processes/ga-access/spocs/). 
 Organisations without SPOCs should contact the [Analytics and Insights team](mailto:govuk-ga4-support@digital.cabinet-office.gov.uk).
 For more information, see [the GA access policy](/processes/ga-access/).
 
@@ -80,9 +80,6 @@ Granular location and device data collection is enabled to allow reporting on th
 At present, we have not created any custom events or designated any events as key events (formerly known as conversions) within GA4.
 We are using the custom event data import feature to join additional metadata to the events we collect.
 More information on GOV.UK GA4 data modifications can be found in the [Policies and processes section](/processes/ga-modifications/) of this site.
-
-[Expanded datasets](/analysis/govuk-ga4/use-ga4/ga4-expanded-datasets/) are being used to reduce the impact of cardinality on various key reports.
-You can use the [steps in this guidance](/analysis/govuk-ga4/use-ga4/ga4-expanded-datasets/) to view the expanded datasets we have set up and to request new expanded datasets.
 
 We are not using GA4's inbuilt data redaction feature on GOV.UK.
 Instead, we are applying redaction to strip out potential Personally Identifable Information (PII) from values before they are pushed to the dataLayer (see our [documentation on this in GitHub](https://github.com/alphagov/govuk_publishing_components/blob/main/docs/analytics-ga4/pii-remover.md)).
